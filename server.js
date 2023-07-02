@@ -1,22 +1,18 @@
 const app = require('express')()
-const bodyParser = require("body-parser")
-app.use(bodyParser.json())
+const { json } = require('body-parser')
 
-console.log("Server start")
+app.use(json())
 
 const data = {
     name: "!!!!!!!!!",
     email: "***********"
 }
 
-app.post("/post", (req, res) => {
-    console.log("Connected !")
-    res.redirect("/")
-})
-
 app.post("/test", (req, res) => {
     console.log(req.body)
     res.send(data)
 })
 
-app.listen(5000)
+app.listen(5000, () => {
+    console.log("Server is listening on port 5000")
+})

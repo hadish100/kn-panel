@@ -6,20 +6,20 @@ const data = {
     email: "ssad;nlq2"
 }
 
-axios.post("/test", data)
-    .then(response => {
-        console.log(response.data)
-    })
-    .catch(err => {
-        console.error(err)
-    })
+
+const test = async () => {
+    const response = await axios.post("/test", data)
+    console.log(response.data)
+}
+
+test()
+
 
 const App = () => {
     return (
-        <form method='POST' action='/post'>
-            <input type='text'></input>
-            <input type='submit'></input>
-        </form>
+        <div>
+            <h1>App</h1>
+        </div>
     )
 }
 
