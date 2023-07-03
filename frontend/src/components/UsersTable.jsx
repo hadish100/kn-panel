@@ -13,11 +13,14 @@ const UsersTable = ({ users }) => {
                         <th className="last">Data Usage</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="users-table__body">
                     {users.map((user) => (
                         <tr key={user.id}>
                             <td>{user.username}</td>
-                            <td>{user.status}</td>
+                            <td>
+                                <span className={user.status}> {user.status}</span>
+                                {user.expireTime}
+                            </td>
                             <td>{user.dataUsage}</td>
                         </tr>
                     ))}
