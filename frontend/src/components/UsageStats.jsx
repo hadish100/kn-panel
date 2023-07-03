@@ -3,7 +3,7 @@ import React from "react";
 import "./UsageStats.css";
 import DataCenterIcon from "../assets/data-center.svg"
 
-const UsageStats = ({ activeUsers, totalUsers, dataUsage, memoryUsage, totalMemory, allocatableData }) => {
+const UsageStats = ({ activeUsers, totalUsers, dataUsage, memoryUsage, totalMemory, allocableData }) => {
     return (
         <div className="usage-stats">
             <div className="usage-stats__item">
@@ -68,8 +68,8 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, memoryUsage, totalMemo
                 <div className="usage-stats__item__svg">
                     <img src={DataCenterIcon} alt="bar chart" />
                 </div>
-                <div className="usage-stats__item__label">Allocatable Data</div>
-                <div className="usage-stats__item__value"><span>{allocatableData}</span></div>
+                <div className="usage-stats__item__label">Allocable Data</div>
+                <div className="usage-stats__item__value"><span>{allocableData}</span></div>
             </div>
         </div>
     )
