@@ -25,7 +25,8 @@
     padding: 4px 4px 0 4px;
 }
 
-.usage-stats__item__svg svg {
+.usage-stats__item__svg svg,
+img {
     background-color: #4D7DE7;
     opacity: 0.8;
     border-radius: 0.5rem;

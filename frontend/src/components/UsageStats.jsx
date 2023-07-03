@@ -1,8 +1,9 @@
 import React from "react";
 
 import "./UsageStats.css";
+import DataCenterIcon from "../assets/data-center.svg"
 
-const UsageStats = ({ activeUsers, totalUsers, dataUsage, memoryUsage, totalMemory }) => {
+const UsageStats = ({ activeUsers, totalUsers, dataUsage, memoryUsage, totalMemory, allocatableData }) => {
     return (
         <div className="usage-stats">
             <div className="usage-stats__item">
@@ -62,6 +63,13 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, memoryUsage, totalMemo
                 </div>
                 <div className="usage-stats__item__label">Memory Usage</div>
                 <div className="usage-stats__item__value"><span>{memoryUsage}</span> / {totalMemory}</div>
+            </div>
+            <div className="usage-stats__item">
+                <div className="usage-stats__item__svg">
+                    <img src={DataCenterIcon} alt="bar chart" />
+                </div>
+                <div className="usage-stats__item__label">Allocatable Data</div>
+                <div className="usage-stats__item__value"><span>{allocatableData}</span></div>
             </div>
         </div>
     )
