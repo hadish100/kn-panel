@@ -51,7 +51,7 @@ let users = [
 const App = () => {
     return (
         <>
-            <UsageStats activeUsers={10} totalUsers={549} dataUsage="1 GB" memoryUsage="256 MB" totalMemory="3.8 GB" />
+            <UsageStats activeUsers={10} totalUsers={549} dataUsage="1 GB" memoryUsage="256 MB" totalMemory="3.8 GB" allocableData="1 TB" />
             <UsersTable users={users} />
         </>
     )
