@@ -47,6 +47,7 @@
 .active:before {
     content: '';
     display: inline-block;
+    margin-right: 5px;
     width: 14px;
     height: 14px;
     margin-top: 0;
@@ -66,6 +67,7 @@
 .expired:before {
     content: '';
     display: inline-block;
+    margin-right: 5px;
     width: 14px;
     height: 14px;
     margin-top: 0;
@@ -85,7 +87,14 @@
 .limited:before {
     content: '';
     display: inline-block;
+    margin-right: 5px;
     width: 14px;
     height: 14px;
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 -5 27 27' stroke-width='1.5' stroke='%23822727' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'></path></svg>");
+}
+
+.expire-time {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #4a5568;
 }

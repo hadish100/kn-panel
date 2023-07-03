@@ -22,8 +22,13 @@ let users = [
     {
         id: 1,
         username: "soheil17",
-        status: "active",
-        expireTime: 27,
+        isActive: true,
+        status: "",
+        expireTime: {
+            days: 24,
+            hours: 24,
+            minutes: 32
+        },
         dataUsage: "1 GB",
         subscriptionLink: "https://www.google.com",
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
@@ -31,8 +36,13 @@ let users = [
     {
         id: 2,
         username: "soheil18",
-        status: "expired",
-        expireTime: 37,
+        isActive: false,
+        status: "",
+        expireTime: {
+            days: 15,
+            hours: 12,
+            minutes: 42
+        },
         dataUsage: "1 GB",
         subscriptionLink: "https://www.google.com",
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
@@ -40,8 +50,13 @@ let users = [
     {
         id: 3,
         username: "soheil19",
+        isActive: true,
         status: "limited",
-        expireTime: 67,
+        expireTime: {
+            days: 0,
+            hours: 12,
+            minutes: 19
+        },
         dataUsage: "1 GB",
         subscriptionLink: "https://www.google.com",
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
