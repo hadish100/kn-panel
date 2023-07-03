@@ -1,14 +1,16 @@
 import React from "react"
 
+import "./UsersTable.css"
+
 const UsersTable = ({ users }) => {
     return (
-        <div className="users-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
+        <div className="wrapper">
+            <table className="users-table">
+                <thead className="users-table__header">
+                    <tr className="users-table__header__row">
+                        <th className="first">Username</th>
                         <th>Status</th>
-                        <th>Data Usage</th>
+                        <th className="last">Data Usage</th>
                     </tr>
                 </thead>
                 <tbody>

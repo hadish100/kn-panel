@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 
 import UsageStats from './components/UsageStats'
-import UsersTable from './components/UsersTabel'
+import UsersTable from './components/UsersTable'
 
 const data = {
     name: "so",
