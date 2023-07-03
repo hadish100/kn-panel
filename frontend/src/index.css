@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: Inter;
+    src: url('../public/fonts/Inter-Regular.ttf');
+}
+
+body {
+    padding: 1.5rem;
+    font-family: Inter;
+}
