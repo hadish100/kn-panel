@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 
+import UsageStats from './components/UsageStats'
+
 const data = {
     name: "so",
     email: "ssad;nlq2"
@@ -17,9 +19,7 @@ test()
 
 const App = () => {
     return (
-        <div>
-            <h1>App</h1>
-        </div>
+        <UsageStats activeUsers={10} totalUsers={549} dataUsage="1 GB" memoryUsage="256 MB" totalMemory="3.8 GB" />
     )
 }
 
