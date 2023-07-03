@@ -14,10 +14,9 @@ const UsersTable = ({ users }) => {
                 <tbody>
                     {users.map((user) => (
                         <tr key={user.id}>
-                            <td>{user.id}</td>
                             <td>{user.username}</td>
-                            <td>{user.first_name}</td>
-                            <td>{user.last_name}</td>
+                            <td>{user.status}</td>
+                            <td>{user.dataUsage}</td>
                         </tr>
                     ))}
                 </tbody>

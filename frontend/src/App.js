@@ -20,19 +20,28 @@ test()
 
 let users = [
     {
+        id: 1,
         username: "soheil17",
         status: "active",
         dataUsage: "1 GB",
+        subscriptionLink: "https://www.google.com",
+        config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
+        id: 2,
         username: "soheil18",
         status: "active",
         dataUsage: "1 GB",
+        subscriptionLink: "https://www.google.com",
+        config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
+        id: 3,
         username: "soheil19",
         status: "active",
         dataUsage: "1 GB",
+        subscriptionLink: "https://www.google.com",
+        config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
 ]
 
