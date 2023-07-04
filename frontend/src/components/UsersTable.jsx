@@ -2,6 +2,7 @@ import React from "react"
 
 import "./UsersTable.css"
 import ProgressBar from "./ProgressBar";
+import SubscriptionSection from "./SubscriptionSection";
 
 const UsersTable = ({ users }) => {
 
@@ -41,7 +42,8 @@ const UsersTable = ({ users }) => {
                     <tr className="users-table__header__row">
                         <th className="first">Username</th>
                         <th>Status</th>
-                        <th className="last">Data Usage</th>
+                        <th>Data Usage</th>
+                        <th className="last"></th>
                     </tr>
                 </thead>
                 <tbody className="users-table__body">
@@ -58,6 +60,9 @@ const UsersTable = ({ users }) => {
                             </td>
                             <td>
                                 <ProgressBar dataUsage={user.dataUsage} totalData={user.totalData} status={checkStatus(user.dataUsage, user.totalData, user.isActive)} />
+                            </td>
+                            <td>
+                                <SubscriptionSection subscriptioLink={user.subscriptioLink} config={user.config} />
                             </td>
                         </tr>
                     ))}
