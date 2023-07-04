@@ -49,7 +49,7 @@ const UsersTable = ({ users }) => {
                 <tbody className="users-table__body">
                     {users.map((user) => (
                         <tr key={user.id}>
-                            <td>{user.username}</td>
+                            <td style={{ width: "170px" }}>{user.username}</td>
                             <td>
                                 <span className={checkStatus(user.dataUsage, user.totalData, user.isActive)}>
                                     {checkStatus(user.dataUsage, user.totalData, user.isActive)}
@@ -62,7 +62,7 @@ const UsersTable = ({ users }) => {
                                 <ProgressBar dataUsage={user.dataUsage} totalData={user.totalData} status={checkStatus(user.dataUsage, user.totalData, user.isActive)} />
                             </td>
                             <td>
-                                <SubscriptionSection subscriptioLink={user.subscriptioLink} config={user.config} />
+                                {<SubscriptionSection subscriptioLink={user.subscriptioLink} config={user.config} /> && "soheil"}
                             </td>
                         </tr>
                     ))}

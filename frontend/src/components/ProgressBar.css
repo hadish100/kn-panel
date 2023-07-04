@@ -41,3 +41,11 @@
     gap: 0.5rem;
     font-family: InterMedium;
 }
+
+@media (max-width: 690px) {
+
+    .progress-bar,
+    .progress-bar__text__total-data {
+        display: none;
+    }
+}
