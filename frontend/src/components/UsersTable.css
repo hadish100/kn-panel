@@ -1,6 +1,7 @@
 .wrapper {
     border-radius: 8px;
     border: 1px solid #d2d2d4;
+    margin-top:20px;
 }
 
 .users-table {
