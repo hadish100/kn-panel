@@ -4,18 +4,16 @@ import axios from 'axios'
 import UsageStats from './components/UsageStats'
 import UsersTable from './components/UsersTable'
 
-const data = {
-    name: "so",
-    email: "ssad;nlq2"
-}
+// const data = 
+// {
+//     name: "so",
+//     email: "ssad;nlq2"
+// };
+// const test = async () => {
+//     const response = await axios.post("/test", data)
+//     console.log(response.data)
+// }
 
-
-const test = async () => {
-    const response = await axios.post("/test", data)
-    console.log(response.data)
-}
-
-test()
 
 
 let users = [
