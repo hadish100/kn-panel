@@ -1,6 +1,13 @@
 .usage-stats {
     display: flex;
     gap: 1.25rem;
+    flex-direction: column;
+}
+
+.flex {
+    display: flex;
+    gap: 1.25rem;
+    width: 100%;
 }
 
 .usage-stats__item {
@@ -38,6 +45,7 @@ img {
 .usage-stats__item__label {
     color: #4A5568;
     font-size: 0.875rem;
+    font-family: InterMedium;
 }
 
 .usage-stats__item__value {

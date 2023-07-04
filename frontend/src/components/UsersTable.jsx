@@ -62,7 +62,7 @@ const UsersTable = ({ users }) => {
                                 <ProgressBar dataUsage={user.dataUsage} totalData={user.totalData} status={checkStatus(user.dataUsage, user.totalData, user.isActive)} />
                             </td>
                             <td>
-                                {<SubscriptionSection subscriptioLink={user.subscriptioLink} config={user.config} /> && "soheil"}
+                                {<SubscriptionSection subscriptioLink={user.subscriptioLink} config={user.config} />}
                             </td>
                         </tr>
                     ))}
