@@ -42,3 +42,15 @@
     outline-offset: 2px;
     border: 2px solid #2684ea;
 }
+
+.icon-button {
+    height: 25px;
+    width: 25px;
+    transition: all 0.3s ease;
+}
+
+.icon-button:hover {
+    background-color: #f1f2f5;
+    border-radius: 6px;
+    cursor: pointer;
+}
