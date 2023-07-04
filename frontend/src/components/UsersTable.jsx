@@ -1,6 +1,7 @@
 import React from "react"
 
 import "./UsersTable.css"
+import ProgressBar from "./ProgressBar";
 
 const UsersTable = ({ users }) => {
 
@@ -22,8 +23,8 @@ const UsersTable = ({ users }) => {
 
 
 
-    const checkStatus = (status, isActive) => {
-        if (status === "limited") {
+    const checkStatus = (dataUsage, totalData, isActive) => {
+        if (dataUsage >= totalData) {
             return "limited";
         } else if (isActive) {
             return "active";
@@ -48,14 +49,16 @@ const UsersTable = ({ users }) => {
                         <tr key={user.id}>
                             <td>{user.username}</td>
                             <td>
-                                <span className={checkStatus(user.status, user.isActive)}>
-                                    {checkStatus(user.status, user.isActive)}
+                                <span className={checkStatus(user.dataUsage, user.totalData, user.isActive)}>
+                                    {checkStatus(user.dataUsage, user.totalData, user.isActive)}
                                 </span>
                                 <span className="expire-time">
                                     {checkExpireTime(user.isActive, user.expireTime)}
                                 </span>
                             </td>
-                            <td>{user.dataUsage}</td>
+                            <td>
+                                <ProgressBar dataUsage={user.dataUsage} totalData={user.totalData} status={checkStatus(user.dataUsage, user.totalData, user.isActive)} />
+                            </td>
                         </tr>
                     ))}
                 </tbody>
