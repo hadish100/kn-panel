@@ -58,8 +58,10 @@ img {
     font-weight: 600;
 }
 
-@media (max-width: 1000px) {
-    .usage-stats {
+@media (max-width: 750px) {
+
+    .usage-stats,
+    .flex {
         flex-direction: column;
     }
 }

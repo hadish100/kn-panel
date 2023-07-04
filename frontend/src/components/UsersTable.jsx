@@ -49,7 +49,7 @@ const UsersTable = ({ users }) => {
                 <tbody className="users-table__body">
                     {users.map((user) => (
                         <tr key={user.id}>
-                            <td style={{ width: "170px" }}>{user.username}</td>
+                            <td style={{ width: "25vw" }}>{user.username}</td>
                             <td>
                                 <span className={checkStatus(user.dataUsage, user.totalData, user.isActive)}>
                                     {checkStatus(user.dataUsage, user.totalData, user.isActive)}
