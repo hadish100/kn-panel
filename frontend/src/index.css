@@ -9,6 +9,11 @@
     src: url('../public/fonts/Inter-Regular.ttf');
 }
 
+@font-face {
+    font-family: InterMedium;
+    src: url('../public/fonts/Inter-Medium.ttf');
+}
+
 body {
     padding: 1.5rem;
     font-family: Inter;
