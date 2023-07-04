@@ -28,8 +28,8 @@ let users = [
             hours: 24,
             minutes: 32
         },
-        dataUsage: 35076621,
-        totalData: 200897672,
+        dataUsage: 350766210,
+        totalData: 2008976720,
         subscriptionLink: "https://www.google.com",
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
