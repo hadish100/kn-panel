@@ -1,9 +1,9 @@
 .modal__background {
     position: absolute;
     inset: 0;
-    background-color: #000;
-    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.16);
     z-index: 1000;
+    backdrop-filter: blur(10px);
 }
 
 .modal__content {
