@@ -21,25 +21,7 @@
     padding: 1.5rem;
     border-radius: 0.75rem;
     align-items: center;
-    border-color: red;
     border: 1px solid #d2d2d4;
-}
-
-.usage-stats__item__svg {
-    margin-right: 0.9rem;
-    background-color: #4d7ee766;
-    border-radius: 0.5rem;
-    padding: 4px 4px 0 4px;
-}
-
-.usage-stats__item__svg svg,
-img {
-    background-color: #4D7DE7;
-    opacity: 0.8;
-    border-radius: 0.5rem;
-    width: 30px;
-    height: 30px;
-    padding: 7px;
 }
 
 .usage-stats__item__label {

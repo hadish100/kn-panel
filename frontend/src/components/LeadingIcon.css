@@ -1,0 +1,17 @@
+.leading-icon {
+    margin-right: 0.9rem;
+    background-color: #4d7ee766;
+    border-radius: 0.5rem;
+    padding: 4px 4px 0 4px;
+}
+
+.leading-icon svg,
+img {
+    background-color: #4D7DE7;
+    opacity: 0.6;
+    border-radius: 0.5rem;
+    width: 38px;
+    height: 38px;
+    padding: 7px;
+    stroke-width: 1.5;
+}
