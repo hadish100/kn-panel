@@ -41,13 +41,17 @@ const UsersTable = ({ users }) => {
         setShowModal(true)
     }
 
+    const handleClose = () => {
+        setShowModal(false)
+    }
+
     return (
         <>
             <div className="flex" style={{ justifyContent: "flex-end", alignItems: "center" }}>
                 <Search />
                 <Button onClick={handleClick} className="create-user-button">Create User</Button>
             </div >
-            {showModal && <Modal />}
+            {showModal && <Modal onClose={handleClose} />}
             <div className="wrapper">
                 <table className="users-table">
                     <thead className="users-table__header">
