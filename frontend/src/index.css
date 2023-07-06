@@ -1,3 +1,14 @@
+:root {
+    --primary-clr-100: #749aec;
+    --primary-clr-200: #396fe4;
+    --primary-clr-300: #3364cd;
+
+    --gray-clr-100: #edf2f7;
+    --gray-clr-200: #e2e8f0;
+
+    --dark-clr-200: #1a202c;
+}
+
 * {
     margin: 0;
     padding: 0;
