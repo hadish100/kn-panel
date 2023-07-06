@@ -8,6 +8,7 @@ import Button from "./Button";
 import Modal from "./Modal";
 import LeadingIcon from "./LeadingIcon";
 import { ReactComponent as AddUserIcon } from "../assets/add-user.svg";
+import { ReactComponent as XMarkIcon } from "../assets/x-mark.svg";
 
 const UsersTable = ({ users }) => {
 
@@ -53,6 +54,9 @@ const UsersTable = ({ users }) => {
                 <AddUserIcon />
             </LeadingIcon>
             <h1 className="modal__title">Create new user</h1>
+            <div className="close-icon" onClick={handleClose}>
+                <XMarkIcon />
+            </div>
         </header>
         <main className="modal__body">
             <form className="modal__form">
@@ -82,7 +86,7 @@ const UsersTable = ({ users }) => {
         <>
             <div className="flex" style={{ justifyContent: "flex-end", alignItems: "center" }}>
                 <Search />
-                <Button onClick={handleClick} className="create-user-button">Create User</Button>
+                <Button onClick={handleClick} className="create-user-button primary">Create User</Button>
             </div >
             {showModal && modal}
             <div className="wrapper">
