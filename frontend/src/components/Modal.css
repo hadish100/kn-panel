@@ -1,4 +1,4 @@
-.modal__background {
+.modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -15,6 +15,46 @@
     padding: 10px;
     width: 42rem;
     background-color: #ffffff;
-    z-index: 1000;
     border-radius: 6px;
+    padding: 1.5rem 1.5rem 1rem;
+    z-index: 1000;
+}
+
+.modal__header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 1rem;
+}
+
+.modal__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1a202c;
+}
+
+.modal__form>*+* {
+    margin-top: 0.625rem;
+}
+
+.modal__form__group {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal__form__label {
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    font-family: InterMedium;
+}
+
+.modal__form__input {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #4a5568;
+    background-color: #fff;
+    background-clip: padding-box;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
