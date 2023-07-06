@@ -4,6 +4,7 @@ import "./UsersTable.css"
 import ProgressBar from "./ProgressBar";
 import SubscriptionSection from "./SubscriptionSection";
 import Search from "./Search";
+import Button from "./Button";
 
 const UsersTable = ({ users }) => {
 
@@ -35,7 +36,10 @@ const UsersTable = ({ users }) => {
 
     return (
         <>
-            <Search />
+            <div className="flex" style={{ justifyContent: "flex-end", alignItems: "center" }}>
+                <Search />
+                <Button className="create-user-button">Create User</Button>
+            </div >
             <div className="wrapper">
                 <table className="users-table">
                     <thead className="users-table__header">
