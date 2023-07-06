@@ -1,9 +1,10 @@
 .search {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     border: 0.8px solid #cbd5e0;
     border-radius: 6px;
     margin: 1rem 0;
+    margin-right: auto;
     outline: 2px solid transparent;
     outline-offset: 4px;
     transition: all 0.1s ease-in-out;
