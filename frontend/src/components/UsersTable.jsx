@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 
 import "./UsersTable.css"
 import ProgressBar from "./ProgressBar";
 import SubscriptionSection from "./SubscriptionSection";
 import Search from "./Search";
 import Button from "./Button";
+import Modal from "./Modal";
 
 const UsersTable = ({ users }) => {
 
@@ -34,12 +35,19 @@ const UsersTable = ({ users }) => {
         }
     };
 
+    const [showModal, setShowModal] = useState(false)
+
+    const handleClick = () => {
+        setShowModal(true)
+    }
+
     return (
         <>
             <div className="flex" style={{ justifyContent: "flex-end", alignItems: "center" }}>
                 <Search />
-                <Button className="create-user-button">Create User</Button>
+                <Button onClick={handleClick} className="create-user-button">Create User</Button>
             </div >
+            {showModal && <Modal />}
             <div className="wrapper">
                 <table className="users-table">
                     <thead className="users-table__header">
