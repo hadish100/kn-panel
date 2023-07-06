@@ -1,0 +1,15 @@
+.modal__background {
+    position: absolute;
+    inset: 0;
+    background-color: #000;
+    opacity: 0.8;
+    z-index: 1000;
+}
+
+.modal__content {
+    position: absolute;
+    inset: 140px;
+    padding: 10px;
+    background-color: #ffffff;
+    z-index: 1000;
+}
