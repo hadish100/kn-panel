@@ -47,11 +47,7 @@ const UsersTable = ({ users }) => {
         setShowModal(false)
     }
 
-    const actionBar = <div>
-        <Button onClick={handleClose}>Close</Button>
-        <Button onClick={handleClose}>Save</Button>
-    </div>
-    const modal = <Modal onClose={handleClose} actionBar={actionBar} >
+    const modal = <Modal onClose={handleClose} >
         <header className="modal__header">
             <LeadingIcon>
                 <AddUserIcon />
@@ -74,6 +70,10 @@ const UsersTable = ({ users }) => {
                 </div>
             </form>
         </main>
+        <footer className="modal__footer">
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>Create User</Button>
+        </footer>
     </Modal>
 
 

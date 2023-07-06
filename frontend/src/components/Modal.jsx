@@ -9,7 +9,6 @@ const Modal = ({ children, onClose, actionBar }) => {
             <div className="modal__background" ></div>
             <div className="modal__content" onClick={(e) => e.stopPropagation()}>
                 {children}
-                {actionBar}
             </div>
         </div>,
         document.querySelector(".modal-container")

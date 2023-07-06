@@ -58,3 +58,17 @@
     background-clip: padding-box;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
+.modal__form__input:focus-visible {
+    outline-color: #749aec;
+}
+
+.modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+}
+
+.modal__footer>*+* {
+    margin-left: 0.5rem;
+}

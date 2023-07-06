@@ -18,6 +18,11 @@ button,
 input {
     font-family: inherit;
     border: none;
+    outline: none;
+}
+
+button {
+    cursor: pointer;
 }
 
 body {
