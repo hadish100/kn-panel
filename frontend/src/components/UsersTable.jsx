@@ -71,8 +71,8 @@ const UsersTable = ({ users }) => {
             </form>
         </main>
         <footer className="modal__footer">
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleClose}>Create User</Button>
+            <Button className={"transparent"} onClick={handleClose}>Cancel</Button>
+            <Button className={"primary"} onClick={handleClose}>Create User</Button>
         </footer>
     </Modal>
 
