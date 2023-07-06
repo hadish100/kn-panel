@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 import "./Modal.css";
 
-const Modal = ({ children, onClose, actionBar }) => {
+const Modal = ({ children, onClose }) => {
     return ReactDOM.createPortal(
         <div className="modal" onClick={onClose}>
             <div className="modal__background" ></div>

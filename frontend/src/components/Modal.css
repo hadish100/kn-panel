@@ -72,3 +72,17 @@
 .modal__footer>*+* {
     margin-left: 0.5rem;
 }
+
+.close-icon {
+    height: 30px;
+    width: 25px;
+    align-self: self-start;
+    margin-left: auto;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.close-icon:hover {
+    background-color: #edf2f7;
+}
