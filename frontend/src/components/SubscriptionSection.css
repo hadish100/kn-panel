@@ -8,6 +8,7 @@
     border: none;
     border-radius: 4px;
     color: #1a202c;
+    position: relative;
 }
 
 .subscription-section__button svg {
