@@ -6,6 +6,7 @@ import Search from "./Search";
 import Button from "./Button";
 import SubscriptionActions from "./SubscriptionActions";
 import CreateUserForm from "./CreateUserForm";
+import { motion, AnimatePresence } from "framer-motion"
 
 const UsersTable = ({ users }) => {
 
@@ -51,7 +52,14 @@ const UsersTable = ({ users }) => {
                 <Search />
                 <Button onClick={handleClick} className="create-user-button primary">Create User</Button>
             </div >
-            {showModal && <CreateUserForm handleClose={handleClose} />}
+            <AnimatePresence>
+                {showModal && <CreateUserForm
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    handleClose={handleClose}
+                />}
+            </AnimatePresence>
             <div className="wrapper">
                 <table className="users-table">
                     <thead className="users-table__header">
