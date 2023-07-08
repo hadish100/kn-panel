@@ -1,13 +1,13 @@
 import React from "react";
 
-import "./SubscriptionSection.css";
+import "./SubscriptionActions.css";
 import Tooltip from "./Tooltip";
 import useHover from "../hooks/use-hover";
 import { ReactComponent as LinkIcon } from "../assets/link.svg";
 import { ReactComponent as PasteIcon } from "../assets/paste.svg";
 import { ReactComponent as QRCodeIcon } from "../assets/qr-code.svg";
 
-const SubscriptionSection = ({ subscriptionLink, config }) => {
+const SubscriptionActions = ({ subscriptionLink, config }) => {
     const {
         isHovered: isHovered1,
         handleMouseEnter: handleMouseEnter1,
@@ -63,4 +63,4 @@ const SubscriptionSection = ({ subscriptionLink, config }) => {
     )
 }
 
-export default SubscriptionSection
+export default SubscriptionActions

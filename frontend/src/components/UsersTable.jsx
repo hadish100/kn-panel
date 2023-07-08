@@ -2,13 +2,13 @@ import React, { useState } from "react"
 
 import "./UsersTable.css"
 import ProgressBar from "./ProgressBar";
-import SubscriptionSection from "./SubscriptionSection";
 import Search from "./Search";
 import Button from "./Button";
 import Modal from "./Modal";
 import LeadingIcon from "./LeadingIcon";
 import { ReactComponent as AddUserIcon } from "../assets/add-user.svg";
 import { ReactComponent as XMarkIcon } from "../assets/x-mark.svg";
+import SubscriptionActions from "./SubscriptionActions";
 
 const UsersTable = ({ users }) => {
 
@@ -115,7 +115,7 @@ const UsersTable = ({ users }) => {
                                     <ProgressBar dataUsage={user.dataUsage} totalData={user.totalData} status={checkStatus(user.dataUsage, user.totalData, user.isActive)} />
                                 </td>
                                 <td>
-                                    {<SubscriptionSection subscriptionLink={user.subscriptionLink} config={user.config} />}
+                                    {<SubscriptionActions subscriptionLink={user.subscriptionLink} config={user.config} />}
                                 </td>
                             </tr>
                         ))}
