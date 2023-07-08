@@ -6,7 +6,7 @@ import Search from "./Search";
 import Button from "./Button";
 import SubscriptionActions from "./SubscriptionActions";
 import CreateUserForm from "./CreateUserForm";
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 
 const UsersTable = ({ users }) => {
 
