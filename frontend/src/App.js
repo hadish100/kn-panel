@@ -1,8 +1,14 @@
 import React from 'react'
 import axios from 'axios'
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+
 
 import UsageStats from './components/UsageStats'
 import UsersTable from './components/UsersTable'
+import Navbar from './components/Navbar'
+import LogsPage from "./pages/LogsPage"
+import SettingsPage from "./pages/SettingsPage"
+import UsersPage from "./pages/UsersPage"
 
 // const data = 
 // {
@@ -64,6 +70,15 @@ let users = [
 const App = () => {
     return (
         <>
+            <BrowserRouter>
+                <Routes>
+                    <Route path='/' element={<Navbar />}>
+                        <Route index path="/users" element={<UsersPage />} />
+                        <Route path="/settings" element={<SettingsPage />} />
+                        <Route path="/log" element={<LogsPage />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
             <UsageStats activeUsers={10} totalUsers={549} dataUsage="1 GB" remainingData="198 GB" allocableData="1 TB" />
             <UsersTable users={users} />
         </>
