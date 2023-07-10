@@ -35,6 +35,7 @@
 }
 
 .users-table__body tr {
+    height: 70px;
     transition: all 0.3s ease;
 }
 
@@ -43,7 +44,7 @@
     cursor: pointer;
 }
 
-.active {
+.users-table__body .active {
     background-color: #c6f6d5;
     color: #22543d;
     padding: 0.25rem 0.75rem;
@@ -53,17 +54,17 @@
     text-transform: capitalize;
 }
 
-.active:before {
+.users-table__body .active:before {
     content: '';
     display: inline-block;
     margin-right: 5px;
     width: 14px;
     height: 14px;
     margin-top: 0;
-    background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 -5 27 27' stroke-width='1.5' stroke='%2322543d' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z'></path></svg>");
+    background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-2 -5 27 27' stroke-width='1.5' stroke='%2322543d' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z'></path></svg>");
 }
 
-.expired {
+.users-table__body .expired {
     background-color: #feebc8;
     color: #7b341e;
     padding: 0.25rem 0.75rem;
@@ -73,17 +74,17 @@
     text-transform: capitalize;
 }
 
-.expired:before {
+.users-table__body .expired:before {
     content: '';
     display: inline-block;
     margin-right: 5px;
     width: 14px;
     height: 14px;
     margin-top: 0;
-    background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 -5 27 27' stroke-width='1.5' stroke='%237b341e' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'></path></svg>");
+    background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-1 -5 27 27' stroke-width='1.5' stroke='%237b341e' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'></path></svg>");
 }
 
-.limited {
+.users-table__body .limited {
     background-color: #fed7d7;
     color: #822727;
     padding: 0.25rem 0.75rem;
@@ -93,16 +94,16 @@
     text-transform: capitalize;
 }
 
-.limited:before {
+.users-table__body .limited:before {
     content: '';
     display: inline-block;
     margin-right: 5px;
     width: 14px;
     height: 14px;
-    background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 -5 27 27' stroke-width='1.5' stroke='%23822727' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'></path></svg>");
+    background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-1 -5 27 27' stroke-width='1.5' stroke='%23822727' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'></path></svg>");
 }
 
-.expire-time {
+.users-table__body .expire-time {
     margin-left: 10px;
     font-size: 12px;
     color: #4a5568;
@@ -110,7 +111,7 @@
 }
 
 @media (max-width: 900px) {
-    .expire-time {
+    .users-table__body .expire-time {
         display: block;
         margin-top: 7px;
         margin-left: 0;
@@ -118,26 +119,22 @@
 }
 
 @media (max-width: 690px) {
-    .expire-time {
+    .users-table__body .expire-time {
         display: none;
     }
 
-    .active,
-    .limited,
-    .expired {
+    .users-table__body .active,
+    .users-table__body .limited,
+    .users-table__body .expired {
         text-indent: -9999px;
         display: inline-block;
     }
 
-    .active:before,
-    .limited:before,
-    .expired:before {
+    .users-table__body .active:before,
+    .users-table__body .limited:before,
+    .users-table__body .expired:before {
         float: left;
         text-indent: 0;
         margin: 0;
     }
-}
-
-.flex {
-    display: flex;
 }

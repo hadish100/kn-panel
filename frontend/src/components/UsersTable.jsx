@@ -2,11 +2,7 @@ import React, { useState } from "react"
 
 import "./UsersTable.css"
 import ProgressBar from "./ProgressBar";
-import Search from "./Search";
-import Button from "./Button";
 import SubscriptionActions from "./SubscriptionActions";
-import CreateUserForm from "./CreateUserForm";
-import { AnimatePresence } from "framer-motion"
 
 const UsersTable = ({ users }) => {
 
@@ -36,30 +32,8 @@ const UsersTable = ({ users }) => {
         }
     };
 
-    const [showModal, setShowModal] = useState(false)
-
-    const handleClick = () => {
-        setShowModal(true)
-    }
-
-    const handleClose = () => {
-        setShowModal(false)
-    }
-
     return (
         <>
-            <div className="flex" style={{ justifyContent: "flex-end", alignItems: "center" }}>
-                <Search />
-                <Button onClick={handleClick} className="create-user-button primary">Create User</Button>
-            </div >
-            <AnimatePresence>
-                {showModal && <CreateUserForm
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    handleClose={handleClose}
-                />}
-            </AnimatePresence>
             <div className="wrapper">
                 <table className="users-table">
                     <thead className="users-table__header">
@@ -85,7 +59,7 @@ const UsersTable = ({ users }) => {
                                 <td>
                                     <ProgressBar dataUsage={user.dataUsage} totalData={user.totalData} status={checkStatus(user.dataUsage, user.totalData, user.isActive)} />
                                 </td>
-                                <td>
+                                <td style={{ width: "9rem" }}>
                                     {<SubscriptionActions subscriptionLink={user.subscriptionLink} config={user.config} />}
                                 </td>
                             </tr>
