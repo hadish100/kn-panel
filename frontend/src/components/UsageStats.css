@@ -6,8 +6,10 @@
 
 .flex {
     display: flex;
+}
+
+.usage-stats .flex {
     gap: 1.25rem;
-    width: 100%;
 }
 
 .usage-stats__item {

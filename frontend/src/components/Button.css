@@ -27,3 +27,13 @@
     --color: var(--dark-clr-200);
     --background-color-hover: var(--gray-clr-100);
 }
+
+.button svg {
+    margin-bottom: -2px;
+    width: 15px;
+    height: 15px;
+}
+
+.button:has(svg) {
+    padding: 0.4rem 0.5rem;
+}

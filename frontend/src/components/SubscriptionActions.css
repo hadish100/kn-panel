@@ -1,6 +1,10 @@
+.subscription-section {
+    width: 100%;
+}
+
 .subscription-section__buttons {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .subscription-section__button {

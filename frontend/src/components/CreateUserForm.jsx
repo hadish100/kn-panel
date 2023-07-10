@@ -6,6 +6,7 @@ import Button from "./Button";
 import { ReactComponent as AddUserIcon } from "../assets/add-user.svg";
 import { ReactComponent as XMarkIcon } from "../assets/x-mark.svg";
 import { motion } from "framer-motion"
+import "./CreateUserForm.css"
 
 
 const CreateUserForm = ({ handleClose }) => {

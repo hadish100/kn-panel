@@ -1,12 +1,12 @@
 .navbar {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .navbar__links {
     display: flex;
     font-family: InterMedium;
     font-size: 1rem;
-    margin-bottom: .875rem;
+    margin-bottom: .25rem;
 }
 
 .navbar__links li {
@@ -52,14 +52,5 @@
     width: 100%;
     opacity: 1;
     transform: scaleX(1);
-}
-
-.navbar__lineeee {
-    height: 4px;
-    width: 0;
-    left: 0;
-    background-color: red;
-    position: absolute;
-    transition: width 0.3s ease, transform 0.3s ease;
-    transform-origin: left;
+    color: var(--primary-clr-200);
 }

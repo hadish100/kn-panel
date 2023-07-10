@@ -12,22 +12,24 @@ const Search = () => {
     };
 
     return (
-        <div className="search">
-            <div className="search__icon">
-                <SearchIcon />
-            </div>
-            <input
-                type="text"
-                placeholder="Search"
-                value={search}
-                onChange={handleSearch}
-            />
-            {
-                search.length > 0 &&
-                <div onClick={() => { setSearch("") }} className="search__icon icon-button">
-                    <XMarkIcon />
+        <div className="wrapper">
+            <div className="search">
+                <div className="search__icon">
+                    <SearchIcon />
                 </div>
-            }
+                <input
+                    type="text"
+                    placeholder="Search"
+                    value={search}
+                    onChange={handleSearch}
+                />
+                {
+                    search.length > 0 &&
+                    <div onClick={() => { setSearch("") }} className="search__icon icon-button">
+                        <XMarkIcon />
+                    </div>
+                }
+            </div>
         </div>
     );
 }

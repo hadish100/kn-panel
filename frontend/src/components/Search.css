@@ -1,14 +1,11 @@
 .search {
     display: inline-flex;
     align-items: center;
-    border: 0.8px solid #cbd5e0;
+    border: 2px solid transparent;
     border-radius: 6px;
-    margin: 1rem 0;
-    margin-right: auto;
     outline: 2px solid transparent;
     outline-offset: 4px;
     transition: all 0.1s ease-in-out;
-    max-width: 400px;
 }
 
 .search__icon {
