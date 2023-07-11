@@ -28,6 +28,16 @@
     --background-color-hover: var(--gray-clr-100);
 }
 
+.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.active {
+    --background-color: var(--gray-clr-100);
+    --background-color-hover: var(--gray-clr-200);
+}
+
 .button svg {
     margin-bottom: -2px;
     width: 15px;
@@ -36,4 +46,30 @@
 
 .button:has(svg) {
     padding: 0.4rem 0.5rem;
+}
+
+.pagination-left-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+    display: inline-flex;
+    height: 32px;
+}
+
+.pagination-right-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    display: inline-flex;
+    height: 32px;
+}
+
+.pagination-btn {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    border-radius: 0;
+    border-right: 0;
+    padding: 0 0.75rem;
+    width: 32px;
+    height: 32px;
 }
