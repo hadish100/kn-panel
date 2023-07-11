@@ -81,7 +81,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
             >
-                <span style={{ marginRight: "5px" }}>Next</span>
+                <span style={{ marginRight: "5px", fontWeight: "600", fontFamily: "Inter" }}>Next</span>
                 <ArrowRightIcon />
             </Button>
         </div>

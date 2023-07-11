@@ -8,6 +8,7 @@ import Search from '../components/Search'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../assets/refresh.svg'
 import './UsersPage.css'
+import Pagination from '../components/Pagination'
 import Dropdown from '../components/Dropdown'
 
 let users = [
@@ -1025,6 +1026,7 @@ const UsersPage = () => {
     const [showModal, setShowModal] = useState(false)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [selection, setSelection] = useState(null)
+    const [currentPage, setCurrentPage] = useState(1)
 
     const handleClick = () => {
         setShowModal(true)
@@ -1034,8 +1036,19 @@ const UsersPage = () => {
         setShowModal(false)
     }
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page)
+    }
+
+    const LastRowIndex = currentPage * rowsPerPage
+    const FirstRowIndex = LastRowIndex - rowsPerPage
+    const currentRows = users.slice(FirstRowIndex, LastRowIndex)
+
+    const totalPages = Math.ceil(users.length / rowsPerPage)
+
     const handleSelect = (option) => {
         setSelection(option)
+        setRowsPerPage(option.value)
     }
 
     const itemsPerRowOptions = [
@@ -1062,9 +1075,19 @@ const UsersPage = () => {
                     handleClose={handleClose}
                 />}
             </AnimatePresence>
-            <UsersTable users={users} rowsPerPage={rowsPerPage} />
-            <Dropdown options={itemsPerRowOptions} value={selection} onChange={handleSelect} />
-        </div>
+            <UsersTable users={users} rowsPerPage={20} currentRows={currentRows} />
+            <div className='users-page__footer' style={{ position: "relative" }}>
+                <span style={{ display: "flex" }}>
+                    <Dropdown options={itemsPerRowOptions} value={selection} onChange={handleSelect}>Items per page</Dropdown>
+                    <span style={{ fontSize: "0.75rem", color: "var(--dark-clr-200)", marginLeft: "0.5rem", marginTop: "0.5rem" }}>Items per page</span>
+                </span>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                />
+            </div>
+        </div >
     )
 }
 

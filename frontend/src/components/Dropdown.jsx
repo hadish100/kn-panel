@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import "./Dropdown.css"
 import { ReactComponent as ChevronDownIcon } from '../assets/chevron-down.svg'
 
-const Dropdown = ({ options, value, onChange }) => {
+const Dropdown = ({ children, options, value, onChange }) => {
     const [isOpen, setIsOpen] = useState(false)
     const divEl = useRef(null)
 
@@ -36,12 +37,26 @@ const Dropdown = ({ options, value, onChange }) => {
     })
 
     return (
-        <div ref={divEl} className={`dropdown ${isOpen ? "open" : "close"}`}>
-            <div className="dropdown__value" onClick={handleClick}>
-                {value?.label || 10}
-                <ChevronDownIcon />
+        <div className='dropdown-container'>
+            <div ref={divEl} className={`dropdown ${isOpen ? "open" : "close"}`}>
+                <div className="dropdown__value" onClick={handleClick}>
+                    {value?.label || 10}
+                    <ChevronDownIcon />
+                </div>
+                <AnimatePresence>
+                    {isOpen &&
+                        <motion.div
+                            className='options'
+                            initial={{ opacity: 0, y: -10 }} // Initial opacity and position
+                            animate={{ opacity: 1, y: 0 }} // Animation to fully visible and original position
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: .3 }}
+                        >
+                            {renderedOptions}
+                        </motion.div>
+                    }
+                </AnimatePresence>
             </div>
-            {isOpen && <div className='options'>{renderedOptions}</div>}
         </div>
     )
 }
