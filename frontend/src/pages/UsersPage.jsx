@@ -8,6 +8,7 @@ import Search from '../components/Search'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../assets/refresh.svg'
 import './UsersPage.css'
+import Dropdown from '../components/Dropdown'
 
 let users = [
     {
@@ -1022,6 +1023,8 @@ let users = [
 
 const UsersPage = () => {
     const [showModal, setShowModal] = useState(false)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [selection, setSelection] = useState(null)
 
     const handleClick = () => {
         setShowModal(true)
@@ -1030,6 +1033,16 @@ const UsersPage = () => {
     const handleClose = () => {
         setShowModal(false)
     }
+
+    const handleSelect = (option) => {
+        setSelection(option)
+    }
+
+    const itemsPerRowOptions = [
+        { label: 10, value: 10 },
+        { label: 20, value: 20 },
+        { label: 30, value: 30 },
+    ]
 
     return (
         <div>
@@ -1049,7 +1062,8 @@ const UsersPage = () => {
                     handleClose={handleClose}
                 />}
             </AnimatePresence>
-            <UsersTable users={users} rowsPerPage={5} />
+            <UsersTable users={users} rowsPerPage={rowsPerPage} />
+            <Dropdown options={itemsPerRowOptions} value={selection} onChange={handleSelect} />
         </div>
     )
 }
