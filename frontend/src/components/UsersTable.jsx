@@ -1,10 +1,10 @@
-import React, { useState } from "react"
+import React from "react"
 
 import "./UsersTable.css"
 import ProgressBar from "./ProgressBar";
 import SubscriptionActions from "./SubscriptionActions";
 
-const UsersTable = ({ users }) => {
+const UsersTable = ({ users, rowsPerPage, currentRows }) => {
 
     const checkExpireTime = (isActive, expireTime) => {
         if (isActive) {
@@ -45,7 +45,7 @@ const UsersTable = ({ users }) => {
                         </tr>
                     </thead>
                     <tbody className="users-table__body">
-                        {users.map((user) => (
+                        {currentRows.map((user) => (
                             <tr key={user.id}>
                                 <td style={{ width: "25vw" }}>{user.username}</td>
                                 <td>

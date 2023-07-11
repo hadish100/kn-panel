@@ -1,0 +1,7 @@
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-family: "Inter";
+    font-weight: 600;
+}

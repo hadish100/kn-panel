@@ -7,6 +7,8 @@
     --gray-clr-200: #e2e8f0;
 
     --dark-clr-200: #1a202c;
+
+    --border-clr: #d2d2d4;
 }
 
 * {
@@ -32,6 +34,7 @@ input {
     font-family: inherit;
     border: none;
     outline: none;
+    font-weight: inherit;
 }
 
 button {
