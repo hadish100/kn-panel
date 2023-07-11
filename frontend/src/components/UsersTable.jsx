@@ -3,8 +3,9 @@ import React, { useState } from "react"
 import "./UsersTable.css"
 import ProgressBar from "./ProgressBar";
 import SubscriptionActions from "./SubscriptionActions";
+import Pagination from "./Pagination";
 
-const UsersTable = ({ users }) => {
+const UsersTable = ({ users, rowsPerPage }) => {
 
     const checkExpireTime = (isActive, expireTime) => {
         if (isActive) {
@@ -32,6 +33,18 @@ const UsersTable = ({ users }) => {
         }
     };
 
+    const [currentPage, setCurrentPage] = useState(1)
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page)
+    }
+
+    const LastRowIndex = currentPage * rowsPerPage
+    const FirstRowIndex = LastRowIndex - rowsPerPage
+    const currentRows = users.slice(FirstRowIndex, LastRowIndex)
+
+    const totalPages = Math.ceil(users.length / rowsPerPage)
+
     return (
         <>
             <div className="wrapper">
@@ -45,7 +58,7 @@ const UsersTable = ({ users }) => {
                         </tr>
                     </thead>
                     <tbody className="users-table__body">
-                        {users.map((user) => (
+                        {currentRows.map((user) => (
                             <tr key={user.id}>
                                 <td style={{ width: "25vw" }}>{user.username}</td>
                                 <td>
@@ -66,6 +79,13 @@ const UsersTable = ({ users }) => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+            <div>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                />
             </div>
         </>
     )
