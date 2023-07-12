@@ -1,5 +1,5 @@
 import React from 'react'
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import './Login.css'
 import { ReactComponent as LoginIcon } from "../assets/login.svg"
 import { ReactComponent as Logo } from "../assets/logo.svg"
@@ -13,7 +13,7 @@ const Login = () => {
                 <div className='login_title_2'>Welcome back, please enter your details</div>
                 <input type="text" placeholder='Username' className="username" name="username" />
                 <input type="password" placeholder='Password' className="password" name="password" />
-                <Link to="../panel/users" > <div className='login_btn' >   <LoginIcon /> <span>Login</span>  </div>  </Link>
+                <Link to="../admin/panels" > <div className='login_btn' >   <LoginIcon /> <span>Login</span>  </div>  </Link>
             </div>
         </>
     )
