@@ -293,7 +293,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 3,
+        id: 21,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -307,7 +307,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 4,
+        id: 22,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -321,7 +321,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 5,
+        id: 23,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -335,7 +335,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 6,
+        id: 24,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -349,7 +349,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 7,
+        id: 25,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -363,7 +363,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 8,
+        id: 26,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -377,7 +377,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 9,
+        id: 27,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -391,7 +391,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 10,
+        id: 28,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -405,7 +405,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 11,
+        id: 29,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -419,7 +419,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 12,
+        id: 30,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -433,7 +433,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 13,
+        id: 31,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -447,7 +447,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 14,
+        id: 32,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -461,7 +461,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 15,
+        id: 33,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -475,7 +475,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 16,
+        id: 34,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -489,7 +489,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 17,
+        id: 35,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -503,7 +503,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 18,
+        id: 36,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -517,7 +517,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 1,
+        id: 37,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -531,7 +531,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 2,
+        id: 38,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -545,7 +545,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 3,
+        id: 39,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -559,7 +559,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 4,
+        id: 40,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -573,7 +573,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 5,
+        id: 41,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -587,7 +587,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 6,
+        id: 42,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -601,7 +601,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 7,
+        id: 43,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -615,7 +615,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 8,
+        id: 44,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -629,7 +629,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 9,
+        id: 45,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -643,7 +643,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 10,
+        id: 46,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -657,7 +657,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 11,
+        id: 47,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -671,7 +671,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 12,
+        id: 48,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -685,7 +685,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 13,
+        id: 49,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -699,7 +699,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 14,
+        id: 50,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -713,7 +713,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 15,
+        id: 51,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -727,7 +727,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 16,
+        id: 52,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -741,7 +741,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 17,
+        id: 53,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -755,7 +755,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 18,
+        id: 54,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -769,7 +769,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 19,
+        id: 55,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -783,7 +783,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 20,
+        id: 56,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -797,7 +797,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 3,
+        id: 57,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -811,7 +811,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 4,
+        id: 58,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -825,7 +825,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 5,
+        id: 59,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -839,7 +839,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 6,
+        id: 60,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -853,7 +853,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 7,
+        id: 61,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -867,7 +867,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 8,
+        id: 62,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -881,7 +881,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 9,
+        id: 63,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -895,7 +895,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 10,
+        id: 64,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -909,7 +909,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 11,
+        id: 65,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -923,7 +923,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 12,
+        id: 66,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -937,7 +937,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 13,
+        id: 67,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -951,7 +951,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 14,
+        id: 68,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -965,7 +965,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 15,
+        id: 69,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -979,7 +979,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 16,
+        id: 70,
         username: "soheil17",
         isActive: true,
         expireTime: {
@@ -993,7 +993,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 17,
+        id: 71,
         username: "soheil18",
         isActive: false,
         expireTime: {
@@ -1007,7 +1007,7 @@ let users = [
         config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
     },
     {
-        id: 18,
+        id: 72,
         username: "soheil19",
         isActive: true,
         expireTime: {
@@ -1030,6 +1030,7 @@ const UsersPage = () => {
 
     const handleClick = () => {
         setShowModal(true)
+        console.log(currentRows.length)
     }
 
     const handleClose = () => {
@@ -1075,7 +1076,7 @@ const UsersPage = () => {
                     handleClose={handleClose}
                 />}
             </AnimatePresence>
-            <UsersTable users={users} rowsPerPage={20} currentRows={currentRows} />
+            <UsersTable users={users} rowsPerPage={rowsPerPage} currentRows={currentRows} />
             <div className='users-page__footer' style={{ position: "relative" }}>
                 <span style={{ display: "flex" }}>
                     <Dropdown options={itemsPerRowOptions} value={selection} onChange={handleSelect}>Items per page</Dropdown>
