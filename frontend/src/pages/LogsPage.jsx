@@ -1,8 +1,13 @@
 import React from 'react'
+import Navbar from '../components/Navbar'
+import './LogsPage.css'
 
 const LogsPage = () => {
     return (
-        <div>LogsPage</div>
+        <div className='panel_body'>
+        <Navbar />
+        <div>LOGS</div>
+        </div>
     )
 }
 

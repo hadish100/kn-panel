@@ -1,0 +1,96 @@
+html,body
+{
+    width:100%;
+    height:100vh;
+    padding:0;
+    margin:0;
+}
+
+#root
+{
+    width:100%;
+    height:100vh; 
+}
+
+.login_flexor
+{
+    width:100%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    align-content:center;
+    flex-direction:column;
+}
+
+.login_flexor > svg
+{
+    width:50px;
+    margin-bottom:10px;
+}
+
+.login_flexor .login_btn svg
+{
+    width:30px;
+}
+
+.login_flexor .login_title_1
+{
+    font-size:25px;
+    font-weight:900;
+}
+
+.login_flexor .login_title_2
+{
+    margin-top:20px;
+}
+
+.login_title_2
+{
+    margin-bottom:25px;
+}
+
+.login_flexor .username , .login_flexor .password
+{
+    border:1px solid #cbd5e0;
+    height:40px;
+    border-radius:0.375rem;
+    padding:16px;
+    margin-top:15px;
+    width:300px;
+    font-size:16px;
+
+}
+
+.login_flexor .username:focus , .login_flexor .password:focus
+{
+    border:1px solid #396fe4;
+}
+
+.login_flexor .login_btn
+{
+    width:300px;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    align-content:center;
+    flex-direction:row;
+    margin-top:15px;
+    border-radius:0.375rem;
+    padding:16px;
+    cursor:pointer;
+    height:40px;
+    background:#396fe4;
+    transition:all 0.2s;
+}
+
+.login_flexor .login_btn:hover
+{
+    background:#3364cd;
+}
+
+.login_flexor .login_btn svg 
+{
+    margin-right:5px;
+}

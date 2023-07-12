@@ -10,6 +10,7 @@ import { ReactComponent as RefreshIcon } from '../assets/refresh.svg'
 import './UsersPage.css'
 import Pagination from '../components/Pagination'
 import Dropdown from '../components/Dropdown'
+import Navbar from '../components/Navbar'
 
 let users = [
     {
@@ -1059,7 +1060,9 @@ const UsersPage = () => {
     ]
 
     return (
-        <div>
+
+        <div className='panel_body'>
+        <Navbar />
             <UsageStats activeUsers={10} totalUsers={549} dataUsage="1 GB" remainingData="198 GB" allocableData="1 TB" />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search />
@@ -1089,6 +1092,7 @@ const UsersPage = () => {
                 />
             </div>
         </div >
+   
     )
 }
 

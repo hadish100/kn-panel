@@ -63,7 +63,7 @@ const Navbar = () => {
                         onFocus={handleLinkHover}
                         onBlur={resetLine}
                     >
-                        <NavLink to='/users' className='navbar__link' onClick={handleClick}>
+                        <NavLink to='/panel/users' className='navbar__link' onClick={handleClick}>
                             Users
                         </NavLink>
                     </li>
@@ -73,7 +73,7 @@ const Navbar = () => {
                         onFocus={handleLinkHover}
                         onBlur={resetLine}
                     >
-                        <NavLink className='navbar__link' to='/settings' onClick={handleClick} >
+                        <NavLink className='navbar__link' to='/panel/settings' onClick={handleClick} >
                             Settings
                         </NavLink>
                     </li>
@@ -83,7 +83,7 @@ const Navbar = () => {
                         onFocus={handleLinkHover}
                         onBlur={resetLine}
                     >
-                        <NavLink className='navbar__link' to='/log' onClick={handleClick} >
+                        <NavLink className='navbar__link' to='/panel/log' onClick={handleClick} >
                             Log
                         </NavLink>
                     </li>
