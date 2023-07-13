@@ -38,7 +38,7 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                     <LeadingIcon>
                         <DataCenterIcon />
                     </LeadingIcon>
-                    <div className="usage-stats__item__label">Allocable Data</div>
+                    <div className="usage-stats__item__label">Allocatable Data</div>
                     <div className="usage-stats__item__value"><span>{allocableData}</span></div>
                 </div>
             </div>
