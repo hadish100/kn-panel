@@ -4,6 +4,7 @@ import Search from '../components/Search'
 import Button from '../components/Button'
 import AdminPanelsTable from '../components/AdminPanelsTable'
 import AddPanelForm from '../components/AddPanelForm'
+import AdminUsageStats from '../components/AdminUsageStats'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../assets/refresh.svg'
 import './adminPanels.css'
@@ -49,6 +50,7 @@ const AdminPanels = () => {
         <>
         <div className='admin_panels_body'>
         <Navbar2 />
+        <AdminUsageStats dataUsage="201.3 TB" activeUsers={500} totalUsers={900} />
         <div className="container flex items-center justify-between   column-reverse items-end gap-16">
         <Search />
         <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>

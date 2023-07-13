@@ -3,6 +3,7 @@ import Navbar2 from '../components/Navbar2'
 import Search from '../components/Search'
 import Button from '../components/Button'
 import AdminPanelsTable from '../components/AdminUsersTable'
+import AdminUsageStats from '../components/AdminUsageStats'
 import AddPanelForm from '../components/AddAdminUserForm'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../assets/refresh.svg'
@@ -66,6 +67,7 @@ const AdminPanels = () => {
         <>
         <div className='admin_panels_body'>
         <Navbar2 />
+        <AdminUsageStats dataUsage="8020 GB" activeUsers={512} totalUsers={1000} />
         <div className="container flex items-center justify-between   column-reverse items-end gap-16">
         <Search />
         <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
