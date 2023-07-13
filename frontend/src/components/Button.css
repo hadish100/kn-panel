@@ -4,12 +4,13 @@
     padding: 0.44rem 1.25rem;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
     font-size: 0.875rem;
     border-radius: 0.375rem;
     font-family: InterMedium;
     transition: background-color 0.1s ease-in-out;
     border: 1px solid var(--border-color);
+    align-items: center;
 }
 
 .button:hover {
@@ -43,12 +44,6 @@
 .active {
     --background-color: var(--gray-clr-100);
     --background-color-hover: var(--gray-clr-200);
-}
-
-.button svg {
-    margin-bottom: -2px;
-    width: 15px;
-    height: 15px;
 }
 
 .button:has(svg) {

@@ -38,7 +38,7 @@ const CreateUserForm = ({ handleClose }) => {
                 </form>
             </main>
             <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button className={"transparent"} onClick={handleClose}>Cancel</Button>
+                <Button className={"outlined"} onClick={handleClose}>Cancel</Button>
                 <Button className={"primary"} onClick={handleClose}>Create User</Button>
             </motion.footer>
         </Modal>

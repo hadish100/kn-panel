@@ -22,16 +22,15 @@
     gap: 1rem;
 }
 
-.refresh svg:hover {
-    transform: rotate(180deg);
-}
-
-.refresh svg {
+.refresh-icon svg {
     transition: transform 0.3s linear;
+    width: 15px;
+    height: 15px;
 }
 
-.refresh svg:hover {
+.refresh-icon svg:hover {
     animation: rotate 1s infinite linear;
+    transform: rotate(180deg);
 }
 
 .users-page__footer {

@@ -5,3 +5,8 @@
     font-family: "Inter";
     font-weight: 600;
 }
+
+.pagination-left-btn svg,
+.pagination-right-btn svg {
+    width: 15px;
+}

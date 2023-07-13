@@ -7,6 +7,7 @@ import { ReactComponent as LinkIcon } from "../assets/link.svg";
 import { ReactComponent as PasteIcon } from "../assets/paste.svg";
 import { ReactComponent as QRCodeIcon } from "../assets/qr-code.svg";
 import { ReactComponent as CheckedIcon } from "../assets/checked.svg";
+import Button from "./Button";
 
 const SubscriptionActions = ({ subscriptionLink, config }) => {
     const [clickedButton, setClickedButton] = useState(null);
@@ -46,8 +47,8 @@ const SubscriptionActions = ({ subscriptionLink, config }) => {
     return (
         <div className="subscription-section">
             <div className="subscription-section__buttons">
-                <button
-                    className="subscription-section__button"
+                <Button
+                    className="subscription-section__button ghosted"
                     onMouseEnter={handleMouseEnter1}
                     onMouseLeave={handleMouseLeave1}
                     onClick={handleCopySubscriptionLink}
@@ -57,9 +58,9 @@ const SubscriptionActions = ({ subscriptionLink, config }) => {
                         : <Tooltip isHovered={isHovered1}>Copy Subscription Link</Tooltip>
                     }
                     {clickedButton === "subscriptionLink" ? <CheckedIcon /> : <LinkIcon />}
-                </button>
-                <button
-                    className="subscription-section__button"
+                </Button>
+                <Button
+                    className="subscription-section__button ghosted"
                     onMouseEnter={handleMouseEnter2}
                     onMouseLeave={handleMouseLeave2}
                     onClick={handleCopyConfigLink}
@@ -70,15 +71,15 @@ const SubscriptionActions = ({ subscriptionLink, config }) => {
                         : <Tooltip isHovered={isHovered2}>Copy Configs</Tooltip>
                     }
                     {clickedButton === "config" ? <CheckedIcon /> : <PasteIcon />}
-                </button>
-                <button
-                    className="subscription-section__button"
+                </Button>
+                <Button
+                    className="subscription-section__button ghosted"
                     onMouseEnter={handleMouseEnter3}
                     onMouseLeave={handleMouseLeave3}
                 >
                     <Tooltip isHovered={isHovered3}>QR Code</Tooltip>
                     <QRCodeIcon />
-                </button>
+                </Button>
             </div>
         </div>
     );

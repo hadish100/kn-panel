@@ -1064,7 +1064,7 @@ const UsersPage = () => {
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
-                    <Button className="transparent refresh"><RefreshIcon /></Button>
+                    <Button className="outlined refresh-icon"><RefreshIcon /></Button>
                     <Button onClick={handleClick} className="create-user-button primary">Create User</Button>
                 </span>
             </div>
