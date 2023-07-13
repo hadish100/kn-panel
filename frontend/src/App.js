@@ -6,8 +6,8 @@ import LogsPage from "./pages/LogsPage"
 import SettingsPage from "./pages/SettingsPage"
 import UsersPage from "./pages/UsersPage"
 import Login from "./pages/Login"
-import AdminPanels from "./pages/adminPanels"
-import AdminUsers from "./pages/adminUsers"
+import AdminPanels from "./pages/AdminPanels"
+import AdminUsers from "./pages/AdminUsers"
 
 
 
