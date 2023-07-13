@@ -1,9 +1,11 @@
 import React from 'react'
 
-const Accordion = ({ id }) => {
+import "./Accordion.css"
+
+const Accordion = ({ children, id }) => {
     return (
-        <div>
-            {id}
+        <div className="accordion">
+            {children}
         </div>
     )
 }

@@ -21,9 +21,16 @@
     --background-color-hover: var(--primary-clr-300);
 }
 
-.transparent {
+.outlined {
     --background-color: transparent;
     --border-color: var(--gray-clr-200);
+    --color: var(--dark-clr-200);
+    --background-color-hover: var(--gray-clr-100);
+}
+
+.ghosted {
+    --background-color: transparent;
+    --border-color: transparent;
     --color: var(--dark-clr-200);
     --background-color-hover: var(--gray-clr-100);
 }

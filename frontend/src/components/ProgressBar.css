@@ -1,8 +1,3 @@
-/* .container {
-    border: none;
-    padding: 200px;
-} */
-
 .progress-bar {
     width: 100%;
     height: 6px;
@@ -43,10 +38,10 @@
     font-family: InterMedium;
 }
 
-@media (max-width: 690px) {
+/* @media (max-width: 690px) {
 
     .progress-bar,
     .progress-bar__text__total-data {
         display: none;
     }
-}
+} */

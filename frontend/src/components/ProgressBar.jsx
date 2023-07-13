@@ -22,10 +22,10 @@ const ProgressBar = ({ dataUsage, totalData, status }) => {
             <div className="progress-bar">
                 <div className={`progress-bar__filler--${status}`} style={{ width: `${dataUsage / totalData * 100}%` }}></div>
             </div>
-            <div className="progress-bar__text">
+            {/* <div className="progress-bar__text">
                 <span className="progress-bar__text__data-usage">{convertData(dataUsage)} / {convertData(totalData)}</span>
                 <span className="progress-bar__text__total-data">Total: {convertData(totalData)}</span>
-            </div>
+            </div> */}
         </div>
     );
 }

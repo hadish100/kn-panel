@@ -40,11 +40,11 @@
 }
 
 .users-table__body tr:hover {
-    background-color: var(--gray-clr-200);
     cursor: pointer;
 }
 
-.users-table__body .active {
+.users-table__body .active,
+.accordion__active {
     background-color: #c6f6d5;
     color: #22543d;
     padding: 0.25rem 0.75rem;
@@ -54,7 +54,8 @@
     text-transform: capitalize;
 }
 
-.users-table__body .active:before {
+.users-table__body .active:before,
+.accordion__active::before {
     content: '';
     display: inline-block;
     margin-right: 5px;
@@ -64,7 +65,8 @@
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-2 -5 27 27' stroke-width='1.5' stroke='%2322543d' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z'></path></svg>");
 }
 
-.users-table__body .expired {
+.users-table__body .expired,
+.accordion__expired {
     background-color: #feebc8;
     color: #7b341e;
     padding: 0.25rem 0.75rem;
@@ -74,7 +76,8 @@
     text-transform: capitalize;
 }
 
-.users-table__body .expired:before {
+.users-table__body .expired:before,
+.accordion__expired::before {
     content: '';
     display: inline-block;
     margin-right: 5px;
@@ -84,7 +87,8 @@
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-1 -5 27 27' stroke-width='1.5' stroke='%237b341e' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'></path></svg>");
 }
 
-.users-table__body .limited {
+.users-table__body .limited,
+.accordion__limited {
     background-color: #fed7d7;
     color: #822727;
     padding: 0.25rem 0.75rem;
@@ -94,7 +98,8 @@
     text-transform: capitalize;
 }
 
-.users-table__body .limited:before {
+.users-table__body .limited:before,
+.accordion__limited::before {
     content: '';
     display: inline-block;
     margin-right: 5px;
@@ -103,11 +108,22 @@
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-1 -5 27 27' stroke-width='1.5' stroke='%23822727' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'></path></svg>");
 }
 
-.users-table__body .expire-time {
+.accordion__active,
+.accordion__expired,
+.accordion__limited {
+    font-size: 0.7rem;
+}
+
+.users-table__body .expire-time,
+.accordion__expire-time {
     margin-left: 10px;
     font-size: 12px;
     color: #4a5568;
     font-family: InterMedium;
+}
+
+.users-table__subscription-actions .chevron-icon {
+    display: none;
 }
 
 @media (max-width: 900px) {
@@ -136,5 +152,22 @@
         float: left;
         text-indent: 0;
         margin: 0;
+    }
+
+    .users-table__subscription-actions .subscription-actions {
+        display: none;
+    }
+
+    .users-table__subscription-actions .chevron-icon {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .users-table__progress-bar .progress-bar {
+        display: none;
+    }
+
+    .users-table__progress-bar .progress-bar__text .progress-bar__text__total-data {
+        display: none;
     }
 }

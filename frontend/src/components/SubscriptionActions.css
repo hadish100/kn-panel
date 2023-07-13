@@ -20,9 +20,3 @@
     width: 18px;
     cursor: pointer;
 }
-
-@media (max-width: 690px) {
-    .subscription-section {
-        display: none;
-    }
-}
