@@ -18,10 +18,10 @@ const App = () => {
                 <Route>
                     <Route path="/login" element={<Login />} />
                     <Route path="/admin/panels" element={<AdminPanels />} />
-                    <Route path="/admin/users" element={<AdminUsers />} />
-                    <Route path="/panel/users" element={<UsersPage />} />
-                    <Route path="/panel/settings" element={<SettingsPage />} />
-                    <Route path="/panel/log" element={<LogsPage />} />
+                    <Route path="/admin/agents" element={<AdminUsers />} />
+                    <Route path="/agent/users" element={<UsersPage />} />
+                    <Route path="/agent/settings" element={<SettingsPage />} />
+                    <Route path="/agent/log" element={<LogsPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

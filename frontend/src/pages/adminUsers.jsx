@@ -72,7 +72,7 @@ const AdminPanels = () => {
         <Search />
         <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
             <Button className="transparent refresh"><RefreshIcon /></Button>
-            <Button onClick={handleClick2} className="create-user-button primary">Create User</Button>
+            <Button onClick={handleClick2} className="create-user-button primary">Create Agent</Button>
         </span>
         </div>
 

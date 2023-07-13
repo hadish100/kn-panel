@@ -73,8 +73,8 @@ const Navbar2 = () => {
                         onFocus={handleLinkHover}
                         onBlur={resetLine}
                     >
-                        <NavLink className='navbar__link' to='/admin/users' onClick={handleClick} >
-                            Users
+                        <NavLink className='navbar__link' to='/admin/agents' onClick={handleClick} >
+                            Agents
                         </NavLink>
                     </li>
                     <li
