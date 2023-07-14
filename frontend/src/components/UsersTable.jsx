@@ -97,7 +97,7 @@ const UsersTable = ({ users, rowsPerPage, currentRows }) => {
                         <div className="subscription-actions">
                             {<SubscriptionActions subscriptionLink={user.subscriptionLink} config={user.config} />}
                         </div>
-                        <div className="chevron-icon">
+                        <div className={`accordion chevron-icon${expandedId === user.id ? "--up" : ""}`}>
                             <Button className="ghosted" onClick={() => handleClick(user.id)}>
                                 <ChevronDownIcon />
                             </Button>
@@ -121,7 +121,7 @@ const UsersTable = ({ users, rowsPerPage, currentRows }) => {
                                 <span className="progress-bar__text__total-data">Total: {convertData(user.totalData)}</span>
                             </div>
                             <div style={{ marginTop: "1.25rem", display: "flex", justifyContent: "space-between" }}>
-                                <div>
+                                <div style={{ display: "flex", alignItems: "center" }}>
                                     <span className={`accordion__${checkStatus(user.dataUsage, user.totalData, user.isActive)}`}>
                                         {checkStatus(user.dataUsage, user.totalSData, user.isActive)}
                                     </span>

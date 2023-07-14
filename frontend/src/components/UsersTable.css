@@ -122,8 +122,29 @@
     font-family: InterMedium;
 }
 
-.users-table__subscription-actions .chevron-icon {
+.users-table__subscription-actions .chevron-icon,
+.users-table__subscription-actions .chevron-icon--up {
     display: none;
+}
+
+.accordion__subscription-actions svg {
+    width: 15px;
+    height: 15px;
+}
+
+.users-table__subscription-actions svg {
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.accordion.chevron-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.accordion.chevron-icon--up svg {
+    transform: rotate(180deg);
 }
 
 @media (max-width: 900px) {
@@ -158,7 +179,8 @@
         display: none;
     }
 
-    .users-table__subscription-actions .chevron-icon {
+    .users-table__subscription-actions .chevron-icon,
+    .users-table__subscription-actions .chevron-icon--up {
         display: flex;
         justify-content: flex-end;
     }
