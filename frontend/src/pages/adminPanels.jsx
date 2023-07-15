@@ -19,6 +19,7 @@ let users = [
         dataUsage:"1300 GB",
         activeUsers:"200 / 300",
         capacity:"400",
+        traffic:"7000 GB",
         country:"NL"
     },
     {
@@ -28,6 +29,7 @@ let users = [
         dataUsage:"200 TB",
         activeUsers:"300 / 400",
         capacity:"500",
+        traffic:"500 TB",
         country:"DE"
     }]
 

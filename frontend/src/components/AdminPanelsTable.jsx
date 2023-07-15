@@ -39,6 +39,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                             <th className="first">Name</th>
                             <th>Status</th>
                             <th>Data Usage</th>
+                            <th>Traffic</th>
                             <th>Active Users</th>
                             <th>capacity</th>
                             <th>Country</th>
@@ -58,6 +59,11 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                                 <td>
                                     {user.dataUsage}
                                  </td>
+
+                                 <td>
+                                    {user.traffic}
+                                 </td>
+
                                 <td >
                                     {user.activeUsers}
                                 </td>
