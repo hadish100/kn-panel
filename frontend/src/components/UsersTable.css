@@ -35,7 +35,7 @@
 }
 
 .users-table__body tr {
-    height: 70px;
+    /* height: 70px; */
     transition: all 0.3s ease;
 }
 
