@@ -39,11 +39,21 @@ const CreateUserForm = ({ handleClose }) => {
                     </motion.div>
 
                     <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.3 }}>
+                        <label className="modal__form__label" htmlFor="panel_url">Panel Url</label>
+                        <input className="modal__form__input" type="text" id="panel_url" name="panel_url" />
+                    </motion.div>
+
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
                         <label className="modal__form__label" htmlFor="capacity">Capacity</label>
                         <input className="modal__form__input" type="number" id="capacity" name="capacity" />
                     </motion.div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.5 }}>
+                        <label className="modal__form__label" htmlFor="traffic">Traffic</label>
+                        <input className="modal__form__input" type="number" id="traffic" name="traffic" />
+                    </motion.div>
+
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.6 }}>
                         <label className="modal__form__label" htmlFor="country">Country</label>
                         <input className="modal__form__input" type="text" id="country" name="country" />
                     </motion.div>

@@ -16,7 +16,7 @@ const CreateUserForm = ({ handleClose }) => {
                 <LeadingIcon>
                     <AddUserIcon />
                 </LeadingIcon>
-                <h1 className="modal__title">Create new user</h1>
+                <h1 className="modal__title">Create new agent</h1>
                 <div className="close-icon" onClick={handleClose}>
                     <XMarkIcon />
                 </div>
@@ -43,18 +43,28 @@ const CreateUserForm = ({ handleClose }) => {
                         <input className="modal__form__input" type="number" id="volume" name="volume" />
                     </motion.div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
+                     <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
+                        <label className="modal__form__label" htmlFor="min_vol">Minimum Volume</label>
+                        <input className="modal__form__input" type="number" id="min_vol" name="min_vol" />
+                    </motion.div>
+
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.5 }}>
+                        <label className="modal__form__label" htmlFor="max_users">Maximum Users</label>
+                        <input className="modal__form__input" type="number" id="max_users" name="max_users" />
+                    </motion.div>
+
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.6 }}>
                         <label className="modal__form__label" htmlFor="maxDays">MaxDays</label>
                         <input className="modal__form__input" type="number" id="maxDays" name="maxDays" />
                     </motion.div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.5 }}>
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.7 }}>
                         <label className="modal__form__label" htmlFor="prefix">Prefix</label>
                         <input className="modal__form__input" type="text" id="prefix" name="prefix" />
                     </motion.div>
 
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.6 }}>
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.8 }}>
                         <label className="modal__form__label" htmlFor="country">Country</label>
                         <input className="modal__form__input" type="text" id="country" name="country" />
                     </motion.div>
