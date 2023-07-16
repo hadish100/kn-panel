@@ -1,6 +1,6 @@
 import React from "react"
 
-import "./adminPanelsTable.css"
+import "./PanelsTable.css"
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
 
@@ -38,10 +38,11 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                         <tr className="users-table__header__row">
                             <th className="first">Name</th>
                             <th>Status</th>
-                            <th>Data Usage</th>
-                            <th>Traffic</th>
                             <th>Active Users</th>
-                            <th>capacity</th>
+                            <th>Data Usage</th>
+                            <th>Remaining Data</th>
+                            <th>Allocatable Data</th>
+                            <th>Prefix</th>
                             <th>Country</th>
                             <th className="last"></th>
                         </tr>
@@ -51,25 +52,29 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                             <tr key={user.id}>
                                 <td>{user.name}</td>
                                 <td>
-                                     <span className={user.status?"active":"limited"} > 
-                                        {user.status?"CONNECTED":"DISCONNECTED"}
+                                    <span className={user.status ? "active" : "limited"} >
+                                        {user.status ? "ACTIVE" : "DEACTIVE"}
                                     </span>
                                 </td>
-
-                                <td>
-                                    {user.dataUsage}
-                                 </td>
-
-                                 <td>
-                                    {user.traffic}
-                                 </td>
 
                                 <td >
                                     {user.activeUsers}
                                 </td>
 
-                                <td >
-                                    {user.capacity}
+                                <td>
+                                    {user.dataUsage}
+                                </td>
+
+                                <td>
+                                    {user.remainingData}
+                                </td>
+
+                                <td>
+                                    {user.allocatableData}
+                                </td>
+
+                                <td>
+                                    {user.prefix}
                                 </td>
 
                                 <td>

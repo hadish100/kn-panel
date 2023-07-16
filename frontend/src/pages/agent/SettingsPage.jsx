@@ -1,13 +1,11 @@
 import React from 'react'
-import './LogsPage.css'
 
-import Navbar from '../components/Navbar'
+import './LogsPage.css'
 
 const SettingsPage = () => {
     return (
         <div className='panel_body'>
-        <Navbar />
-        <div>SettingsPage</div>
+            <div>SettingsPage</div>
         </div>
     )
 }

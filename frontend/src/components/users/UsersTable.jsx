@@ -1,7 +1,7 @@
 import React from "react"
 
 import "./UsersTable.css"
-import ProgressBar from "./ProgressBar";
+import ProgressBar from "../ProgressBar";
 import SubscriptionActions from "./SubscriptionActions";
 
 const UsersTable = ({ users, rowsPerPage, currentRows }) => {

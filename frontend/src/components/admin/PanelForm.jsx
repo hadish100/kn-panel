@@ -1,15 +1,15 @@
 import React from 'react'
 
-import Modal from "./Modal";
-import LeadingIcon from "./LeadingIcon";
-import Button from "./Button";
-import { ReactComponent as PanelIcon } from "../assets/panel.svg";
-import { ReactComponent as XMarkIcon } from "../assets/x-mark.svg";
+import Modal from "../Modal";
+import LeadingIcon from "../LeadingIcon";
+import Button from "../Button";
+import { ReactComponent as PanelIcon } from "../../assets/panel.svg";
+import { ReactComponent as XMarkIcon } from "../../assets/x-mark.svg";
 import { motion } from "framer-motion"
-import "./CreateUserForm.css"
+import "../users/CreateUserForm.css"
 
 
-const CreateUserForm = ({ handleClose }) => {
+const PanelForm = ({ handleClose }) => {
     return (
         <Modal onClose={handleClose} >
             <header className="modal__header">
@@ -67,4 +67,4 @@ const CreateUserForm = ({ handleClose }) => {
     )
 }
 
-export default CreateUserForm
+export default PanelForm

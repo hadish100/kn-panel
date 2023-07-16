@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 
-import UsageStats from '../components/UsageStats'
-import UsersTable from '../components/UsersTable'
-import Button from '../components/Button'
-import CreateUserForm from '../components/CreateUserForm'
-import Search from '../components/Search'
+import UsageStats from '../../components/users/UsageStats'
+import UsersTable from '../../components/users/UsersTable'
+import Button from '../../components/Button'
+import CreateUserForm from '../../components/users/CreateUserForm'
+import Search from '../../components/Search'
 import { AnimatePresence } from 'framer-motion'
-import { ReactComponent as RefreshIcon } from '../assets/refresh.svg'
+import { ReactComponent as RefreshIcon } from '../../assets/refresh.svg'
 import './UsersPage.css'
-import Pagination from '../components/Pagination'
-import Dropdown from '../components/Dropdown'
-import Navbar from '../components/Navbar'
+import Pagination from '../../components/Pagination'
+import Dropdown from '../../components/Dropdown'
 
 let users = [
     {
@@ -1062,7 +1061,6 @@ const UsersPage = () => {
     return (
 
         <div className='panel_body'>
-        <Navbar />
             <UsageStats activeUsers={10} totalUsers={549} dataUsage="1 GB" remainingData="198 GB" allocableData="1 TB" />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search />
@@ -1092,7 +1090,7 @@ const UsersPage = () => {
                 />
             </div>
         </div >
-   
+
     )
 }
 

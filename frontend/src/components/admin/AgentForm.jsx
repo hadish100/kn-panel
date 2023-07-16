@@ -1,12 +1,12 @@
 import React from 'react'
 
-import Modal from "./Modal";
-import LeadingIcon from "./LeadingIcon";
-import Button from "./Button";
-import { ReactComponent as AddUserIcon } from "../assets/add-user.svg";
-import { ReactComponent as XMarkIcon } from "../assets/x-mark.svg";
+import Modal from "../Modal";
+import LeadingIcon from "../LeadingIcon";
+import Button from "../Button";
+import { ReactComponent as AddUserIcon } from "../../assets/add-user.svg";
+import { ReactComponent as XMarkIcon } from "../../assets/x-mark.svg";
 import { motion } from "framer-motion"
-import "./CreateUserForm.css"
+import "../users/CreateUserForm.css"
 
 
 const CreateUserForm = ({ handleClose }) => {
@@ -43,7 +43,7 @@ const CreateUserForm = ({ handleClose }) => {
                         <input className="modal__form__input" type="number" id="volume" name="volume" />
                     </motion.div>
 
-                     <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
+                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
                         <label className="modal__form__label" htmlFor="min_vol">Minimum Volume</label>
                         <input className="modal__form__input" type="number" id="min_vol" name="min_vol" />
                     </motion.div>

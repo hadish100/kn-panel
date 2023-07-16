@@ -1,11 +1,9 @@
 import React from "react";
 
-import "./UsageStats.css";
-import LeadingIcon from "./LeadingIcon";
-import { ReactComponent as PieChartIcon } from "../assets/pie-chart.svg";
-import { ReactComponent as DataCenterIcon } from "../assets/data-center.svg"
-import { ReactComponent as GraphBarIcon } from "../assets/graph-bar.svg"
-import { ReactComponent as UsersIcon } from "../assets/users.svg"
+import "../users/UsageStats.css";
+import LeadingIcon from "../LeadingIcon";
+import { ReactComponent as GraphBarIcon } from "../../assets/graph-bar.svg"
+import { ReactComponent as UsersIcon } from "../../assets/users.svg"
 
 const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData }) => {
     return (

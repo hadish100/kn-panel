@@ -140,9 +140,9 @@
     }
 }
 
-.deletePanel , .togglePanel
-{
-    background:transparent;
-    opacity:1;
-    cursor:pointer;
+.deletePanel,
+.togglePanel {
+    background: transparent;
+    opacity: 1;
+    cursor: pointer;
 }

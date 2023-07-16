@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
 import "./SubscriptionActions.css";
-import Tooltip from "./Tooltip";
-import useHover from "../hooks/use-hover";
-import { ReactComponent as LinkIcon } from "../assets/link.svg";
-import { ReactComponent as PasteIcon } from "../assets/paste.svg";
-import { ReactComponent as QRCodeIcon } from "../assets/qr-code.svg";
-import { ReactComponent as CheckedIcon } from "../assets/checked.svg";
+import Tooltip from "../Tooltip";
+import useHover from "../../hooks/use-hover";
+import { ReactComponent as LinkIcon } from "../../assets/link.svg";
+import { ReactComponent as PasteIcon } from "../../assets/paste.svg";
+import { ReactComponent as QRCodeIcon } from "../../assets/qr-code.svg";
+import { ReactComponent as CheckedIcon } from "../../assets/checked.svg";
 
 const SubscriptionActions = ({ subscriptionLink, config }) => {
     const [clickedButton, setClickedButton] = useState(null);
