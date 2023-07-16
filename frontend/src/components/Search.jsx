@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 import "./Search.css";
-import { ReactComponent as XMarkIcon } from "../assets/x-mark.svg";
-import { ReactComponent as SearchIcon } from "../assets/search.svg";
+import { ReactComponent as XMarkIcon } from "../assets/svg/x-mark.svg";
+import { ReactComponent as SearchIcon } from "../assets/svg/search.svg";
 
 const Search = () => {
     const [search, setSearch] = useState("");

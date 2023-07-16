@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "./Button";
-import { ReactComponent as ArrowLeftIcon } from "../assets/arrow-left.svg";
-import { ReactComponent as ArrowRightIcon } from "../assets/arrow-right.svg";
+import { ReactComponent as ArrowLeftIcon } from "../assets/svg/arrow-left.svg";
+import { ReactComponent as ArrowRightIcon } from "../assets/svg/arrow-right.svg";
 import "./Pagination.css";
 
 const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
@@ -48,7 +48,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
                         1
                     </Button>
                     {startPage > 2 && <span className="ellipsis">
-                        <Button className="transparent pagination-btn">...</Button>
+                        <Button className="outlined pagination-btn">...</Button>
                     </span>}
                 </>
             )}

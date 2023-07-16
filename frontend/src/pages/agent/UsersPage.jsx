@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
-import UsageStats from '../../components/users/UsageStats'
-import UsersTable from '../../components/users/UsersTable'
+import UsageStats from '../../components/agent/UsageStats'
+import UsersTable from '../../components/agent/UsersTable'
 import Button from '../../components/Button'
-import CreateUserForm from '../../components/users/CreateUserForm'
+import CreateUserForm from '../../components/agent/CreateUserForm'
 import Search from '../../components/Search'
 import { AnimatePresence } from 'framer-motion'
-import { ReactComponent as RefreshIcon } from '../../assets/refresh.svg'
+import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './UsersPage.css'
 import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
@@ -1078,7 +1078,7 @@ const UsersPage = () => {
                 />}
             </AnimatePresence>
             <UsersTable users={users} rowsPerPage={rowsPerPage} currentRows={currentRows} />
-            <div className='users-page__footer' style={{ position: "relative" }}>
+            <div className='users-page__footer'>
                 <span style={{ display: "flex" }}>
                     <Dropdown options={itemsPerRowOptions} value={selection} onChange={handleSelect}>Items per page</Dropdown>
                     <span style={{ fontSize: "0.75rem", color: "var(--dark-clr-200)", marginLeft: "0.5rem", marginTop: "0.5rem" }}>Items per page</span>

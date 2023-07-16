@@ -1,9 +1,9 @@
 import React from "react";
 
-import "../users/UsageStats.css";
+import "../agent/UsageStats.css";
 import LeadingIcon from "../LeadingIcon";
-import { ReactComponent as GraphBarIcon } from "../../assets/graph-bar.svg"
-import { ReactComponent as UsersIcon } from "../../assets/users.svg"
+import { ReactComponent as GraphBarIcon } from "../../assets/svg/graph-bar.svg"
+import { ReactComponent as UsersIcon } from "../../assets/svg/users.svg"
 
 const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData }) => {
     return (

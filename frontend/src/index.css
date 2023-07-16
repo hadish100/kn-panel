@@ -24,12 +24,12 @@
 
 @font-face {
     font-family: Inter;
-    src: url('../public/fonts/Inter-Regular.ttf');
+    src: url('../src/assets/fonts/Inter-Regular.ttf');
 }
 
 @font-face {
     font-family: InterMedium;
-    src: url('../public/fonts/Inter-Medium.ttf');
+    src: url('../src/assets/fonts/Inter-Medium.ttf');
 }
 
 button,

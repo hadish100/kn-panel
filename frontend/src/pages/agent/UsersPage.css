@@ -1,5 +1,4 @@
-.panel_body
-{
+.panel_body {
     padding: 1.5rem;
 }
 
@@ -67,5 +66,13 @@
 
     .wrapper:has(.search) {
         width: 100%;
+    }
+}
+
+@media (max-width: 585px) {
+    .users-page__footer {
+        flex-direction: column-reverse;
+        gap: 1rem;
+        align-items: center;
     }
 }

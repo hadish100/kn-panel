@@ -5,7 +5,7 @@ import AdminPanelsTable from '../../components/admin/AgentsTable'
 import AdminUsageStats from '../../components/admin/UsageStats'
 import AddPanelForm from '../../components/admin/AgentForm'
 import { AnimatePresence } from 'framer-motion'
-import { ReactComponent as RefreshIcon } from '../../assets/refresh.svg'
+import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './AgentsPage.css'
 
 let users = [

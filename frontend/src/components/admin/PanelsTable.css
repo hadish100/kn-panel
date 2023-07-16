@@ -41,7 +41,6 @@
 }
 
 .users-table__body tr:hover {
-    background-color: var(--gray-clr-200);
     cursor: pointer;
 }
 

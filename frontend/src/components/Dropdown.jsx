@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 import "./Dropdown.css"
-import { ReactComponent as ChevronDownIcon } from '../assets/chevron-down.svg'
+import { ReactComponent as ChevronDownIcon } from '../assets/svg/chevron-down.svg'
 
 const Dropdown = ({ children, options, value, onChange }) => {
     const [isOpen, setIsOpen] = useState(false)

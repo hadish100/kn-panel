@@ -1,8 +1,9 @@
 import React from 'react'
 
 import ProgressBar from "./ProgressBar";
-import SubscriptionActions from "./users/SubscriptionActions";
+import SubscriptionActions from "./agent/SubscriptionActions";
 import Accordion from "./Accordion"
+import convertData from "../utils/file-size-util"
 
 const UsersTableAccordion = ({
     key,
@@ -15,14 +16,14 @@ const UsersTableAccordion = ({
 }) => {
 
     return (
-        <tr key={key} className="accordion-row">
-            <td className="accordion-row" style={{ borderTop: "none", padding: "0 1.5rem" }} colSpan={4}>
+        <tr key={key} className="accordion-row" style={{ height: 0 }}>
+            <td className="accordion-row" style={{ borderTop: "none", height: 0, padding: "0 1.5rem" }} colSpan={4}>
                 <Accordion>
                     <span style={{ fontSize: "0.75rem", fontFamily: "InterMedium", fontWeight: "600" }}>Data Usage</span>
                     <ProgressBar dataUsage={dataUsage} totalData={totalData} status={userStatus} />
                     <div className="progress-bar__text">
-                        <span className="progress-bar__text__data-usage">{dataUsage} / {totalData}</span>
-                        <span className="progress-bar__text__total-data">Total: {totalData}</span>
+                        <span className="progress-bar__text__data-usage">{convertData(dataUsage)} / {convertData(totalData)}</span>
+                        <span className="progress-bar__text__total-data">Total: {convertData(totalData)}</span>
                     </div>
                     <div style={{ marginTop: "1.25rem", paddingBottom: "1rem", display: "flex", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>

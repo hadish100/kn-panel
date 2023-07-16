@@ -3,10 +3,10 @@ import React from 'react'
 import Modal from "../Modal";
 import LeadingIcon from "../LeadingIcon";
 import Button from "../Button";
-import { ReactComponent as AddUserIcon } from "../../assets/add-user.svg";
-import { ReactComponent as XMarkIcon } from "../../assets/x-mark.svg";
+import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
+import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
-import "../users/CreateUserForm.css"
+import "../agent/CreateUserForm.css"
 
 
 const CreateUserForm = ({ handleClose }) => {
