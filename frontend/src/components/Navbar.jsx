@@ -1,100 +1,75 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+
 import './Navbar.css';
 
 const Navbar = () => {
-    const [lineStyles, setLineStyles] = useState({ width: 0, transform: 'translateX(0)' });
-    const [navWidth, setNavWidth] = useState(10);
     const [style, setStyle] = useState({});
-    const navRef = useRef(null);
+    const location = useLocation();
+    const isAgentPath = location.pathname.startsWith('/agent');
 
-    let liLeftHover
-    const handleLinkHover = (event) => {
-        const liElement = event.currentTarget;
-        const liRect = liElement.getBoundingClientRect();
+    const calculateLinkStyles = (element) => {
+        const liRect = element.getBoundingClientRect();
         const liWidth = liRect.width;
-        liLeftHover = liRect.left;
+        const liLeftPostion = liRect.left;
 
-        setLineStyles({ width: liWidth, transform: `translateX(${liLeftHover}px)` });
+        setStyle({ width: liWidth, transform: `translateX(${liLeftPostion}px)` });
     };
 
-    const resetLine = () => {
-        setLineStyles({ width: 0, transform: `translateX(calc(${navWidth} - ${liLeftHover}))` });
+    const handleLinkClick = (event) => {
+        const liElement = event.currentTarget.parentElement;
+        calculateLinkStyles(liElement);
     };
-
 
     useEffect(() => {
-        const updateNavWidth = () => {
-            if (navRef.current) {
-                const ulWidth = navRef.current.offsetWidth;
-                setNavWidth(ulWidth);
-            }
-        };
-
         setTimeout(() => {
-            const activeLiElement = document.querySelector('.navbar__links .active');
+            const activeLiElement = document.querySelector('.navbar__links .active').parentElement;
             if (activeLiElement) {
-                const activeLiRect = activeLiElement.getBoundingClientRect();
-                const activeLiWidth = activeLiRect.width;
-                const activeLiLeft = activeLiRect.left;
-                setStyle({ width: activeLiWidth, transform: `translateX(${activeLiLeft}px)` });
+                calculateLinkStyles(activeLiElement);
             }
-        }, 200);
+        }, 40)
+    }, [location.pathname]);
 
-        window.addEventListener('resize', updateNavWidth);
-        updateNavWidth();
+    const agentLinks = [
+        { path: '/agent/users', linkText: 'Users' },
+        { path: '/agent/settings', linkText: 'Settings' },
+        { path: '/agent/log', linkText: 'Log' },
+    ];
 
-        return () => {
-            window.removeEventListener('resize', updateNavWidth);
-        };
-    }, []);
-
-    const handleClick = () => {
-        setStyle(lineStyles);
-    }
+    const adminLinks = [
+        { path: '/admin/panels', linkText: 'Panels' },
+        { path: '/admin/agents', linkText: 'Agents' },
+    ];
 
     return (
-        <>
-            <nav className='navbar'>
-                <ul className='navbar__links'>
-                    <li
-                        onMouseOver={handleLinkHover}
-                        onMouseOut={resetLine}
-                        onFocus={handleLinkHover}
-                        onBlur={resetLine}
-                    >
-                        <NavLink to='/agent/users' className='navbar__link' onClick={handleClick}>
-                            Users
-                        </NavLink>
-                    </li>
-                    <li
-                        onMouseOver={handleLinkHover}
-                        onMouseOut={resetLine}
-                        onFocus={handleLinkHover}
-                        onBlur={resetLine}
-                    >
-                        <NavLink className='navbar__link' to='/agent/settings' onClick={handleClick} >
-                            Settings
-                        </NavLink>
-                    </li>
-                    <li
-                        onMouseOver={handleLinkHover}
-                        onMouseOut={resetLine}
-                        onFocus={handleLinkHover}
-                        onBlur={resetLine}
-                    >
-                        <NavLink className='navbar__link' to='/agent/log' onClick={handleClick} >
-                            Log
-                        </NavLink>
-                    </li>
-                </ul>
-                {Object.keys(style).length === 0 && (
-                    <div className="navbar__line" style={lineStyles}></div>
+        <nav className='navbar'>
+            <ul className='navbar__links'>
+                {isAgentPath ? (
+                    <>
+                        {agentLinks.map((link) => (
+                            <li key={link.path}>
+                                <NavLink to={link.path} className='navbar__link' onClick={handleLinkClick}>
+                                    {link.linkText}
+                                </NavLink>
+                            </li>
+                        ))}
+                    </>
+                ) : (
+                    <>
+                        {adminLinks.map((link) => (
+                            <li key={link.path}>
+                                <NavLink to={link.path} className='navbar__link' onClick={handleLinkClick}>
+                                    {link.linkText}
+                                </NavLink>
+                            </li>
+                        ))}
+                    </>
                 )}
-                <div className="navbar__line" style={style}></div>
-                <div className="navbar__background-line"></div>
-            </nav>
-        </>
+            </ul>
+
+            <div className='navbar__line' style={style}></div>
+            <div className='navbar__background-line'></div>
+        </nav>
     );
 };
 
