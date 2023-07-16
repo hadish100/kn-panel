@@ -31,7 +31,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
     return (
         <div className="pagination">
             <Button
-                className={`transparent pagination-left-btn ${currentPage === 1 ? "disabled" : ""
+                className={`outlined pagination-left-btn ${currentPage === 1 ? "disabled" : ""
                     }`}
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -42,7 +42,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
             {startPage > 1 && (
                 <>
                     <Button
-                        className="transparent pagination-btn"
+                        className="outlined pagination-btn"
                         onClick={() => handlePageChange(1)}
                     >
                         1
@@ -55,7 +55,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
             {pageNumbers.map((number) => (
                 <Button
                     key={number}
-                    className={`transparent pagination-btn ${number === currentPage ? "active" : ""
+                    className={`outlined pagination-btn ${number === currentPage ? "active" : ""
                         }`}
                     onClick={() => handlePageChange(number)}
                 >
@@ -65,10 +65,10 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
             {endPage < totalPages && (
                 <>
                     {endPage < totalPages - 1 && <span className="ellipsis">
-                        <Button className="transparent pagination-btn">...</Button>
+                        <Button className="outlined pagination-btn">...</Button>
                     </span>}
                     <Button
-                        className="transparent pagination-btn"
+                        className="outlined pagination-btn"
                         onClick={() => handlePageChange(totalPages)}
                     >
                         {totalPages}
@@ -76,7 +76,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
                 </>
             )}
             <Button
-                className={`transparent pagination-right-btn ${currentPage === totalPages ? "disabled" : ""
+                className={`outlined pagination-right-btn ${currentPage === totalPages ? "disabled" : ""
                     }`}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
