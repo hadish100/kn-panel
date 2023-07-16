@@ -28,14 +28,12 @@
 }
 
 .users-table__body td {
-    /* padding: 1rem 1.5rem; */
     font-size: 1rem;
     color: #1a202c;
     border-top: 1px solid #d2d2d4;
 }
 
 .users-table__body tr {
-    /* height: 70px; */
     transition: all 0.3s ease;
 }
 
