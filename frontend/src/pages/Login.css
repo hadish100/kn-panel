@@ -11,49 +11,52 @@
     margin-bottom: 10px;
 }
 
-.login .login__btn svg {
-    width: 30px;
-    height: 30px;
-}
-
-.login .login_title_1 {
-    font-size: 25px;
+.login__title {
+    font-size: 1.5rem;
     font-weight: 900;
+    color: var(--dark-clr-200);
 }
 
-.login .login_title_2 {
-    margin-top: 20px;
+.login__subtitle {
+    margin: 0.75rem 0 2rem;
+    font-size: 1rem;
+    color: var(--dark-clr-100);
+    font-weight: 300;
 }
 
-.login_title_2 {
-    margin-bottom: 25px;
+.login__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.login .username,
-.login .password {
-    border: 1px solid #cbd5e0;
-    height: 40px;
-    border-radius: 0.375rem;
-    padding: 16px;
-    margin-top: 15px;
+.login__form>* {
     width: 300px;
-    font-size: 16px;
+    height: 40px;
+    font-size: 1rem;
+    padding: 0 1rem;
 }
 
-.login .username:focus,
-.login .password:focus {
+.login__form>*+* {
+    margin-top: 1rem;
+}
+
+.login__form input {
+    border: 1px solid var(--border-clr);
+}
+
+.login__form input:focus {
     border: 1px solid var(--primary-clr-200);
 }
 
-.login .login__btn {
-    width: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    margin-top: 15px;
+.login__btn {
+    font-family: Inter;
+    font-weight: 600;
 }
 
-.login .login__btn svg {
+.login__btn svg {
+    width: 21px;
+    height: 21px;
+    stroke-width: 2px;
     margin-right: 5px;
 }

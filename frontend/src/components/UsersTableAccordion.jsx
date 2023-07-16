@@ -1,7 +1,7 @@
 import React from 'react'
 
 import ProgressBar from "./ProgressBar";
-import SubscriptionActions from "./SubscriptionActions";
+import SubscriptionActions from "./users/SubscriptionActions";
 import Accordion from "./Accordion"
 
 const UsersTableAccordion = ({

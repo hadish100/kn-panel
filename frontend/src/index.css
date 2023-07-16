@@ -6,9 +6,12 @@
     --gray-clr-100: #edf2f7;
     --gray-clr-200: #e2e8f0;
 
+    --dark-clr-100: #4a5568;
     --dark-clr-200: #1a202c;
 
     --border-clr: #d2d2d4;
+
+    --border-radius: 0.375rem;
 }
 
 * {
@@ -35,6 +38,7 @@ input {
     border: none;
     outline: none;
     font-weight: inherit;
+    border-radius: var(--border-radius);
 }
 
 button {

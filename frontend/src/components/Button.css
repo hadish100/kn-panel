@@ -11,6 +11,7 @@
     transition: background-color 0.1s ease-in-out;
     border: 1px solid var(--border-color);
     align-items: center;
+    justify-content: center;
 }
 
 .button:hover {

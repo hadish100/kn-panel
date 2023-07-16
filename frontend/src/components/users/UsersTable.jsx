@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react"
 import "./UsersTable.css"
 import ProgressBar from "../ProgressBar";
 import SubscriptionActions from "./SubscriptionActions";
-import { ReactComponent as ChevronDownIcon } from "../assets/chevron-down.svg";
-import Button from "./Button"
+import { ReactComponent as ChevronDownIcon } from "../../assets/chevron-down.svg";
+import Button from "../Button"
 import { AnimatePresence } from "framer-motion"
-import UsersTableAccordion from "./UsersTableAccordion";
+import UsersTableAccordion from "../UsersTableAccordion";
 
 const UsersTable = ({ currentRows }) => {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
