@@ -13,14 +13,14 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                     <LeadingIcon>
                         <UsersIcon />
                     </LeadingIcon>
-                    <div className="usage-stats__item__label">Total Active Users</div>
+                    <div className="usage-stats__item__label">Active Users</div>
                     <div className="usage-stats__item__value"><span>{activeUsers}</span> / {totalUsers}</div>
                 </div>
                 <div className="usage-stats__item">
                     <LeadingIcon>
                         <GraphBarIcon />
                     </LeadingIcon>
-                    <div className="usage-stats__item__label">Total Data Usage</div>
+                    <div className="usage-stats__item__label">Data Usage</div>
                     <div className="usage-stats__item__value"><span>{dataUsage}</span></div>
                 </div>
             </div>
