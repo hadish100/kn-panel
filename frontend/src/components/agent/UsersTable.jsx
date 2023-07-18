@@ -49,7 +49,7 @@ const UsersTable = ({ currentRows }) => {
         return (
             <>
                 <tr key={key}>
-                    <td style={{ width: "25vw" }}>{user.username}</td>
+                    <td style={{ maxWidth: "10rem" }}>{user.username}</td>
                     <td>
                         <span className={userStatus}>{userStatus}</span>
                         <span className="expire-time">{expireTime}</span>
@@ -63,7 +63,7 @@ const UsersTable = ({ currentRows }) => {
                             </div>
                         </div>
                     </td>
-                    <td>
+                    <td style={{ maxWidth: "3rem" }}>
                         <div className="users-table__subscription-actions">
                             <div className="subscription-actions">
                                 {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} />}

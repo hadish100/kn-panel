@@ -18,7 +18,7 @@
     padding: 1rem 0;
 }
 
-.search {
+.search-wrapper {
     width: 25rem;
 }
 
@@ -42,6 +42,7 @@
     justify-content: space-between;
     align-items: flex-start;
     margin-top: 1rem;
+    overflow-x: auto;
 }
 
 @keyframes rotate {
@@ -64,7 +65,7 @@
         align-items: flex-end;
     }
 
-    .wrapper:has(.search) {
+    .search-wrapper {
         width: 100%;
     }
 }

@@ -12,7 +12,7 @@ const Search = () => {
     };
 
     return (
-        <div className="wrapper">
+        <div className="search-wrapper">
             <div className="search">
                 <div className="search__icon">
                     <SearchIcon />

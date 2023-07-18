@@ -1,3 +1,8 @@
+.search-wrapper {
+    border: 1px solid var(--border-clr);
+    border-radius: 6px;
+}
+
 .search {
     display: inline-flex;
     align-items: center;
@@ -6,6 +11,7 @@
     outline: 2px solid transparent;
     outline-offset: 4px;
     transition: all 0.1s ease-in-out;
+    width: 100%;
 }
 
 .search__icon {

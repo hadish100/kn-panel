@@ -137,6 +137,14 @@
         text-indent: 0;
         margin: 0;
     }
+
+    .users-table__header .last {
+        width: 0;
+    }
+
+    .users-table__body td:last-of-type {
+        padding-left: 0;
+    }
 }
 
 .deletePanel,
