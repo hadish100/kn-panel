@@ -1,42 +1,19 @@
 import React from "react"
 
 import "./PanelsTable.css"
+import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
+import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
+import Button from "../Button"
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
 
-    // const checkExpireTime = (isActive, expireTime) => {
-    //     if (isActive) {
-    //         if (expireTime.days !== 0) {
-    //             return `Expires in ${expireTime.days} days`;
-    //         } else {
-    //             return `Expires in ${expireTime.hours} hours, ${expireTime.minutes} minutes`;
-    //         }
-    //     } else {
-    //         if (expireTime.days !== 0) {
-    //             return `Expired ${expireTime.days} days ago`;
-    //         } else {
-    //             return `Expired ${expireTime.hours} hours, ${expireTime.minutes} minutes ago`;
-    //         }
-    //     }
-    // };
-
-    // const checkStatus = (dataUsage, totalData, isActive) => {
-    //     if (dataUsage >= totalData) {
-    //         return "limited";
-    //     } else if (isActive) {
-    //         return "active";
-    //     } else {
-    //         return "expired";
-    //     }
-    // };
-
     return (
         <>
-            <div className="wrapper">
+            <div className="wrapper" style={{ Width: "1230px" }}>
                 <table className="users-table">
                     <thead className="users-table__header">
                         <tr className="users-table__header__row">
-                            <th className="first">Name</th>
+                            <th className="firbst">Name</th>
                             <th>Status</th>
                             <th>Active Users</th>
                             <th>Data Usage</th>
@@ -81,9 +58,13 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                                     {user.country}
                                 </td>
 
-                                <td>
-                                    <img className="deletePanel" src="../delete.png" />
-                                    <img className="togglePanel" src="../power.png" />
+                                <td className="table__actions">
+                                    <Button className="ghosted delete-icon">
+                                        <DeleteIcon />
+                                    </Button>
+                                    <Button className="ghosted power-icon">
+                                        <PowerIcon />
+                                    </Button>
                                 </td>
                             </tr>
                         ))}

@@ -1,6 +1,9 @@
 import React from "react"
 
 import "./PanelsTable.css"
+import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
+import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
+import Button from "../Button"
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
 
@@ -76,9 +79,13 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                                     {user.country}
                                 </td>
 
-                                <td>
-                                    <img className="deletePanel" src="../delete.png" />
-                                    <img className="togglePanel" src="../power.png" />
+                                <td className="table__actions">
+                                    <Button className="ghosted delete-icon">
+                                        <DeleteIcon />
+                                    </Button>
+                                    <Button className="ghosted power-icon">
+                                        <PowerIcon />
+                                    </Button>
                                 </td>
                             </tr>
                         ))}
