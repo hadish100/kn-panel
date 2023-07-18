@@ -48,31 +48,34 @@ const CreateUserForm = ({ handleClose }) => {
                         <input className="modal__form__input" type="number" id="min_vol" name="min_vol" />
                     </motion.div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.5 }}>
-                        <label className="modal__form__label" htmlFor="max_users">Maximum Users</label>
-                        <input className="modal__form__input" type="number" id="max_users" name="max_users" />
+                    <motion.div className="flex gap-16" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.5 }}>
+                        <div className="modal__form__group" >
+                            <label className="modal__form__label" htmlFor="max_users">Maximum Users</label>
+                            <input className="modal__form__input" type="number" id="max_users" name="max_users" />
+                        </div>
+
+                        <div className="modal__form__group">
+                            <label className="modal__form__label" htmlFor="maxDays">MaxDays</label>
+                            <input className="modal__form__input" type="number" id="maxDays" name="maxDays" />
+                        </div>
                     </motion.div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.6 }}>
-                        <label className="modal__form__label" htmlFor="maxDays">MaxDays</label>
-                        <input className="modal__form__input" type="number" id="maxDays" name="maxDays" />
-                    </motion.div>
+                    <motion.div className="flex gap-16" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.6 }}>
+                        <div className="modal__form__group">
+                            <label className="modal__form__label" htmlFor="prefix">Prefix</label>
+                            <input className="modal__form__input" type="text" id="prefix" name="prefix" />
+                        </div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.7 }}>
-                        <label className="modal__form__label" htmlFor="prefix">Prefix</label>
-                        <input className="modal__form__input" type="text" id="prefix" name="prefix" />
-                    </motion.div>
-
-
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.8 }}>
-                        <label className="modal__form__label" htmlFor="country">Country</label>
-                        <input className="modal__form__input" type="text" id="country" name="country" />
+                        <div className="modal__form__group">
+                            <label className="modal__form__label" htmlFor="country">Country</label>
+                            <input className="modal__form__input" type="text" id="country" name="country" />
+                        </div>
                     </motion.div>
                 </form>
             </main>
             <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button className={"transparent"} onClick={handleClose}>Cancel</Button>
-                <Button className={"primary"} onClick={handleClose}>Add Agent</Button>
+                <Button className="outlined" onClick={handleClose}>Cancel</Button>
+                <Button className="primary" onClick={handleClose}>Add Agent</Button>
             </motion.footer>
         </Modal>
     )

@@ -5,6 +5,7 @@
 .modal__form__group {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .modal__form__label {
@@ -27,4 +28,8 @@
 
 .modal__form__input:focus-visible {
     outline-color: #749aec;
+}
+
+.gap-16 {
+    gap: 1rem;
 }
