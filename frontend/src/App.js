@@ -12,7 +12,7 @@ import AgentsPage from './pages/admin/AgentsPage';
 
 const App = () => {
     const location = window.location.pathname
-    const isAuth = location === "/login" ? false : true
+    const isAuth = location.includes("/login") ? false : true
 
     return (
         <BrowserRouter>
