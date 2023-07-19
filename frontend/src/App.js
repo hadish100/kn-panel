@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import LogsPage from './pages/agent/LogsPage';
@@ -12,7 +12,7 @@ import NotFoundPage from './pages/NotFoundPage';
 
 const App = () => {
     const location = window.location.pathname;
-    const isAuth = !location.includes("/login"); // If path is /login, isAuth will be false
+    const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("isLoggedIn") === "true");
 
     // Check if the current path belongs to Agent or Admin routes
     const isAgentPath =
@@ -26,16 +26,16 @@ const App = () => {
 
     return (
         <BrowserRouter>
-            {isAuth /* && (isAdminPath || isAgentPath) */ &&  <Navbar />}
+            {isLoggedIn && (isAdminPath || isAgentPath) && <Navbar />}
             <Routes>
-                <Route path='/login' element={<Login />} />
+                <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                 {/* Agent Routes */}
-                <Route path='/agent/users' element={<UsersPage />} />
-                <Route path='/agent/settings' element={<SettingsPage />} />
-                <Route path='/agent/log' element={<LogsPage />} />
+                {isAgentPath && isLoggedIn && <Route path='/agent/users' element={<UsersPage />} />}
+                {isAgentPath && isLoggedIn && <Route path='/agent/settings' element={<SettingsPage />} />}
+                {isAgentPath && isLoggedIn && <Route path='/agent/log' element={<LogsPage />} />}
                 {/* Admin Routes */}
-                <Route path='/admin/panels' element={<PanelsPage />} />
-                <Route path='/admin/agents' element={<AgentsPage />} />
+                {isAdminPath && isLoggedIn && <Route path='/admin/panels' element={<PanelsPage />} />}
+                {isAdminPath && isLoggedIn && <Route path='/admin/agents' element={<AgentsPage />} />}
 
                 {/* 404 - Not Found */}
                 <Route path='*' element={<NotFoundPage />} />

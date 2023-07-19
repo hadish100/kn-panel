@@ -8,29 +8,28 @@ import Button from '../components/Button'
 import axios from "axios"
 
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
     const navigate = useNavigate();
-    const send_login_data = async (e) => 
-    {
+    const send_login_data = async (e) => {
         e.preventDefault();
         var username = e.target[0].value
         var password = e.target[1].value
-        var res = await axios.post("/login",{username,password});
-        if(res.data === "ERR")
-        {
+        var res = await axios.post("/login", { username, password });
+        if (res.data === "ERR") {
             alert("LOGIN FAILED");
         }
 
-        else
-        {
-            if(res.data.is_admin)
-            {
-                navigate('/admin/agents',{ state : { access_token : res.data.access_token } });
+        else {
+            if (res.data.is_admin) {
+                setIsLoggedIn(true)
+                sessionStorage.setItem("isLoggedIn", "true")
+                navigate('/admin/agents', { state: { access_token: res.data.access_token } });
             }
 
-            else
-            {
-                navigate('/agent/users',{ state : { access_token : res.data.access_token } });
+            else {
+                setIsLoggedIn(true)
+                sessionStorage.setItem("isLoggedIn", "true")
+                navigate('/agent/users', { state: { access_token: res.data.access_token } });
             }
 
         }
