@@ -31,7 +31,7 @@ const AgentsPage = () => {
                 <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                     <Search />
                     <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
-                        <Button className="transparent refresh"><RefreshIcon /></Button>
+                        <Button className="outlined refresh"><RefreshIcon /></Button>
                         <Button onClick={handleClick2} className="create-user-button primary">Create Agent</Button>
                     </span>
                 </div>

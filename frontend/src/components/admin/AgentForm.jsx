@@ -7,7 +7,6 @@ import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
 import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
 import "../agent/CreateUserForm.css"
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -37,6 +36,30 @@ const CreateUserForm = ({ handleClose }) => {
         }
     }
 
+
+    const handleSubmit = async (
+        name,
+        username,
+        password,
+        volume,
+        min_vol,
+        max_users,
+        max_days,
+        prefix,
+        country
+    ) => {
+        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token });
+
+        if (res.data === "ERR") {
+            alert("FAILED");
+        }
+
+        else {
+            alert("DONE");
+        }
+        handleClose()
+    }
+
     return (
         <Modal onClose={handleClose} >
             <header className="modal__header">
@@ -49,7 +72,7 @@ const CreateUserForm = ({ handleClose }) => {
                 </div>
             </header>
             <main className="modal__body">
-                <form className="modal__form" onSubmit={create_agent}>
+                <form className="modal__form">
                     <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }}>
                         <label className="modal__form__label" htmlFor="name">Name</label>
                         <input className="modal__form__input" type="text" id="name" name="name" />
@@ -99,14 +122,29 @@ const CreateUserForm = ({ handleClose }) => {
                         </div>
                     </motion.div>
 
-                    <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-
-                        <Button className="outlined" onClick={handleClose}>Cancel</Button>
-                        <Button className="primary" onClick={handleClose}>Add Agent</Button>
-
-                    </motion.footer>
                 </form>
             </main>
+            <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+
+                <Button className="outlined" onClick={handleClose}>Cancel</Button>
+                <Button
+                    className="primary"
+                    onClick={() => handleSubmit(
+                        document.getElementById("name").value,
+                        document.getElementById("userName").value,
+                        document.getElementById("password").value,
+                        document.getElementById("volume").value,
+                        document.getElementById("min_vol").value,
+                        document.getElementById("max_users").value,
+                        document.getElementById("maxDays").value,
+                        document.getElementById("prefix").value,
+                        document.getElementById("country").value
+                    )}
+                >
+                    Add Agent
+                </Button>
+
+            </motion.footer>
 
         </Modal>
     )
