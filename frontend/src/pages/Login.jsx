@@ -23,15 +23,16 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
             if (res.data.is_admin) {
                 setIsLoggedIn(true)
                 sessionStorage.setItem("isLoggedIn", "true")
-                setLocation("/admin/agents")
-                navigate('/admin/agents', { state: { access_token: res.data.access_token } });
+                sessionStorage.setItem("access_token", res.data.access_token)
+                setLocation("/admin/panels")
+                navigate('/admin/panels');
             }
 
             else {
                 setIsLoggedIn(true)
                 sessionStorage.setItem("isLoggedIn", "true")
                 setLocation("/agent/users")
-                navigate('/agent/users', { state: { access_token: res.data.access_token } });
+                navigate('/agent/users');
             }
 
         }

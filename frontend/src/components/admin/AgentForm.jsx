@@ -12,12 +12,9 @@ import axios from 'axios';
 
 
 const CreateUserForm = ({ handleClose }) => {
+    const access_token = sessionStorage.getItem("access_token");
 
-    const location = useLocation();
-    const access_token = location.state.access_token;
-
-    const create_agent = async (e) => 
-    {
+    const create_agent = async (e) => {
         e.preventDefault();
         var name = e.target[0].value;
         var username = e.target[1].value;
@@ -29,15 +26,13 @@ const CreateUserForm = ({ handleClose }) => {
         var prefix = e.target[7].value;
         var country = e.target[8].value;
 
-       var res = await axios.post("/create_agent",{ name,username,password,volume,min_vol,max_users,max_days,prefix,country,access_token });
+        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token });
 
-        if(res.data === "ERR")
-        {
+        if (res.data === "ERR") {
             alert("FAILED");
         }
 
-        else
-        {
+        else {
             alert("DONE");
         }
     }
@@ -105,11 +100,11 @@ const CreateUserForm = ({ handleClose }) => {
                     </motion.div>
 
                     <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-               
-                <Button className="outlined" onClick={handleClose}>Cancel</Button>
-                <Button className="primary"  onClick={handleClose}>Add Agent</Button>
 
-            </motion.footer>
+                        <Button className="outlined" onClick={handleClose}>Cancel</Button>
+                        <Button className="primary" onClick={handleClose}>Add Agent</Button>
+
+                    </motion.footer>
                 </form>
             </main>
 
