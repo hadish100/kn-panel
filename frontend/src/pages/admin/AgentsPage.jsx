@@ -7,6 +7,7 @@ import AddPanelForm from '../../components/admin/AgentForm'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './AgentsPage.css'
+import { useLocation } from 'react-router-dom';
 
 let users = [
     {
@@ -44,6 +45,9 @@ let users = [
     }]
 
 const AgetnsPage = () => {
+
+    const location = useLocation();
+    const access_token = location.state.access_token;
     const [showModal, setShowModal] = useState(false)
 
     const handleClick2 = () => {
@@ -78,6 +82,7 @@ const AgetnsPage = () => {
                 <AdminPanelsTable users={users} rowsPerPage={10} currentRows={users} />
 
             </div>
+                
         </>
     )
 }

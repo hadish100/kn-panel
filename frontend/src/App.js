@@ -26,16 +26,16 @@ const App = () => {
 
     return (
         <BrowserRouter>
-            {isAuth && (isAdminPath || isAgentPath) && <Navbar />}
+            {isAuth /* && (isAdminPath || isAgentPath) */ &&  <Navbar />}
             <Routes>
                 <Route path='/login' element={<Login />} />
                 {/* Agent Routes */}
-                {isAgentPath && isAuth ? <Route path='/agent/users' element={<UsersPage />} /> : null}
-                {isAgentPath && isAuth ? <Route path='/agent/settings' element={<SettingsPage />} /> : null}
-                {isAgentPath && isAuth ? <Route path='/agent/log' element={<LogsPage />} /> : null}
+                <Route path='/agent/users' element={<UsersPage />} />
+                <Route path='/agent/settings' element={<SettingsPage />} />
+                <Route path='/agent/log' element={<LogsPage />} />
                 {/* Admin Routes */}
-                {isAdminPath && isAuth ? <Route path='/admin/panels' element={<PanelsPage />} /> : null}
-                {isAdminPath && isAuth ? <Route path='/admin/agents' element={<AgentsPage />} /> : null}
+                <Route path='/admin/panels' element={<PanelsPage />} />
+                <Route path='/admin/agents' element={<AgentsPage />} />
 
                 {/* 404 - Not Found */}
                 <Route path='*' element={<NotFoundPage />} />

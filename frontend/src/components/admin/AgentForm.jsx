@@ -7,9 +7,41 @@ import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
 import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
 import "../agent/CreateUserForm.css"
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 
 const CreateUserForm = ({ handleClose }) => {
+
+    const location = useLocation();
+    const access_token = location.state.access_token;
+
+    const create_agent = async (e) => 
+    {
+        e.preventDefault();
+        var name = e.target[0].value;
+        var username = e.target[1].value;
+        var password = e.target[2].value;
+        var volume = e.target[3].value;
+        var min_vol = e.target[4].value;
+        var max_users = e.target[5].value;
+        var max_days = e.target[6].value;
+        var prefix = e.target[7].value;
+        var country = e.target[8].value;
+
+       var res = await axios.post("/create_agent",{ name,username,password,volume,min_vol,max_users,max_days,prefix,country,access_token });
+
+        if(res.data === "ERR")
+        {
+            alert("FAILED");
+        }
+
+        else
+        {
+            alert("DONE");
+        }
+    }
+
     return (
         <Modal onClose={handleClose} >
             <header className="modal__header">
@@ -22,7 +54,7 @@ const CreateUserForm = ({ handleClose }) => {
                 </div>
             </header>
             <main className="modal__body">
-                <form className="modal__form">
+                <form className="modal__form" onSubmit={create_agent}>
                     <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }}>
                         <label className="modal__form__label" htmlFor="name">Name</label>
                         <input className="modal__form__input" type="text" id="name" name="name" />
@@ -71,12 +103,16 @@ const CreateUserForm = ({ handleClose }) => {
                             <input className="modal__form__input" type="text" id="country" name="country" />
                         </div>
                     </motion.div>
+
+                    <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+               
+                <Button className="outlined" onClick={handleClose}>Cancel</Button>
+                <Button className="primary"  onClick={handleClose}>Add Agent</Button>
+
+            </motion.footer>
                 </form>
             </main>
-            <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button className="outlined" onClick={handleClose}>Cancel</Button>
-                <Button className="primary" onClick={handleClose}>Add Agent</Button>
-            </motion.footer>
+
         </Modal>
     )
 }
