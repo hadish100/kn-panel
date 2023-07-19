@@ -8,7 +8,7 @@ import Button from '../components/Button'
 import axios from "axios"
 
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ setIsLoggedIn, setLocation }) => {
     const navigate = useNavigate();
     const send_login_data = async (e) => {
         e.preventDefault();
@@ -23,12 +23,14 @@ const Login = ({ setIsLoggedIn }) => {
             if (res.data.is_admin) {
                 setIsLoggedIn(true)
                 sessionStorage.setItem("isLoggedIn", "true")
+                setLocation("/admin/agents")
                 navigate('/admin/agents', { state: { access_token: res.data.access_token } });
             }
 
             else {
                 setIsLoggedIn(true)
                 sessionStorage.setItem("isLoggedIn", "true")
+                setLocation("/agent/users")
                 navigate('/agent/users', { state: { access_token: res.data.access_token } });
             }
 

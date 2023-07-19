@@ -11,8 +11,10 @@ import AgentsPage from './pages/admin/AgentsPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 const App = () => {
-    const location = window.location.pathname;
-    const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("isLoggedIn") === "true");
+    const [location, setLocation] = useState(window.location.pathname);
+    const [isLoggedIn, setIsLoggedIn] = useState(
+        sessionStorage.getItem("isLoggedIn") === "true"
+    );
 
     // Check if the current path belongs to Agent or Admin routes
     const isAgentPath =
@@ -28,7 +30,7 @@ const App = () => {
         <BrowserRouter>
             {isLoggedIn && (isAdminPath || isAgentPath) && <Navbar />}
             <Routes>
-                <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+                <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setLocation={setLocation} />} />
                 {/* Agent Routes */}
                 {isAgentPath && isLoggedIn && <Route path='/agent/users' element={<UsersPage />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/settings' element={<SettingsPage />} />}
