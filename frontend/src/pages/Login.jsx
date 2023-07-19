@@ -16,6 +16,7 @@ const Login = () => {
         var username = e.target[0].value
         var password = e.target[1].value
         var res = await axios.post("/login",{username,password});
+        
         if(res.data === "ERR")
         {
             alert("LOGIN FAILED");

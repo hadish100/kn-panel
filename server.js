@@ -98,6 +98,8 @@ app.post("/create_agent", async (req,res) =>
             minimum_volume:parseInt(min_vol)
         },
         {headers:{accept:'application/json',Authorization:access_token}})).data;
+
+        res.send("DONE");
     }
 
     catch(err)
