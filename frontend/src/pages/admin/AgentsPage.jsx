@@ -9,12 +9,14 @@ import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './AgentsPage.css'
 import axios from 'axios';
 
-let users = []
+const access_token = sessionStorage.getItem("access_token");
+
+let agents = []
+agents = (await axios.post("/get_agents", { access_token })).data;
 
 const AgentsPage = () => {
     const [showModal, setShowModal] = useState(false);
 
-    //users = (await axios.post("/get_agents",{access_token})).data;
 
     const handleClick2 = () => {
         setShowModal(true)
@@ -25,31 +27,28 @@ const AgentsPage = () => {
     }
 
     return (
-        <>
-            <div className='admin_panels_body'>
-                <AdminUsageStats dataUsage="8020 GB" activeUsers={512} totalUsers={1000} />
-                <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                    <Search />
-                    <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
-                        <Button className="outlined refresh"><RefreshIcon /></Button>
-                        <Button onClick={handleClick2} className="create-user-button primary">Create Agent</Button>
-                    </span>
-                </div>
-
-                <AnimatePresence>
-                    {showModal && <AddPanelForm
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        handleClose={handleClose}
-                    />}
-                </AnimatePresence>
-
-                <AgentsTable users={users} rowsPerPage={10} currentRows={users} />
-
+        <div className='admin_panels_body'>
+            <AdminUsageStats dataUsage="8020 GB" activeUsers={512} totalUsers={1000} />
+            <div className="container flex items-center justify-between   column-reverse items-end gap-16">
+                <Search />
+                <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
+                    <Button className="outlined refresh"><RefreshIcon /></Button>
+                    <Button onClick={handleClick2} className="create-user-button primary">Create Agent</Button>
+                </span>
             </div>
 
-        </>
+            <AnimatePresence>
+                {showModal && <AddPanelForm
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    handleClose={handleClose}
+                />}
+            </AnimatePresence>
+
+            <AgentsTable users={agents} rowsPerPage={10} currentRows={agents} />
+
+        </div>
     )
 }
 

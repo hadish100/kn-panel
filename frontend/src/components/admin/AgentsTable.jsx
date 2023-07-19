@@ -27,37 +27,18 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                     <tbody className="users-table__body">
                         {currentRows.map((user) => (
                             <tr key={user.id}>
-                                <td>{user.name}</td>
+                                <td>{user.agent_name}</td>
                                 <td>
                                     <span className={user.status ? "active" : "limited"} >
                                         {user.status ? "Active" : "Inactive"}
                                     </span>
                                 </td>
-
-                                <td >
-                                    {user.activeUsers}
-                                </td>
-
-                                <td>
-                                    {user.dataUsage}
-                                </td>
-
-                                <td>
-                                    {user.remainingData}
-                                </td>
-
-                                <td>
-                                    {user.allocatableData}
-                                </td>
-
-                                <td>
-                                    {user.prefix}
-                                </td>
-
-                                <td>
-                                    {user.country}
-                                </td>
-
+                                <td >{user.activeUsers}</td>
+                                <td>{user.dataUsage}</td>
+                                <td>{user.remainingData}</td>
+                                <td>{user.allocatableData}</td>
+                                <td>{user.prefix}</td>
+                                <td>{user.country}</td>
                                 <td className="table__actions">
                                     <Button className="ghosted delete-icon">
                                         <DeleteIcon />
