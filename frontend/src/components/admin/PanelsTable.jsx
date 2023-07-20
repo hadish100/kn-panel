@@ -41,7 +41,6 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                         <tr className="users-table__header__row">
                             <th className="first">Name</th>
                             <th>Status</th>
-                            <th>Data Usage</th>
                             <th>Traffic</th>
                             <th>Active Users</th>
                             <th>capacity</th>
@@ -52,19 +51,15 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                     <tbody className="users-table__body">
                         {currentRows.map((user) => (
                             <tr key={user.id}>
-                                <td>{user.name}</td>
+                                <td>{user.panel_name}</td>
                                 <td>
-                                    <span className={user.status ? "active" : "limited"} >
-                                        {user.status ? "Connected" : "Disconnected"}
+                                    <span className={user.status ? "limited" : "active"} >
+                                        {user.status ? "Disconnected" : "Connected"}
                                     </span>
                                 </td>
 
                                 <td>
-                                    {user.dataUsage}
-                                </td>
-
-                                <td>
-                                    {user.traffic}
+                                    {user.panel_traffic + " GB"}
                                 </td>
 
                                 <td >
@@ -72,7 +67,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                                 </td>
 
                                 <td >
-                                    {user.capacity}
+                                    {user.panel_user_max_count}
                                 </td>
 
                                 <td>

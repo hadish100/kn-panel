@@ -34,6 +34,8 @@ const CreateUserForm = ({ handleClose }) => {
         }
 
         else {
+            var agents = (await axios.post("/get_agents", { access_token })).data;
+            sessionStorage.setItem("agents",JSON.stringify(agents));
             alert("DONE");
         }
         handleClose()

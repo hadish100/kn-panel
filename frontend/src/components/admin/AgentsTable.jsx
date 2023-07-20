@@ -40,9 +40,9 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                                     </span>
                                 </td>
                                 <td >{user.activeUsers}</td>
-                                <td>{user.used_traffic}</td>
-                                <td>{b2gb(user.volume)}</td>
-                                <td>{b2gb(user.weight_dividable)}</td>
+                                <td>{user.used_traffic + " GB"}</td>
+                                <td>{b2gb(user.volume) + " GB"}</td>
+                                <td>{b2gb(user.weight_dividable) + " GB"}</td>
                                 <td>{user.prefix}</td>
                                 <td>{user.country}</td>
                                 <td className="table__actions">

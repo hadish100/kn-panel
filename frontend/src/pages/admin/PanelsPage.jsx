@@ -8,30 +8,12 @@ import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './PanelsPage.css'
 
-let users = [
-    {
-        id: 1,
-        status: 1,
-        name: "ir1",
-        dataUsage: "1300 GB",
-        activeUsers: "200 / 300",
-        capacity: "400",
-        traffic: "7000 GB",
-        country: "NL"
-    },
-    {
-        id: 2,
-        status: 0,
-        name: "v1",
-        dataUsage: "200 TB",
-        activeUsers: "300 / 400",
-        capacity: "500",
-        traffic: "500 TB",
-        country: "DE"
-    }]
+
 
 const PanelsPage = () => {
     const [showModal, setShowModal] = useState(false)
+
+    var panels = JSON.parse(sessionStorage.getItem("panels"));
 
     const handleClick2 = () => {
         setShowModal(true)
@@ -62,7 +44,7 @@ const PanelsPage = () => {
                     />}
                 </AnimatePresence>
 
-                <PanelsTable users={users} rowsPerPage={10} currentRows={users} />
+                <PanelsTable users={panels} rowsPerPage={10} currentRows={panels} />
 
             </div>
         </>
