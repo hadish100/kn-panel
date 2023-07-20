@@ -1,0 +1,49 @@
+.errorCard {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    color: #191919;
+    background-color: #fdedef;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
+    max-width: 425px;
+    min-height: 95px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.errorCard__divider>*+* {
+    margin-top: 0.25rem;
+}
+
+.errorCard__header {
+    display: flex;
+    align-items: center;
+}
+
+.errorCard__header h2 {
+    font-family: InterMedium;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.errorCard__header svg {
+    width: 20px;
+    height: 20px;
+    align-self: self-start;
+    cursor: pointer;
+    stroke-width: 2;
+    margin-left: auto;
+}
+
+.errorCard__message {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.25;
+    font-family: InterMedium;
+}
