@@ -24,30 +24,27 @@ const PanelsPage = () => {
     }
 
     return (
-        <>
-            <div className='admin_panels_body'>
-                <UsageStats dataUsage="201.3 TB" activeUsers={500} totalUsers={900} />
-                <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                    <Search />
-                    <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
-                        <Button className="transparent refresh"><RefreshIcon /></Button>
-                        <Button onClick={handleClick2} className="create-user-button primary">Add Panel</Button>
-                    </span>
-                </div>
-
-                <AnimatePresence>
-                    {showModal && <PanelForm
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        handleClose={handleClose}
-                    />}
-                </AnimatePresence>
-
-                <PanelsTable users={panels} rowsPerPage={10} currentRows={panels} />
-
+        <div className='admin_panels_body'>
+            <UsageStats dataUsage="201.3 TB" activeUsers={500} totalUsers={900} />
+            <div className="container flex items-center justify-between   column-reverse items-end gap-16">
+                <Search />
+                <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
+                    <Button className="outlined refresh"><RefreshIcon /></Button>
+                    <Button onClick={handleClick2} className="create-user-button primary">Add Panel</Button>
+                </span>
             </div>
-        </>
+
+            <AnimatePresence>
+                {showModal && <PanelForm
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    handleClose={handleClose}
+                />}
+            </AnimatePresence>
+
+            <PanelsTable users={panels} rowsPerPage={10} currentRows={panels} />
+        </div>
     )
 }
 

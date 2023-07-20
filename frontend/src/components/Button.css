@@ -18,9 +18,14 @@
     background-color: var(--background-color-hover);
 }
 
+.button:active {
+    background-color: var(--background-color-active);
+}
+
 .primary {
     --background-color: var(--primary-clr-200);
     --background-color-hover: var(--primary-clr-300);
+    --background-color-active: var(--primary-clr-400)
 }
 
 .outlined {
@@ -28,13 +33,15 @@
     --border-color: var(--gray-clr-200);
     --color: var(--dark-clr-200);
     --background-color-hover: var(--gray-clr-100);
+    --background-color-active: var(--gray-clr-200)
 }
 
 .ghosted {
     --background-color: transparent;
     --border-color: transparent;
     --color: var(--dark-clr-200);
-    --background-color-hover: var(--gray-clr-100);
+    --background-color-hover: var(--gray-clr-200);
+    --background-color-active: var(--gray-clr-300);
 }
 
 .disabled {
