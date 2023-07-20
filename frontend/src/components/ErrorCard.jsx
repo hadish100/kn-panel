@@ -6,14 +6,18 @@ import { ReactComponent as XMarkIcon } from '../assets/svg/x-mark.svg'
 import { ReactComponent as ExclamationIcon } from '../assets/svg/exclamation-mark.svg'
 import styels from "./ErrorCard.module.css"
 
-const ErrorCard = ({ hasError, onClick, errorTitle, errorMessage }) => {
+const ErrorCard = ({ setHasError, hasError, errorTitle, errorMessage }) => {
     useEffect(() => {
         const errorTimer = setTimeout(() => {
-            onClick()
+            handleClose()
         }, 5000)
 
         return () => clearTimeout(errorTimer)
     },)
+
+    const handleClose = () => {
+        setHasError(false)
+    }
 
     return ReactDOM.createPortal(
         <AnimatePresence>
@@ -28,7 +32,7 @@ const ErrorCard = ({ hasError, onClick, errorTitle, errorMessage }) => {
                 <div className={styels.errorCard__divider}>
                     <header className={styels.errorCard__header}>
                         <h2 className={styels.errorCard__title}>{errorTitle}</h2>
-                        <XMarkIcon onClick={() => onClick()} />
+                        <XMarkIcon onClick={handleClose} />
                     </header>
                     <p className={styels.errorCard__message}>{errorMessage}</p>
                 </div>

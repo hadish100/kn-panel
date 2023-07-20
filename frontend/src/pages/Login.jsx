@@ -12,10 +12,6 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
     const [hasError, setHasError] = useState(false)
     const navigate = useNavigate();
 
-    const handleClose = () => {
-        setHasError(false)
-    }
-
     const send_login_data = async (e) => {
         e.preventDefault();
         var username = e.target[0].value
@@ -36,8 +32,8 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 var panels = (await axios.post("/get_panels", { access_token })).data;
                 console.log(agents);
                 console.log(panels);
-                sessionStorage.setItem("agents",JSON.stringify(agents));
-                sessionStorage.setItem("panels",JSON.stringify(panels));
+                sessionStorage.setItem("agents", JSON.stringify(agents));
+                sessionStorage.setItem("panels", JSON.stringify(panels));
                 setLocation("/admin/panels");
                 navigate('/admin/panels');
             }
@@ -48,7 +44,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 sessionStorage.setItem("access_token", res.data.access_token)
                 var users = (await axios.post("/get_users", { access_token })).data;
                 console.log(users);
-                sessionStorage.setItem("users",JSON.stringify(users));
+                sessionStorage.setItem("users", JSON.stringify(users));
                 setLocation("/agent/users");
                 navigate('/agent/users');
             }
@@ -59,7 +55,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
     const errorCard = (
         <ErrorCard
             hasError={hasError}
-            onClick={handleClose}
+            setHasError={setHasError}
             errorTitle="Login Failed"
             errorMessage="Please check your username and password"
         />
