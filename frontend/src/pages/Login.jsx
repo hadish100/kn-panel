@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import './Login.css'
 import { ReactComponent as LoginIcon } from "../assets/svg/login.svg"
@@ -6,17 +6,23 @@ import { ReactComponent as Logo } from "../assets/svg/logo.svg"
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button'
 import axios from "axios"
-
+import ErrorCard from '../components/ErrorCard';
 
 const Login = ({ setIsLoggedIn, setLocation }) => {
+    const [hasError, setHasError] = useState(false)
     const navigate = useNavigate();
+
+    const handleClose = () => {
+        setHasError(false)
+    }
+
     const send_login_data = async (e) => {
         e.preventDefault();
         var username = e.target[0].value
         var password = e.target[1].value
         var res = await axios.post("/login", { username, password });
         if (res.data === "ERR") {
-            alert("LOGIN FAILED");
+            setHasError(true)
         }
 
         else {
@@ -28,7 +34,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 sessionStorage.setItem("access_token", res.data.access_token)
                 var agents = (await axios.post("/get_agents", { access_token })).data;
                 console.log(agents)
-                sessionStorage.setItem("agents",JSON.stringify(agents));
+                sessionStorage.setItem("agents", JSON.stringify(agents));
                 setLocation("/admin/panels")
                 navigate('/admin/panels');
             }
@@ -43,6 +49,15 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
         }
     }
 
+    const errorCard = (
+        <ErrorCard
+            hasError={hasError}
+            onClick={handleClose}
+            errorTitle="Login Failed"
+            errorMessage="Please check your username and password"
+        />
+    )
+
     return (
         <div className='login'>
             <Logo />
@@ -56,6 +71,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                     Login
                 </Button>
             </form>
+            {errorCard}
         </div>
     )
 }
