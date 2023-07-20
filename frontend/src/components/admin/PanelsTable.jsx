@@ -4,6 +4,20 @@ import "./PanelsTable.css"
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Button from "../Button"
+import axios from 'axios'
+
+
+
+async function delete_panel(panel_id)
+{
+    const access_token = sessionStorage.getItem("access_token");
+    var delete_panel = (await axios.post("/delete_panel", { access_token,panel_id })).data;
+    var panels = (await axios.post("/get_panels", { access_token })).data;
+    sessionStorage.setItem("panels",JSON.stringify(panels));
+}
+
+
+
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
 
@@ -75,7 +89,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                                 </td>
 
                                 <td className="table__actions">
-                                    <Button className="ghosted delete-icon">
+                                    <Button onClick={()=> delete_panel(user.id)} className="ghosted delete-icon">
                                         <DeleteIcon />
                                     </Button>
                                     <Button className="ghosted power-icon">

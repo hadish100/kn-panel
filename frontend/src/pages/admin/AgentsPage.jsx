@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import Search from '../../components/Search'
 import Button from '../../components/Button'
 import AgentsTable from '../../components/admin/AgentsTable'
@@ -12,7 +12,8 @@ import './AgentsPage.css'
 const AgentsPage = () => {
     const [showModal, setShowModal] = useState(false);
 
-    var agents = JSON.parse(sessionStorage.getItem("agents"));
+    const agents = JSON.parse(sessionStorage.getItem("agents"));
+
 
     const handleClick2 = () => {
         setShowModal(true)

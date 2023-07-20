@@ -43,7 +43,6 @@ app.post("/get_users", async (req, res) => {
 
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
-
     try {
         var api_auth_res = (await axios.post(API_SERVER_URL + '/api/login/', { username, password }, { headers: { 'accept': 'application/json', 'Content-Type': 'application/json' } })).data;
         access_token = 'Bearer ' + api_auth_res.access;
@@ -128,6 +127,54 @@ app.post("/create_panel", async (req, res) => {
 
 
 });
+
+
+
+app.post("/delete_agent", async (req, res) => {
+    var { access_token,agent_id } = req.body;
+   
+    try
+    {
+        var delete_agent = (await axios.delete( API_SERVER_URL + '/api/admin/agent/delete/',
+        {
+            data: { agent_id: agent_id }, 
+            headers: { accept: 'application/json',Authorization:access_token }
+        })).data; 
+    
+        res.send("DONE");
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
+
+app.post("/delete_panel", async (req, res) => {
+    var { access_token,panel_id } = req.body;
+   
+    try
+    {
+        var delete_panel = (await axios.delete( API_SERVER_URL + '/api/admin/panel/delete/',
+        {
+            data: { panel_id: panel_id }, 
+            headers: { accept: 'application/json',Authorization:access_token }
+        })).data; 
+    
+        res.send("DONE");
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
 
 
 app.listen(5000, () => {
