@@ -33,9 +33,12 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 sessionStorage.setItem("isLoggedIn", "true")
                 sessionStorage.setItem("access_token", res.data.access_token)
                 var agents = (await axios.post("/get_agents", { access_token })).data;
-                console.log(agents)
-                sessionStorage.setItem("agents", JSON.stringify(agents));
-                setLocation("/admin/panels")
+                var panels = (await axios.post("/get_panels", { access_token })).data;
+                console.log(agents);
+                console.log(panels);
+                sessionStorage.setItem("agents",JSON.stringify(agents));
+                sessionStorage.setItem("panels",JSON.stringify(panels));
+                setLocation("/admin/panels");
                 navigate('/admin/panels');
             }
 

@@ -58,6 +58,7 @@ app.post("/login", async (req, res) => {
     }
 
     catch (err) {
+        console.log(err);
         res.send("ERR");
     }
 
@@ -87,6 +88,35 @@ app.post("/create_agent", async (req, res) => {
                 minimum_volume: parseInt(min_vol)
             },
             { headers: { accept: 'application/json', Authorization: access_token } })).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        res.send("ERR");
+    }
+
+
+});
+
+
+app.post("/create_panel", async (req, res) => {
+    const { panel_name,panel_url,panel_username,panel_password,panel_country,panel_user_max_count,panel_user_max_date,panel_traffic,access_token } = req.body;
+
+    try {
+
+        var create_panel = (await axios.post( API_SERVER_URL  + '/api/admin/panel/create/',
+        {
+            panel_name:panel_name,
+            panel_url:panel_url,
+            panel_username:panel_username,
+            panel_password:panel_password,
+            panel_country:panel_country,
+            panel_user_max_count:parseInt(panel_user_max_count),
+            panel_user_max_date:parseInt(panel_user_max_date),
+            panel_traffic:parseInt(panel_traffic),
+        },
+        {headers:{accept:'application/json',Authorization:access_token}}));
 
         res.send("DONE");
     }
