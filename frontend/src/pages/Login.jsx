@@ -20,10 +20,15 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
         }
 
         else {
+            var access_token = res.data.access_token;
+
             if (res.data.is_admin) {
                 setIsLoggedIn(true)
                 sessionStorage.setItem("isLoggedIn", "true")
                 sessionStorage.setItem("access_token", res.data.access_token)
+                var agents = (await axios.post("/get_agents", { access_token })).data;
+                console.log(agents)
+                sessionStorage.setItem("agents",JSON.stringify(agents));
                 setLocation("/admin/panels")
                 navigate('/admin/panels');
             }

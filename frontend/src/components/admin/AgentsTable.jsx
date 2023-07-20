@@ -5,6 +5,12 @@ import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Button from "../Button"
 
+
+function b2gb(x)
+{
+    return parseInt(x/10**9)
+}
+
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
 
     return (
@@ -29,14 +35,14 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                             <tr key={user.id}>
                                 <td>{user.agent_name}</td>
                                 <td>
-                                    <span className={user.status ? "active" : "limited"} >
-                                        {user.status ? "Active" : "Inactive"}
+                                    <span className={user.status ? "limited" : "active"} >
+                                        {user.status ? "Inactive" : "Active"}
                                     </span>
                                 </td>
                                 <td >{user.activeUsers}</td>
-                                <td>{user.dataUsage}</td>
-                                <td>{user.remainingData}</td>
-                                <td>{user.allocatableData}</td>
+                                <td>{user.used_traffic}</td>
+                                <td>{b2gb(user.volume)}</td>
+                                <td>{b2gb(user.weight_dividable)}</td>
                                 <td>{user.prefix}</td>
                                 <td>{user.country}</td>
                                 <td className="table__actions">

@@ -76,7 +76,7 @@ app.post("/create_agent", async (req, res) => {
         var create_agent = (await axios.post(API_SERVER_URL + '/api/admin/agent/create/',
             {
                 agent_name: name,
-                volume: parseInt(volume),
+                main_volume: parseInt(volume),
                 maximum_day: parseInt(max_days),
                 country: country,
                 prefix: prefix,

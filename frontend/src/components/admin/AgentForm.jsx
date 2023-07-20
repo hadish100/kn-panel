@@ -13,28 +13,7 @@ import axios from 'axios';
 const CreateUserForm = ({ handleClose }) => {
     const access_token = sessionStorage.getItem("access_token");
 
-    const create_agent = async (e) => {
-        e.preventDefault();
-        var name = e.target[0].value;
-        var username = e.target[1].value;
-        var password = e.target[2].value;
-        var volume = e.target[3].value;
-        var min_vol = e.target[4].value;
-        var max_users = e.target[5].value;
-        var max_days = e.target[6].value;
-        var prefix = e.target[7].value;
-        var country = e.target[8].value;
 
-        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token });
-
-        if (res.data === "ERR") {
-            alert("FAILED");
-        }
-
-        else {
-            alert("DONE");
-        }
-    }
 
 
     const handleSubmit = async (

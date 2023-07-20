@@ -7,16 +7,12 @@ import AddPanelForm from '../../components/admin/AgentForm'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './AgentsPage.css'
-import axios from 'axios';
 
-const access_token = sessionStorage.getItem("access_token");
-
-let agents = []
-agents = (await axios.post("/get_agents", { access_token })).data;
 
 const AgentsPage = () => {
     const [showModal, setShowModal] = useState(false);
 
+    var agents = JSON.parse(sessionStorage.getItem("agents"));
 
     const handleClick2 = () => {
         setShowModal(true)
