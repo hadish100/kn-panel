@@ -19,7 +19,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
     }
 
     return (
-        <div className="border">
+        <div className="wrapper">
             <table className="panels-table">
                 <thead className="panels-table__header">
                     <tr className="panels-table__header__row">

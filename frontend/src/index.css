@@ -44,6 +44,11 @@ input {
     border-radius: var(--border-radius);
 }
 
+input:disabled {
+    cursor: not-allowed;
+    background-color: var(--gray-clr-100);
+}
+
 button {
     cursor: pointer;
 }

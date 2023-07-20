@@ -1,4 +1,5 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState } from 'react'
+
 import Search from '../../components/Search'
 import Button from '../../components/Button'
 import AgentsTable from '../../components/admin/AgentsTable'
@@ -7,20 +8,25 @@ import AddPanelForm from '../../components/admin/AgentForm'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './AgentsPage.css'
-
+import EditAgentForm from '../../components/admin/EditAgentForm'
 
 const AgentsPage = () => {
-    const [showModal, setShowModal] = useState(false);
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false)
 
     const agents = JSON.parse(sessionStorage.getItem("agents"));
 
 
-    const handleClick2 = () => {
-        setShowModal(true)
+    const handleClick = () => {
+        setShowCreateModal(true)
     }
 
-    const handleClose = () => {
-        setShowModal(false)
+    const handleCloseCreateModal = () => {
+        setShowCreateModal(false)
+    }
+
+    const handleCloseEditModal = () => {
+        setShowEditModal(false)
     }
 
     return (
@@ -30,20 +36,22 @@ const AgentsPage = () => {
                 <Search />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh"><RefreshIcon /></Button>
-                    <Button onClick={handleClick2} className="create-user-button primary">Create Agent</Button>
+                    <Button onClick={handleClick} className="create-user-button primary">Create Agent</Button>
                 </span>
             </div>
 
             <AnimatePresence>
-                {showModal && <AddPanelForm
+                {showCreateModal && <AddPanelForm
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    handleClose={handleClose}
+                    handleClose={handleCloseCreateModal}
                 />}
             </AnimatePresence>
 
-            <AgentsTable users={agents} rowsPerPage={10} currentRows={agents} />
+            <EditAgentForm handleClose={handleCloseEditModal} showModal={showEditModal} />
+
+            <AgentsTable users={agents} rowsPerPage={10} currentRows={agents} setShowEditModal={setShowEditModal} />
 
         </div>
     )
