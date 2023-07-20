@@ -54,7 +54,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows }) => {
                                 <td>{user.panel_name}</td>
                                 <td>
                                     <span className={user.status ? "limited" : "active"} >
-                                        {user.status ? "Disconnected" : "Connected"}
+                                        {user.status ? "Deactive" : "Active"}
                                     </span>
                                 </td>
 

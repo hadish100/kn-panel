@@ -38,8 +38,12 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
 
             else {
                 setIsLoggedIn(true)
-                sessionStorage.setItem("isLoggedIn", "true")
-                setLocation("/agent/users")
+                sessionStorage.setItem("isLoggedIn", "true");
+                sessionStorage.setItem("access_token", res.data.access_token)
+                var users = (await axios.post("/get_users", { access_token })).data;
+                console.log(users);
+                sessionStorage.setItem("users",JSON.stringify(users));
+                setLocation("/agent/users");
                 navigate('/agent/users');
             }
 
