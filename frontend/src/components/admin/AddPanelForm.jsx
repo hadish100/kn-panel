@@ -11,12 +11,7 @@ import axios from 'axios'
 
 
 const PanelForm = ({ handleClose }) => {
-
-
     const access_token = sessionStorage.getItem("access_token");
-
-
-
 
     const handleSubmit = async (
         panel_name,
@@ -29,7 +24,7 @@ const PanelForm = ({ handleClose }) => {
         panel_traffic
 
     ) => {
-        var res = await axios.post("/create_panel", {panel_name,panel_url,panel_username,panel_password,panel_country,panel_user_max_count,panel_user_max_date,panel_traffic,access_token});
+        var res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token });
 
         if (res.data === "ERR") {
             alert("FAILED");
@@ -37,7 +32,7 @@ const PanelForm = ({ handleClose }) => {
 
         else {
             var panels = (await axios.post("/get_panels", { access_token })).data;
-            sessionStorage.setItem("panels",JSON.stringify(panels));
+            sessionStorage.setItem("panels", JSON.stringify(panels));
             alert("DONE");
         }
         handleClose()
@@ -95,7 +90,7 @@ const PanelForm = ({ handleClose }) => {
             </main>
             <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <Button className={"transparent"} onClick={handleClose}>Cancel</Button>
-                <Button                     className={"primary"}
+                <Button className={"primary"}
                     onClick={() => handleSubmit(
                         document.getElementById("name").value,
                         document.getElementById("panel_url").value,

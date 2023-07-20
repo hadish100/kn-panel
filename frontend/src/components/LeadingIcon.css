@@ -8,6 +8,7 @@
 .leading-icon svg,
 img {
     background-color: #4D7DE7;
+    color: white;
     opacity: 0.6;
     border-radius: 0.5rem;
     width: 38px;

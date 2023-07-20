@@ -1,26 +1,32 @@
 import React, { useState } from 'react'
+
 import Search from '../../components/Search'
 import Button from '../../components/Button'
 import PanelsTable from '../../components/admin/PanelsTable'
-import PanelForm from '../../components/admin/PanelForm'
+import AddPanelForm from '../../components/admin/AddPanelForm'
 import UsageStats from '../../components/admin/UsageStats'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
+import EditPanelForm from '../../components/admin/EditPanelForm'
 import './PanelsPage.css'
 
 
-
 const PanelsPage = () => {
-    const [showModal, setShowModal] = useState(false)
+    const [showAddModal, setShowAddModal] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false)
 
     var panels = JSON.parse(sessionStorage.getItem("panels"));
 
-    const handleClick2 = () => {
-        setShowModal(true)
+    const handleClick = () => {
+        setShowAddModal(true)
     }
 
-    const handleClose = () => {
-        setShowModal(false)
+    const handleCloseAddModal = () => {
+        setShowAddModal(false)
+    }
+
+    const handleCloseEditModal = () => {
+        setShowEditModal(false)
     }
 
     return (
@@ -30,20 +36,19 @@ const PanelsPage = () => {
                 <Search />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh"><RefreshIcon /></Button>
-                    <Button onClick={handleClick2} className="create-user-button primary">Add Panel</Button>
+                    <Button onClick={handleClick} className="create-user-button primary">Add Panel</Button>
                 </span>
             </div>
 
             <AnimatePresence>
-                {showModal && <PanelForm
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    handleClose={handleClose}
+                {showAddModal && <AddPanelForm
+                    handleClose={handleCloseAddModal}
                 />}
             </AnimatePresence>
 
-            <PanelsTable users={panels} rowsPerPage={10} currentRows={panels} />
+            <EditPanelForm handleClose={handleCloseEditModal} showModal={showEditModal} />
+
+            <PanelsTable users={panels} rowsPerPage={10} currentRows={panels} setShowEditModal={setShowEditModal} />
         </div>
     )
 }
