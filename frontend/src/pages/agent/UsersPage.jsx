@@ -20,6 +20,8 @@ const UsersPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
 
     var users = JSON.parse(sessionStorage.getItem("users"));
+    users = Array(10).fill({id:5,username:"salam"});
+    console.log(users)
 
     const handleClick = () => {
         setShowModal(true)
