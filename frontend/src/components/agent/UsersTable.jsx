@@ -51,7 +51,7 @@ const UsersTable = ({ currentRows }) => {
                 <tr key={key}>
                     <td style={{ maxWidth: "10rem" }}>{user.username}</td>
                     <td>
-                        <span className={userStatus}>{userStatus}</span>
+                        <span className={`status ${userStatus}`}>{userStatus}</span>
                         <span className="expire-time">{expireTime}</span>
                     </td>
                     <td>
@@ -63,9 +63,9 @@ const UsersTable = ({ currentRows }) => {
                             </div>
                         </div>
                     </td>
-                    <td style={{ maxWidth: "3rem" }}>
+                    <td style={{ width: "10rem" }}>
                         <div className="users-table__subscription-actions">
-                            <div className="subscription-actions">
+                            <div className="table-actions">
                                 {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} />}
                             </div>
                             <div className={`accordion chevron-icon${expandedId === user.id ? "--up" : ""}`}>
@@ -101,10 +101,10 @@ const UsersTable = ({ currentRows }) => {
             >
                 <thead className="users-table__header">
                     <tr className="users-table__header__row">
-                        <th className="first">Username</th>
-                        <th >Status</th>
+                        <th>Username</th>
+                        <th>Status</th>
                         <th>Data Usage</th>
-                        <th className="last"></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody className="users-table__body">
