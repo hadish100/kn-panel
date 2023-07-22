@@ -27,7 +27,7 @@ const UsersTableAccordion = ({
                     </div>
                     <div style={{ marginTop: "1.25rem", paddingBottom: "1rem", display: "flex", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <span className={`accordion__${userStatus}`}>{userStatus}</span>
+                            <span className={`accordion_status ${userStatus}`}>{userStatus}</span>
                             <span className="accordion__expire-time">{expireTime}</span>
                         </div>
                         <div className="accordion__subscription-actions" style={{ display: "flex", justifyContent: "space-around", width: "6rem" }}>

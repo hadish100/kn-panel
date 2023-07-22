@@ -1,7 +1,6 @@
 .wrapper {
     border-radius: 8px;
     border: 1px solid #d2d2d4;
-    overflow-x: auto;
 }
 
 .users-table {
@@ -20,6 +19,11 @@
     color: #4a5568;
 }
 
+.users-table__header th:first-of-type,
+.users-table__header th:last-of-type {
+    border-radius: 8px;
+}
+
 .users-table__body td {
     padding: .875rem 1.5rem;
     font-size: 1rem;
@@ -36,7 +40,8 @@
     background-color: var(--gray-clr-200);
 }
 
-.status {
+.status,
+.accordion_status {
     display: inline-flex;
     padding: 0.25rem 0.75rem;
     border-radius: 99999px;
@@ -47,7 +52,8 @@
     color: var(--color);
 }
 
-.status:before {
+.status:before,
+.accordion_status::before {
     content: '';
     display: inline-block;
     margin-right: 5px;
@@ -56,30 +62,36 @@
     margin-top: 0;
 }
 
-.status.active {
+.status.active,
+.accordion_status.active {
     --background-clr: #c6f6d5;
     --color: #22543d;
 }
 
-.status.active:before {
+.status.active:before,
+.accordion_status.active::before {
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-2 -5 27 27' stroke-width='1.5' stroke='%2322543d' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z'></path></svg>");
 }
 
-.status.expired {
+.status.expired,
+.accordion_status.expired {
     --background-clr: #feebc8;
     --color: #7b341e;
 }
 
-.status.expired:before {
+.status.expired:before,
+.accordion_status.expired::before {
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-1 -5 27 27' stroke-width='1.5' stroke='%237b341e' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'></path></svg>");
 }
 
-.status.limited {
+.status.limited,
+.accordion_status.limited {
     --background-clr: #fed7d7;
     --color: #822727;
 }
 
-.status.limited:before {
+.status.limited:before,
+.accordion_status.limited::before {
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='-1 -5 27 27' stroke-width='1.5' stroke='%23822727' aria-hidden='true' class='css-14p7jiq'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'></path></svg>");
 }
 
