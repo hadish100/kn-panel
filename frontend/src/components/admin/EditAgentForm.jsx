@@ -25,12 +25,12 @@ const EditAgentForm = ({ handleClose, showModal }) => {
                     <form className="modal__form">
                         <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }}>
                             <label className="modal__form__label" htmlFor="name">Name</label>
-                            <input className="modal__form__input" type="text" id="name" name="name" disabled />
+                            <input className="modal__form__input" type="text" id="name" name="name"  />
                         </motion.div>
 
                         <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.1 }}>
                             <label className="modal__form__label" htmlFor="userName">UserName</label>
-                            <input className="modal__form__input" type="text" id="userName" name="userName" disabled />
+                            <input className="modal__form__input" type="text" id="userName" name="userName"  />
                         </motion.div>
 
                         <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.2 }}>
