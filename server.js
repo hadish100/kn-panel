@@ -92,6 +92,7 @@ app.post("/create_agent", async (req, res) => {
     }
 
     catch (err) {
+        console.log(err);
         res.send("ERR");
     }
 
@@ -114,6 +115,31 @@ app.post("/create_panel", async (req, res) => {
             panel_user_max_count:parseInt(panel_user_max_count),
             panel_user_max_date:parseInt(panel_user_max_date),
             panel_traffic:parseInt(panel_traffic),
+        },
+        {headers:{accept:'application/json',Authorization:access_token}}));
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+
+});
+
+app.post("/create_user", async (req, res) => {
+    const { username,expire,data_limit,access_token } = req.body;
+
+    try {
+
+        var create_user = (await axios.post( API_SERVER_URL + '/api/user/create/',
+        {
+            username:username,
+            expire:parseInt(expire) + parseInt(Date.now()/1000),
+            data_limit:parseInt(data_limit),
+            country:"DE"
         },
         {headers:{accept:'application/json',Authorization:access_token}}));
 

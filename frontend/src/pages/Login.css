@@ -43,6 +43,7 @@
 
 .login__form input {
     border: 1px solid var(--border-clr);
+    border-radius:0.375rem;
 }
 
 .login__form input:focus {

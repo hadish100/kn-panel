@@ -7,9 +7,35 @@ import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
 import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
 import "./CreateUserForm.css"
+import axios from "axios";
+
+
+
+
 
 
 const CreateUserForm = ({ handleClose }) => {
+
+
+    const access_token = sessionStorage.getItem("access_token");
+    const handleSubmit = async (
+        username,expire,data_limit
+    ) => {
+        expire *= 86400;
+        var res = await axios.post("/create_user", { username,expire,data_limit,access_token });
+    
+        if (res.data === "ERR") {
+            alert("FAILED");
+        }
+    
+        else {
+            var users = (await axios.post("/get_users", { access_token })).data;
+            sessionStorage.setItem("users",JSON.stringify(users));
+            alert("DONE");
+        }
+        handleClose()
+    }
+
     return (
         <Modal onClose={handleClose} >
             <header className="modal__header">
@@ -39,7 +65,12 @@ const CreateUserForm = ({ handleClose }) => {
             </main>
             <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <Button className={"outlined"} onClick={handleClose}>Cancel</Button>
-                <Button className={"primary"} onClick={handleClose}>Create User</Button>
+                <Button   className="primary"
+                    onClick={() => handleSubmit(
+                        document.getElementById("username").value,
+                        document.getElementById("dataLimit").value,
+                        document.getElementById("daysToExpire").value
+                    )}>Create User</Button>
             </motion.footer>
         </Modal>
     )

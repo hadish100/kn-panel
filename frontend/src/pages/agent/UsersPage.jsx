@@ -11,7 +11,77 @@ import './UsersPage.css'
 import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 
-
+var users = 
+[
+{
+    id: 2,
+    username: "soheil18",
+    isActive: false,
+    expireTime: {
+        days: 15,
+        hours: 12,
+        minutes: 42
+    },
+    dataUsage: 1024785,
+    totalData: 2006753,
+    subscriptionLink: "https://www.google.com",
+    config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+},
+{
+    id: 2,
+    username: "soheil18",
+    isActive: false,
+    expireTime: {
+        days: 15,
+        hours: 12,
+        minutes: 42
+    },
+    dataUsage: 1024785,
+    totalData: 2006753,
+    subscriptionLink: "https://www.google.com",
+    config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+},{
+    id: 1,
+    username: "soheil17",
+    isActive: true,
+    expireTime: {
+        days: 24,
+        hours: 24,
+        minutes: 32
+    },
+    dataUsage: 350766210,
+    totalData: 2008976720,
+    subscriptionLink: "https://www.google.com",
+    config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+},
+{
+    id: 2,
+    username: "soheil18",
+    isActive: false,
+    expireTime: {
+        days: 15,
+        hours: 12,
+        minutes: 42
+    },
+    dataUsage: 1024785,
+    totalData: 2006753,
+    subscriptionLink: "https://www.google.com",
+    config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+},
+{
+    id: 2,
+    username: "soheil18",
+    isActive: false,
+    expireTime: {
+        days: 15,
+        hours: 12,
+        minutes: 42
+    },
+    dataUsage: 1024785,
+    totalData: 2006753,
+    subscriptionLink: "https://www.google.com",
+    config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+}];
 
 const UsersPage = () => {
     const [showModal, setShowModal] = useState(false)
@@ -19,8 +89,8 @@ const UsersPage = () => {
     const [selection, setSelection] = useState(null)
     const [currentPage, setCurrentPage] = useState(1)
 
-    var users = JSON.parse(sessionStorage.getItem("users"));
-    users = Array(10).fill({id:5,username:"salam"});
+    // var users = JSON.parse(sessionStorage.getItem("users"));
+    // users = Array(10).fill({id:5,username:"salam"});
     console.log(users)
 
     const handleClick = () => {
