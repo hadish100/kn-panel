@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{ useState } from 'react'
 
 import Modal from "../Modal";
 import LeadingIcon from "../LeadingIcon";
@@ -8,9 +8,20 @@ import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
 import "../agent/CreateUserForm.css"
 import axios from 'axios'
+import ErrorCard from '../../components/ErrorCard';
 
 
 const PanelForm = ({ handleClose }) => {
+    const [hasError, setHasError] = useState(false)
+
+    const errorCard = (
+        <ErrorCard
+            hasError={hasError}
+            setHasError={setHasError}
+            errorTitle="ERROR"
+            errorMessage="failed to create panel"
+        />
+    )
     const access_token = sessionStorage.getItem("access_token");
 
     const handleSubmit = async (
@@ -27,15 +38,15 @@ const PanelForm = ({ handleClose }) => {
         var res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token });
 
         if (res.data === "ERR") {
-            alert("FAILED");
+            setHasError(true)
         }
 
         else {
             var panels = (await axios.post("/get_panels", { access_token })).data;
             sessionStorage.setItem("panels", JSON.stringify(panels));
-            alert("DONE");
+            handleClose()
         }
-        handleClose()
+        
     }
 
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{ useState } from 'react'
 
 import Modal from "../Modal";
 import LeadingIcon from "../LeadingIcon";
@@ -8,11 +8,20 @@ import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
 import "../agent/CreateUserForm.css"
 import axios from 'axios';
-
+import ErrorCard from '../../components/ErrorCard';
 
 const CreateUserForm = ({ handleClose }) => {
-    const access_token = sessionStorage.getItem("access_token");
+    const [hasError, setHasError] = useState(false)
 
+    const errorCard = (
+        <ErrorCard
+            hasError={hasError}
+            setHasError={setHasError}
+            errorTitle="ERROR"
+            errorMessage="failed to create agent"
+        />
+    )
+    const access_token = sessionStorage.getItem("access_token");
 
 
 
@@ -30,15 +39,15 @@ const CreateUserForm = ({ handleClose }) => {
         var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token });
 
         if (res.data === "ERR") {
-            alert("FAILED");
+            setHasError(true)
         }
 
         else {
             var agents = (await axios.post("/get_agents", { access_token })).data;
             sessionStorage.setItem("agents",JSON.stringify(agents));
-            alert("DONE");
+            handleClose()
         }
-        handleClose()
+        
     }
 
     return (
