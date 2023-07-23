@@ -35,9 +35,10 @@ const SubscriptionActions = ({ subscriptionLink, config, setShowEditModal, shoul
         handleMouseLeave: handleMouseLeave4,
     } = useHover();
 
-    const handleCopySubscriptionLink = () => {
+    const handleCopySubscriptionLink = (e) => {
         navigator.clipboard.writeText(subscriptionLink);
         setClickedButton("subscriptionLink");
+        e.stopPropagation();
 
         // Remove the tooltip when the button is clicked
         if ('ontouchstart' in window || navigator.maxTouchPoints) {
@@ -53,9 +54,10 @@ const SubscriptionActions = ({ subscriptionLink, config, setShowEditModal, shoul
         }
     };
 
-    const handleCopyConfigLink = () => {
+    const handleCopyConfigLink = (e) => {
         navigator.clipboard.writeText(config);
         setClickedButton("config");
+        e.stopPropagation();
 
         // Remove the tooltip when the button is clicked
         if ('ontouchstart' in window || navigator.maxTouchPoints) {
@@ -104,6 +106,7 @@ const SubscriptionActions = ({ subscriptionLink, config, setShowEditModal, shoul
                     className="subscription-section__button"
                     onMouseEnter={handleMouseEnter3}
                     onMouseLeave={handleMouseLeave3}
+                    onClick={e => e.stopPropagation()}
                 >
                     <Tooltip isHovered={isHovered3}>QR Code</Tooltip>
                     <QRCodeIcon />
