@@ -181,6 +181,7 @@
 
     .users-table__body tr:hover {
         background-color: transparent;
+        cursor: default;
     }
 }
 

@@ -11,7 +11,7 @@ import convertData from "../../utils/file-size-util";
 import handleExpireTime from "../../utils/expire-time-util";
 import handleUserStatus from "../../utils/status-util";
 
-const UsersTable = ({ currentRows }) => {
+const UsersTable = ({ currentRows, setShowEditModal }) => {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
     const shouldRenderTr = screenWidth < 690;
 
@@ -36,6 +36,10 @@ const UsersTable = ({ currentRows }) => {
         }
     }
 
+    const handleShowEditModal = () => {
+        setShowEditModal(true);
+    }
+
 
     const renderedUsers = currentRows.map((user) => {
         const userStatus = handleUserStatus(user)
@@ -48,7 +52,7 @@ const UsersTable = ({ currentRows }) => {
 
         return (
             <>
-                <tr key={key}>
+                <tr key={key} onClick={!shouldRenderTr ? handleShowEditModal : undefined}>
                     <td style={{ maxWidth: "10rem" }}>{user.username}</td>
                     <td>
                         <span className={`status ${userStatus}`}>{userStatus}</span>
@@ -88,6 +92,8 @@ const UsersTable = ({ currentRows }) => {
                             dataUsage={user.dataUsage}
                             config={config}
                             subscriptionLink={subscriptionLink}
+                            setShowEditModal={setShowEditModal}
+                            shouldRenderTr={shouldRenderTr}
                         />
                     }
                 </AnimatePresence >

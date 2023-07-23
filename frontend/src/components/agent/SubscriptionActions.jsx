@@ -7,8 +7,11 @@ import { ReactComponent as LinkIcon } from "../../assets/svg/link.svg";
 import { ReactComponent as PasteIcon } from "../../assets/svg/paste.svg";
 import { ReactComponent as QRCodeIcon } from "../../assets/svg/qr-code.svg";
 import { ReactComponent as CheckedIcon } from "../../assets/svg/checked.svg";
+import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
 
-const SubscriptionActions = ({ subscriptionLink, config }) => {
+
+
+const SubscriptionActions = ({ subscriptionLink, config, setShowEditModal, shouldRenderTr }) => {
     const [clickedButton, setClickedButton] = useState(null);
 
     const {
@@ -25,6 +28,11 @@ const SubscriptionActions = ({ subscriptionLink, config }) => {
         isHovered: isHovered3,
         handleMouseEnter: handleMouseEnter3,
         handleMouseLeave: handleMouseLeave3,
+    } = useHover();
+    const {
+        isHovered: isHovered4,
+        handleMouseEnter: handleMouseEnter4,
+        handleMouseLeave: handleMouseLeave4,
     } = useHover();
 
     const handleCopySubscriptionLink = () => {
@@ -100,6 +108,15 @@ const SubscriptionActions = ({ subscriptionLink, config }) => {
                     <Tooltip isHovered={isHovered3}>QR Code</Tooltip>
                     <QRCodeIcon />
                 </button>
+                {shouldRenderTr && <button
+                    className="subscription-section__button"
+                    onMouseEnter={handleMouseEnter4}
+                    onMouseLeave={handleMouseLeave4}
+                    onClick={() => setShowEditModal(true)}
+                >
+                    <Tooltip isHovered={isHovered4}>Edit</Tooltip>
+                    <EditIcon />
+                </button>}
             </div>
         </div>
     );
