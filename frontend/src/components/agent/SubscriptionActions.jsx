@@ -30,18 +30,38 @@ const SubscriptionActions = ({ subscriptionLink, config }) => {
     const handleCopySubscriptionLink = () => {
         navigator.clipboard.writeText(subscriptionLink);
         setClickedButton("subscriptionLink");
-        setTimeout(() => {
-            setClickedButton(null);
-        }, 1000);
+
+        // Remove the tooltip when the button is clicked
+        if ('ontouchstart' in window || navigator.maxTouchPoints) {
+            setTimeout(() => {
+                handleMouseLeave1();
+                setClickedButton(null);
+            }, 1000);
+        } else {
+            // For non-touch devices (e.g., desktop), remove tooltip after 1 second
+            setTimeout(() => {
+                setClickedButton(null);
+            }, 1000);
+        }
     };
 
     const handleCopyConfigLink = () => {
         navigator.clipboard.writeText(config);
         setClickedButton("config");
-        setTimeout(() => {
-            setClickedButton(null);
-            console.log(clickedButton);
-        }, 1000);
+
+        // Remove the tooltip when the button is clicked
+        if ('ontouchstart' in window || navigator.maxTouchPoints) {
+            setTimeout(() => {
+                handleMouseLeave2();
+                setClickedButton(null);
+            }, 1000);
+        } else {
+            // For non-touch devices (e.g., desktop), remove tooltip after 1 second
+            setTimeout(() => {
+                setClickedButton(null);
+            }, 1000);
+        }
+
     };
 
     return (
