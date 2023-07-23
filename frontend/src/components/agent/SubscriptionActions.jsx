@@ -40,6 +40,7 @@ const SubscriptionActions = ({ subscriptionLink, config }) => {
         setClickedButton("config");
         setTimeout(() => {
             setClickedButton(null);
+            console.log(clickedButton);
         }, 1000);
     };
 

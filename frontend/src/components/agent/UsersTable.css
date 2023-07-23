@@ -31,6 +31,10 @@
     border-top: 1px solid #d2d2d4;
 }
 
+.users-table__body td:last-of-type {
+    width: 10rem;
+}
+
 .users-table__body tr {
     transition: all 0.3s ease;
     cursor: pointer;
@@ -154,6 +158,7 @@
 
     .users-table__body td:last-of-type {
         padding-left: 0;
+        width: 0;
     }
 
     .users-table__subscription-actions .table-actions {
@@ -176,5 +181,11 @@
 
     .users-table__body tr:hover {
         background-color: transparent;
+    }
+}
+
+@media (max-width: 425px) {
+    .wrapper {
+        overflow-x: auto;
     }
 }

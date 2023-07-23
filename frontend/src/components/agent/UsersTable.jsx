@@ -63,7 +63,7 @@ const UsersTable = ({ currentRows }) => {
                             </div>
                         </div>
                     </td>
-                    <td style={{ width: "10rem" }}>
+                    <td>
                         <div className="users-table__subscription-actions">
                             <div className="table-actions">
                                 {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} />}
