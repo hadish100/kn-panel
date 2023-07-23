@@ -39,6 +39,8 @@ const Navbar = () => {
     const adminLinks = [
         { path: '/admin/panels', linkText: 'Panels' },
         { path: '/admin/agents', linkText: 'Agents' },
+        { path: '/admin/settings', linkText: 'Settings' },
+        { path: '/admin/log', linkText: 'Log' },
     ];
 
     return (

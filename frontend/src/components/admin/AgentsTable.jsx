@@ -23,7 +23,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
     }
 
     return (
-        <div className="wrapper" style={{ Width: "1230px" }}>
+        <div className="wrapper" style={{ Width: "1230px", overflowX: "auto" }}>
             <table className="agents-table">
                 <thead className="agents-table__header">
                     <tr className="agents-table__header__row">

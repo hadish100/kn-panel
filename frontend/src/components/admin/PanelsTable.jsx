@@ -19,7 +19,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
     }
 
     return (
-        <div className="wrapper">
+        <div className="wrapper" style={{ overflowX: "auto" }}>
             <table className="panels-table">
                 <thead className="panels-table__header">
                     <tr className="panels-table__header__row">
@@ -42,7 +42,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
                                 </span>
                             </td>
                             <td>{user.panel_traffic + " GB"}</td>
-                            <td >{user.active_user + " / " + (user.active_user + user.deactive_user) }</td>
+                            <td >{user.active_user + " / " + (user.active_user + user.deactive_user)}</td>
                             <td >{user.panel_user_max_count}</td>
                             <td>{user.country}</td>
                             <td className="table__actions">

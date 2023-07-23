@@ -24,7 +24,9 @@ const App = () => {
 
     const isAdminPath =
         location.startsWith("/admin/panels") ||
-        location.startsWith("/admin/agents");
+        location.startsWith("/admin/agents") ||
+        location.startsWith("/admin/settings") ||
+        location.startsWith("/admin/log");
 
     return (
         <BrowserRouter>
@@ -38,6 +40,8 @@ const App = () => {
                 {/* Admin Routes */}
                 {isAdminPath && isLoggedIn && <Route path='/admin/panels' element={<PanelsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/agents' element={<AgentsPage />} />}
+                {isAdminPath && isLoggedIn && <Route path='/admin/settings' element={<SettingsPage />} />}
+                {isAdminPath && isLoggedIn && <Route path='/admin/log' element={<LogsPage />} />}
 
                 {/* 404 - Not Found */}
                 <Route path='*' element={<NotFoundPage />} />
