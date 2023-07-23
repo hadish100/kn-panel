@@ -15,8 +15,8 @@ import EditUserForm from '../../components/agent/EditUserForm'
 var users =
     [
         {
-            id: 2,
-            username: "soheil18",
+            id: 1,
+            username: "TEST1",
             isActive: false,
             expireTime: {
                 days: 15,
@@ -27,23 +27,10 @@ var users =
             totalData: 2006753,
             subscriptionLink: "https://www.google.com",
             config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
-        },
+        }, 
         {
             id: 2,
-            username: "soheil18",
-            isActive: false,
-            expireTime: {
-                days: 15,
-                hours: 12,
-                minutes: 42
-            },
-            dataUsage: 1024785,
-            totalData: 2006753,
-            subscriptionLink: "https://www.google.com",
-            config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
-        }, {
-            id: 1,
-            username: "soheil17",
+            username: "TEST2",
             isActive: true,
             expireTime: {
                 days: 24,
@@ -56,30 +43,16 @@ var users =
             config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
         },
         {
-            id: 2,
-            username: "soheil18",
-            isActive: false,
+            id: 3,
+            username: "TEST3",
+            isActive: true,
             expireTime: {
-                days: 15,
-                hours: 12,
-                minutes: 42
+                days: 11,
+                hours: 24,
+                minutes: 32
             },
-            dataUsage: 1024785,
-            totalData: 2006753,
-            subscriptionLink: "https://www.google.com",
-            config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
-        },
-        {
-            id: 2,
-            username: "soheil18",
-            isActive: false,
-            expireTime: {
-                days: 15,
-                hours: 12,
-                minutes: 42
-            },
-            dataUsage: 1024785,
-            totalData: 2006753,
+            dataUsage: 3008976720,
+            totalData: 3008976720,
             subscriptionLink: "https://www.google.com",
             config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
         }];

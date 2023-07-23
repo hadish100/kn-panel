@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{ useState } from 'react'
 
 import Modal from "../Modal";
 import LeadingIcon from "../LeadingIcon";
@@ -8,6 +8,7 @@ import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
 import "./CreateUserForm.css"
 import axios from "axios";
+import ErrorCard from '../../components/ErrorCard';
 
 
 
@@ -15,7 +16,16 @@ import axios from "axios";
 
 
 const CreateUserForm = ({ handleClose }) => {
+    const [hasError, setHasError] = useState(false)
 
+    const errorCard = (
+        <ErrorCard
+            hasError={hasError}
+            setHasError={setHasError}
+            errorTitle="ERROR"
+            errorMessage="failed to create user"
+        />
+    )
 
     const access_token = sessionStorage.getItem("access_token");
     const handleSubmit = async (
@@ -25,15 +35,14 @@ const CreateUserForm = ({ handleClose }) => {
         var res = await axios.post("/create_user", { username,expire,data_limit,access_token });
     
         if (res.data === "ERR") {
-            alert("FAILED");
+            setHasError(true)
         }
     
         else {
             var users = (await axios.post("/get_users", { access_token })).data;
             sessionStorage.setItem("users",JSON.stringify(users));
-            alert("DONE");
-        }
         handleClose()
+        }
     }
 
     return (
@@ -72,6 +81,7 @@ const CreateUserForm = ({ handleClose }) => {
                         document.getElementById("daysToExpire").value
                     )}>Create User</Button>
             </motion.footer>
+            {errorCard}
         </Modal>
     )
 }

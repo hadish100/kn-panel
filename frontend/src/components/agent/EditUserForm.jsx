@@ -25,7 +25,7 @@ const EditUserForm = ({ handleClose, showModal }) => {
                     <form className="modal__form">
                         <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }}>
                             <label className="modal__form__label" htmlFor="name">Username</label>
-                            <input className="modal__form__input" type="text" id="name" name="name" />
+                            <input className="modal__form__input" type="text" id="name" name="name" disabled />
                         </motion.div>
 
                         <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.1 }}>
