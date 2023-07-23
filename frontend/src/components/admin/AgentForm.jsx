@@ -135,7 +135,7 @@ const CreateUserForm = ({ handleClose }) => {
                 </Button>
 
             </motion.footer>
-
+            {errorCard}
         </Modal>
     )
 }

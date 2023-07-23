@@ -115,6 +115,7 @@ const PanelForm = ({ handleClose }) => {
                 >
                     Add Panel</Button>
             </motion.footer>
+            {errorCard}
         </Modal>
     )
 }
