@@ -1,0 +1,23 @@
+.admin-log-page__filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .admin-log-page__filter .search-wrapper {
+        width: 100%;
+    }
+
+    .admin-log-page__filter {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-sizeSmall {
+    height: 45px;
+    border-radius: 6px;
+    outline: none;
+}
