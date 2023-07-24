@@ -1,0 +1,15 @@
+.settings-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-page>*+* {
+    margin-top: 1rem;
+}
+
+.settings-page__footer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 1rem;
+}

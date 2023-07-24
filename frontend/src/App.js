@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import LogsPage from './pages/agent/LogsPage';
-import SettingsPage from './pages/agent/SettingsPage';
+import AgentLogsPage from './pages/agent/AgentLogsPage';
+import AgentSettingsPage from './pages/agent/AgentSettingsPage';
+import AdminLogsPage from './pages/admin/AdminLogsPage';
+import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 import UsersPage from './pages/agent/UsersPage';
 import Login from './pages/Login';
 import Navbar from './components/Navbar';
@@ -35,13 +37,13 @@ const App = () => {
                 <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setLocation={setLocation} />} />
                 {/* Agent Routes */}
                 {isAgentPath && isLoggedIn && <Route path='/agent/users' element={<UsersPage />} />}
-                {isAgentPath && isLoggedIn && <Route path='/agent/settings' element={<SettingsPage />} />}
-                {isAgentPath && isLoggedIn && <Route path='/agent/log' element={<LogsPage />} />}
+                {isAgentPath && isLoggedIn && <Route path='/agent/settings' element={<AgentSettingsPage />} />}
+                {isAgentPath && isLoggedIn && <Route path='/agent/log' element={<AgentLogsPage />} />}
                 {/* Admin Routes */}
                 {isAdminPath && isLoggedIn && <Route path='/admin/panels' element={<PanelsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/agents' element={<AgentsPage />} />}
-                {isAdminPath && isLoggedIn && <Route path='/admin/settings' element={<SettingsPage />} />}
-                {isAdminPath && isLoggedIn && <Route path='/admin/log' element={<LogsPage />} />}
+                {isAdminPath && isLoggedIn && <Route path='/admin/settings' element={<AdminSettingsPage />} />}
+                {isAdminPath && isLoggedIn && <Route path='/admin/log' element={<AdminLogsPage />} />}
 
                 {/* 404 - Not Found */}
                 <Route path='*' element={<NotFoundPage />} />

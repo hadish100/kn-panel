@@ -1,8 +1,8 @@
 import React from 'react'
 
-import './LogsPage.css'
+import './AgentSettingsPage.css'
 
-const SettingsPage = () => {
+const AgentSettingsPage = () => {
     return (
         <div className='panel_body'>
             <div>SettingsPage</div>
@@ -10,4 +10,4 @@ const SettingsPage = () => {
     )
 }
 
-export default SettingsPage
+export default AgentSettingsPage

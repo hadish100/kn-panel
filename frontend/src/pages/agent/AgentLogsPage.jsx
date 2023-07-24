@@ -1,8 +1,8 @@
 import React from 'react'
 
-import './LogsPage.css'
+import './AgentLogsPage.css'
 
-const LogsPage = () => {
+const AgentLogsPage = () => {
     return (
         <div className='panel_body'>
             <div>LOGS</div>
@@ -10,4 +10,4 @@ const LogsPage = () => {
     )
 }
 
-export default LogsPage
+export default AgentLogsPage
