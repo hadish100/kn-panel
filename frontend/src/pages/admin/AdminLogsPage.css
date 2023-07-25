@@ -3,6 +3,62 @@
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+
+.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-sizeSmall {
+    height: 45px;
+    border-radius: 6px;
+    outline: none;
+}
+
+.logs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.log {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-clr);
+    border-radius: var(--border-radius-md);
+    background-color: #F9FAFB;
+    padding: 1rem;
+}
+
+.log__text {
+    display: flex;
+    font-family: InterMedium;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--dark-clr-300);
+
+    text-size-adjust: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    transition: max-height .5s ease-in-out;
+}
+
+.log__date {
+    font-size: 0.875rem;
+    font-family: Inter;
+    color: var(--dark-clr-100);
+}
+
+.log__text .chevron-icon svg {
+    width: 1rem;
+    height: 1rem;
+    fill: var(--dark-clr-100);
+    transform: rotate(0deg);
+    transition: transform 0.2s ease-in-out;
+}
+
+.log__text.expanded .chevron-icon svg {
+    transform: rotate(180deg);
+
 }
 
 @media (max-width: 768px) {
@@ -14,10 +70,4 @@
         flex-direction: column;
         align-items: stretch;
     }
-}
-
-.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-sizeSmall {
-    height: 45px;
-    border-radius: 6px;
-    outline: none;
 }
