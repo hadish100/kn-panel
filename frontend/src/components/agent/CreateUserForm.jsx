@@ -29,7 +29,7 @@ const CreateUserForm = ({ handleClose }) => {
 
     const access_token = sessionStorage.getItem("access_token");
     const handleSubmit = async (
-        username,expire,data_limit
+        username,data_limit,expire
     ) => {
         expire *= 86400;
         var res = await axios.post("/create_user", { username,expire,data_limit,access_token });

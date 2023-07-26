@@ -9,7 +9,7 @@ import { AnimatePresence } from "framer-motion"
 import UsersTableAccordion from "../UsersTableAccordion";
 import convertData from "../../utils/file-size-util";
 import handleExpireTime from "../../utils/expire-time-util";
-import handleUserStatus from "../../utils/status-util";
+// import handleUserStatus from "../../utils/status-util";
 
 const UsersTable = ({ currentRows, setShowEditModal }) => {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
@@ -42,12 +42,12 @@ const UsersTable = ({ currentRows, setShowEditModal }) => {
 
 
     const renderedUsers = currentRows.map((user) => {
-        const userStatus = handleUserStatus(user)
-        const dataUsage = convertData(user.dataUsage)
-        const totalData = convertData(user.totalData)
-        const expireTime = handleExpireTime(user.isActive, user.expireTime)
-        const subscriptionLink = user.subscriptionLink
-        const config = user.config
+        const userStatus = user.status
+        const dataUsage = convertData(user.used_traffic)
+        const totalData = convertData(user.data_limit)
+        const expireTime = handleExpireTime(user.expire)
+        const subscriptionLink = user.subscription_url
+        const config = user.links.join("\n");
         const key = user.id
 
         return (
@@ -87,7 +87,7 @@ const UsersTable = ({ currentRows, setShowEditModal }) => {
                         <UsersTableAccordion
                             key={key}
                             userStatus={userStatus}
-                            expireTime={expireTime}
+                            //expireTime={expireTime}
                             totalData={user.totalData}
                             dataUsage={user.dataUsage}
                             config={config}

@@ -11,7 +11,6 @@ import ErrorCard from '../components/ErrorCard';
 const Login = ({ setIsLoggedIn, setLocation }) => {
     const [hasError, setHasError] = useState(false)
     const navigate = useNavigate();
-
     const send_login_data = async (e) => {
         e.preventDefault();
         var username = e.target[0].value

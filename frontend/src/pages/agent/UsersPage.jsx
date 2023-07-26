@@ -12,50 +12,50 @@ import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 import EditUserForm from '../../components/agent/EditUserForm'
 
-var users =
-    [
-        {
-            id: 1,
-            username: "TEST1",
-            isActive: false,
-            expireTime: {
-                days: 15,
-                hours: 12,
-                minutes: 42
-            },
-            dataUsage: 1024785,
-            totalData: 2006753,
-            subscriptionLink: "https://www.google.com",
-            config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
-        }, 
-        {
-            id: 2,
-            username: "TEST2",
-            isActive: true,
-            expireTime: {
-                days: 24,
-                hours: 24,
-                minutes: 32
-            },
-            dataUsage: 350766210,
-            totalData: 2008976720,
-            subscriptionLink: "https://www.google.com",
-            config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
-        },
-        {
-            id: 3,
-            username: "TEST3",
-            isActive: true,
-            expireTime: {
-                days: 11,
-                hours: 24,
-                minutes: 32
-            },
-            dataUsage: 3008976720,
-            totalData: 3008976720,
-            subscriptionLink: "https://www.google.com",
-            config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
-        }];
+// var users =
+//     [
+//         {
+//             id: 1,
+//             username: "TEST1",
+//             isActive: false,
+//             expireTime: {
+//                 days: 15,
+//                 hours: 12,
+//                 minutes: 42
+//             },
+//             dataUsage: 1024785,
+//             totalData: 2006753,
+//             subscriptionLink: "https://www.google.com",
+//             config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+//         }, 
+//         {
+//             id: 2,
+//             username: "TEST2",
+//             isActive: true,
+//             expireTime: {
+//                 days: 24,
+//                 hours: 24,
+//                 minutes: 32
+//             },
+//             dataUsage: 350766210,
+//             totalData: 2008976720,
+//             subscriptionLink: "https://www.google.com",
+//             config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+//         },
+//         {
+//             id: 3,
+//             username: "TEST3",
+//             isActive: true,
+//             expireTime: {
+//                 days: 11,
+//                 hours: 24,
+//                 minutes: 32
+//             },
+//             dataUsage: 3008976720,
+//             totalData: 3008976720,
+//             subscriptionLink: "https://www.google.com",
+//             config: "loreamasndlasdobobllb32o39232o2b39g9gib21neo1hn//a/sd/454/"
+//         }];
 
 const UsersPage = () => {
     const [showCreateModal, setShowCreateModal] = useState(false)
@@ -64,10 +64,10 @@ const UsersPage = () => {
     const [selection, setSelection] = useState(null)
     const [currentPage, setCurrentPage] = useState(1)
 
-    // var users = JSON.parse(sessionStorage.getItem("users"));
-    // users = Array(10).fill({id:5,username:"salam"});
+      var { users } = JSON.parse(sessionStorage.getItem("users"));
+        users.reverse();
     console.log(users)
-
+ 
     const handleClick = () => {
         setShowCreateModal(true)
         console.log(currentRows.length)
@@ -87,6 +87,7 @@ const UsersPage = () => {
 
     const LastRowIndex = currentPage * rowsPerPage
     const FirstRowIndex = LastRowIndex - rowsPerPage
+    console.log(FirstRowIndex,LastRowIndex)
     const currentRows = users.slice(FirstRowIndex, LastRowIndex)
 
     const totalPages = Math.ceil(users.length / rowsPerPage)

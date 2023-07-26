@@ -15,6 +15,7 @@ const AgentsPage = () => {
     const [showEditModal, setShowEditModal] = useState(false)
 
     const agents = JSON.parse(sessionStorage.getItem("agents"));
+    
 
 
     const handleClick = () => {

@@ -84,7 +84,8 @@ app.post("/create_agent", async (req, res) => {
                 password: password,
                 panels: panels_id,
                 maximum_user: parseInt(max_users),
-                minimum_volume: parseInt(min_vol)
+                minimum_volume: parseInt(min_vol),
+                access_country_panel:["DE"]
             },
             { headers: { accept: 'application/json', Authorization: access_token } })).data;
 
@@ -138,7 +139,7 @@ app.post("/create_user", async (req, res) => {
             {
                 username: username,
                 expire: parseInt(expire) + parseInt(Date.now() / 1000),
-                data_limit: parseInt(data_limit),
+                data_limit: parseInt(data_limit)*((2**10)**3),
                 country: "DE"
             },
             { headers: { accept: 'application/json', Authorization: access_token } }));
