@@ -54,6 +54,7 @@
 .login__btn {
     font-family: Inter;
     font-weight: 600;
+    transition:all 0.2s;
 }
 
 .login__btn svg {
@@ -61,4 +62,10 @@
     height: 21px;
     stroke-width: 2px;
     margin-right: 5px;
+}
+
+.login__btn__clicked
+{
+    opacity:0.5;
+    transform:scale(0.95) !important;
 }

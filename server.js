@@ -6,7 +6,6 @@ const API_SERVER_URL = "http://212.87.214.199";
 app.use(express.json());
 
 
-
 async function get_agents(access_token) {
     var agents = (await axios.get(API_SERVER_URL + '/api/admin/agents/', { headers: { accept: 'application/json', Authorization: access_token } })).data
     return agents;
