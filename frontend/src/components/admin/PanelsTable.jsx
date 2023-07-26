@@ -6,11 +6,17 @@ import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Button from "../Button"
 import axios from 'axios'
 
-async function delete_panel(panel_id) {
+async function delete_panel(e,panel_id) {
+    e.stopPropagation();
     const access_token = sessionStorage.getItem("access_token");
     var delete_panel = (await axios.post("/delete_panel", { access_token, panel_id })).data;
     var panels = (await axios.post("/get_panels", { access_token })).data;
     sessionStorage.setItem("panels", JSON.stringify(panels));
+}
+
+function power_panel(e)
+{
+    e.stopPropagation();
 }
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal }) => {
@@ -46,10 +52,10 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
                             <td >{user.panel_user_max_count}</td>
                             <td>{user.country}</td>
                             <td className="table__actions">
-                                <Button onClick={() => delete_panel(user.id)} className="ghosted">
+                                <Button onClick={(e) => delete_panel(e,user.id)} className="ghosted">
                                     <DeleteIcon />
                                 </Button>
-                                <Button className="ghosted">
+                                <Button onClick={(e) => power_panel(e)} className="ghosted">
                                     <PowerIcon />
                                 </Button>
                             </td>

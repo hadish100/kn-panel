@@ -7,14 +7,20 @@ import Button from "../Button"
 import axios from 'axios'
 
 function b2gb(x) {
-    return parseInt(x / 10 ** 9)
+    return parseInt(x / (2**10)**3)
 }
 
-async function delete_agent(agent_id) {
+async function delete_agent(e,agent_id) {
+    e.stopPropagation();
     const access_token = sessionStorage.getItem("access_token");
     var delete_agent = (await axios.post("/delete_agent", { access_token, agent_id })).data;
     var agents = (await axios.post("/get_agents", { access_token })).data;
     sessionStorage.setItem("agents", JSON.stringify(agents));
+}
+
+function power_agent(e)
+{
+    e.stopPropagation();
 }
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal }) => {
@@ -47,17 +53,17 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
                                     {user.status ? "Inactive" : "Active"}
                                 </span>
                             </td>
-                            <td >{user.activeUsers}</td>
+                            <td >{user.active_user}</td>
                             <td>{user.used_traffic + " GB"}</td>
                             <td>{b2gb(user.volume) + " GB"}</td>
                             <td>{b2gb(user.weight_dividable) + " GB"}</td>
                             <td>{user.prefix}</td>
                             <td>{user.country}</td>
                             <td className="table__actions">
-                                <Button onClick={() => delete_agent(user.id)} className="ghosted delete-icon">
+                                <Button onClick={(e) => delete_agent(e,user.id)} className="ghosted delete-icon">
                                     <DeleteIcon />
                                 </Button>
-                                <Button className="ghosted power-icon">
+                                <Button onClick={(e) => power_agent(e)} className="ghosted power-icon">
                                     <PowerIcon />
                                 </Button>
                             </td>

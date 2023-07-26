@@ -2,8 +2,8 @@ const handleExpireTime = (expireTime) => {
     const current_time = parseInt(Date.now()/1000);
     const isActive = current_time < expireTime;
     const remaining_days = Math.abs(parseInt((current_time-expireTime)/(60*60*24)));
-    const remaining_hours = remaining_days*24;
-    const remaining_minutes = remaining_hours*60;
+    const remaining_hours =  Math.abs(parseInt((current_time-expireTime)/(60*60)));
+    const remaining_minutes =  Math.abs(parseInt((current_time-expireTime)/(60)))%60;
     if (isActive) {
         if (remaining_days !== 0) {
             return `Expires in ${remaining_days} days`;

@@ -60,7 +60,7 @@ const UsersTable = ({ currentRows, setShowEditModal }) => {
                     </td>
                     <td>
                         <div className="users-table__progress-bar">
-                            <ProgressBar dataUsage={user.dataUsage} totalData={user.totalData} status={userStatus} />
+                            <ProgressBar dataUsage={user.used_traffic} totalData={user.data_limit} status={userStatus} />
                             <div className="progress-bar__text">
                                 <span className="progress-bar__text__data-usage">{dataUsage} / {totalData}</span>
                                 <span className="progress-bar__text__total-data">Total: {totalData}</span>
