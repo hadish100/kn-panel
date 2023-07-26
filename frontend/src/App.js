@@ -11,6 +11,8 @@ import Navbar from './components/Navbar';
 import PanelsPage from './pages/admin/PanelsPage';
 import AgentsPage from './pages/admin/AgentsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AdminHomePage from './pages/admin/AdminHomePage';
+import AgentHomePage from './pages/agent/AgentHomePage';
 
 const App = () => {
     const [location, setLocation] = useState(window.location.pathname);
@@ -36,10 +38,12 @@ const App = () => {
             <Routes>
                 <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setLocation={setLocation} />} />
                 {/* Agent Routes */}
+                {isAgentPath && isLoggedIn && <Route path='/agent/home' element={<AgentHomePage />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/users' element={<UsersPage />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/settings' element={<AgentSettingsPage />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/log' element={<AgentLogsPage />} />}
                 {/* Admin Routes */}
+                {isAdminPath && isLoggedIn && <Route path='/admin/home' element={<AdminHomePage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/panels' element={<PanelsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/agents' element={<AgentsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/settings' element={<AdminSettingsPage />} />}
