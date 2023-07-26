@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const axios = require('axios');
-const API_SERVER_URL = "http://164.92.143.109";
+const API_SERVER_URL = "http://212.87.214.199";
 
 app.use(express.json());
 
@@ -101,22 +101,22 @@ app.post("/create_agent", async (req, res) => {
 
 
 app.post("/create_panel", async (req, res) => {
-    const { panel_name,panel_url,panel_username,panel_password,panel_country,panel_user_max_count,panel_user_max_date,panel_traffic,access_token } = req.body;
+    const { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token } = req.body;
 
     try {
 
-        var create_panel = (await axios.post( API_SERVER_URL  + '/api/admin/panel/create/',
-        {
-            panel_name:panel_name,
-            panel_url:panel_url,
-            panel_username:panel_username,
-            panel_password:panel_password,
-            panel_country:panel_country,
-            panel_user_max_count:parseInt(panel_user_max_count),
-            panel_user_max_date:parseInt(panel_user_max_date),
-            panel_traffic:parseInt(panel_traffic),
-        },
-        {headers:{accept:'application/json',Authorization:access_token}}));
+        var create_panel = (await axios.post(API_SERVER_URL + '/api/admin/panel/create/',
+            {
+                panel_name: panel_name,
+                panel_url: panel_url,
+                panel_username: panel_username,
+                panel_password: panel_password,
+                panel_country: panel_country,
+                panel_user_max_count: parseInt(panel_user_max_count),
+                panel_user_max_date: parseInt(panel_user_max_date),
+                panel_traffic: parseInt(panel_traffic),
+            },
+            { headers: { accept: 'application/json', Authorization: access_token } }));
 
         res.send("DONE");
     }
@@ -130,18 +130,18 @@ app.post("/create_panel", async (req, res) => {
 });
 
 app.post("/create_user", async (req, res) => {
-    const { username,expire,data_limit,access_token } = req.body;
+    const { username, expire, data_limit, access_token } = req.body;
 
     try {
 
-        var create_user = (await axios.post( API_SERVER_URL + '/api/user/create/',
-        {
-            username:username,
-            expire:parseInt(expire) + parseInt(Date.now()/1000),
-            data_limit:parseInt(data_limit),
-            country:"DE"
-        },
-        {headers:{accept:'application/json',Authorization:access_token}}));
+        var create_user = (await axios.post(API_SERVER_URL + '/api/user/create/',
+            {
+                username: username,
+                expire: parseInt(expire) + parseInt(Date.now() / 1000),
+                data_limit: parseInt(data_limit),
+                country: "DE"
+            },
+            { headers: { accept: 'application/json', Authorization: access_token } }));
 
         res.send("DONE");
     }
@@ -157,21 +157,19 @@ app.post("/create_user", async (req, res) => {
 
 
 app.post("/delete_agent", async (req, res) => {
-    var { access_token,agent_id } = req.body;
-   
-    try
-    {
-        var delete_agent = (await axios.delete( API_SERVER_URL + '/api/admin/agent/delete/',
-        {
-            data: { agent_id: agent_id }, 
-            headers: { accept: 'application/json',Authorization:access_token }
-        })).data; 
-    
+    var { access_token, agent_id } = req.body;
+
+    try {
+        var delete_agent = (await axios.delete(API_SERVER_URL + '/api/admin/agent/delete/',
+            {
+                data: { agent_id: agent_id },
+                headers: { accept: 'application/json', Authorization: access_token }
+            })).data;
+
         res.send("DONE");
     }
 
-    catch(err)
-    {
+    catch (err) {
         console.log(err);
         res.send("ERR");
     }
@@ -180,21 +178,19 @@ app.post("/delete_agent", async (req, res) => {
 
 
 app.post("/delete_panel", async (req, res) => {
-    var { access_token,panel_id } = req.body;
-   
-    try
-    {
-        var delete_panel = (await axios.delete( API_SERVER_URL + '/api/admin/panel/delete/',
-        {
-            data: { panel_id: panel_id }, 
-            headers: { accept: 'application/json',Authorization:access_token }
-        })).data; 
-    
+    var { access_token, panel_id } = req.body;
+
+    try {
+        var delete_panel = (await axios.delete(API_SERVER_URL + '/api/admin/panel/delete/',
+            {
+                data: { panel_id: panel_id },
+                headers: { accept: 'application/json', Authorization: access_token }
+            })).data;
+
         res.send("DONE");
     }
 
-    catch(err)
-    {
+    catch (err) {
         console.log(err);
         res.send("ERR");
     }
