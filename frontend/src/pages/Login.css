@@ -1,5 +1,6 @@
 .login {
-    height: 100vh;
+    /* 1.5rem is the padding for the body padding*/
+    min-height: calc(100vh - 2 * 1.5rem);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,7 +44,7 @@
 
 .login__form input {
     border: 1px solid var(--border-clr);
-    border-radius:0.375rem;
+    border-radius: 0.375rem;
 }
 
 .login__form input:focus {
