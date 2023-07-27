@@ -15,8 +15,15 @@ async function delete_panel(e, panel_id) {
     sessionStorage.setItem("panels", JSON.stringify(panels));
 }
 
-function power_panel(e) {
+
+
+async function power_panel(e,panel_id)
+{
     e.stopPropagation();
+    const access_token = sessionStorage.getItem("access_token");
+    var disable_panel = (await axios.post("/disable_panel", { access_token, panel_id })).data;
+    var panels = (await axios.post("/get_panels", { access_token })).data;
+    sessionStorage.setItem("panels", JSON.stringify(panels));
 }
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
@@ -53,7 +60,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                     <Button onClick={(e) => delete_panel(e, user.id)} className="ghosted">
                                         <DeleteIcon />
                                     </Button>
-                                    <Button onClick={(e) => power_panel(e)} className="ghosted">
+                                    <Button onClick={(e) => power_panel(e, user.id)} className="ghosted">
                                         <PowerIcon />
                                     </Button>
                                 </td>
@@ -64,5 +71,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
         </div>
     )
 }
+
+
 
 export default AdminPanelsTable

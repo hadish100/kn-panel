@@ -18,9 +18,13 @@ async function delete_agent(e,agent_id) {
     sessionStorage.setItem("agents", JSON.stringify(agents));
 }
 
-function power_agent(e)
+async function power_agent(e,agent_id)
 {
     e.stopPropagation();
+    const access_token = sessionStorage.getItem("access_token");
+    var disable_agent = (await axios.post("/disable_agent", { access_token, agent_id })).data;
+    var agents = (await axios.post("/get_agents", { access_token })).data;
+    sessionStorage.setItem("agents", JSON.stringify(agents));
 }
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal }) => {
@@ -63,7 +67,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
                                 <Button onClick={(e) => delete_agent(e,user.id)} className="ghosted delete-icon">
                                     <DeleteIcon />
                                 </Button>
-                                <Button onClick={(e) => power_agent(e)} className="ghosted power-icon">
+                                <Button onClick={(e) => power_agent(e,user.id)} className="ghosted power-icon">
                                     <PowerIcon />
                                 </Button>
                             </td>

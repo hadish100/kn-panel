@@ -223,10 +223,9 @@ app.post("/disable_panel", async (req, res) => {
 
     try {
         var disable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/disable/',
-            {
-                data: { panel_id: panel_id },
-                headers: { accept: 'application/json', Authorization: access_token }
-            })).data;
+               { panel_id },
+               { headers: { accept: 'application/json', Authorization: access_token } }
+            )).data;
 
         res.send("DONE");
     }
@@ -243,10 +242,9 @@ app.post("/disable_agent", async (req, res) => {
 
     try {
         var disable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/disable/',
-            {
-                data: { agent_id: agent_id },
-                headers: { accept: 'application/json', Authorization: access_token }
-            })).data;
+                { agent_id },
+                {headers: { accept: 'application/json', Authorization: access_token }}
+            )).data;
 
         res.send("DONE");
     }
