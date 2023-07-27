@@ -25,7 +25,7 @@ function power_agent(e)
 
 const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal }) => {
     const handleClick = () => {
-        setShowEditModal(true)
+        setShowEditModal(true)        
     }
 
     return (
