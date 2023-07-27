@@ -35,7 +35,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                     </tr>
                 </thead>
                 <tbody className="panels-table__body">
-                    {currentItems.lenght === undefined
+                    {items.length === 0
                         ? <EmptyTable tableType={"panel"} colSpan={7} onCreateButton={onCreateItem} />
                         : currentItems.map((user) => (
                             <tr onClick={onEditItem} key={user.id}>
