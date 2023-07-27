@@ -78,17 +78,20 @@ const CreateUserForm = ({ handleClose }) => {
                         <input className="modal__form__input" type="text" id="password" name="password" />
                     </motion.div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.3 }}>
-                        <label className="modal__form__label" htmlFor="volume">Volume</label>
-                        <input className="modal__form__input" type="number" id="volume" name="volume" />
+
+                    <motion.div className="flex gap-16" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.3 }}>
+                        <div className="modal__form__group" >
+                            <label className="modal__form__label" htmlFor="volume">Volume</label>
+                            <input className="modal__form__input" type="number" id="volume" name="volume" />
+                        </div>
+
+                        <div className="modal__form__group">
+                            <label className="modal__form__label" htmlFor="min_vol">Minimum Volume</label>
+                            <input className="modal__form__input" type="number" id="min_vol" name="min_vol" />
+                        </div>
                     </motion.div>
 
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
-                        <label className="modal__form__label" htmlFor="min_vol">Minimum Volume</label>
-                        <input className="modal__form__input" type="number" id="min_vol" name="min_vol" />
-                    </motion.div>
-
-                    <motion.div className="flex gap-16" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.5 }}>
+                    <motion.div className="flex gap-16" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.4 }}>
                         <div className="modal__form__group" >
                             <label className="modal__form__label" htmlFor="max_users">Maximum Users</label>
                             <input className="modal__form__input" type="number" id="max_users" name="max_users" />
@@ -100,7 +103,7 @@ const CreateUserForm = ({ handleClose }) => {
                         </div>
                     </motion.div>
 
-                    <motion.div className="flex gap-16" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.6 }}>
+                    <motion.div className="flex gap-16" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.5 }}>
                         <div className="modal__form__group">
                             <label className="modal__form__label" htmlFor="prefix">Prefix</label>
                             <input className="modal__form__input" type="text" id="prefix" name="prefix" />
