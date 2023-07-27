@@ -27,6 +27,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
         var res;
 
         try {
+            error_message = "Please check your username and password";
             res = await axios.post("/login", { username, password }, { timeout: 20000 });
         }
 
@@ -42,6 +43,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
             document.querySelectorAll(".login__btn")[0].disabled = false;
             document.querySelectorAll(".login__btn")[0].classList.remove("login__btn__clicked");
         }
+
 
         else {
             var access_token = res.data.access_token;
