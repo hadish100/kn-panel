@@ -12,21 +12,21 @@ import './PanelsPage.css'
 
 
 const PanelsPage = () => {
-    const [showAddModal, setShowAddModal] = useState(false)
-    const [showEditModal, setShowEditModal] = useState(false)
+    const [showCreatePanel, setShowCreatePanel] = useState(false)
+    const [showEditPanel, setShowEditPanel] = useState(false)
 
     var panels = JSON.parse(sessionStorage.getItem("panels"));
 
-    const handleClick = () => {
-        setShowAddModal(true)
+    const handleCreatePanel = () => {
+        setShowCreatePanel(true)
     }
 
-    const handleCloseAddModal = () => {
-        setShowAddModal(false)
+    const handleCloseCreatePanel = () => {
+        setShowCreatePanel(false)
     }
 
-    const handleCloseEditModal = () => {
-        setShowEditModal(false)
+    const handleCloseEditPanel = () => {
+        setShowEditPanel(false)
     }
 
     return (
@@ -36,19 +36,25 @@ const PanelsPage = () => {
                 <Search />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh"><RefreshIcon /></Button>
-                    <Button onClick={handleClick} className="create-user-button primary">Add Panel</Button>
+                    <Button onClick={handleCreatePanel} className="create-user-button primary">Create Panel</Button>
                 </span>
             </div>
 
             <AnimatePresence>
-                {showAddModal && <AddPanelForm
-                    handleClose={handleCloseAddModal}
+                {showCreatePanel && <AddPanelForm
+                    onClose={handleCloseCreatePanel}
                 />}
             </AnimatePresence>
 
-            <EditPanelForm handleClose={handleCloseEditModal} showModal={showEditModal} />
+            <EditPanelForm onClose={handleCloseEditPanel} showFrom={showEditPanel} />
 
-            <PanelsTable users={panels} rowsPerPage={10} currentRows={panels} setShowEditModal={setShowEditModal} />
+            <PanelsTable
+                items={panels}
+                itemsPerPage={10}
+                currentItems={panels}
+                onEditItem={setShowEditPanel}
+                onCreateItem={handleCreatePanel}
+            />
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React, { useState } from 'react'
 
 import Modal from "../Modal";
 import LeadingIcon from "../LeadingIcon";
@@ -11,7 +11,7 @@ import axios from 'axios'
 import ErrorCard from '../../components/ErrorCard';
 
 
-const PanelForm = ({ handleClose }) => {
+const PanelForm = ({ onClose }) => {
     const [hasError, setHasError] = useState(false)
 
     const errorCard = (
@@ -44,20 +44,20 @@ const PanelForm = ({ handleClose }) => {
         else {
             var panels = (await axios.post("/get_panels", { access_token })).data;
             sessionStorage.setItem("panels", JSON.stringify(panels));
-            handleClose()
+            onClose()
         }
-        
+
     }
 
 
     return (
-        <Modal onClose={handleClose} >
+        <Modal onClose={onClose} >
             <header className="modal__header">
                 <LeadingIcon>
                     <PanelIcon />
                 </LeadingIcon>
                 <h1 className="modal__title">Add new panel</h1>
-                <div className="close-icon" onClick={handleClose}>
+                <div className="close-icon" onClick={onClose}>
                     <XMarkIcon />
                 </div>
             </header>
@@ -100,7 +100,7 @@ const PanelForm = ({ handleClose }) => {
                 </form>
             </main>
             <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button className={"transparent outlined"} onClick={handleClose}>Cancel</Button>
+                <Button className={"transparent outlined"} onClick={onClose}>Cancel</Button>
                 <Button className={"primary"}
                     onClick={() => handleSubmit(
                         document.getElementById("name").value,

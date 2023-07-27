@@ -8,16 +8,16 @@ import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import Button from '../Button'
 
 
-const EditPanelForm = ({ handleClose, showModal }) => {
+const EditPanelForm = ({ onClose, showForm }) => {
     return (
         <AnimatePresence>
-            {showModal && <Modal onClose={handleClose}>
+            {showForm && <Modal onClose={onClose}>
                 <header className="modal__header">
                     <LeadingIcon>
                         <EditIcon />
                     </LeadingIcon>
                     <h1 className="modal__title">Edit panel</h1>
-                    <div className="close-icon" onClick={handleClose}>
+                    <div className="close-icon" onClick={onClose}>
                         <XMarkIcon />
                     </div>
                 </header>
@@ -60,7 +60,7 @@ const EditPanelForm = ({ handleClose, showModal }) => {
                     </form>
                 </main>
                 <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <Button className="outlined" onClick={handleClose}>Cancel</Button>
+                    <Button className="outlined" onClick={onClose}>Cancel</Button>
                     <Button className="primary">Edit Panel</Button>
                 </motion.footer>
             </Modal>}
