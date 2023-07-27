@@ -24,12 +24,14 @@ const App = () => {
     const isAgentPath =
         location.startsWith("/agent/users") ||
         location.startsWith("/agent/settings") ||
+        location.startsWith("/agent/home") ||
         location.startsWith("/agent/log");
 
     const isAdminPath =
         location.startsWith("/admin/panels") ||
         location.startsWith("/admin/agents") ||
         location.startsWith("/admin/settings") ||
+        location.startsWith("/admin/home") ||
         location.startsWith("/admin/log");
 
     return (
