@@ -43,7 +43,7 @@ const App = () => {
                 {isAgentPath && isLoggedIn && <Route path='/agent/settings' element={<AgentSettingsPage />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/log' element={<AgentLogsPage />} />}
                 {/* Admin Routes */}
-                {isAdminPath && isLoggedIn && <Route path='/admin/home' element={<AdminHomePage />} />}
+                {isAdminPath && isLoggedIn && <Route path='/admin/home' element={<AdminHomePage setLocation={setLocation} />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/panels' element={<PanelsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/agents' element={<AgentsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/settings' element={<AdminSettingsPage />} />}

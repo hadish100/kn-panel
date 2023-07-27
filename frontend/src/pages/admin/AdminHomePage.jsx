@@ -4,17 +4,18 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const AdminHomePage = () => {
+const AdminHomePage = ({ setLocation }) => {
 
     const navigate = useNavigate();
 
-    const exit_account = () => {
+    const handleLogout = () => {
         sessionStorage.clear();
+        setLocation("/login")
         navigate("/login");
     }
 
     return (
-        <div onClick={exit_account} class="exit-account" >
+        <div onClick={handleLogout} class="exit-account" >
             <img src={power_img} />
             <span>LOGOUT</span>
         </div>
