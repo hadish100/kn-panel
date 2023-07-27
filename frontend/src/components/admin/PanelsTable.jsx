@@ -8,13 +8,6 @@ import "./PanelsTable.css"
 
 function power_panel(e) {
     e.stopPropagation();
-<<<<<<< Updated upstream
-    const access_token = sessionStorage.getItem("access_token");
-    var disable_panel = (await axios.post("/disable_panel", { access_token, panel_id })).data;
-    var panels = (await axios.post("/get_panels", { access_token })).data;
-    sessionStorage.setItem("panels", JSON.stringify(panels));
-=======
->>>>>>> Stashed changes
 }
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem, onDeleteItem }) => {
@@ -51,7 +44,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                     <Button onClick={(e) => onDeleteItem(e, item.id)} className="ghosted">
                                         <DeleteIcon />
                                     </Button>
-                                    <Button onClick={(e) => power_panel(e, user.id)} className="ghosted">
+                                    <Button onClick={(e) => power_panel(e, item.id)} className="ghosted">
                                         <PowerIcon />
                                     </Button>
                                 </td>
