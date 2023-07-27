@@ -6,18 +6,7 @@ import Button from "../Button"
 import EmptyTable from "../EmptyTable"
 import "./PanelsTable.css"
 
-async function delete_panel(e, panel_id) {
-    e.stopPropagation();
-    const access_token = sessionStorage.getItem("access_token");
-    var delete_panel = (await axios.post("/delete_panel", { access_token, panel_id })).data;
-    var panels = (await axios.post("/get_panels", { access_token })).data;
-    sessionStorage.setItem("panels", JSON.stringify(panels));
-}
-
-
-
-async function power_panel(e,panel_id)
-{
+function power_panel(e) {
     e.stopPropagation();
     const access_token = sessionStorage.getItem("access_token");
     var disable_panel = (await axios.post("/disable_panel", { access_token, panel_id })).data;
