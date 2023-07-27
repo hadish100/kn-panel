@@ -1,0 +1,24 @@
+.empty-table {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 1.25rem;
+}
+
+.empty-table>svg {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+.empty-table>h6 {
+    font-family: InterMedium;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--dark-clr-200);
+}
+
+.empty-table>button {
+    text-transform: capitalize;
+}
