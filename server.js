@@ -197,6 +197,70 @@ app.post("/delete_panel", async (req, res) => {
 
 });
 
+app.post("/delete_user", async (req, res) => {
+    var { access_token,username } = req.body;
+
+    try {
+        var delete_panel = (await axios.delete(API_SERVER_URL + '/api/user/delete/',
+            {
+                data: { username:username },
+                headers: { accept: 'application/json', Authorization: access_token }
+            })).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
+
+app.post("/disable_panel", async (req, res) => {
+    var { access_token, panel_id } = req.body;
+
+    try {
+        var disable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/disable/',
+            {
+                data: { panel_id: panel_id },
+                headers: { accept: 'application/json', Authorization: access_token }
+            })).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
+app.post("/disable_agent", async (req, res) => {
+    var { access_token, agent_id } = req.body;
+
+    try {
+        var disable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/disable/',
+            {
+                data: { agent_id: agent_id },
+                headers: { accept: 'application/json', Authorization: access_token }
+            })).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
+
+
+
 
 
 app.listen(5000, () => {
