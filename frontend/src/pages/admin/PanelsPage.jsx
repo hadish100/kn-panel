@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 import Search from '../../components/Search'
 import Button from '../../components/Button'
@@ -14,8 +15,22 @@ import './PanelsPage.css'
 const PanelsPage = () => {
     const [showCreatePanel, setShowCreatePanel] = useState(false)
     const [showEditPanel, setShowEditPanel] = useState(false)
+    const [panels, setPanels] = useState([])
 
-    var panels = JSON.parse(sessionStorage.getItem("panels"));
+    useEffect(() => {
+        setPanels(JSON.parse(sessionStorage.getItem("panels")))
+    }, [])
+
+    const handleDeletePanel = (e, panel_id) => {
+        e.stopPropagation();
+        const access_token = sessionStorage.getItem("access_token");
+        axios.post("/delete_panel", { access_token, panel_id }).then((res) => {
+            let panels = JSON.parse(sessionStorage.getItem("panels"))
+            panels = panels.filter((panel) => panel.id !== panel_id)
+            sessionStorage.setItem("panels", JSON.stringify(panels))
+            setPanels(panels)
+        })
+    }
 
     const handleCreatePanel = () => {
         setShowCreatePanel(true)
@@ -54,6 +69,7 @@ const PanelsPage = () => {
                 currentItems={panels}
                 onEditItem={setShowEditPanel}
                 onCreateItem={handleCreatePanel}
+                onDeleteItem={handleDeletePanel}
             />
         </div>
     )

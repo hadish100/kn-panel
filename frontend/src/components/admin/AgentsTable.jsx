@@ -4,32 +4,18 @@ import "./AgentsTable.css"
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Button from "../Button"
-import axios from 'axios'
 
 function b2gb(x) {
-    return parseInt(x / (2**10)**3)
+    return parseInt(x / (2 ** 10) ** 3)
 }
 
-async function delete_agent(e,agent_id) {
+function power_agent(e) {
     e.stopPropagation();
-    const access_token = sessionStorage.getItem("access_token");
-    var delete_agent = (await axios.post("/delete_agent", { access_token, agent_id })).data;
-    var agents = (await axios.post("/get_agents", { access_token })).data;
-    sessionStorage.setItem("agents", JSON.stringify(agents));
 }
 
-async function power_agent(e,agent_id)
-{
-    e.stopPropagation();
-    const access_token = sessionStorage.getItem("access_token");
-    var disable_agent = (await axios.post("/disable_agent", { access_token, agent_id })).data;
-    var agents = (await axios.post("/get_agents", { access_token })).data;
-    sessionStorage.setItem("agents", JSON.stringify(agents));
-}
-
-const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal }) => {
+const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal, onDeleteItem }) => {
     const handleClick = () => {
-        setShowEditModal(true)        
+        setShowEditModal(true)
     }
 
     return (
@@ -64,7 +50,7 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal })
                             <td>{user.prefix}</td>
                             <td>{user.country}</td>
                             <td className="table__actions">
-                                <Button onClick={(e) => delete_agent(e,user.id)} className="ghosted delete-icon">
+                                <Button onClick={(e) => onDeleteItem(e, user.id)} className="ghosted delete-icon">
                                     <DeleteIcon />
                                 </Button>
                                 <Button onClick={(e) => power_agent(e,user.id)} className="ghosted power-icon">

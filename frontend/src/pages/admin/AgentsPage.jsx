@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 import Search from '../../components/Search'
 import Button from '../../components/Button'
@@ -13,10 +14,23 @@ import EditAgentForm from '../../components/admin/EditAgentForm'
 const AgentsPage = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false)
+    const [agents, setAgents] = useState([])
 
-    const agents = JSON.parse(sessionStorage.getItem("agents"));
-    
+    useEffect(() => {
+        const agents = JSON.parse(sessionStorage.getItem("agents"))
+        setAgents(agents)
+    }, [])
 
+    const handleDeleteItem = (e, agent_id) => {
+        e.stopPropagation();
+        const access_token = sessionStorage.getItem("access_token");
+        axios.post("/delete_agent", { access_token, agent_id }).then((res) => {
+            let agents = JSON.parse(sessionStorage.getItem("agents"))
+            agents = agents.filter((agent) => agent.id !== agent_id)
+            sessionStorage.setItem("agents", JSON.stringify(agents))
+            setAgents(agents)
+        })
+    }
 
     const handleClick = () => {
         setShowCreateModal(true)
@@ -52,7 +66,7 @@ const AgentsPage = () => {
 
             <EditAgentForm handleClose={handleCloseEditModal} showModal={showEditModal} />
 
-            <AgentsTable users={agents} rowsPerPage={10} currentRows={agents} setShowEditModal={setShowEditModal} />
+            <AgentsTable users={agents} rowsPerPage={10} currentRows={agents} setShowEditModal={setShowEditModal} onDeleteItem={handleDeleteItem} />
 
         </div>
     )

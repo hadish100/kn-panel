@@ -1,5 +1,4 @@
 import React from "react"
-import axios from 'axios'
 
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
@@ -26,7 +25,7 @@ async function power_panel(e,panel_id)
     sessionStorage.setItem("panels", JSON.stringify(panels));
 }
 
-const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
+const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem, onDeleteItem }) => {
     return (
         <div className="wrapper" style={{ overflowX: "auto" }}>
             <table className="panels-table">
@@ -44,20 +43,20 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                 <tbody className="panels-table__body">
                     {items.length === 0
                         ? <EmptyTable tableType={"panel"} colSpan={7} onCreateButton={onCreateItem} />
-                        : currentItems.map((user) => (
-                            <tr onClick={onEditItem} key={user.id}>
-                                <td>{user.panel_name}</td>
+                        : currentItems.map((item) => (
+                            <tr onClick={onEditItem} key={item.id}>
+                                <td>{item.panel_name}</td>
                                 <td>
-                                    <span className={`status ${user.status ? "limited" : "active"}`} >
-                                        {user.status ? "Deactive" : "Active"}
+                                    <span className={`status ${item.status ? "limited" : "active"}`} >
+                                        {item.status ? "Deactive" : "Active"}
                                     </span>
                                 </td>
-                                <td>{user.panel_traffic + " GB"}</td>
-                                <td >{user.active_user + " / " + (user.active_user + user.deactive_user)}</td>
-                                <td >{user.panel_user_max_count}</td>
-                                <td>{user.country}</td>
+                                <td>{item.panel_traffic + " GB"}</td>
+                                <td >{item.active_user + " / " + (item.active_user + item.deactive_user)}</td>
+                                <td >{item.panel_user_max_count}</td>
+                                <td>{item.country}</td>
                                 <td className="table__actions">
-                                    <Button onClick={(e) => delete_panel(e, user.id)} className="ghosted">
+                                    <Button onClick={(e) => onDeleteItem(e, item.id)} className="ghosted">
                                         <DeleteIcon />
                                     </Button>
                                     <Button onClick={(e) => power_panel(e, user.id)} className="ghosted">
