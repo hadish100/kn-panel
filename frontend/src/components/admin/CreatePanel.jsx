@@ -35,13 +35,13 @@ const CreatePanel = ({ onClose }) => {
 
     const handleSubmitForm = () => {
         // Gather form data
-        const panel_name = document.getElementById("name").value;
+        const panel_name = document.getElementById("panel_name").value;
         const panel_url = document.getElementById("panel_url").value;
-        const panel_username = document.getElementById("username").value;
-        const panel_password = document.getElementById("password").value;
+        const panel_username = document.getElementById("panel_username").value;
+        const panel_password = document.getElementById("panel_password").value;
         const panel_country = document.getElementById("country").value;
-        const panel_user_max_count = document.getElementById("capacity").value;
-        const panel_traffic = document.getElementById("traffic").value;
+        const panel_user_max_count = document.getElementById("panel_user_max_count").value;
+        const panel_traffic = document.getElementById("panel_traffic").value;
         // Send form data to backend
         createPanelOnServer(panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, 30, panel_traffic)
     }
@@ -66,7 +66,7 @@ const CreatePanel = ({ onClose }) => {
             <Form
                 onClose={onClose}
                 showForm={true}
-                title="Create Panel"
+                title="Create new panel"
                 iconComponent={<PanelIcon />}
                 primaryButtons={primaryButtons}
                 formFields={formFields}

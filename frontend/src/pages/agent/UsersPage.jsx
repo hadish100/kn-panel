@@ -37,7 +37,7 @@ const UsersPage = () => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_user", { access_token, user_id });
-        let users = (await axios.post("/get_users", { access_token })).data;
+        let { users } = (await axios.post("/get_users", { access_token })).data;
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
         setShowEditUser(false)
@@ -50,6 +50,7 @@ const UsersPage = () => {
 
     const handleCloseCreateUser = () => {
         setShowCreateUser(false)
+        setUsers(JSON.parse(sessionStorage.getItem("users")).users)
     }
 
     const handlePageChange = (page) => {
@@ -100,6 +101,8 @@ const UsersPage = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClose={handleCloseCreateUser}
+                    showForm={showCreateUser}
+                    items={users}
                 />}
             </AnimatePresence>
             <UsersTable

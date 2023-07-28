@@ -16,7 +16,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item }) => {
     }
 
     const formFields = [
-        { label: "Username", type: "text", id: "name", name: "name" },
+        { label: "Username", type: "text", id: "username", name: "username", disabled: true },
         { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit" },
         { label: "Days To Expire", type: "number", id: "expire", name: "expire" },
     ]
@@ -27,7 +27,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item }) => {
     ]
 
     const secondaryButtons = [
-        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
+        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.temp_id) },
         { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_user },
     ]
 
@@ -40,6 +40,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item }) => {
             primaryButtons={primaryButtons}
             secondaryButtons={secondaryButtons}
             formFields={formFields}
+            item={item}
         />
     )
 }

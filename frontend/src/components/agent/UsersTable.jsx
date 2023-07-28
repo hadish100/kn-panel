@@ -47,7 +47,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                 const expireTime = handleExpireTime(item.expire)
                 const subscriptionLink = item.subscription_url
                 const config = item.links.join("\n");
-                const key = item.id
+                const key = item.temp_id
 
                 return (
                     <>
@@ -71,8 +71,8 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                                     <div className="table-actions">
                                         {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} />}
                                     </div>
-                                    <div className={`accordion chevron-icon${expandedId === item.id ? "--up" : ""}`}>
-                                        <Button className="ghosted" onClick={() => handleShowAccordion(item.id)}>
+                                    <div className={`accordion chevron-icon${expandedId === item.temp_id ? "--up" : ""}`}>
+                                        <Button className="ghosted" onClick={() => handleShowAccordion(item.temp_id)}>
                                             <ChevronDownIcon />
                                         </Button>
                                     </div>

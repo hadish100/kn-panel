@@ -1,29 +1,16 @@
 import React, { useState } from 'react'
-
-import Modal from "../Modal";
-import LeadingIcon from "../LeadingIcon";
-import Button from "../Button";
-import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
-import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
-import { motion } from "framer-motion"
-import "./CreateUser.css"
 import axios from "axios";
-import ErrorCard from '../ErrorCard';
 
-const CreateUser = ({ onClose }) => {
+import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
+import ErrorCard from '../ErrorCard';
+import Form from '../form/Form';
+import "./CreateUser.css"
+
+const CreateUser = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
 
-    const errorCard = (
-        <ErrorCard
-            hasError={hasError}
-            setHasError={setHasError}
-            errorTitle="ERROR"
-            errorMessage="failed to create user"
-        />
-    )
-
     const access_token = sessionStorage.getItem("access_token");
-    const handleSubmit = async (
+    const createUserOnServer = async (
         username, data_limit, expire
     ) => {
         expire *= 86400;
@@ -31,53 +18,50 @@ const CreateUser = ({ onClose }) => {
 
         if (res.data === "ERR") {
             setHasError(true)
-        }
-
-        else {
+        } else {
             var users = (await axios.post("/get_users", { access_token })).data;
             sessionStorage.setItem("users", JSON.stringify(users));
             onClose()
         }
     }
 
+    const handleSubmitForm = () => {
+        // Gather form data
+        const username = document.getElementById("username").value;
+        const data_limit = document.getElementById("dataLimit").value;
+        const expire = document.getElementById("daysToExpire").value;
+        // Send form data to backend
+        createUserOnServer(username, data_limit, expire)
+    }
+
+    const formFields = [
+        { label: "Username", type: "text", id: "username", name: "username" },
+        { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit" },
+        { label: "Days To Expire", type: "number", id: "daysToExpire", name: "daysToExpire" }
+    ]
+
+    const primaryButtons = [
+        { label: "Cancel", className: "outlined", onClick: onClose },
+        { label: "Create User", className: "primary", onClick: handleSubmitForm }
+    ]
+
     return (
-        <Modal onClose={onClose} >
-            <header className="modal__header">
-                <LeadingIcon>
-                    <AddUserIcon />
-                </LeadingIcon>
-                <h1 className="modal__title">Create new user</h1>
-                <div className="close-icon" onClick={onClose}>
-                    <XMarkIcon />
-                </div>
-            </header>
-            <main className="modal__body">
-                <form className="modal__form">
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }}>
-                        <label className="modal__form__label" htmlFor="username">Username</label>
-                        <input className="modal__form__input" type="text" id="username" name="username" />
-                    </motion.div>
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.1 }}>
-                        <label className="modal__form__label" htmlFor="dataLimit">Data Limit</label>
-                        <input className="modal__form__input" type="number" id="dataLimit" name="dataLimit" />
-                    </motion.div>
-                    <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: 0.2 }}>
-                        <label className="modal__form__label" htmlFor="daysToExpire">Days To Expire</label>
-                        <input className="modal__form__input" type="number" id="daysToExpire" name="daysToExpire" />
-                    </motion.div>
-                </form>
-            </main>
-            <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button className={"outlined"} onClick={onClose}>Cancel</Button>
-                <Button className="primary"
-                    onClick={() => handleSubmit(
-                        document.getElementById("username").value,
-                        document.getElementById("dataLimit").value,
-                        document.getElementById("daysToExpire").value
-                    )}>Create User</Button>
-            </motion.footer>
-            {errorCard}
-        </Modal>
+        <>
+            <Form
+                onClose={onClose}
+                title="Create new user"
+                iconComponent={<AddUserIcon />}
+                formFields={formFields}
+                primaryButtons={primaryButtons}
+                showForm={showForm}
+            />
+            <ErrorCard
+                hasError={hasError}
+                setHasError={setHasError}
+                errorTitle="ERROR"
+                errorMessage="failed to create user"
+            />
+        </>
     )
 }
 
