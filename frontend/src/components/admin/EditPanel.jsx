@@ -15,7 +15,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem }) => {
         { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url" },
         { label: "Capacity", type: "number", id: "panel_user_max_count", name: "capacity" },
         { label: "Traffic", type: "number", id: "panel_traffic", name: "traffic" },
-        { label: "Country", type: "text", id: "country", name: "country" }
+        { label: "Country", type: "text", id: "country", name: "country", disabled: true }
     ]
 
     const primaryButtons = [
@@ -25,7 +25,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem }) => {
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id,item.panel_disable) },
+        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.panel_disable) },
     ]
 
     return (

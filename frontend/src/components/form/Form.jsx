@@ -9,15 +9,9 @@ import Button from '../Button';
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
 
-
-    function b2gb(x) 
-    {
+    function b2gb(x) {
         return parseInt(x / (2 ** 10) ** 3)
     }
-
-
-
-
 
     const formHeader = (
         <header className="modal__header">
@@ -75,12 +69,12 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             name={field.name}
                                             animateDelay={rowIndex * 0.1}
                                             defaultValue={
-                                                item? 
-                                                (field.id === "volume" ? b2gb(item[field.id]) : 
-                                                (field.id === "password" ? 
-                                                "" : item[field.id]))
-                                                  : ""
-                                              }
+                                                item ?
+                                                    (field.id === "volume" ? b2gb(item[field.id]) :
+                                                        (field.id === "password" ? "" : item[field.id]))
+                                                    : ""
+                                            }
+                                            disabled={field.disabled}
                                         />
                                     )) : (
                                         <FormField
@@ -91,12 +85,12 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             name={group.name}
                                             animateDelay={rowIndex * 0.1}
                                             defaultValue={
-                                                item? 
-                                                (group.id === "volume" ? b2gb(item[group.id]) : 
-                                                (group.id === "password" ? 
-                                                "" : item[group.id]))
-                                                  : ""
-                                              }
+                                                item ?
+                                                    (group.id === "volume" ? b2gb(item[group.id]) :
+                                                        (group.id === "password" ? "" : item[group.id]))
+                                                    : ""
+                                            }
+                                            disabled={group.disabled}
                                         />
                                     )}
                                 </div>
