@@ -85,7 +85,7 @@ const UsersPage = () => {
     return (
 
         <div className='panel_body'>
-            <UsageStats activeUsers={agent.active_user} totalUsers={agent.active_user} dataUsage={b2gb(agent.used_traffic) + " GB"} remainingData={b2gb(agent.volume) + " GB"} allocableData={b2gb(agent.weight_dividable
+            <UsageStats activeUsers={agent.active_user} totalUsers={agent.total_users} dataUsage={b2gb(agent.used_traffic) + " GB"} remainingData={b2gb(agent.volume) + " GB"} allocableData={b2gb(agent.weight_dividable
             ) + " GB"} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search />

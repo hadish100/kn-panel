@@ -5,6 +5,11 @@ const API_SERVER_URL = "http://212.87.214.199";
 
 app.use(express.json());
 
+function uid() {
+    return Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
+}
+
+
 
 async function get_agents(access_token) {
     var agents = (await axios.get(API_SERVER_URL + '/api/admin/agents/', { headers: { accept: 'application/json', Authorization: access_token } })).data
@@ -30,6 +35,9 @@ app.post("/get_panels", async (req, res) => {
 
 async function get_users(access_token) {
     var users = (await axios.get(API_SERVER_URL + '/api/user/view/', { headers: { accept: 'application/json', Authorization: access_token } })).data
+    var inner_users = users.users;
+    inner_users.map(x=>x.temp_id = uid());
+    users.users = inner_users;
     return users;
 }
 
