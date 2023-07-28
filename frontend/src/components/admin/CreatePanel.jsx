@@ -4,7 +4,7 @@ import axios from 'axios'
 import { ReactComponent as PanelIcon } from "../../assets/svg/panel.svg";
 import ErrorCard from '../ErrorCard';
 import Form from "../form/Form"
-import "../agent/CreateUserForm.css"
+import "../agent/CreateUser.css"
 
 
 const CreatePanel = ({ onClose }) => {

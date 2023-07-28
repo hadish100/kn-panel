@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React, { useState } from 'react'
 
 import Modal from "../Modal";
 import LeadingIcon from "../LeadingIcon";
@@ -6,16 +6,11 @@ import Button from "../Button";
 import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
 import { ReactComponent as XMarkIcon } from "../../assets/svg/x-mark.svg";
 import { motion } from "framer-motion"
-import "./CreateUserForm.css"
+import "./CreateUser.css"
 import axios from "axios";
-import ErrorCard from '../../components/ErrorCard';
+import ErrorCard from '../ErrorCard';
 
-
-
-
-
-
-const CreateUserForm = ({ handleClose }) => {
+const CreateUser = ({ onClose }) => {
     const [hasError, setHasError] = useState(false)
 
     const errorCard = (
@@ -29,30 +24,30 @@ const CreateUserForm = ({ handleClose }) => {
 
     const access_token = sessionStorage.getItem("access_token");
     const handleSubmit = async (
-        username,data_limit,expire
+        username, data_limit, expire
     ) => {
         expire *= 86400;
-        var res = await axios.post("/create_user", { username,expire,data_limit,access_token });
-    
+        var res = await axios.post("/create_user", { username, expire, data_limit, access_token });
+
         if (res.data === "ERR") {
             setHasError(true)
         }
-    
+
         else {
             var users = (await axios.post("/get_users", { access_token })).data;
-            sessionStorage.setItem("users",JSON.stringify(users));
-        handleClose()
+            sessionStorage.setItem("users", JSON.stringify(users));
+            onClose()
         }
     }
 
     return (
-        <Modal onClose={handleClose} >
+        <Modal onClose={onClose} >
             <header className="modal__header">
                 <LeadingIcon>
                     <AddUserIcon />
                 </LeadingIcon>
                 <h1 className="modal__title">Create new user</h1>
-                <div className="close-icon" onClick={handleClose}>
+                <div className="close-icon" onClick={onClose}>
                     <XMarkIcon />
                 </div>
             </header>
@@ -73,8 +68,8 @@ const CreateUserForm = ({ handleClose }) => {
                 </form>
             </main>
             <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button className={"outlined"} onClick={handleClose}>Cancel</Button>
-                <Button   className="primary"
+                <Button className={"outlined"} onClick={onClose}>Cancel</Button>
+                <Button className="primary"
                     onClick={() => handleSubmit(
                         document.getElementById("username").value,
                         document.getElementById("dataLimit").value,
@@ -86,4 +81,4 @@ const CreateUserForm = ({ handleClose }) => {
     )
 }
 
-export default CreateUserForm
+export default CreateUser
