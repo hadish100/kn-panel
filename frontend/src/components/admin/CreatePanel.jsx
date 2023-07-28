@@ -47,13 +47,13 @@ const CreatePanel = ({ onClose }) => {
     }
 
     const formFields = [
-        { label: "Name", type: "text", id: "name", name: "name", animateDelay: 0 },
-        { label: "Username", type: "text", id: "username", name: "username", animateDelay: 0.1 },
-        { label: "Password", type: "text", id: "password", name: "password", animateDelay: 0.2 },
-        { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url", animateDelay: 0.3 },
-        { label: "Capacity", type: "number", id: "capacity", name: "capacity", animateDelay: 0.4 },
-        { label: "Traffic", type: "number", id: "traffic", name: "traffic", animateDelay: 0.5 },
-        { label: "Country", type: "text", id: "country", name: "country", animateDelay: 0.6 }
+        { label: "Name", type: "text", id: "name", name: "name" },
+        { label: "Username", type: "text", id: "username", name: "username" },
+        { label: "Password", type: "text", id: "password", name: "password" },
+        { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url" },
+        { label: "Capacity", type: "number", id: "capacity", name: "capacity" },
+        { label: "Traffic", type: "number", id: "traffic", name: "traffic" },
+        { label: "Country", type: "text", id: "country", name: "country" }
     ]
 
     const primaryButtons = [

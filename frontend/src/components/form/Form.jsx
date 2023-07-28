@@ -29,7 +29,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                     type={field.type}
                                     id={field.id}
                                     name={field.name}
-                                    animateDelay={field.animateDelay}
+                                    animateDelay={index * 0.1}
                                     defaultValue={field.defaultValue}
                                 />
                             ))}
