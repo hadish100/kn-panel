@@ -13,11 +13,7 @@ function power_agent(e) {
     e.stopPropagation();
 }
 
-const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal, onDeleteItem }) => {
-    const handleClick = () => {
-        setShowEditModal(true)
-    }
-
+const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onDeleteItem }) => {
     return (
         <div className="wrapper" style={{ Width: "1230px", overflowX: "auto" }}>
             <table className="agents-table">
@@ -35,25 +31,25 @@ const AdminPanelsTable = ({ users, rowsPerPage, currentRows, setShowEditModal, o
                     </tr>
                 </thead>
                 <tbody className="agents-table__body">
-                    {currentRows.map((user) => (
-                        <tr onClick={handleClick} key={user.id} agent_id={user.id} >
-                            <td>{user.agent_name}</td>
+                    {currentItems.map((item) => (
+                        <tr onClick={() => onEditItem(item)} key={item.id} agent_id={item.id} >
+                            <td>{item.agent_name}</td>
                             <td>
-                                <span className={`status ${user.status ? "limited" : "active"}`} >
-                                    {user.status ? "Inactive" : "Active"}
+                                <span className={`status ${item.status ? "limited" : "active"}`} >
+                                    {item.status ? "Inactive" : "Active"}
                                 </span>
                             </td>
-                            <td >{user.active_user}</td>
-                            <td>{user.used_traffic + " GB"}</td>
-                            <td>{b2gb(user.volume) + " GB"}</td>
-                            <td>{b2gb(user.weight_dividable) + " GB"}</td>
-                            <td>{user.prefix}</td>
-                            <td>{user.country}</td>
+                            <td >{item.active_user}</td>
+                            <td>{item.used_traffic + " GB"}</td>
+                            <td>{b2gb(item.volume) + " GB"}</td>
+                            <td>{b2gb(item.weight_dividable) + " GB"}</td>
+                            <td>{item.prefix}</td>
+                            <td>{item.country}</td>
                             <td className="table__actions">
-                                <Button onClick={(e) => onDeleteItem(e, user.id)} className="ghosted delete-icon">
+                                <Button onClick={(e) => onDeleteItem(e, item.id)} className="ghosted delete-icon">
                                     <DeleteIcon />
                                 </Button>
-                                <Button onClick={(e) => power_agent(e,user.id)} className="ghosted power-icon">
+                                <Button onClick={(e) => power_agent(e, item.id)} className="ghosted power-icon">
                                     <PowerIcon />
                                 </Button>
                             </td>

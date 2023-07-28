@@ -5,23 +5,23 @@ import Search from '../../components/Search'
 import Button from '../../components/Button'
 import AgentsTable from '../../components/admin/AgentsTable'
 import AdminUsageStats from '../../components/admin/UsageStats'
-import AddPanelForm from '../../components/admin/AgentForm'
+import CreateAgent from '../../components/admin/CreateAgent'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
-import './AgentsPage.css'
 import EditAgentForm from '../../components/admin/EditAgentForm'
+import './AgentsPage.css'
 
 const AgentsPage = () => {
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false)
+    const [showCreateAgent, setShowCreateAgent] = useState(false);
+    const [showEditAgent, setShowEditAgent] = useState(false)
     const [agents, setAgents] = useState([])
+    const [selectedAgent, setSelectedAgent] = useState(null)
 
     useEffect(() => {
-        const agents = JSON.parse(sessionStorage.getItem("agents"))
-        setAgents(agents)
+        setAgents(JSON.parse(sessionStorage.getItem("agents")))
     }, [])
 
-    const handleDeleteItem = (e, agent_id) => {
+    const handleDeleteAgent = (e, agent_id) => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
         axios.post("/delete_agent", { access_token, agent_id }).then((res) => {
@@ -30,18 +30,24 @@ const AgentsPage = () => {
             sessionStorage.setItem("agents", JSON.stringify(agents))
             setAgents(agents)
         })
+        setShowEditAgent(false)
     }
 
-    const handleClick = () => {
-        setShowCreateModal(true)
+    const handleShowCreatePanel = () => {
+        setShowCreateAgent(true)
     }
 
-    const handleCloseCreateModal = () => {
-        setShowCreateModal(false)
+    const handleCloseCreateAgent = () => {
+        setShowCreateAgent(false)
     }
 
-    const handleCloseEditModal = () => {
-        setShowEditModal(false)
+    const handleCloseEditAgent = () => {
+        setShowEditAgent(false)
+    }
+
+    const handleShowEditAgent = (item) => {
+        setSelectedAgent(item)
+        setShowEditAgent(true)
     }
 
     return (
@@ -51,22 +57,33 @@ const AgentsPage = () => {
                 <Search />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh"><RefreshIcon /></Button>
-                    <Button onClick={handleClick} className="create-user-button primary">Create Agent</Button>
+                    <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Agent</Button>
                 </span>
             </div>
 
             <AnimatePresence>
-                {showCreateModal && <AddPanelForm
+                {showCreateAgent && <CreateAgent
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    handleClose={handleCloseCreateModal}
+                    onClose={handleCloseCreateAgent}
                 />}
             </AnimatePresence>
 
-            <EditAgentForm handleClose={handleCloseEditModal} showModal={showEditModal} />
+            <EditAgentForm
+                item={selectedAgent}
+                onClose={handleCloseEditAgent}
+                showForm={showEditAgent}
+                onDeleteItem={handleDeleteAgent}
+            />
 
-            <AgentsTable users={agents} rowsPerPage={10} currentRows={agents} setShowEditModal={setShowEditModal} onDeleteItem={handleDeleteItem} />
+            <AgentsTable
+                items={agents}
+                itemsPerPage={10}
+                currentItems={agents}
+                onEditItem={handleShowEditAgent}
+                onDeleteItem={handleDeleteAgent}
+            />
 
         </div>
     )

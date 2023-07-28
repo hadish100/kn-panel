@@ -8,57 +8,80 @@ import FormField from '../form/FormField';
 import Button from '../Button';
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
+
+    const formHeader = (
+        <header className="modal__header">
+            <LeadingIcon>
+                {iconComponent}
+            </LeadingIcon>
+            <h1 className="modal__title">{title}</h1>
+            <div className="close-icon" onClick={onClose}>
+                <XMarkIcon />
+            </div>
+        </header>
+    )
+
+    const formFooter = (
+        <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div style={{ marginRight: "auto", display: "flex" }}>
+                {secondaryButtons?.map((button, index) => (
+                    <Button
+                        key={index}
+                        className={button.className}
+                        onClick={button.onClick}
+                    >
+                        {button.icon}
+                        {/* {button.label} */}
+                    </Button>
+                ))}
+            </div>
+            {primaryButtons.map((button, index) => (
+                <Button
+                    key={index}
+                    className={button.className}
+                    onClick={button.onClick}
+                >
+                    {button.label}
+                </Button>
+            ))}
+        </motion.footer>
+    )
+
     return (
         <AnimatePresence>
             {showForm && (
                 <Modal onClose={onClose}>
-                    <header className="modal__header">
-                        <LeadingIcon>
-                            {iconComponent}
-                        </LeadingIcon>
-                        <h1 className="modal__title">{title}</h1>
-                        <div className="close-icon" onClick={onClose}>
-                            <XMarkIcon />
-                        </div>
-                    </header>
+                    {formHeader}
                     <main className="modal__body">
                         <form className="modal__form">
-                            {formFields.map((field, index) => (
-                                <FormField
-                                    key={index}
-                                    label={field.label}
-                                    type={field.type}
-                                    id={field.id}
-                                    name={field.name}
-                                    animateDelay={index * 0.1}
-                                    defaultValue={item ? item[field.id] : ""}
-                                />
+                            {formFields.map((group, rowIndex) => (
+                                <div key={rowIndex} className="flex gap-16">
+                                    {Array.isArray(group) ? group.map((field, index) => (
+                                        <FormField
+                                            key={index}
+                                            label={field.label}
+                                            type={field.type}
+                                            id={field.id}
+                                            name={field.name}
+                                            animateDelay={rowIndex * 0.1}
+                                            defaultValue={item ? item[field.id] : ""}
+                                        />
+                                    )) : (
+                                        <FormField
+                                            key={rowIndex}
+                                            label={group.label}
+                                            type={group.type}
+                                            id={group.id}
+                                            name={group.name}
+                                            animateDelay={rowIndex * 0.1}
+                                            defaultValue={item ? item[group.id] : ""}
+                                        />
+                                    )}
+                                </div>
                             ))}
                         </form>
                     </main>
-                    <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                        <div style={{ marginRight: "auto", display: "flex" }}>
-                            {secondaryButtons?.map((button, index) => (
-                                <Button
-                                    key={index}
-                                    className={button.className}
-                                    onClick={button.onClick}
-                                >
-                                    {button.icon}
-                                    {/* {button.label} */}
-                                </Button>
-                            ))}
-                        </div>
-                        {primaryButtons.map((button, index) => (
-                            <Button
-                                key={index}
-                                className={button.className}
-                                onClick={button.onClick}
-                            >
-                                {button.label}
-                            </Button>
-                        ))}
-                    </motion.footer>
+                    {formFooter}
                 </Modal>
             )}
         </AnimatePresence>
