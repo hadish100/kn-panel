@@ -1,14 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import Modal from '../Modal'
 import { motion, AnimatePresence } from "framer-motion"
 import LeadingIcon from '../LeadingIcon'
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
+import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
+import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Button from '../Button'
 
 
-const EditPanelForm = ({ onClose, showForm }) => {
+const EditPanelForm = ({ onClose, showForm, onDeleteItem, item }) => {
+    function power_panel(e) {
+        e.stopPropagation();
+    }
+
+    useEffect(() => {
+        if (item) {
+            document.getElementById("name").value = item.panel_name;
+            document.getElementById("userName").value = item.panel_username;
+            document.getElementById("password").value = item.panel_password;
+            document.getElementById("panel_url").value = item.panel_url;
+            document.getElementById("capacity").value = item.panel_user_max_count;
+            document.getElementById("traffic").value = item.panel_traffic;
+            document.getElementById("country").value = item.panel_country;
+        }
+    },);
+
     return (
         <AnimatePresence>
             {showForm && <Modal onClose={onClose}>
@@ -60,6 +78,14 @@ const EditPanelForm = ({ onClose, showForm }) => {
                     </form>
                 </main>
                 <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div style={{ marginRight: "auto", display: "flex" }}>
+                        <Button onClick={(e) => onDeleteItem(e, item.id)} className="ghosted">
+                            <DeleteIcon />
+                        </Button>
+                        <Button onClick={(e) => power_panel(e, item.id)} className="ghosted">
+                            <PowerIcon />
+                        </Button>
+                    </div>
                     <Button className="outlined" onClick={onClose}>Cancel</Button>
                     <Button className="primary">Edit Panel</Button>
                 </motion.footer>

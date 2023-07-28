@@ -16,6 +16,7 @@ const PanelsPage = () => {
     const [showCreatePanel, setShowCreatePanel] = useState(false)
     const [showEditPanel, setShowEditPanel] = useState(false)
     const [panels, setPanels] = useState([])
+    const [selectedPanel, setSelectedPanel] = useState(null)
 
     useEffect(() => {
         setPanels(JSON.parse(sessionStorage.getItem("panels")))
@@ -30,9 +31,10 @@ const PanelsPage = () => {
             sessionStorage.setItem("panels", JSON.stringify(panels))
             setPanels(panels)
         })
+        setShowEditPanel(false)
     }
 
-    const handleCreatePanel = () => {
+    const handleShowCreatePanel = () => {
         setShowCreatePanel(true)
     }
 
@@ -44,6 +46,11 @@ const PanelsPage = () => {
         setShowEditPanel(false)
     }
 
+    const handleShowEditPanel = (item) => {
+        setSelectedPanel(item)
+        setShowEditPanel(true)
+    }
+
     return (
         <div className='admin_panels_body'>
             <UsageStats dataUsage="201.3 TB" activeUsers={500} totalUsers={900} />
@@ -51,7 +58,7 @@ const PanelsPage = () => {
                 <Search />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh"><RefreshIcon /></Button>
-                    <Button onClick={handleCreatePanel} className="create-user-button primary">Create Panel</Button>
+                    <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Panel</Button>
                 </span>
             </div>
 
@@ -61,15 +68,19 @@ const PanelsPage = () => {
                 />}
             </AnimatePresence>
 
-            <EditPanelForm onClose={handleCloseEditPanel} showFrom={showEditPanel} />
+            <EditPanelForm
+                item={selectedPanel}
+                onClose={handleCloseEditPanel}
+                showForm={showEditPanel}
+                onDeleteItem={handleDeletePanel}
+            />
 
             <PanelsTable
                 items={panels}
                 itemsPerPage={10}
                 currentItems={panels}
-                onEditItem={setShowEditPanel}
-                onCreateItem={handleCreatePanel}
-                onDeleteItem={handleDeletePanel}
+                onEditItem={handleShowEditPanel}
+                onCreateItem={handleShowCreatePanel}
             />
         </div>
     )

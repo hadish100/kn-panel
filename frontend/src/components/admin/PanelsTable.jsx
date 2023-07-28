@@ -1,14 +1,7 @@
 import React from "react"
 
-import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
-import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
-import Button from "../Button"
 import EmptyTable from "../EmptyTable"
 import "./PanelsTable.css"
-
-function power_panel(e) {
-    e.stopPropagation();
-}
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem, onDeleteItem }) => {
     return (
@@ -29,7 +22,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                     {items.length === 0
                         ? <EmptyTable tableType={"panel"} colSpan={7} onCreateButton={onCreateItem} />
                         : currentItems.map((item) => (
-                            <tr onClick={onEditItem} key={item.id}>
+                            <tr onClick={() => onEditItem(item)} key={item.id}>
                                 <td>{item.panel_name}</td>
                                 <td>
                                     <span className={`status ${item.status ? "limited" : "active"}`} >
@@ -40,14 +33,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                 <td >{item.active_user + " / " + (item.active_user + item.deactive_user)}</td>
                                 <td >{item.panel_user_max_count}</td>
                                 <td>{item.country}</td>
-                                <td className="table__actions">
-                                    <Button onClick={(e) => onDeleteItem(e, item.id)} className="ghosted">
-                                        <DeleteIcon />
-                                    </Button>
-                                    <Button onClick={(e) => power_panel(e, item.id)} className="ghosted">
-                                        <PowerIcon />
-                                    </Button>
-                                </td>
+                                <td></td>
                             </tr>
                         ))}
                 </tbody>
