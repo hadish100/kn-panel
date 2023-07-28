@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Modal from '../Modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import LeadingIcon from '../LeadingIcon';
@@ -6,7 +7,7 @@ import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg';
 import FormField from '../form/FormField';
 import Button from '../Button';
 
-const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit }) => {
+const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
     return (
         <AnimatePresence>
             {showForm && (
@@ -30,7 +31,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                     id={field.id}
                                     name={field.name}
                                     animateDelay={index * 0.1}
-                                    defaultValue={field.defaultValue}
+                                    defaultValue={item ? item[field.id] : ""}
                                 />
                             ))}
                         </form>
@@ -43,7 +44,8 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                     className={button.className}
                                     onClick={button.onClick}
                                 >
-                                    {button.label}
+                                    {button.icon}
+                                    {/* {button.label} */}
                                 </Button>
                             ))}
                         </div>
