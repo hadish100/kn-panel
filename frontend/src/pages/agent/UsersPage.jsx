@@ -66,7 +66,12 @@ const UsersPage = () => {
 
       var { users } = JSON.parse(sessionStorage.getItem("users"));
         users.reverse();
-    console.log(users)
+      var agent = JSON.parse(sessionStorage.getItem("agent"));
+    
+      const b2gb = (bytes) => {
+        return (bytes / (2**10)**3).toFixed(1);
+      }
+
  
     const handleClick = () => {
         setShowCreateModal(true)
@@ -106,7 +111,8 @@ const UsersPage = () => {
     return (
 
         <div className='panel_body'>
-            <UsageStats activeUsers={10} totalUsers={549} dataUsage="1 GB" remainingData="198 GB" allocableData="1 TB" />
+            <UsageStats activeUsers={agent.active_user} totalUsers={agent.active_user} dataUsage={b2gb(agent.used_traffic)+" GB"} remainingData={b2gb(agent.volume)+" GB"} allocableData={b2gb(agent.weight_dividable
+)+" GB"} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
