@@ -9,6 +9,16 @@ import Button from '../Button';
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
 
+
+    function b2gb(x) 
+    {
+        return parseInt(x / (2 ** 10) ** 3)
+    }
+
+
+
+
+
     const formHeader = (
         <header className="modal__header">
             <LeadingIcon>
@@ -64,7 +74,13 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             id={field.id}
                                             name={field.name}
                                             animateDelay={rowIndex * 0.1}
-                                            defaultValue={item ? item[field.id] : ""}
+                                            defaultValue={
+                                                item? 
+                                                (field.id === "volume" ? b2gb(item[field.id]) : 
+                                                (field.id === "password" ? 
+                                                "" : item[field.id]))
+                                                  : ""
+                                              }
                                         />
                                     )) : (
                                         <FormField
@@ -74,7 +90,13 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             id={group.id}
                                             name={group.name}
                                             animateDelay={rowIndex * 0.1}
-                                            defaultValue={item ? item[group.id] : ""}
+                                            defaultValue={
+                                                item? 
+                                                (group.id === "volume" ? b2gb(item[group.id]) : 
+                                                (group.id === "password" ? 
+                                                "" : item[group.id]))
+                                                  : ""
+                                              }
                                         />
                                     )}
                                 </div>

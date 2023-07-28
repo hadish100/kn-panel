@@ -20,7 +20,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem }) => {
     const formFields = [
         { label: "Name", type: "text", id: "agent_name", name: "name" },
         { label: "Username", type: "text", id: "username", name: "username" },
-        { label: "Password", type: "text", id: "password", name: "password" },
+        { label: "New Password", type: "text", id: "password", name: "password" },
         [
             { label: "Volume", type: "number", id: "volume", name: "volume" },
             { label: "Minimum Volume", type: "number", id: "minimum_volume", name: "min_vol" },
