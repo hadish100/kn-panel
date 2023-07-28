@@ -52,6 +52,7 @@ const AgentsPage = () => {
 
     const handleCloseCreateAgent = () => {
         setShowCreateAgent(false)
+        setAgents(JSON.parse(sessionStorage.getItem("agents")))
     }
 
     const handleCloseEditAgent = () => {

@@ -52,6 +52,7 @@ const PanelsPage = () => {
 
     const handleCloseCreatePanel = () => {
         setShowCreatePanel(false)
+        setPanels(JSON.parse(sessionStorage.getItem("panels")))
     }
 
     const handleCloseEditPanel = () => {
