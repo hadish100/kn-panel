@@ -9,9 +9,30 @@ import Button from '../Button';
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
 
-    function b2gb(x) {
-        return parseInt(x / (2 ** 10) ** 3)
+    const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
+
+    const timeStampToDay = (timeStamp) => {
+        const time = timeStamp - Math.floor(Date.now() / 1000)
+        return Math.floor(time / 86400)
     }
+
+    const getDefaultValue = (item, field) => {
+        if (!item) {
+            return "";
+        }
+
+        if (field.id === "volume" || field.id === "data_limit") {
+            return b2gb(item[field.id]);
+        } else if (field.id === "password") {
+            return "";
+        }
+
+        if (field.id === "expire") {
+            return timeStampToDay(item[field.id]);
+        }
+
+        return item[field.id];
+    };
 
     const formHeader = (
         <header className="modal__header">
@@ -60,23 +81,20 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                         <form className="modal__form">
                             {formFields.map((group, rowIndex) => (
                                 <div key={rowIndex} className="flex gap-16">
-                                    {Array.isArray(group) ? group.map((field, index) => (
-                                        <FormField
+                                    {Array.isArray(group) ? group.map((field, index) => {
+                                        const defaultValue = getDefaultValue(item, field)
+
+                                        return (<FormField
                                             key={index}
                                             label={field.label}
                                             type={field.type}
                                             id={field.id}
                                             name={field.name}
                                             animateDelay={rowIndex * 0.1}
-                                            defaultValue={
-                                                item ?
-                                                    (field.id === "volume" ? b2gb(item[field.id]) :
-                                                        (field.id === "password" ? "" : item[field.id]))
-                                                    : ""
-                                            }
+                                            defaultValue={defaultValue}
                                             disabled={field.disabled}
-                                        />
-                                    )) : (
+                                        />);
+                                    }) : (
                                         <FormField
                                             key={rowIndex}
                                             label={group.label}
@@ -84,12 +102,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             id={group.id}
                                             name={group.name}
                                             animateDelay={rowIndex * 0.1}
-                                            defaultValue={
-                                                item ?
-                                                    (group.id === "volume" ? b2gb(item[group.id]) :
-                                                        (group.id === "password" ? "" : item[group.id]))
-                                                    : ""
-                                            }
+                                            defaultValue={getDefaultValue(item, group)}
                                             disabled={group.disabled}
                                         />
                                     )}
