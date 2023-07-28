@@ -5,7 +5,7 @@ import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Form from '../form/Form'
 
-const EditPanelForm = ({ onClose, showForm, onDeleteItem, item }) => {
+const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
     function power_panel(e) {
         e.stopPropagation();
     }
@@ -46,4 +46,4 @@ const EditPanelForm = ({ onClose, showForm, onDeleteItem, item }) => {
     )
 }
 
-export default EditPanelForm
+export default EditPanel

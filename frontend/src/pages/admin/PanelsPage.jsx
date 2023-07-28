@@ -8,7 +8,7 @@ import CreatePanel from '../../components/admin/CreatePanel'
 import UsageStats from '../../components/admin/UsageStats'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
-import EditPanelForm from '../../components/admin/EditPanelForm'
+import EditPanel from '../../components/admin/EditPanel'
 import './PanelsPage.css'
 
 
@@ -68,7 +68,7 @@ const PanelsPage = () => {
                 />}
             </AnimatePresence>
 
-            <EditPanelForm
+            <EditPanel
                 item={selectedPanel}
                 onClose={handleCloseEditPanel}
                 showForm={showEditPanel}
