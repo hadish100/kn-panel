@@ -29,7 +29,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                     </span>
                                 </td>
                                 <td>{item.panel_traffic + " GB"}</td>
-                                <td >{item.active_user + " / " + (item.active_user + item.deactive_user)}</td>
+                                <td >{item.active_user + " / " + item.total_user}</td>
                                 <td >{item.panel_user_max_count}</td>
                                 <td>{item.country}</td>
                             </tr>
