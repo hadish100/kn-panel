@@ -6,7 +6,7 @@ import Accordion from "./Accordion"
 import convertData from "../utils/file-size-util"
 
 const UsersTableAccordion = ({
-    key,
+    itemKey,
     userStatus,
     expireTime,
     totalData,
@@ -16,7 +16,7 @@ const UsersTableAccordion = ({
     onEditItem
 }) => {
     return (
-        <tr key={key} className="accordion-row" style={{ height: 0 }}>
+        <tr key={itemKey} className="accordion-row" style={{ height: 0 }}>
             <td className="accordion-row" style={{ borderTop: "none", height: 0, padding: "0 1.5rem" }} colSpan={4}>
                 <Accordion>
                     <span style={{ fontSize: "0.75rem", fontFamily: "InterMedium", fontWeight: "600" }}>Data Usage</span>

@@ -56,8 +56,6 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 try {
                     var agents = (await axios.post("/get_agents", { access_token }, { timeout: 20000 })).data;
                     var panels = (await axios.post("/get_panels", { access_token }, { timeout: 20000 })).data;
-                    console.log(agents);
-                    console.log(panels);
                     sessionStorage.setItem("agents", JSON.stringify(agents));
                     sessionStorage.setItem("panels", JSON.stringify(panels));
                     setLocation("/admin/panels");
@@ -80,8 +78,6 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 try {
                     var users = (await axios.post("/get_users", { access_token }, { timeout: 20000 })).data;
                     var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data;
-                    console.log(users);
-                    console.log(agent);
                     sessionStorage.setItem("users", JSON.stringify(users));
                     sessionStorage.setItem("agent", JSON.stringify(agent));
                     setLocation("/agent/users");
