@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import axios from 'axios'
 
 import { ReactComponent as PanelIcon } from "../../assets/svg/panel.svg";
-import ErrorCard from '../../components/ErrorCard';
+import ErrorCard from '../ErrorCard';
 import Form from "../form/Form"
 import "../agent/CreateUserForm.css"
 
 
-const PanelForm = ({ onClose }) => {
+const CreatePanel = ({ onClose }) => {
     const [hasError, setHasError] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token");
@@ -81,4 +81,4 @@ const PanelForm = ({ onClose }) => {
     )
 }
 
-export default PanelForm
+export default CreatePanel

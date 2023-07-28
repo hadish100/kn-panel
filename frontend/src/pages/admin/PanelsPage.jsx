@@ -4,7 +4,7 @@ import axios from 'axios'
 import Search from '../../components/Search'
 import Button from '../../components/Button'
 import PanelsTable from '../../components/admin/PanelsTable'
-import AddPanelForm from '../../components/admin/AddPanelForm'
+import CreatePanel from '../../components/admin/CreatePanel'
 import UsageStats from '../../components/admin/UsageStats'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
@@ -63,7 +63,7 @@ const PanelsPage = () => {
             </div>
 
             <AnimatePresence>
-                {showCreatePanel && <AddPanelForm
+                {showCreatePanel && <CreatePanel
                     onClose={handleCloseCreatePanel}
                 />}
             </AnimatePresence>
