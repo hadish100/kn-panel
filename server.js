@@ -77,7 +77,7 @@ app.post("/create_agent", async (req, res) => {
                 agent_name: name,
                 main_volume: parseInt(volume),
                 maximum_day: parseInt(max_days),
-                country: country,
+                country: country, // NOT IMPORTANT YET
                 prefix: prefix,
                 username: username,
                 password: password,
@@ -243,6 +243,26 @@ app.post("/disable_agent", async (req, res) => {
     try {
         var disable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/disable/',
                 { agent_id },
+                {headers: { accept: 'application/json', Authorization: access_token }}
+            )).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
+
+app.post("/disable_user", async (req, res) => {
+    var { access_token, username } = req.body;
+
+    try {
+        var disable_user = (await axios.put(API_SERVER_URL + '/api/user/edit/',
+                { username:username,status:"disabled" },
                 {headers: { accept: 'application/json', Authorization: access_token }}
             )).data;
 
