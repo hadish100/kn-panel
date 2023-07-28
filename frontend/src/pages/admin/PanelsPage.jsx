@@ -22,15 +22,13 @@ const PanelsPage = () => {
         setPanels(JSON.parse(sessionStorage.getItem("panels")))
     }, [])
 
-    const handleDeletePanel = (e, panelId) => {
+    const handleDeletePanel = async (e, panel_id) => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/delete_panel", { access_token, panelId }).then((res) => {
-            let panels = JSON.parse(sessionStorage.getItem("panels"))
-            panels = panels.filter((panel) => panel.id !== panelId)
-            sessionStorage.setItem("panels", JSON.stringify(panels))
-            setPanels(panels)
-        })
+        await axios.post("/delete_panel", { access_token, panel_id });
+        let panels = await axios.post("/get_panels", { access_token });
+        sessionStorage.setItem("panels", JSON.stringify(panels))
+        setPanels(panels)
         setShowEditPanel(false)
     }
 

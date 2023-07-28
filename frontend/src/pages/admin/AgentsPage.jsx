@@ -21,15 +21,13 @@ const AgentsPage = () => {
         setAgents(JSON.parse(sessionStorage.getItem("agents")))
     }, [])
 
-    const handleDeleteAgent = (e, agentId) => {
+    const handleDeleteAgent = async (e, agent_id) => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/delete_agent", { access_token, agentId }).then((res) => {
-            let agents = JSON.parse(sessionStorage.getItem("agents"))
-            agents = agents.filter((agent) => agent.id !== agentId)
-            sessionStorage.setItem("agents", JSON.stringify(agents))
-            setAgents(agents)
-        })
+        await axios.post("/delete_agent", { access_token, agent_id });
+        let agents = await axios.post("/get_agents", { access_token });
+        sessionStorage.setItem("agents", JSON.stringify(agents))
+        setAgents(agents)
         setShowEditAgent(false)
     }
 
