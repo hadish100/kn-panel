@@ -40,7 +40,7 @@ const App = () => {
             <Routes>
                 <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setLocation={setLocation} />} />
                 {/* Agent Routes */}
-                {isAgentPath && isLoggedIn && <Route path='/agent/home' element={<AgentHomePage />} />}
+                {isAgentPath && isLoggedIn && <Route path='/agent/home' element={<AgentHomePage setLocation={setLocation} />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/users' element={<UsersPage />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/settings' element={<AgentSettingsPage />} />}
                 {isAgentPath && isLoggedIn && <Route path='/agent/log' element={<AgentLogsPage />} />}

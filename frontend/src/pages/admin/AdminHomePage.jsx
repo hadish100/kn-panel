@@ -1,8 +1,8 @@
 import React from 'react'
-import power_img from '../../assets/power.png';
 import { useNavigate } from 'react-router-dom';
 
-
+import Button from "../../components/Button"
+import { ReactComponent as PowerIcon } from '../../assets/svg/power.svg';
 
 const AdminHomePage = ({ setLocation }) => {
 
@@ -15,10 +15,10 @@ const AdminHomePage = ({ setLocation }) => {
     }
 
     return (
-        <div onClick={handleLogout} class="exit-account" >
-            <img src={power_img} />
-            <span>LOGOUT</span>
-        </div>
+        <Button onClick={handleLogout} className="outlined" >
+            <PowerIcon />
+            Logout
+        </Button>
     )
 }
 
