@@ -1,3 +1,8 @@
+.empty-row:hover {
+    background-color: transparent !important;
+    cursor: default;
+}
+
 .empty-table {
     display: flex;
     flex-direction: column;
