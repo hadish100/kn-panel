@@ -12,7 +12,7 @@ const CreatePanel = ({ onClose }) => {
 
     const access_token = sessionStorage.getItem("access_token");
 
-    const handleSubmit = async (
+    const createPanelOnServer = async (
         panel_name,
         panel_url,
         panel_username,
@@ -43,7 +43,7 @@ const CreatePanel = ({ onClose }) => {
         const panel_user_max_count = document.getElementById("capacity").value;
         const panel_traffic = document.getElementById("traffic").value;
         // Send form data to backend
-        handleSubmit(panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, 30, panel_traffic)
+        createPanelOnServer(panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, 30, panel_traffic)
     }
 
     const formFields = [
@@ -57,8 +57,8 @@ const CreatePanel = ({ onClose }) => {
     ]
 
     const primaryButtons = [
+        { label: "Cancel", className: "outlined", onClick: onClose },
         { label: "Create Panel", className: "primary", onClick: handleSubmitForm },
-        { label: "Cancel", className: "outlined", onClick: onClose }
     ]
 
     return (
