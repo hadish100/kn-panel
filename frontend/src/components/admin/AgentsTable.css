@@ -93,6 +93,12 @@
     font-family: InterMedium;
 }
 
+.agents-table th:last-of-type,
+.agents-table td:last-of-type {
+    padding-right: 7rem;
+    padding-left: 0;
+}
+
 @media (max-width: 900px) {
     .agents-table__body .expire-time {
         display: block;

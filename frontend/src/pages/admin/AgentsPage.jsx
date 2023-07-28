@@ -8,7 +8,7 @@ import AdminUsageStats from '../../components/admin/UsageStats'
 import CreateAgent from '../../components/admin/CreateAgent'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
-import EditAgentForm from '../../components/admin/EditAgentForm'
+import EditAgent from '../../components/admin/EditAgent'
 import './AgentsPage.css'
 
 const AgentsPage = () => {
@@ -21,12 +21,12 @@ const AgentsPage = () => {
         setAgents(JSON.parse(sessionStorage.getItem("agents")))
     }, [])
 
-    const handleDeleteAgent = (e, agent_id) => {
+    const handleDeleteAgent = (e, agentId) => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/delete_agent", { access_token, agent_id }).then((res) => {
+        axios.post("/delete_agent", { access_token, agentId }).then((res) => {
             let agents = JSON.parse(sessionStorage.getItem("agents"))
-            agents = agents.filter((agent) => agent.id !== agent_id)
+            agents = agents.filter((agent) => agent.id !== agentId)
             sessionStorage.setItem("agents", JSON.stringify(agents))
             setAgents(agents)
         })
@@ -70,7 +70,7 @@ const AgentsPage = () => {
                 />}
             </AnimatePresence>
 
-            <EditAgentForm
+            <EditAgent
                 item={selectedAgent}
                 onClose={handleCloseEditAgent}
                 showForm={showEditAgent}
@@ -83,6 +83,7 @@ const AgentsPage = () => {
                 currentItems={agents}
                 onEditItem={handleShowEditAgent}
                 onDeleteItem={handleDeleteAgent}
+                onCreateItem={handleShowCreatePanel}
             />
 
         </div>

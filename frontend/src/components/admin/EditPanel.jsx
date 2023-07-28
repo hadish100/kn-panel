@@ -30,8 +30,6 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
         { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_panel },
     ]
 
-    console.log(item);
-
     return (
         <Form
             onClose={onClose}
