@@ -25,7 +25,8 @@ const AgentsPage = () => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_agent", { access_token, agent_id });
-        let agents = await axios.post("/get_agents", { access_token });
+        let agents = (await axios.post("/get_agents", { access_token })).data;
+        console.log(agents);
         sessionStorage.setItem("agents", JSON.stringify(agents))
         setAgents(agents)
         setShowEditAgent(false)

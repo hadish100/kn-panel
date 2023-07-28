@@ -26,7 +26,7 @@ const PanelsPage = () => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_panel", { access_token, panel_id });
-        let panels = await axios.post("/get_panels", { access_token });
+        let panels = (await axios.post("/get_panels", { access_token })).data;
         sessionStorage.setItem("panels", JSON.stringify(panels))
         setPanels(panels)
         setShowEditPanel(false)
