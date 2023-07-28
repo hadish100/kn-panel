@@ -40,6 +40,13 @@ app.post("/get_users", async (req, res) => {
     res.send(obj);
 });
 
+
+app.post("/get_agent", async (req, res) => {
+    var { access_token } = req.body;
+    var agent = (await axios.get(API_SERVER_URL + '/api/agent/', { headers: { accept: 'application/json', Authorization: access_token } })).data
+    res.send(agent);
+});
+
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     try {
