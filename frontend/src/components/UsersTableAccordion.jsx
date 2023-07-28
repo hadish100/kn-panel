@@ -15,7 +15,6 @@ const UsersTableAccordion = ({
     config,
     setShowEditModal
 }) => {
-
     return (
         <tr key={key} className="accordion-row" style={{ height: 0 }}>
             <td className="accordion-row" style={{ borderTop: "none", height: 0, padding: "0 1.5rem" }} colSpan={4}>

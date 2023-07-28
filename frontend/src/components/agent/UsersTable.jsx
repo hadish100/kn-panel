@@ -42,6 +42,7 @@ const UsersTable = ({ currentRows, setShowEditModal }) => {
 
 
     const renderedUsers = currentRows.map((user) => {
+        console.log(user);
         const userStatus = user.status
         const dataUsage = convertData(user.used_traffic)
         const totalData = convertData(user.data_limit)
@@ -60,7 +61,7 @@ const UsersTable = ({ currentRows, setShowEditModal }) => {
                     </td>
                     <td>
                         <div className="users-table__progress-bar">
-                            <ProgressBar dataUsage={user.used_traffic} totalData={user.data_limit} status={userStatus} />
+                            <ProgressBar dataUsage={dataUsage} totalData={totalData} status={userStatus} />
                             <div className="progress-bar__text">
                                 <span className="progress-bar__text__data-usage">{dataUsage} / {totalData}</span>
                                 <span className="progress-bar__text__total-data">Total: {totalData}</span>
@@ -87,9 +88,9 @@ const UsersTable = ({ currentRows, setShowEditModal }) => {
                         <UsersTableAccordion
                             key={key}
                             userStatus={userStatus}
-                            //expireTime={expireTime}
-                            totalData={user.totalData}
-                            dataUsage={user.dataUsage}
+                            expireTime={expireTime}
+                            totalData={user.data_limit}
+                            dataUsage={user.used_traffic}
                             config={config}
                             subscriptionLink={subscriptionLink}
                             setShowEditModal={setShowEditModal}

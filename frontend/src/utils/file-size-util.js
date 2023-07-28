@@ -7,7 +7,6 @@ const convertData = (data) => {
         size /= 1000;
         unitIndex++;
     }
-
     return size.toFixed(2) + ' ' + units[unitIndex];
 };
 
