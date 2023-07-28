@@ -5,7 +5,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as PowerIcon } from '../../assets/svg/power.svg'
 import Form from '../form/Form'
 
-const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem }) => {
+const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem }) => {
 
 
 
@@ -29,7 +29,18 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem }) => {
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Edit Agent", className: "primary", onClick: onClose },
+        { label: "Edit Agent", className: "primary", onClick: () => onEditItem(
+            item.id,
+            document.getElementById("agent_name").value,
+            document.getElementById("username").value,
+            document.getElementById("password").value,
+            document.getElementById("volume").value,
+            document.getElementById("minimum_volume").value,
+            document.getElementById("maximum_user").value,
+            document.getElementById("maximum_day").value,
+            document.getElementById("prefix").value,
+            document.getElementById("country").value,
+        )},
     ]
 
     const secondaryButtons = [
@@ -41,7 +52,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem }) => {
         <Form
             onClose={onClose}
             showForm={showForm}
-            title="Edit panel"
+            title="Edit agent"
             iconComponent={<EditIcon />}
             primaryButtons={primaryButtons}
             secondaryButtons={secondaryButtons}

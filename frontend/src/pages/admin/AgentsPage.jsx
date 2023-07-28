@@ -46,6 +46,21 @@ const AgentsPage = () => {
 
     }
 
+
+    const handleEditAgent = async (agent_id,agent_name,username,password,volume,minimum_volume,maximum_user,maximum_day,prefix,country) => {
+
+        const access_token = sessionStorage.getItem("access_token");
+        await axios.post("/edit_agent", { agent_id,agent_name,username,password,volume,minimum_volume,maximum_user,maximum_day,prefix,country,access_token });
+        var agents = (await axios.post("/get_agents", { access_token })).data;
+        sessionStorage.setItem("agents", JSON.stringify(agents));
+        setAgents(agents)
+        setShowEditAgent(false)
+        console.log(agents);
+
+    }
+
+
+
     const handleShowCreatePanel = () => {
         setShowCreateAgent(true)
     }
@@ -63,6 +78,7 @@ const AgentsPage = () => {
         setSelectedAgent(item)
         setShowEditAgent(true)
     }
+
 
     return (
         <div className='admin_panels_body'>
@@ -90,6 +106,7 @@ const AgentsPage = () => {
                 showForm={showEditAgent}
                 onDeleteItem={handleDeleteAgent}
                 onPowerItem={handlePowerAgent}
+                onEditItem={handleEditAgent}
             />
 
             <AgentsTable

@@ -334,27 +334,21 @@ app.post("/disable_user", async (req, res) => {
 
 
 app.post("/edit_agent", async (req, res) => {
-    const { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token } = req.body;
+    const { agent_id,agent_name,username,password,volume,minimum_volume,maximum_user,maximum_day,prefix,country, access_token } = req.body;
 
     try {
-        var panels = await get_panels(access_token);
-        var panels_id = []
-        for (var i = 0; i < panels.length; i++) panels_id.push(panels[i].id);
-
-
 
         var edit_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/edit/',
             {
-                agent_name: name,
+                agent_id:agent_id,
+                agent_name: agent_name,
                 main_volume: parseInt(volume),
-                maximum_day: parseInt(max_days),
-                country: country, // NOT IMPORTANT YET
+                maximum_day: parseInt(maximum_day),
                 prefix: prefix,
                 username: username,
                 password: password,
-                panels: panels_id,
-                maximum_user: parseInt(max_users),
-                minimum_volume: parseInt(min_vol),
+                maximum_user: parseInt(maximum_user),
+                minimum_volume: parseInt(minimum_volume),
                 access_country_panel:["DE"]
             },
             { headers: { accept: 'application/json', Authorization: access_token } })).data;
