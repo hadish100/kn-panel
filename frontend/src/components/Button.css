@@ -40,7 +40,7 @@
     --background-color: transparent;
     --border-color: transparent;
     --color: var(--dark-clr-200);
-    --background-color-hover: var(--gray-clr-300);
+    --background-color-hover: var(--gray-clr-200);
     --background-color-active: var(--gray-clr-300);
 }
 

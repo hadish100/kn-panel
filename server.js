@@ -100,6 +100,7 @@ app.post("/create_agent", async (req, res) => {
 });
 
 
+
 app.post("/create_panel", async (req, res) => {
     const { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token } = req.body;
 
@@ -275,6 +276,102 @@ app.post("/disable_user", async (req, res) => {
     }
 
 });
+
+
+app.post("/edit_agent", async (req, res) => {
+    const { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token } = req.body;
+
+    try {
+        var panels = await get_panels(access_token);
+        var panels_id = []
+        for (var i = 0; i < panels.length; i++) panels_id.push(panels[i].id);
+
+
+
+        var edit_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/edit/',
+            {
+                agent_name: name,
+                main_volume: parseInt(volume),
+                maximum_day: parseInt(max_days),
+                country: country, // NOT IMPORTANT YET
+                prefix: prefix,
+                username: username,
+                password: password,
+                panels: panels_id,
+                maximum_user: parseInt(max_users),
+                minimum_volume: parseInt(min_vol),
+                access_country_panel:["DE"]
+            },
+            { headers: { accept: 'application/json', Authorization: access_token } })).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+
+});
+
+
+
+app.post("/edit_panel", async (req, res) => {
+    const { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token } = req.body;
+
+    try {
+
+        var edit_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/edit/',
+            {
+                panel_name: panel_name,
+                panel_url: panel_url,
+                panel_username: panel_username,
+                panel_password: panel_password,
+                panel_country: panel_country,
+                panel_user_max_count: parseInt(panel_user_max_count),
+                panel_user_max_date: parseInt(panel_user_max_date),
+                panel_traffic: parseInt(panel_traffic),
+            },
+            { headers: { accept: 'application/json', Authorization: access_token } }));
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+
+});
+
+app.post("/edit_user", async (req, res) => {
+    const { username, expire, data_limit, access_token } = req.body;
+
+    try {
+
+        var edit_user = (await axios.put(API_SERVER_URL + '/api/user/edit/',
+            {
+                username: username,
+                expire: parseInt(expire) + parseInt(Date.now() / 1000),
+                data_limit: parseInt(data_limit)*((2**10)**3),
+                country: "DE"
+            },
+            { headers: { accept: 'application/json', Authorization: access_token } }));
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+
+});
+
+
 
 
 
