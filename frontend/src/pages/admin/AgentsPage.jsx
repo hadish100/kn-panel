@@ -32,6 +32,18 @@ const AgentsPage = () => {
         setShowEditAgent(false)
     }
 
+    const handlePowerAgent = async (agent_id) => {
+
+        const access_token = sessionStorage.getItem("access_token");
+        var disable_agent = (await axios.post("/disable_agent", { access_token, agent_id })).data;
+        var agents = (await axios.post("/get_agents", { access_token })).data;
+        sessionStorage.setItem("agents", JSON.stringify(agents));
+        setAgents(agents)
+        setShowEditAgent(false)
+        console.log(agents);
+
+    }
+
     const handleShowCreatePanel = () => {
         setShowCreateAgent(true)
     }
@@ -74,6 +86,7 @@ const AgentsPage = () => {
                 onClose={handleCloseEditAgent}
                 showForm={showEditAgent}
                 onDeleteItem={handleDeleteAgent}
+                onPowerItem={handlePowerAgent}
             />
 
             <AgentsTable

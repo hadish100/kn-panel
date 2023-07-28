@@ -4,18 +4,10 @@ import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as PowerIcon } from '../../assets/svg/power.svg'
 import Form from '../form/Form'
-import axios from 'axios'
 
-const EditAgent = ({ item, onClose, showForm, onDeleteItem }) => {
+const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem }) => {
 
-    async function power_agent(e,agent_id)
-    {
-        e.stopPropagation();
-        const access_token = sessionStorage.getItem("access_token");
-        var disable_agent = (await axios.post("/disable_agent", { access_token, agent_id })).data;
-        var agents = (await axios.post("/get_agents", { access_token })).data;
-        sessionStorage.setItem("agents", JSON.stringify(agents));
-    }
+
 
     const formFields = [
         { label: "Name", type: "text", id: "agent_name", name: "name" },
@@ -42,7 +34,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem }) => {
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_agent },
+        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id) },
     ]
 
     return (
