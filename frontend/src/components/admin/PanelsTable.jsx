@@ -3,7 +3,7 @@ import React from "react"
 import EmptyTable from "../EmptyTable"
 import "./PanelsTable.css"
 
-const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem, onDeleteItem }) => {
+const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
     return (
         <div className="wrapper" style={{ overflowX: "auto" }}>
             <table className="panels-table">

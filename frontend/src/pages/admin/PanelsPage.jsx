@@ -22,12 +22,12 @@ const PanelsPage = () => {
         setPanels(JSON.parse(sessionStorage.getItem("panels")))
     }, [])
 
-    const handleDeletePanel = (e, panel_id) => {
+    const handleDeletePanel = (e, panelId) => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/delete_panel", { access_token, panel_id }).then((res) => {
+        axios.post("/delete_panel", { access_token, panelId }).then((res) => {
             let panels = JSON.parse(sessionStorage.getItem("panels"))
-            panels = panels.filter((panel) => panel.id !== panel_id)
+            panels = panels.filter((panel) => panel.id !== panelId)
             sessionStorage.setItem("panels", JSON.stringify(panels))
             setPanels(panels)
         })

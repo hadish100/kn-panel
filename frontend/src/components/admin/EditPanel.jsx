@@ -26,7 +26,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
     ]
 
     const secondaryButtons = [
-        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: onDeleteItem },
+        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
         { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_panel },
     ]
 
