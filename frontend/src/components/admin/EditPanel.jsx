@@ -4,17 +4,8 @@ import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Form from '../form/Form'
-import axios from 'axios'
 
-const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
-    async function power_panel(e,panel_id)
-    {
-        e.stopPropagation();
-        const access_token = sessionStorage.getItem("access_token");
-        var disable_panel = (await axios.post("/disable_panel", { access_token, panel_id })).data;
-        var panels = (await axios.post("/get_panels", { access_token })).data;
-        sessionStorage.setItem("panels", JSON.stringify(panels));
-    }
+const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem }) => {
 
     const formFields = [
         { label: "Name", type: "text", id: "panel_name", name: "name" },
@@ -33,7 +24,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_panel },
+        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id,item.panel_disable) },
     ]
 
     return (

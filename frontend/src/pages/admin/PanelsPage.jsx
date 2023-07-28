@@ -32,6 +32,20 @@ const PanelsPage = () => {
         setShowEditPanel(false)
     }
 
+    const handlePowerPanel = async (panel_id,disabled) => {
+
+        const access_token = sessionStorage.getItem("access_token");
+        console.log(disabled) 
+        if(disabled) await axios.post("/enable_panel", { access_token, panel_id });
+        else await axios.post("/disable_panel", { access_token, panel_id });
+        var panels = (await axios.post("/get_panels", { access_token })).data;
+        sessionStorage.setItem("panels", JSON.stringify(panels));
+        setPanels(panels)
+        setShowEditPanel(false)
+        console.log(panels);
+
+    }
+
     const handleShowCreatePanel = () => {
         setShowCreatePanel(true)
     }
@@ -71,6 +85,7 @@ const PanelsPage = () => {
                 onClose={handleCloseEditPanel}
                 showForm={showEditPanel}
                 onDeleteItem={handleDeletePanel}
+                onPowerItem={handlePowerPanel}
             />
 
             <PanelsTable

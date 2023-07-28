@@ -265,6 +265,46 @@ app.post("/disable_agent", async (req, res) => {
 });
 
 
+app.post("/enable_agent", async (req, res) => {
+    var { access_token, agent_id } = req.body;
+
+    try {
+        var enable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/enable/',
+                { agent_id },
+                {headers: { accept: 'application/json', Authorization: access_token }}
+            )).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
+
+app.post("/enable_panel", async (req, res) => {
+    var { access_token, panel_id } = req.body;
+
+    try {
+        var enable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/enable/',
+               { panel_id },
+               { headers: { accept: 'application/json', Authorization: access_token } }
+            )).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) {
+        console.log(err);
+        res.send("ERR");
+    }
+
+});
+
+
 app.post("/disable_user", async (req, res) => {
     var { access_token, username } = req.body;
 

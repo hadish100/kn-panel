@@ -30,10 +30,10 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                             <tr onClick={() => onEditItem(item)} key={item.id} agent_id={item.id} >
                                 <td>{item.agent_name}</td>
                                 <td>
-                                    <span className={`status ${item.status ? "limited" : "active"}`} >
-                                        {item.status ? "Inactive" : "Active"}
+                                    <span className={`status ${item.disable ? "limited" : "active"}`} >
+                                        {item.disable ? "Disabled" : "Active"}
                                     </span>
-                                </td>
+                                </td> 
                                 <td >{item.active_user}</td>
                                 <td>{item.used_traffic + " GB"}</td>
                                 <td>{b2gb(item.volume) + " GB"}</td>

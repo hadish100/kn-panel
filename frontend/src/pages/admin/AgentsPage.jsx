@@ -32,10 +32,12 @@ const AgentsPage = () => {
         setShowEditAgent(false)
     }
 
-    const handlePowerAgent = async (agent_id) => {
+    const handlePowerAgent = async (agent_id,disabled) => {
 
         const access_token = sessionStorage.getItem("access_token");
-        var disable_agent = (await axios.post("/disable_agent", { access_token, agent_id })).data;
+        console.log(disabled) 
+        if(disabled) await axios.post("/enable_agent", { access_token, agent_id });
+        else await axios.post("/disable_agent", { access_token, agent_id });
         var agents = (await axios.post("/get_agents", { access_token })).data;
         sessionStorage.setItem("agents", JSON.stringify(agents));
         setAgents(agents)

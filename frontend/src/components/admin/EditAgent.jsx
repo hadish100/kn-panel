@@ -34,7 +34,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem }) => {
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id) },
+        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id,item.disable) },
     ]
 
     return (

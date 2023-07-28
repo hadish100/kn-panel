@@ -24,8 +24,8 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                             <tr onClick={() => onEditItem(item)} key={item.id}>
                                 <td>{item.panel_name}</td>
                                 <td>
-                                    <span className={`status ${item.status ? "limited" : "active"}`} >
-                                        {item.status ? "Deactive" : "Active"}
+                                    <span className={`status ${item.panel_disable ? "limited" : "active"}`} >
+                                        {item.panel_disable ? "Disabled" : "Active"}
                                     </span>
                                 </td>
                                 <td>{item.panel_traffic + " GB"}</td>
