@@ -6,8 +6,8 @@ import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Form from '../form/Form'
 
-const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
-    async function power_panel(e, panel_id) {
+const EditUser = ({ onClose, showForm, onDeleteItem, item }) => {
+    async function power_user(e, panel_id) {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
         var disable_panel = (await axios.post("/disable_panel", { access_token, panel_id })).data;
@@ -16,37 +16,32 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
     }
 
     const formFields = [
-        { label: "Name", type: "text", id: "panel_name", name: "name" },
-        { label: "Username", type: "text", id: "panel_username", name: "username" },
-        { label: "Password", type: "text", id: "panel_password", name: "password" },
-        { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url" },
-        { label: "Capacity", type: "number", id: "panel_user_max_count", name: "capacity" },
-        { label: "Traffic", type: "number", id: "panel_traffic", name: "traffic" },
-        { label: "Country", type: "text", id: "country", name: "country" }
+        { label: "Username", type: "text", id: "name", name: "name" },
+        { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit" },
+        { label: "Days To Expire", type: "number", id: "expire", name: "expire" },
     ]
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Edit Panel", className: "primary", onClick: onClose },
+        { label: "Edit User", className: "primary", onClick: onClose },
     ]
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_panel },
+        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_user },
     ]
 
     return (
         <Form
+            title="Edit User"
             onClose={onClose}
             showForm={showForm}
-            title="Edit panel"
             iconComponent={<EditIcon />}
             primaryButtons={primaryButtons}
             secondaryButtons={secondaryButtons}
             formFields={formFields}
-            item={item}
         />
     )
 }
 
-export default EditPanel
+export default EditUser

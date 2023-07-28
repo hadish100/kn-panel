@@ -13,7 +13,7 @@ const UsersTableAccordion = ({
     dataUsage,
     subscriptionLink,
     config,
-    setShowEditModal
+    onEditItem
 }) => {
     return (
         <tr key={key} className="accordion-row" style={{ height: 0 }}>
@@ -31,7 +31,7 @@ const UsersTableAccordion = ({
                             <span className="accordion__expire-time">{expireTime}</span>
                         </div>
                         <div className="accordion__subscription-actions" style={{ display: "flex", justifyContent: "space-around", width: "6rem" }}>
-                            {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} setShowEditModal={setShowEditModal} shouldRenderTr />}
+                            {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} onEditItem={onEditItem} shouldRenderTr />}
                         </div>
                     </div>
                 </Accordion>
