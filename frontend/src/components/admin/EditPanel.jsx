@@ -6,8 +6,13 @@ import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Form from '../form/Form'
 
 const EditPanel = ({ onClose, showForm, onDeleteItem, item }) => {
-    function power_panel(e) {
+    async function power_panel(e,panel_id)
+    {
         e.stopPropagation();
+        const access_token = sessionStorage.getItem("access_token");
+        var disable_panel = (await axios.post("/disable_panel", { access_token, panel_id })).data;
+        var panels = (await axios.post("/get_panels", { access_token })).data;
+        sessionStorage.setItem("panels", JSON.stringify(panels));
     }
 
     const formFields = [
