@@ -93,6 +93,12 @@
     font-family: InterMedium;
 }
 
+.panels-table th:last-of-type,
+.panels-table td:last-of-type {
+    padding-right: 7rem;
+    padding-left: 0;
+}
+
 @media (max-width: 900px) {
     .panels-table__body .expire-time {
         display: block;

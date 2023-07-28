@@ -15,7 +15,6 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                         <th>Active Users</th>
                         <th>capacity</th>
                         <th>Country</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody className="panels-table__body">
@@ -33,7 +32,6 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                 <td >{item.active_user + " / " + (item.active_user + item.deactive_user)}</td>
                                 <td >{item.panel_user_max_count}</td>
                                 <td>{item.country}</td>
-                                <td></td>
                             </tr>
                         ))}
                 </tbody>
