@@ -55,6 +55,30 @@ app.post("/get_agent", async (req, res) => {
     res.send(agent);
 });
 
+async function get_agent_logs(access_token) {
+    var obj = (await axios.get(API_SERVER_URL + '/api/logs/all/', { headers: { accept: 'application/json', Authorization: access_token } })).data
+    return obj;
+}
+
+app.post("/get_agent_logs", async (req, res) => {
+    var { access_token } = req.body;
+    var obj = await get_agent_logs(access_token);
+    res.send(obj);
+});
+
+async function get_admin_logs(access_token) {
+    var obj = (await axios.get(API_SERVER_URL + '/admin/logs/', { headers: { accept: 'application/json', Authorization: access_token } })).data
+    return obj;
+}
+
+app.post("/get_admin_logs", async (req, res) => {
+    var { access_token } = req.body;
+    var obj = await get_admin_logs(access_token);
+    res.send(obj);
+});
+
+
+
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -421,6 +445,9 @@ app.post("/edit_user", async (req, res) => {
 
 
 });
+
+
+
 
 
 
