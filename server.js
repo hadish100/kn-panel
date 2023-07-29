@@ -67,13 +67,15 @@ app.post("/get_agent_logs", async (req, res) => {
 });
 
 async function get_admin_logs(access_token) {
-    var obj = (await axios.get(API_SERVER_URL + '/admin/logs/', { headers: { accept: 'application/json', Authorization: access_token } })).data
+    var obj = (await axios.get(API_SERVER_URL + '/admin/logs/', { headers: { accept: 'application/json', Authorization: access_token }})).data
     return obj;
 }
 
 app.post("/get_admin_logs", async (req, res) => {
     var { access_token } = req.body;
     var obj = await get_admin_logs(access_token);
+    console.log(access_token);
+    console.log(obj);
     res.send(obj);
 });
 

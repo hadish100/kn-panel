@@ -36,7 +36,7 @@ const AdminSettingsPage = () => {
 
         else
         {
-            const access_token = localStorage.getItem("access_token")
+            const access_token = sessionStorage.getItem("access_token")
             setHasOk(true)
             // var res = await axios.post("/change_credentials", {username, password, access_token})
 
