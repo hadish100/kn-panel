@@ -27,7 +27,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item }) => {
     ]
 
     const secondaryButtons = [
-        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.temp_id) },
+        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.username) },
         { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_user },
     ]
 

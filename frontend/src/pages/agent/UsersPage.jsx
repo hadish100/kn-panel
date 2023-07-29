@@ -33,10 +33,10 @@ const UsersPage = () => {
         return (bytes / (2 ** 10) ** 3).toFixed(1);
     }
 
-    const handleDeleteUser = async (e, user_id) => {
+    const handleDeleteUser = async (e, username) => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/delete_user", { access_token, user_id });
+        await axios.post("/delete_user", { access_token, username });
         let { users } = (await axios.post("/get_users", { access_token })).data;
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)

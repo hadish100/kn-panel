@@ -217,7 +217,8 @@ app.post("/delete_user", async (req, res) => {
     var { access_token,username } = req.body;
 
     try {
-        var delete_panel = (await axios.delete(API_SERVER_URL + '/api/user/delete/',
+        console.log(username);
+        var delete_user = (await axios.delete(API_SERVER_URL + '/api/user/delete/',
             {
                 data: { username:username },
                 headers: { accept: 'application/json', Authorization: access_token }
