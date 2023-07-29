@@ -9,6 +9,12 @@ function uid() {
     return Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
 }
 
+function send_resp(err)
+{
+    if(!err.response) return {status:"ERR",msg:(err.code || "An error occurred")}
+    return {status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])}
+}
+
 
 
 async function get_agents(access_token) {
@@ -98,7 +104,7 @@ app.post("/login", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -134,7 +140,7 @@ app.post("/create_agent", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 
@@ -165,7 +171,7 @@ app.post("/create_panel", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 
@@ -190,7 +196,7 @@ app.post("/create_user", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 
@@ -213,7 +219,7 @@ app.post("/delete_agent", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -234,7 +240,7 @@ app.post("/delete_panel", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -255,7 +261,7 @@ app.post("/delete_user", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -275,7 +281,7 @@ app.post("/disable_panel", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -294,7 +300,7 @@ app.post("/disable_agent", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -314,7 +320,7 @@ app.post("/enable_agent", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -334,7 +340,7 @@ app.post("/enable_panel", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -354,7 +360,7 @@ app.post("/disable_user", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 });
@@ -385,7 +391,7 @@ app.post("/edit_agent", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 
@@ -416,7 +422,7 @@ app.post("/edit_panel", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
     }
 
 
@@ -441,7 +447,7 @@ app.post("/edit_user", async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.send({status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])});
+        res.send(send_resp(err));
         
     }
 
