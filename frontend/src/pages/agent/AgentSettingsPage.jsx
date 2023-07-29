@@ -1,9 +1,13 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 import Button from '../../components/Button'
 import "../admin/AdminSettingsPage.css"
+import ErrorCard from '../../components/ErrorCard';
 
 const AdminSettingsPage = () => {
+    const [error_msg, setError_msg] = useState("Failed to create panel")
+    const [hasError, setHasError] = useState(true)
+
     return (
         <form autoComplete='off' className="settings-page">
             <div className="modal__form__group">
@@ -23,7 +27,14 @@ const AdminSettingsPage = () => {
             <footer className="settings-page__footer">
                 <Button className="primary">Save</Button>
             </footer>
+            <ErrorCard
+                hasError={hasError}
+                setHasError={setHasError}
+                errorTitle="ERROR"
+                errorMessage={error_msg}
+            />
         </form>
+        
     )
 }
 

@@ -17,6 +17,26 @@
     z-index:2000;
 }
 
+.okCard
+{
+    position: fixed;
+    top: 0;
+    right: 0;
+    color: #191919;
+    background-color: rgb(237, 253, 246);
+    margin-right: 1rem;
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
+    max-width: 425px;
+    min-height: 95px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index:2000; 
+}
+
 .errorCard__divider>*+* {
     margin-top: 0.25rem;
 }
@@ -46,4 +66,13 @@
     font-weight: 400;
     line-height: 1.25;
     font-family: InterMedium;
+}
+
+.okCardImg
+{
+    width:64px;
+    height:64px;
+    padding:0;
+    background:transparent;
+    opacity:1;
 }
