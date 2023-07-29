@@ -9,6 +9,7 @@ import "../agent/CreateUser.css"
 
 const CreatePanel = ({ onClose }) => {
     const [hasError, setHasError] = useState(false)
+    const [error_msg, setError_msg] = useState("Failed to create panel")
 
     const access_token = sessionStorage.getItem("access_token");
 
@@ -24,7 +25,8 @@ const CreatePanel = ({ onClose }) => {
     ) => {
         const res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token });
 
-        if (res.data === "ERR") {
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg || "Failed to create panel (BAD REQUEST)")
             setHasError(true)
         } else {
             const panels = (await axios.post("/get_panels", { access_token })).data;
@@ -75,7 +77,7 @@ const CreatePanel = ({ onClose }) => {
                 hasError={hasError}
                 setHasError={setHasError}
                 errorTitle="ERROR"
-                errorMessage="Failed to create panel"
+                errorMessage={error_msg}
             />
         </>
     )

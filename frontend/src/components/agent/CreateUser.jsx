@@ -8,7 +8,7 @@ import "./CreateUser.css"
 
 const CreateUser = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
-
+    const [error_msg, setError_msg] = useState("failed to create user");
     const access_token = sessionStorage.getItem("access_token");
     const createUserOnServer = async (
         username, data_limit, expire
@@ -16,7 +16,8 @@ const CreateUser = ({ onClose, showForm }) => {
         expire *= 86400;
         var res = await axios.post("/create_user", { username, expire, data_limit, access_token });
 
-        if (res.data === "ERR") {
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
             setHasError(true)
         } else {
             var users = (await axios.post("/get_users", { access_token })).data;
@@ -59,7 +60,7 @@ const CreateUser = ({ onClose, showForm }) => {
                 hasError={hasError}
                 setHasError={setHasError}
                 errorTitle="ERROR"
-                errorMessage="failed to create user"
+                errorMessage={error_msg}
             />
         </>
     )

@@ -7,6 +7,8 @@ import Form from '../form/Form';
 
 const CreateAgent = ({ onClose }) => {
     const [hasError, setHasError] = useState(false)
+    const [error_msg, setError_msg] = useState("failed to create agent");
+
 
     const access_token = sessionStorage.getItem("access_token");
 
@@ -23,7 +25,8 @@ const CreateAgent = ({ onClose }) => {
     ) => {
         var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token });
 
-        if (res.data === "ERR") {
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg || "Failed to create agent (BAD REQUEST)")
             setHasError(true)
         } else {
             var agents = (await axios.post("/get_agents", { access_token })).data;
@@ -84,7 +87,7 @@ const CreateAgent = ({ onClose }) => {
                 hasError={hasError}
                 setHasError={setHasError}
                 errorTitle="ERROR"
-                errorMessage="failed to create agent"
+                errorMessage={error_msg}
             />
         </>
     )
