@@ -19,6 +19,14 @@ const AdminSettingsPage = () => {
         const password = document.getElementById("password").value;
         const password2 = document.getElementById("password2").value;
 
+
+        if(!password || !password2 || !username)
+        {
+            setError_msg("Please fill all the fields")
+            setHasError(true)
+            return
+        } 
+
         if (password !== password2)
         {
             setError_msg("Passwords dont match")
@@ -28,9 +36,20 @@ const AdminSettingsPage = () => {
 
         else
         {
-            setHasOk(true)
             const access_token = localStorage.getItem("access_token")
-            //await axios.post("/change_credentials", {username, password, access_token})
+            // var res = await axios.post("/change_credentials", {username, password, access_token})
+
+            // if (res.data.status === "ERR") 
+            // {
+            //     setError_msg(res.data.msg || "BAD REQUEST")
+            //     setHasError(true)
+            // } 
+            
+            // else 
+            // {
+            //     setHasOk(true)
+            // }
+            
 
         }
     }
