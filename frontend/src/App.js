@@ -8,6 +8,7 @@ import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 import UsersPage from './pages/agent/UsersPage';
 import Login from './pages/Login';
 import Navbar from './components/Navbar';
+import UniversalLogout from './components/UniversalLogout';
 import PanelsPage from './pages/admin/PanelsPage';
 import AgentsPage from './pages/admin/AgentsPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -37,6 +38,7 @@ const App = () => {
     return (
         <BrowserRouter>
             {isLoggedIn && (isAdminPath || isAgentPath) && <Navbar />}
+            {isLoggedIn && (isAdminPath || isAgentPath) && <UniversalLogout setLocation={setLocation} />}
             <Routes>
                 <Route path='/login' element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setLocation={setLocation} />} />
                 {/* Agent Routes */}
