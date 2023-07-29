@@ -455,6 +455,25 @@ app.post("/edit_user", async (req, res) => {
 });
 
 
+app.post("/login_fake", async (req, res) => 
+{
+    res.send({is_admin:true,access_token:"bearer 123456789"});
+});
+
+app.post("/get_agents_fake", async (req, res) => 
+{
+    var obj_arr = [{agent_name:"agent1",disable:false,active_user:10,used_traffic:100,volume:100,weight_dividable:100,prefix:"DE",country:"DE"}];
+    res.send(obj_arr);
+});
+
+
+app.post("/get_panels_fake", async (req, res) => 
+{
+    var obj_arr = [{panel_name:"test",panel_disable:false,panel_traffic:100,active_user:10,total_user:100,panel_user_max_count:100,country:"DE"}];
+    res.send(obj_arr);
+});
+
+
 
 
 
