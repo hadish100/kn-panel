@@ -129,8 +129,8 @@ const UsersPage = () => {
                     exit={{ opacity: 0 }}
                     onClose={handleCloseCreateUser}
                     showForm={showCreateUser}
-                    items={users}
-                />}
+                    items={users} 
+                />} 
             </AnimatePresence>
 
             {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
