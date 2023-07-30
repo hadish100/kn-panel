@@ -38,6 +38,9 @@ const get_accounts = async () => {const result = await accounts_clct.find().toAr
 const get_account = async (id) => {const result = await accounts_clct.find({id}).toArray();return result[0];}
 const update_account = async (id,value) => {await accounts_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
+const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
+
+
 const add_token = async (id) => 
 {
     var expire = Math.floor(Date.now()/1000) + 3600;
@@ -111,7 +114,7 @@ app.post("/get_agents", async (req, res) =>
 app.post("/get_panels", async (req, res) => 
 {
     var { access_token } = req.body;
-    var obj_arr = [{panel_name:"test",panel_disable:false,panel_traffic:100,active_user:10,total_user:100,panel_user_max_count:100,country:"DE"}];
+    var obj_arr = [{panel_name:"test",disable:0,panel_disable:false,panel_traffic:100,active_user:10,total_user:100,panel_user_max_count:100,country:"DE"}];
     res.send(obj_arr);
 });
 
@@ -167,7 +170,7 @@ app.post("/login", async (req, res) =>
 
 app.post("/create_agent", async (req, res) => 
 {
-    const admin_id = (await token_to_account(req.body.access_token)).id;
+    
 
     const { name,
             username,
@@ -180,6 +183,7 @@ app.post("/create_agent", async (req, res) =>
             country,
             access_token } = req.body;
 
+    const admin_id = (await token_to_account(access_token)).id;
 
     await insert_to_accounts({  id:uid(),
                                 admin_id,
@@ -195,7 +199,6 @@ app.post("/create_agent", async (req, res) =>
                                 prefix,
                                 country,
                                 used_traffic:0,
-                                allocatable_data:volume,
                                 active_users:0,
                                 tokens:[] });
     res.send("DONE");
@@ -264,24 +267,8 @@ app.post("/create_user", async (req, res) =>
 app.post("/delete_agent", async (req, res) => 
 {
     var { access_token, agent_id } = req.body;
-
-    try 
-    {
-        var delete_agent = (await axios.delete(API_SERVER_URL + '/api/admin/agent/delete/',
-            {
-                data: { agent_id: agent_id },
-                headers: { accept: 'application/json', Authorization: access_token }
-            })).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
+    await accounts_clct.deleteOne({id:agent_id});
+    res.send("DONE");
 });
 
 app.post("/delete_panel", async (req, res) => 
@@ -357,65 +344,8 @@ app.post("/disable_panel", async (req, res) =>
 app.post("/disable_agent", async (req, res) => 
 {
     var { access_token, agent_id } = req.body;
-
-    try 
-    {
-        var disable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/disable/',
-                { agent_id },
-                {headers: { accept: 'application/json', Authorization: access_token }}
-            )).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
-});
-
-app.post("/enable_agent", async (req, res) => 
-{
-    var { access_token, agent_id } = req.body;
-
-    try 
-    {
-        var enable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/enable/',
-                { agent_id },
-                {headers: { accept: 'application/json', Authorization: access_token }}
-            )).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
-});
-
-app.post("/enable_panel", async (req, res) => 
-{
-    var { access_token, panel_id } = req.body;
-
-    try 
-    {
-        var enable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/enable/',
-               { panel_id },
-               { headers: { accept: 'application/json', Authorization: access_token } }
-            )).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
+    await update_account(agent_id,{disable:1});
+    res.send("DONE");
 
 });
 
@@ -441,27 +371,23 @@ app.post("/disable_user", async (req, res) =>
 
 });
 
-app.post("/edit_agent", async (req, res) => 
+app.post("/enable_agent", async (req, res) => 
 {
-    const { agent_id,agent_name,username,password,volume,minimum_volume,maximum_user,maximum_day,prefix,country, access_token } = req.body;
+    var { access_token, agent_id } = req.body;
+    await update_account(agent_id,{disable:0});
+    res.send("DONE");
+});
+
+app.post("/enable_panel", async (req, res) => 
+{
+    var { access_token, panel_id } = req.body;
 
     try 
     {
-
-        var edit_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/edit/',
-        {
-            agent_id:agent_id,
-            agent_name: agent_name,
-            main_volume: parseInt(volume),
-            maximum_day: parseInt(maximum_day),
-            prefix: prefix,
-            username: username,
-            password: password,
-            maximum_user: parseInt(maximum_user),
-            minimum_volume: parseInt(minimum_volume),
-            access_country_panel:["DE"]
-        },
-        { headers: { accept: 'application/json', Authorization: access_token } })).data;
+        var enable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/enable/',
+               { panel_id },
+               { headers: { accept: 'application/json', Authorization: access_token } }
+            )).data;
 
         res.send("DONE");
     }
@@ -471,6 +397,55 @@ app.post("/edit_agent", async (req, res) =>
         console.log(err);
         res.send(send_resp(err));
     }
+
+});
+
+app.post("/enable_user", async (req, res) => 
+{
+    var { access_token, panel_id } = req.body;
+
+    try 
+    {
+        var enable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/enable/',
+               { panel_id },
+               { headers: { accept: 'application/json', Authorization: access_token } }
+            )).data;
+
+        res.send("DONE");
+    }
+
+    catch (err) 
+    {
+        console.log(err);
+        res.send(send_resp(err));
+    }
+
+});
+
+app.post("/edit_agent", async (req, res) => 
+{
+    const { agent_id,
+            name,
+            username,
+            password,
+            volume,
+            min_vol,
+            max_users,
+            max_days,
+            prefix,
+            country,
+            access_token } = req.body;
+
+    await update_account(agent_id,{ name,
+                                    username,
+                                    password,
+                                    volume,
+                                    min_vol,
+                                    max_users,
+                                    max_days,
+                                    prefix,
+                                    country});
+    res.send("DONE");
 
 
 });

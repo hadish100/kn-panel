@@ -12,6 +12,8 @@ import IOSSwitch from './inputs/IOSSwitch';
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
 
+    console.log(item);
+    console.log("SSS")
     const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
 
     const timeStampToDay = (timeStamp) => {
@@ -61,7 +63,8 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                         <FormGroup key={index}>
                             <FormControlLabel
                                 onClick={button.onClick}
-                                control={<IOSSwitch sx={{ my: 1, mx: 2 }} defaultChecked />}
+                                control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item?Boolean(!item.disable):false} />}
+                                //Boolean(!item.disable)
                             />
                         </FormGroup>
                     ) : null
