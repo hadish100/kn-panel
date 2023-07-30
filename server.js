@@ -1,12 +1,41 @@
 const express = require('express');
 const app = express();
 const axios = require('axios');
-const API_SERVER_URL = "http://212.87.214.199";
+const { MongoClient } = require('mongodb');
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
 
 app.use(express.json());
+const API_SERVER_URL = "http://212.87.214.199";
+
+var db,accounts;
+(async function connect_to_db()
+{
+    await client.connect();
+    db = client.db('KN_PANEL');
+    accounts = db.collection('accounts');
+})();
+
+// --- UTILS --- //
+
 
 function uid() {
     return Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
+}
+
+const uid = () => { return Math.floor(Math.random() * (999999999 - 100000000 + 1)) + 100000000; }
+
+const insert_to_accounts = async (obj) => { await accounts.insertOne(obj);return "DONE"; }
+const get_accounts = async () => {const result = await accounts.find().toArray();return result;}
+const get_account = async (id) => {const result = await accounts.find({id}).toArray();return result[0];}
+const update_account = async (id,value) => {await accounts.updateOne({id},{$set:value},function(){});return "DONE";}
+
+const add_token = async (id) => 
+{
+    var expire = Math.floor(Date.now()/1000) + 3600;
+    var token = uid();
+    var obj = { token , expire };
+    await accounts.updateOne({id},{$push:{tokens:obj}},function(){});return token;
 }
 
 function send_resp(err)
@@ -88,17 +117,23 @@ app.post("/get_admin_logs", async (req, res) => {
 
 
 app.post("/login", async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        var api_auth_res = (await axios.post(API_SERVER_URL + '/api/login/', { username, password }, { headers: { 'accept': 'application/json', 'Content-Type': 'application/json' } })).data;
 
-        res.send(api_auth_res);
+    const {username,password} = req.body;
+    const accounts = await get_accounts();
+    const account = accounts.filter(x => x.username == username && x.password == password)[0];
+
+    if(account)
+    {
+        var access_token = await add_token(account.id);
+        res.send({is_admin:account.is_admin,access_token});
     }
 
-    catch (err) {
-        console.log(err);
-        res.send(send_resp(err));
+    else
+    {
+        res.status(400).send({message: 'NOT FOUND'});
     }
+
+
 
 });
 
@@ -106,22 +141,14 @@ app.post("/create_agent", async (req, res) => {
     const { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token } = req.body;
 
     try {
-        var panels = await get_panels(access_token);
-        var panels_id = []
-        for (var i = 0; i < panels.length; i++) panels_id.push(panels[i].id);
-
-
-
         var create_agent = (await axios.post(API_SERVER_URL + '/api/admin/agent/create/',
             {
                 agent_name: name,
                 main_volume: parseInt(volume),
                 maximum_day: parseInt(max_days),
-                country: country, // NOT IMPORTANT YET
                 prefix: prefix,
                 username: username,
                 password: password,
-                panels: panels_id,
                 maximum_user: parseInt(max_users),
                 minimum_volume: parseInt(min_vol),
                 access_country_panel:["DE"]
