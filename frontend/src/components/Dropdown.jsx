@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import "./Dropdown.css"
 import { ReactComponent as ChevronDownIcon } from '../assets/svg/chevron-down.svg'
 
-const Dropdown = ({ children, options, value, onChange }) => {
+const Dropdown = ({ options, value, onChange }) => {
     const [isOpen, setIsOpen] = useState(false)
     const divEl = useRef(null)
 
