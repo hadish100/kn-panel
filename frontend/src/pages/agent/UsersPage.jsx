@@ -103,7 +103,7 @@ const UsersPage = () => {
             <UsageStats activeUsers={agent.active_user} totalUsers={agent.total_users} dataUsage={b2gb(agent.used_traffic) + " GB"} remainingData={b2gb(agent.volume) + " GB"} allocableData={b2gb(agent.weight_dividable
             ) + " GB"} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                <Search />
+            <Search items={users} setItems={setUsers} mode="3" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh-icon"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreateUser} className="create-user-button primary">Create User</Button>

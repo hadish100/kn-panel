@@ -95,7 +95,7 @@ const AgentsPage = () => {
         <div className='admin_panels_body'>
             <AdminUsageStats dataUsage="8020 GB" activeUsers={512} totalUsers={1000} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                <Search />
+             <Search items={agents} setItems={setAgents} mode="2" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Agent</Button>
