@@ -9,11 +9,13 @@ import CreateAgent from '../../components/admin/CreateAgent'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditAgent from '../../components/admin/EditAgent'
+import VerifyDelete from '../../components/admin/VerifyDelete'
 import './AgentsPage.css'
 
 const AgentsPage = () => {
     const [showCreateAgent, setShowCreateAgent] = useState(false);
     const [showEditAgent, setShowEditAgent] = useState(false)
+    const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [agents, setAgents] = useState([])
     const [selectedAgent, setSelectedAgent] = useState(null)
 
@@ -22,6 +24,10 @@ const AgentsPage = () => {
     }, [])
 
     const handleDeleteAgent = async (e, agent_id) => {
+        setShowVerifyDelete(true)
+    }
+
+    const handleVerifyDelete = async (e, agent_id) => {
         e.stopPropagation();
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_agent", { access_token, agent_id });
@@ -74,6 +80,10 @@ const AgentsPage = () => {
         setShowEditAgent(false)
     }
 
+    const handleCloseVerifyDelete = () => {
+        setShowVerifyDelete(false)
+    }
+
     const handleShowEditAgent = (item) => {
         setSelectedAgent(item)
         setShowEditAgent(true)
@@ -107,6 +117,13 @@ const AgentsPage = () => {
                 onDeleteItem={handleDeleteAgent}
                 onPowerItem={handlePowerAgent}
                 onEditItem={handleEditAgent}
+            />
+
+
+            <VerifyDelete
+                onClose={handleCloseVerifyDelete}
+                showForm={showVerifyDelete}
+                onDeleteItem={handleVerifyDelete}
             />
 
             <AgentsTable

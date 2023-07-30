@@ -82,3 +82,8 @@
     padding: 0 0.75rem;
     height: 32px;
 }
+
+.wide_btn
+{
+    width:50%;
+}

@@ -12,6 +12,8 @@
     align-items: center;
 }
 
+
+
 .modal__background {
     min-height: 100vh;
 }
@@ -24,6 +26,11 @@
     border-radius: 6px;
     padding: 1.5rem 1.5rem 1rem;
     z-index: 1000;
+}
+
+.modal_content_v2
+{
+    width: 30rem;
 }
 
 .modal__header {
