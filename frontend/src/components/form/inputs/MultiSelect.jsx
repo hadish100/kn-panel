@@ -5,7 +5,7 @@ import { ReactComponent as ChevronDownIcon } from '../../../assets/svg/chevron-d
 import { ReactComponent as XMarkIcon } from '../../../assets/svg/x-mark.svg'
 import "./MultiSelect.css"
 
-const MultiSelect = ({ options, placeholder, onChange, value }) => {
+const MultiSelect = ({ options, placeholder }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [selectedOptions, setSelectedOptions] = useState([])
     const divEl = useRef(null)
@@ -30,7 +30,6 @@ const MultiSelect = ({ options, placeholder, onChange, value }) => {
     }
 
     const handleOptionClick = (option) => {
-        setIsOpen(false)
         setSelectedOptions((prevSelectedOptions) => {
             // Check if the option is already selected, if yes, remove it
             const isOptionSelected = prevSelectedOptions.some(
@@ -47,8 +46,6 @@ const MultiSelect = ({ options, placeholder, onChange, value }) => {
                 return [...prevSelectedOptions, option];
             }
         });
-
-        onChange(selectedOptions)
     }
 
     const renderedOptions = options
@@ -88,7 +85,7 @@ const MultiSelect = ({ options, placeholder, onChange, value }) => {
 
     return (
         <div className='multi-select-container'>
-            <div ref={divEl} key={options.value}>
+            <motion.div ref={divEl} key={options.value}>
                 <div className="multi-select__value" onClick={handleShowDropdown}>
                     {selectedOptions.length === 0 ? placeholder : null}
                     {renderedSelectedOptions}
@@ -110,7 +107,7 @@ const MultiSelect = ({ options, placeholder, onChange, value }) => {
                         </motion.div>
                     }
                 </AnimatePresence>
-            </div>
+            </motion.div>
         </div >
     )
 }
