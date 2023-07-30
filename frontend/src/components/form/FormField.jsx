@@ -2,7 +2,7 @@ import React from 'react'
 
 import { motion } from "framer-motion"
 import Dropdown from "../Dropdown"
-import MultiSelect from './inputs/MultiSelect'
+import MultiSelect from "./inputs/MultiSelect"
 
 const FormField = ({
     label,
