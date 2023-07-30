@@ -80,7 +80,7 @@ const PanelsPage = () => {
         <div className='admin_panels_body'>
             <UsageStats dataUsage="201.3 TB" activeUsers={500} totalUsers={900} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                <Search />
+                <Search items={panels} setItems={setPanels} mode="1" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button className="outlined refresh"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Panel</Button>
