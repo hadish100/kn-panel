@@ -1,37 +1,56 @@
-const express = require('express');
-const app = express();
+const express = require('express');const app = express();
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
-const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
+const client = new MongoClient('mongodb://localhost:27017');
 
 app.use(express.json());
-const API_SERVER_URL = "http://212.87.214.199";
+app.use(auth_middleware);
 
-var db,accounts;
+
+var db,accounts_clct;
 (async function connect_to_db()
 {
     await client.connect();
     db = client.db('KN_PANEL');
-    accounts = db.collection('accounts');
+    accounts_clct = db.collection('accounts');
 })();
 
 // --- UTILS --- //
 
-
 const uid = () => { return Math.floor(Math.random() * (999999999 - 100000000 + 1)) + 100000000; }
 
-const insert_to_accounts = async (obj) => { await accounts.insertOne(obj);return "DONE"; }
-const get_accounts = async () => {const result = await accounts.find().toArray();return result;}
-const get_account = async (id) => {const result = await accounts.find({id}).toArray();return result[0];}
-const update_account = async (id,value) => {await accounts.updateOne({id},{$set:value},function(){});return "DONE";}
+const uidv2 = () => 
+{
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < 20) 
+    {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
+const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj);return "DONE"; }
+const get_accounts = async () => {const result = await accounts_clct.find().toArray();return result;}
+const get_account = async (id) => {const result = await accounts_clct.find({id}).toArray();return result[0];}
+const update_account = async (id,value) => {await accounts_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
 const add_token = async (id) => 
 {
     var expire = Math.floor(Date.now()/1000) + 3600;
-    var token = uid();
+    var token = uidv2();
     var obj = { token , expire };
-    await accounts.updateOne({id},{$push:{tokens:obj}},function(){});return token;
+    await accounts_clct.updateOne({id},{$push:{tokens:obj}},function(){});return token;
+}
+
+const token_to_account = async (token) => 
+{
+    var accounts = await get_accounts();
+    var account = accounts.filter(x => x.tokens.filter(y => y.token == token)[0])[0];
+    return account;
 }
 
 function send_resp(err)
@@ -62,12 +81,30 @@ async function get_users(access_token)
 }
 
 
-// --- ROUTES --- //
+// --- MIDDLEWARE --- //
+
+async function auth_middleware(req, res, next)
+{
+    if(req.url == "/login") return next();
+    var access_token = req.body.access_token;
+    var account = await token_to_account(access_token);
+    if(!account) return res.status(400).send({message: 'NOT FOUND'});
+    else return next();
+}
+
+async function log_middleware(req, res, next)
+{
+    console.log("HI");
+}
+
+// --- ENDPOINTS --- //
 
 app.post("/get_agents", async (req, res) => 
 {
-    var { access_token } = req.body;
-    var obj_arr = [{agent_name:"agent1",disable:false,active_user:10,used_traffic:100,volume:100,weight_dividable:100,prefix:"DE",country:"DE"}];
+    var {access_token} = req.body;
+    var admin_id = (await token_to_account(access_token)).id;
+    var obj_arr = await accounts_clct.find({is_admin:0,admin_id}).toArray();
+    console.log(obj_arr);
     res.send(obj_arr);
 });
 
@@ -85,7 +122,6 @@ app.post("/get_users", async (req, res) =>
     res.send(obj);
 });
 
-
 app.post("/get_agent", async (req, res) => 
 {
     var { access_token } = req.body;
@@ -93,14 +129,12 @@ app.post("/get_agent", async (req, res) =>
     res.send(agent);
 });
 
-
 app.post("/get_agent_logs", async (req, res) => 
 {
     var { access_token } = req.body;
     var obj = await get_agent_logs(access_token);
     res.send(obj);
 });
-
 
 app.post("/get_admin_logs", async (req, res) => 
 {
@@ -110,7 +144,6 @@ app.post("/get_admin_logs", async (req, res) =>
     console.log(obj);
     res.send(obj);
 });
-
 
 app.post("/login", async (req, res) => 
 {
@@ -134,46 +167,39 @@ app.post("/login", async (req, res) =>
 
 app.post("/create_agent", async (req, res) => 
 {
-    const { name, 
-        username, 
-        password, 
-        volume, 
-        min_vol,
-        max_users, 
-        max_days, 
-        prefix, 
-        country, 
-        access_token } = req.body;
+    const admin_id = (await token_to_account(req.body.access_token)).id;
 
-    try 
-    {
-        var create_agent = (await axios.post(API_SERVER_URL + '/api/admin/agent/create/',
-            {
-                agent_name: name,
-                main_volume: parseInt(volume),
-                maximum_day: parseInt(max_days),
-                prefix: prefix,
-                username: username,
-                password: password,
-                maximum_user: parseInt(max_users),
-                minimum_volume: parseInt(min_vol),
-                access_country_panel:["DE"]
-            },
-            { headers: { accept: 'application/json', Authorization: access_token } })).data;
-
-        res.send("DONE");
-    }
-
-    catch (err)
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
+    const { name,
+            username,
+            password,
+            volume,
+            min_vol,
+            max_users,
+            max_days,
+            prefix,
+            country,
+            access_token } = req.body;
 
 
+    await insert_to_accounts({  id:uid(),
+                                admin_id,
+                                is_admin:0,
+                                disable:0,
+                                name,
+                                username,
+                                password,
+                                volume,
+                                min_vol,
+                                max_users,
+                                max_days,
+                                prefix,
+                                country,
+                                used_traffic:0,
+                                allocatable_data:volume,
+                                active_users:0,
+                                tokens:[] });
+    res.send("DONE");
 });
-
-
 
 app.post("/create_panel", async (req, res) => 
 {
@@ -235,8 +261,6 @@ app.post("/create_user", async (req, res) =>
 
 });
 
-
-
 app.post("/delete_agent", async (req, res) => 
 {
     var { access_token, agent_id } = req.body;
@@ -259,7 +283,6 @@ app.post("/delete_agent", async (req, res) =>
     }
 
 });
-
 
 app.post("/delete_panel", async (req, res) => 
 {
@@ -309,7 +332,6 @@ app.post("/delete_user", async (req, res) =>
 
 });
 
-
 app.post("/disable_panel", async (req, res) => 
 {
     var { access_token, panel_id } = req.body;
@@ -354,7 +376,6 @@ app.post("/disable_agent", async (req, res) =>
 
 });
 
-
 app.post("/enable_agent", async (req, res) => 
 {
     var { access_token, agent_id } = req.body;
@@ -375,7 +396,6 @@ app.post("/enable_agent", async (req, res) =>
     }
 
 });
-
 
 app.post("/enable_panel", async (req, res) => 
 {
@@ -399,7 +419,6 @@ app.post("/enable_panel", async (req, res) =>
 
 });
 
-
 app.post("/disable_user", async (req, res) => 
 {
     var { access_token, username } = req.body;
@@ -421,7 +440,6 @@ app.post("/disable_user", async (req, res) =>
     }
 
 });
-
 
 app.post("/edit_agent", async (req, res) => 
 {
@@ -456,8 +474,6 @@ app.post("/edit_agent", async (req, res) =>
 
 
 });
-
-
 
 app.post("/edit_panel", async (req, res) => 
 {

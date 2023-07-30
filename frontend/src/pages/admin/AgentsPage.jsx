@@ -36,6 +36,7 @@ const AgentsPage = () => {
         axios.post("/get_agents",{access_token}).then(res => 
         {
             sessionStorage.setItem("agents", JSON.stringify(res.data));
+            setAgents(JSON.parse(sessionStorage.getItem("agents")))
             setRefresh(false);
         });
     }

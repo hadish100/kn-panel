@@ -24,12 +24,6 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
             return "";
         }
 
-        if (field.id === "volume" || field.id === "data_limit") {
-            return b2gb(item[field.id]);
-        } else if (field.id === "password") {
-            return "";
-        }
-
         if (field.id === "expire") {
             return timeStampToDay(item[field.id]);
         }
