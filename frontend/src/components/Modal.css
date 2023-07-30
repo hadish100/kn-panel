@@ -28,8 +28,7 @@
     z-index: 1000;
 }
 
-.modal_content_v2
-{
+.modal_content_v2 {
     width: 30rem;
 }
 
@@ -54,6 +53,11 @@
 
 .modal__footer>*+* {
     margin-left: 0.5rem;
+}
+
+.modal__footer svg {
+    width: 22px;
+    height: 22px;
 }
 
 .close-icon {
