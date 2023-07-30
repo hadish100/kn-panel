@@ -9,12 +9,14 @@ import UsageStats from '../../components/admin/UsageStats'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditPanel from '../../components/admin/EditPanel'
+import VerifyDelete from '../../components/admin/VerifyDelete'
 import './PanelsPage.css'
 
 
 const PanelsPage = () => {
     const [showCreatePanel, setShowCreatePanel] = useState(false)
     const [showEditPanel, setShowEditPanel] = useState(false)
+    const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [panels, setPanels] = useState([])
     const [selectedPanel, setSelectedPanel] = useState(null)
 
@@ -23,13 +25,19 @@ const PanelsPage = () => {
     }, [])
 
     const handleDeletePanel = async (e, panel_id) => {
+        setShowVerifyDelete(true)
+    }
+
+    const handleVerifyDelete = async (e, panel_id) => {
         e.stopPropagation();
+        panel_id = selectedPanel.id;
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_panel", { access_token, panel_id });
         let panels = (await axios.post("/get_panels", { access_token })).data;
         sessionStorage.setItem("panels", JSON.stringify(panels))
         setPanels(panels)
         setShowEditPanel(false)
+        setShowVerifyDelete(false)
     }
 
     const handlePowerPanel = async (panel_id,disabled) => {
@@ -53,6 +61,10 @@ const PanelsPage = () => {
     const handleCloseCreatePanel = () => {
         setShowCreatePanel(false)
         setPanels(JSON.parse(sessionStorage.getItem("panels")))
+    }
+
+    const handleCloseVerifyDelete = () => {
+        setShowVerifyDelete(false)
     }
 
     const handleCloseEditPanel = () => {
@@ -87,6 +99,12 @@ const PanelsPage = () => {
                 showForm={showEditPanel}
                 onDeleteItem={handleDeletePanel}
                 onPowerItem={handlePowerPanel}
+            />
+
+            <VerifyDelete
+                onClose={handleCloseVerifyDelete}
+                showForm={showVerifyDelete}
+                onDeleteItem={handleVerifyDelete}
             />
 
             <PanelsTable

@@ -7,7 +7,7 @@ import Form from '../form/Form'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem }) => {
 
-
+console.log(item)
 
     const formFields = [
         { label: "Name", type: "text", id: "agent_name", name: "name" },

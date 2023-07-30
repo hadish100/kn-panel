@@ -12,6 +12,8 @@ import './UsersPage.css'
 import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 import EditUser from '../../components/agent/EditUser'
+import VerifyDelete from '../../components/admin/VerifyDelete'
+
 
 const UsersPage = () => {
     const [showCreateUser, setShowCreateUser] = useState(false)
@@ -20,7 +22,9 @@ const UsersPage = () => {
     const [selection, setSelection] = useState(null)
     const [currentPage, setCurrentPage] = useState(1)
     const [selectedUser, setSelectedUser] = useState(null)
+    const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [users, setUsers] = useState([])
+
 
     useEffect(() => {
         const { users } = JSON.parse(sessionStorage.getItem("users"));
@@ -34,15 +38,21 @@ const UsersPage = () => {
     }
 
     const handleDeleteUser = async (e, username) => {
+        setShowEditUser(true)
+    }
+
+
+    const handleVerifyDelete = async (e, username) => {
         e.stopPropagation();
+        username = selectedUser.username;
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_user", { access_token, username });
         let { users } = (await axios.post("/get_users", { access_token })).data;
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
+        setShowVerifyDelete(false)
         setShowEditUser(false)
     }
-
 
     const handleShowCreateUser = () => {
         setShowCreateUser(true)
@@ -55,6 +65,10 @@ const UsersPage = () => {
 
     const handlePageChange = (page) => {
         setCurrentPage(page)
+    }
+
+    const handleCloseVerifyDelete = () => {
+        setShowVerifyDelete(false)
     }
 
     const handleCloseEditUser = () => {
@@ -127,6 +141,12 @@ const UsersPage = () => {
                 showForm={showEditUser}
                 item={selectedUser}
                 onDeleteItem={handleDeleteUser}
+            />
+
+            <VerifyDelete
+                onClose={handleCloseVerifyDelete}
+                showForm={showVerifyDelete}
+                onDeleteItem={handleVerifyDelete}
             />
         </div >
 

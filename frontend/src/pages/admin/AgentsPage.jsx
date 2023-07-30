@@ -29,17 +29,18 @@ const AgentsPage = () => {
 
     const handleVerifyDelete = async (e, agent_id) => {
         e.stopPropagation();
+        agent_id = selectedAgent.id;
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_agent", { access_token, agent_id });
         let agents = (await axios.post("/get_agents", { access_token })).data;
         console.log(agents);
         sessionStorage.setItem("agents", JSON.stringify(agents))
         setAgents(agents)
+        setShowVerifyDelete(false)
         setShowEditAgent(false)
     }
 
     const handlePowerAgent = async (agent_id,disabled) => {
-
         const access_token = sessionStorage.getItem("access_token");
         console.log(disabled) 
         if(disabled) await axios.post("/enable_agent", { access_token, agent_id });
