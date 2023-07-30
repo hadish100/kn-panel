@@ -10,7 +10,6 @@ import "../agent/CreateUser.css"
 const CreatePanel = ({ onClose }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("Failed to create panel")
-    const [countries, setCountries] = useState([])
 
     const access_token = sessionStorage.getItem("access_token");
 
@@ -67,8 +66,6 @@ const CreatePanel = ({ onClose }) => {
                 { value: "NL", label: "NL" },
                 { value: "DE", label: "DE" },
             ],
-            value: countries,
-            onChange: setCountries,
         }
     ]
 

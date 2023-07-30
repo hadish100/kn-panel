@@ -64,7 +64,18 @@ const CreateAgent = ({ onClose }) => {
         ],
         [
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
-            { label: "Country", type: "text", id: "country", name: "country" }
+            {
+                label: "Country",
+                type: "multi-select",
+                placeholder: "Select Country",
+                id: "country",
+                name: "country",
+                options: [
+                    { value: "US", label: "US" },
+                    { value: "NL", label: "NL" },
+                    { value: "DE", label: "DE" },
+                ]
+            }
         ]
     ]
 
