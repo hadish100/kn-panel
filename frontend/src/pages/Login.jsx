@@ -28,7 +28,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
 
         try {
             error_message = "Please check your username and password";
-            res = await axios.post("/login_fake", { username, password }, { timeout: 20000 });
+            res = await axios.post("/login", { username, password }, { timeout: 20000 });
         }
 
         catch (err) {
@@ -54,8 +54,8 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 sessionStorage.setItem("access_token", res.data.access_token)
 
                 try {
-                    var agents = (await axios.post("/get_agents_fake", { access_token }, { timeout: 20000 })).data;
-                    var panels = (await axios.post("/get_panels_fake", { access_token }, { timeout: 20000 })).data;
+                    var agents = (await axios.post("/get_agents", { access_token }, { timeout: 20000 })).data;
+                    var panels = (await axios.post("/get_panels", { access_token }, { timeout: 20000 })).data;
                     sessionStorage.setItem("agents", JSON.stringify(agents));
                     sessionStorage.setItem("panels", JSON.stringify(panels));
                     setLocation("/admin/panels");
@@ -68,7 +68,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                     document.querySelectorAll(".login__btn")[0].disabled = false;
                     document.querySelectorAll(".login__btn")[0].classList.remove("login__btn__clicked");
                 }
-            }
+            } 
 
             else {
                 setIsLoggedIn(true)

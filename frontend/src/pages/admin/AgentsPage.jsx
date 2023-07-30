@@ -33,7 +33,7 @@ const AgentsPage = () => {
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/get_agents_fake",{access_token}).then(res => 
+        axios.post("/get_agents",{access_token}).then(res => 
         {
             sessionStorage.setItem("agents", JSON.stringify(res.data));
             setRefresh(false);

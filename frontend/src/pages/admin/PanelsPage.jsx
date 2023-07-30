@@ -35,7 +35,7 @@ const PanelsPage = () => {
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/get_panels_fake",{access_token}).then(res => 
+        axios.post("/get_panels",{access_token}).then(res => 
         {
             sessionStorage.setItem("panels", JSON.stringify(res.data));
             setRefresh(false);

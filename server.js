@@ -19,11 +19,6 @@ var db,accounts;
 // --- UTILS --- //
 
 
-function uid() 
-{
-    return Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
-}
-
 const uid = () => { return Math.floor(Math.random() * (999999999 - 100000000 + 1)) + 100000000; }
 
 const insert_to_accounts = async (obj) => { await accounts.insertOne(obj);return "DONE"; }
@@ -45,33 +40,17 @@ function send_resp(err)
     return {status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])}
 }
 
-
-
-async function get_agents(access_token) 
+async function get_agent_logs(access_token) 
 {
-    var agents = (await axios.get(API_SERVER_URL + '/api/admin/agents/', { headers: { accept: 'application/json', Authorization: access_token } })).data
-    return agents;
+    var obj = (await axios.get(API_SERVER_URL + '/api/logs/all/', { headers: { accept: 'application/json', Authorization: access_token } })).data
+    return obj;
 }
 
-app.post("/get_agents", async (req, res) => 
+async function get_admin_logs(access_token) 
 {
-    var { access_token } = req.body;
-    var obj = await get_agents(access_token);
-    res.send(obj);
-});
-
-async function get_panels(access_token) 
-{
-    var panels = (await axios.get(API_SERVER_URL + '/api/admin/panel/view/', { headers: { accept: 'application/json', Authorization: access_token } })).data
-    return panels;
+    var obj = (await axios.get(API_SERVER_URL + '/admin/logs/', { headers: { accept: 'application/json', Authorization: access_token }})).data
+    return obj;
 }
-
-app.post("/get_panels", async (req, res) => 
-{
-    var { access_token } = req.body;
-    var obj = await get_panels(access_token);
-    res.send(obj);
-});
 
 async function get_users(access_token) 
 {
@@ -82,6 +61,22 @@ async function get_users(access_token)
     return users;
 }
 
+
+// --- ROUTES --- //
+
+app.post("/get_agents", async (req, res) => 
+{
+    var { access_token } = req.body;
+    var obj_arr = [{agent_name:"agent1",disable:false,active_user:10,used_traffic:100,volume:100,weight_dividable:100,prefix:"DE",country:"DE"}];
+    res.send(obj_arr);
+});
+
+app.post("/get_panels", async (req, res) => 
+{
+    var { access_token } = req.body;
+    var obj_arr = [{panel_name:"test",panel_disable:false,panel_traffic:100,active_user:10,total_user:100,panel_user_max_count:100,country:"DE"}];
+    res.send(obj_arr);
+});
 
 app.post("/get_users", async (req, res) => 
 {
@@ -98,11 +93,6 @@ app.post("/get_agent", async (req, res) =>
     res.send(agent);
 });
 
-async function get_agent_logs(access_token) 
-{
-    var obj = (await axios.get(API_SERVER_URL + '/api/logs/all/', { headers: { accept: 'application/json', Authorization: access_token } })).data
-    return obj;
-}
 
 app.post("/get_agent_logs", async (req, res) => 
 {
@@ -111,11 +101,6 @@ app.post("/get_agent_logs", async (req, res) =>
     res.send(obj);
 });
 
-async function get_admin_logs(access_token) 
-{
-    var obj = (await axios.get(API_SERVER_URL + '/admin/logs/', { headers: { accept: 'application/json', Authorization: access_token }})).data
-    return obj;
-}
 
 app.post("/get_admin_logs", async (req, res) => 
 {
@@ -125,7 +110,6 @@ app.post("/get_admin_logs", async (req, res) =>
     console.log(obj);
     res.send(obj);
 });
-
 
 
 app.post("/login", async (req, res) => 
@@ -145,8 +129,6 @@ app.post("/login", async (req, res) =>
     {
         res.status(400).send({message: 'NOT FOUND'});
     }
-
-
 
 });
 
@@ -537,36 +519,6 @@ app.post("/edit_user", async (req, res) =>
 
 
 });
-
-
-app.post("/login_fake", async (req, res) => 
-{
-    res.send({is_admin:true,access_token:"bearer 123456789"});
-});
-
-app.post("/get_agents_fake", async (req, res) => 
-{
-    var obj_arr = [{agent_name:"agent1",disable:false,active_user:10,used_traffic:100,volume:100,weight_dividable:100,prefix:"DE",country:"DE"}];
-    res.send(obj_arr);
-});
-
-
-app.post("/get_panels_fake", async (req, res) => 
-{
-    var obj_arr = [{panel_name:"test",panel_disable:false,panel_traffic:100,active_user:10,total_user:100,panel_user_max_count:100,country:"DE"}];
-    res.send(obj_arr);
-});
-
-
-
-
-
-
-
-
-
-
-
 
 
 
