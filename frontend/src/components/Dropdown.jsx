@@ -32,8 +32,18 @@ const Dropdown = ({ children, options, value, onChange }) => {
         onChange(option)
     }
 
-    const renderedOptions = options.map((option) => {
-        return <div className='option' onClick={() => handleOptionClick(option)} key={option.value}>{option.label}</div>
+    const renderedOptions = options.map((option, index) => {
+        return <motion.div
+            className='option'
+            onClick={() => handleOptionClick(option)}
+            key={option.value}
+            initial={{ x: -10, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 0, opacity: 0 }}
+            transition={{ delay: index * 0.15 }}
+        >
+            {option.label}
+        </motion.div>
     })
 
     return (
@@ -47,9 +57,9 @@ const Dropdown = ({ children, options, value, onChange }) => {
                     {isOpen &&
                         <motion.div
                             className='options'
-                            initial={{ opacity: 0, y: -10 }} // Initial opacity and position
-                            animate={{ opacity: 1, y: 0 }} // Animation to fully visible and original position
-                            exit={{ opacity: 0, y: -10 }}
+                            initial={{ height: 0, opacity: 0, y: -10 }} // Initial opacity and position
+                            animate={{ height: "auto", opacity: 1, y: 0 }} // Animation to fully visible and original position
+                            exit={{ height: 0, opacity: 0, y: -10 }}
                             transition={{ duration: .3 }}
                         >
                             {renderedOptions}

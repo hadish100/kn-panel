@@ -1,10 +1,9 @@
 .dropdown-container {
-    height: 120px;
+    height: auto;
 }
 
 .dropdown {
     border-radius: 6px;
-    align-items: center;
     font-size: 0.875rem;
     display: flex;
     flex-direction: column;
@@ -16,7 +15,7 @@
 
 .option {
     cursor: pointer;
-    padding: 0.4rem .5rem;
+    padding: 0.6rem .7rem;
     border: 0.5px solid var(--border-clr);
     border-top: none;
     width: 100%;
@@ -27,15 +26,16 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    padding: 0.4rem 0.5rem;
+    padding: 0.6rem .7rem;
     border: 0.5px solid var(--border-clr);
     border-radius: 6px;
+    gap: 0.5rem;
 }
 
 .dropdown__value svg {
     width: 15px;
     height: 15px;
-    margin-left: 0.5rem;
+    margin-left: auto;
     transition: all 0.3s ease-in-out;
 }
 

@@ -10,6 +10,7 @@ import "../agent/CreateUser.css"
 const CreatePanel = ({ onClose }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("Failed to create panel")
+    const [country, setCountry] = useState({ value: "", label: "Select Country" })
 
     const access_token = sessionStorage.getItem("access_token");
 
@@ -48,6 +49,10 @@ const CreatePanel = ({ onClose }) => {
         createPanelOnServer(panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, 30, panel_traffic)
     }
 
+    const handleCountryChange = (country) => {
+        setCountry(country)
+    }
+
     const formFields = [
         { label: "Name", type: "text", id: "panel_name", name: "name" },
         { label: "Username", type: "text", id: "panel_username", name: "username" },
@@ -55,7 +60,19 @@ const CreatePanel = ({ onClose }) => {
         { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url" },
         { label: "Capacity", type: "number", id: "panel_user_max_count", name: "capacity" },
         { label: "Traffic", type: "number", id: "panel_traffic", name: "traffic" },
-        { label: "Country", type: "text", id: "country", name: "country" }
+        {
+            label: "Country",
+            type: "dropdown",
+            id: "country",
+            name: "country",
+            options: [
+                { value: "US", label: "US" },
+                { value: "NL", label: "NL" },
+                { value: "DE", label: "DE" },
+            ],
+            value: country,
+            onChange: handleCountryChange
+        }
     ]
 
     const primaryButtons = [
