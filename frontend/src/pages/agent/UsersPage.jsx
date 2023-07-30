@@ -13,6 +13,8 @@ import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 import EditUser from '../../components/agent/EditUser'
 import VerifyDelete from '../../components/admin/VerifyDelete'
+import loadingGif from '../../assets/loading.gif'
+import "../../components/LoadingGif.css"
 
 
 const UsersPage = () => {
@@ -24,6 +26,7 @@ const UsersPage = () => {
     const [selectedUser, setSelectedUser] = useState(null)
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [users, setUsers] = useState([])
+    const [refresh, setRefresh] = useState(false);
 
 
     useEffect(() => {
@@ -41,6 +44,16 @@ const UsersPage = () => {
         setShowEditUser(true)
     }
 
+    
+    const refreshItems = async () => {
+        setRefresh(true);
+        const access_token = sessionStorage.getItem("access_token");
+        axios.post("/get_users_fake",{access_token}).then(res => 
+        {
+            sessionStorage.setItem("users", JSON.stringify(res.data));
+            setRefresh(false);
+        });
+    }
 
     const handleVerifyDelete = async (e, username) => {
         e.stopPropagation();
@@ -105,7 +118,7 @@ const UsersPage = () => {
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
             <Search items={users} setItems={setUsers} mode="3" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
-                    <Button className="outlined refresh-icon"><RefreshIcon /></Button>
+                    <Button onClick={refreshItems} className="outlined refresh-icon"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreateUser} className="create-user-button primary">Create User</Button>
                 </span>
             </div>
@@ -119,12 +132,14 @@ const UsersPage = () => {
                     items={users}
                 />}
             </AnimatePresence>
-            <UsersTable
+
+            {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
+       {!refresh  &&   <UsersTable
                 items={users}
                 currentItems={currentRows}
                 onCreateItem={handleShowCreateUser}
                 onEditItem={handleShowEditUser}
-            />
+            /> }
             <div className='users-page__footer'>
                 <span style={{ display: "flex" }}>
                     <Dropdown options={itemsPerRowOptions} value={selection} onChange={handleSelect}>Items per page</Dropdown>

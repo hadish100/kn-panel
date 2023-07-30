@@ -11,6 +11,8 @@ import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditPanel from '../../components/admin/EditPanel'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import './PanelsPage.css'
+import loadingGif from '../../assets/loading.gif'
+import "../../components/LoadingGif.css"
 
 
 const PanelsPage = () => {
@@ -19,6 +21,8 @@ const PanelsPage = () => {
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [panels, setPanels] = useState([])
     const [selectedPanel, setSelectedPanel] = useState(null)
+    const [refresh, setRefresh] = useState(false);
+
 
     useEffect(() => {
         setPanels(JSON.parse(sessionStorage.getItem("panels")))
@@ -26,6 +30,16 @@ const PanelsPage = () => {
 
     const handleDeletePanel = async (e, panel_id) => {
         setShowVerifyDelete(true)
+    }
+
+    const refreshItems = async () => {
+        setRefresh(true);
+        const access_token = sessionStorage.getItem("access_token");
+        axios.post("/get_panels_fake",{access_token}).then(res => 
+        {
+            sessionStorage.setItem("panels", JSON.stringify(res.data));
+            setRefresh(false);
+        });
     }
 
     const handleVerifyDelete = async (e, panel_id) => {
@@ -82,7 +96,7 @@ const PanelsPage = () => {
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search items={panels} setItems={setPanels} mode="1" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
-                    <Button className="outlined refresh"><RefreshIcon /></Button>
+                    <Button onClick={refreshItems} className="outlined refresh"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Panel</Button>
                 </span>
             </div>
@@ -107,13 +121,16 @@ const PanelsPage = () => {
                 onDeleteItem={handleVerifyDelete}
             />
 
-            <PanelsTable
+{refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
+
+{!refresh &&      <PanelsTable
                 items={panels}
                 itemsPerPage={10}
                 currentItems={panels}
                 onEditItem={handleShowEditPanel}
                 onCreateItem={handleShowCreatePanel}
-            />
+            /> }
+
         </div>
     )
 }

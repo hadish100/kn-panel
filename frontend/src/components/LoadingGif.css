@@ -1,0 +1,16 @@
+.loading_gif
+{
+    width:100px;
+    height:100px;
+    background:transparent;
+    opacity:1;
+}
+
+.loading_gif_container
+{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    align-content:center;
+    flex-direction:row;
+}

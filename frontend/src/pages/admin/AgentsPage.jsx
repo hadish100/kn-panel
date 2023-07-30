@@ -11,10 +11,13 @@ import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditAgent from '../../components/admin/EditAgent'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import './AgentsPage.css'
+import loadingGif from '../../assets/loading.gif'
+import "../../components/LoadingGif.css"
 
 const AgentsPage = () => {
     const [showCreateAgent, setShowCreateAgent] = useState(false);
-    const [showEditAgent, setShowEditAgent] = useState(false)
+    const [showEditAgent, setShowEditAgent] = useState(false);
+    const [refresh, setRefresh] = useState(false);
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [agents, setAgents] = useState([])
     const [selectedAgent, setSelectedAgent] = useState(null)
@@ -25,6 +28,16 @@ const AgentsPage = () => {
 
     const handleDeleteAgent = async (e, agent_id) => {
         setShowVerifyDelete(true)
+    }
+
+    const refreshItems = async () => {
+        setRefresh(true);
+        const access_token = sessionStorage.getItem("access_token");
+        axios.post("/get_agents_fake",{access_token}).then(res => 
+        {
+            sessionStorage.setItem("agents", JSON.stringify(res.data));
+            setRefresh(false);
+        });
     }
 
     const handleVerifyDelete = async (e, agent_id) => {
@@ -97,7 +110,7 @@ const AgentsPage = () => {
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
              <Search items={agents} setItems={setAgents} mode="2" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
-                    <Button className="outlined refresh"><RefreshIcon /></Button>
+                    <Button onClick={refreshItems} className="outlined refresh"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Agent</Button>
                 </span>
             </div>
@@ -127,14 +140,15 @@ const AgentsPage = () => {
                 onDeleteItem={handleVerifyDelete}
             />
 
-            <AgentsTable
+{refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}     
+
+                {!refresh && <AgentsTable
                 items={agents}
                 itemsPerPage={10}
                 currentItems={agents}
                 onEditItem={handleShowEditAgent}
                 onDeleteItem={handleDeleteAgent}
-                onCreateItem={handleShowCreatePanel}
-            />
+                onCreateItem={handleShowCreatePanel} />}
 
         </div>
     )
