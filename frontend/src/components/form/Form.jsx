@@ -110,6 +110,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             options={field.options}
                                             value={field.value}
                                             onChange={field.onChange}
+                                            placeholder={field.placeholder}
                                         />);
                                     }) : (
                                         <FormField
@@ -124,6 +125,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             options={group.options}
                                             value={group.value}
                                             onChange={group.onChange}
+                                            placeholder={group.placeholder}
                                         />
                                     )}
                                 </div>

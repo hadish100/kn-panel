@@ -2,6 +2,7 @@ import React from 'react'
 
 import { motion } from "framer-motion"
 import Dropdown from "../Dropdown"
+import MultiSelect from './inputs/MultiSelect'
 
 const FormField = ({
     label,
@@ -13,14 +14,15 @@ const FormField = ({
     disabled,
     options,
     value,
-    onChange
+    onChange,
+    placeholder
 }) => {
 
-    if (type === "dropdown") {
+    if (type === "multi-select") {
         return (
             <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
                 <label className="modal__form__label" htmlFor={id}>{label}</label>
-                <Dropdown options={options} value={value} onChange={onChange} />
+                <MultiSelect options={options} value={value} onChange={onChange} placeholder={placeholder} />
             </motion.div>
         )
     }
