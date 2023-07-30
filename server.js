@@ -19,7 +19,8 @@ var db,accounts;
 // --- UTILS --- //
 
 
-function uid() {
+function uid() 
+{
     return Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
 }
 
@@ -46,29 +47,34 @@ function send_resp(err)
 
 
 
-async function get_agents(access_token) {
+async function get_agents(access_token) 
+{
     var agents = (await axios.get(API_SERVER_URL + '/api/admin/agents/', { headers: { accept: 'application/json', Authorization: access_token } })).data
     return agents;
 }
 
-app.post("/get_agents", async (req, res) => {
+app.post("/get_agents", async (req, res) => 
+{
     var { access_token } = req.body;
     var obj = await get_agents(access_token);
     res.send(obj);
 });
 
-async function get_panels(access_token) {
+async function get_panels(access_token) 
+{
     var panels = (await axios.get(API_SERVER_URL + '/api/admin/panel/view/', { headers: { accept: 'application/json', Authorization: access_token } })).data
     return panels;
 }
 
-app.post("/get_panels", async (req, res) => {
+app.post("/get_panels", async (req, res) => 
+{
     var { access_token } = req.body;
     var obj = await get_panels(access_token);
     res.send(obj);
 });
 
-async function get_users(access_token) {
+async function get_users(access_token) 
+{
     var users = (await axios.get(API_SERVER_URL + '/api/user/view/', { headers: { accept: 'application/json', Authorization: access_token } })).data
     var inner_users = users.users;
     inner_users.map(x=>x.temp_id = uid());
@@ -77,36 +83,42 @@ async function get_users(access_token) {
 }
 
 
-app.post("/get_users", async (req, res) => {
+app.post("/get_users", async (req, res) => 
+{
     var { access_token } = req.body;
     var obj = await get_users(access_token);
     res.send(obj);
 });
 
 
-app.post("/get_agent", async (req, res) => {
+app.post("/get_agent", async (req, res) => 
+{
     var { access_token } = req.body;
     var agent = (await axios.get(API_SERVER_URL + '/api/agent/', { headers: { accept: 'application/json', Authorization: access_token } })).data
     res.send(agent);
 });
 
-async function get_agent_logs(access_token) {
+async function get_agent_logs(access_token) 
+{
     var obj = (await axios.get(API_SERVER_URL + '/api/logs/all/', { headers: { accept: 'application/json', Authorization: access_token } })).data
     return obj;
 }
 
-app.post("/get_agent_logs", async (req, res) => {
+app.post("/get_agent_logs", async (req, res) => 
+{
     var { access_token } = req.body;
     var obj = await get_agent_logs(access_token);
     res.send(obj);
 });
 
-async function get_admin_logs(access_token) {
+async function get_admin_logs(access_token) 
+{
     var obj = (await axios.get(API_SERVER_URL + '/admin/logs/', { headers: { accept: 'application/json', Authorization: access_token }})).data
     return obj;
 }
 
-app.post("/get_admin_logs", async (req, res) => {
+app.post("/get_admin_logs", async (req, res) => 
+{
     var { access_token } = req.body;
     var obj = await get_admin_logs(access_token);
     console.log(access_token);
@@ -116,7 +128,8 @@ app.post("/get_admin_logs", async (req, res) => {
 
 
 
-app.post("/login", async (req, res) => {
+app.post("/login", async (req, res) => 
+{
 
     const {username,password} = req.body;
     const accounts = await get_accounts();
@@ -137,10 +150,21 @@ app.post("/login", async (req, res) => {
 
 });
 
-app.post("/create_agent", async (req, res) => {
-    const { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token } = req.body;
+app.post("/create_agent", async (req, res) => 
+{
+    const { name, 
+        username, 
+        password, 
+        volume, 
+        min_vol,
+        max_users, 
+        max_days, 
+        prefix, 
+        country, 
+        access_token } = req.body;
 
-    try {
+    try 
+    {
         var create_agent = (await axios.post(API_SERVER_URL + '/api/admin/agent/create/',
             {
                 agent_name: name,
@@ -158,7 +182,8 @@ app.post("/create_agent", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err)
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -168,10 +193,12 @@ app.post("/create_agent", async (req, res) => {
 
 
 
-app.post("/create_panel", async (req, res) => {
+app.post("/create_panel", async (req, res) => 
+{
     const { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token } = req.body;
 
-    try {
+    try 
+    {
 
         var create_panel = (await axios.post(API_SERVER_URL + '/api/admin/panel/create/',
             {
@@ -189,7 +216,8 @@ app.post("/create_panel", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -197,7 +225,8 @@ app.post("/create_panel", async (req, res) => {
 
 });
 
-app.post("/create_user", async (req, res) => {
+app.post("/create_user", async (req, res) => 
+{
     const { username, expire, data_limit, access_token } = req.body;
 
     try {
@@ -212,9 +241,11 @@ app.post("/create_user", async (req, res) => {
             { headers: { accept: 'application/json', Authorization: access_token } }));
 
         res.send("DONE");
-    }
 
-    catch (err) {
+        }
+
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -224,10 +255,12 @@ app.post("/create_user", async (req, res) => {
 
 
 
-app.post("/delete_agent", async (req, res) => {
+app.post("/delete_agent", async (req, res) => 
+{
     var { access_token, agent_id } = req.body;
 
-    try {
+    try 
+    {
         var delete_agent = (await axios.delete(API_SERVER_URL + '/api/admin/agent/delete/',
             {
                 data: { agent_id: agent_id },
@@ -237,7 +270,8 @@ app.post("/delete_agent", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -245,31 +279,37 @@ app.post("/delete_agent", async (req, res) => {
 });
 
 
-app.post("/delete_panel", async (req, res) => {
+app.post("/delete_panel", async (req, res) => 
+{
     var { access_token, panel_id } = req.body;
 
-    try {
+    try 
+    {
         var delete_panel = (await axios.delete(API_SERVER_URL + '/api/admin/panel/delete/',
-            {
-                data: { panel_id: panel_id },
-                headers: { accept: 'application/json', Authorization: access_token }
-            })).data;
+        {
+            data: { panel_id: panel_id },
+            headers: { accept: 'application/json', Authorization: access_token }
+        })).data;
 
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
 
 });
 
-app.post("/delete_user", async (req, res) => {
+app.post("/delete_user", async (req, res) => 
+{
     var { access_token,username } = req.body;
 
-    try {
+    try 
+    {
         console.log(username);
+
         var delete_user = (await axios.delete(API_SERVER_URL + '/api/user/delete/',
             {
                 data: { username:username },
@@ -279,7 +319,8 @@ app.post("/delete_user", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -287,10 +328,12 @@ app.post("/delete_user", async (req, res) => {
 });
 
 
-app.post("/disable_panel", async (req, res) => {
+app.post("/disable_panel", async (req, res) => 
+{
     var { access_token, panel_id } = req.body;
 
-    try {
+    try 
+    {
         var disable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/disable/',
                { panel_id },
                { headers: { accept: 'application/json', Authorization: access_token } }
@@ -299,17 +342,20 @@ app.post("/disable_panel", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
 
 });
 
-app.post("/disable_agent", async (req, res) => {
+app.post("/disable_agent", async (req, res) => 
+{
     var { access_token, agent_id } = req.body;
 
-    try {
+    try 
+    {
         var disable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/disable/',
                 { agent_id },
                 {headers: { accept: 'application/json', Authorization: access_token }}
@@ -318,7 +364,8 @@ app.post("/disable_agent", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -326,10 +373,12 @@ app.post("/disable_agent", async (req, res) => {
 });
 
 
-app.post("/enable_agent", async (req, res) => {
+app.post("/enable_agent", async (req, res) => 
+{
     var { access_token, agent_id } = req.body;
 
-    try {
+    try 
+    {
         var enable_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/enable/',
                 { agent_id },
                 {headers: { accept: 'application/json', Authorization: access_token }}
@@ -346,10 +395,12 @@ app.post("/enable_agent", async (req, res) => {
 });
 
 
-app.post("/enable_panel", async (req, res) => {
+app.post("/enable_panel", async (req, res) => 
+{
     var { access_token, panel_id } = req.body;
 
-    try {
+    try 
+    {
         var enable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/enable/',
                { panel_id },
                { headers: { accept: 'application/json', Authorization: access_token } }
@@ -358,7 +409,8 @@ app.post("/enable_panel", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -366,10 +418,12 @@ app.post("/enable_panel", async (req, res) => {
 });
 
 
-app.post("/disable_user", async (req, res) => {
+app.post("/disable_user", async (req, res) => 
+{
     var { access_token, username } = req.body;
 
-    try {
+    try 
+    {
         var disable_user = (await axios.put(API_SERVER_URL + '/api/user/edit/',
                 { username:username,status:"disabled" },
                 {headers: { accept: 'application/json', Authorization: access_token }}
@@ -378,7 +432,8 @@ app.post("/disable_user", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -386,30 +441,33 @@ app.post("/disable_user", async (req, res) => {
 });
 
 
-app.post("/edit_agent", async (req, res) => {
+app.post("/edit_agent", async (req, res) => 
+{
     const { agent_id,agent_name,username,password,volume,minimum_volume,maximum_user,maximum_day,prefix,country, access_token } = req.body;
 
-    try {
+    try 
+    {
 
         var edit_agent = (await axios.put(API_SERVER_URL + '/api/admin/agent/edit/',
-            {
-                agent_id:agent_id,
-                agent_name: agent_name,
-                main_volume: parseInt(volume),
-                maximum_day: parseInt(maximum_day),
-                prefix: prefix,
-                username: username,
-                password: password,
-                maximum_user: parseInt(maximum_user),
-                minimum_volume: parseInt(minimum_volume),
-                access_country_panel:["DE"]
-            },
-            { headers: { accept: 'application/json', Authorization: access_token } })).data;
+        {
+            agent_id:agent_id,
+            agent_name: agent_name,
+            main_volume: parseInt(volume),
+            maximum_day: parseInt(maximum_day),
+            prefix: prefix,
+            username: username,
+            password: password,
+            maximum_user: parseInt(maximum_user),
+            minimum_volume: parseInt(minimum_volume),
+            access_country_panel:["DE"]
+        },
+        { headers: { accept: 'application/json', Authorization: access_token } })).data;
 
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -419,28 +477,31 @@ app.post("/edit_agent", async (req, res) => {
 
 
 
-app.post("/edit_panel", async (req, res) => {
+app.post("/edit_panel", async (req, res) => 
+{
     const { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token } = req.body;
 
-    try {
+    try 
+    {
 
         var edit_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/edit/',
-            {
-                panel_name: panel_name,
-                panel_url: panel_url,
-                panel_username: panel_username,
-                panel_password: panel_password,
-                panel_country: panel_country,
-                panel_user_max_count: parseInt(panel_user_max_count),
-                panel_user_max_date: parseInt(panel_user_max_date),
-                panel_traffic: parseInt(panel_traffic),
-            },
-            { headers: { accept: 'application/json', Authorization: access_token } }));
+        {
+            panel_name: panel_name,
+            panel_url: panel_url,
+            panel_username: panel_username,
+            panel_password: panel_password,
+            panel_country: panel_country,
+            panel_user_max_count: parseInt(panel_user_max_count),
+            panel_user_max_date: parseInt(panel_user_max_date),
+            panel_traffic: parseInt(panel_traffic),
+        },
+        { headers: { accept: 'application/json', Authorization: access_token } }));
 
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
     }
@@ -448,10 +509,12 @@ app.post("/edit_panel", async (req, res) => {
 
 });
 
-app.post("/edit_user", async (req, res) => {
+app.post("/edit_user", async (req, res) => 
+{
     const { username, expire, data_limit, access_token } = req.body;
 
-    try {
+    try 
+    {
 
         var edit_user = (await axios.put(API_SERVER_URL + '/api/user/edit/',
             {
@@ -465,7 +528,8 @@ app.post("/edit_user", async (req, res) => {
         res.send("DONE");
     }
 
-    catch (err) {
+    catch (err) 
+    {
         console.log(err);
         res.send(send_resp(err));
         
