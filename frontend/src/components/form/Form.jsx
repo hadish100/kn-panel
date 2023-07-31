@@ -20,7 +20,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
 
     const timeStampToDay = (timeStamp) => {
         const time = timeStamp - Math.floor(Date.now() / 1000)
-        return Math.floor(time / 86400)
+        return Math.floor(time / 86400) + 1
     }
 
     const getDefaultValue = (item, field) => {
@@ -28,8 +28,13 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
             return "";
         }
 
+
         if (field.id === "expire") {
             return timeStampToDay(item[field.id]);
+        }
+
+        if (field.id === "data_limit") {
+            return b2gb(item[field.id]);
         }
 
         return item[field.id];

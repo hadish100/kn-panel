@@ -53,7 +53,7 @@ const get_log = async (id) => {const result = await logs_clct.find({id}).toArray
 const update_log = async (id,value) => {await logs_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
 const insert_to_users = async (obj) => { await users_clct.insertOne(obj);return "DONE"; }
-const get_users = async () => {const result = await users_clct.find().toArray();return result;}
+const get_users = async (agent_id) => {const result = await users_clct.find({agent_id}).toArray();return result;}
 const get_user = async (id) => {const result = await users_clct.find({id}).toArray();return result[0];}
 const update_user = async(id,value) => {await users_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
@@ -62,7 +62,6 @@ const b2gb = (bytes) =>
 {
     return (bytes / (2 ** 10) ** 3).toFixed(2);
 }
-
 
 const add_token = async (id) => 
 {
@@ -108,7 +107,7 @@ async function auth_middleware(req, res, next)
     if(req.url == "/login") return next();
     var {access_token} = req.body;
     var account = await token_to_account(access_token);
-    if(!account) return res.status(401).send({message: 'Token is either expired or invalid'});
+    if(!account) return res.send({status:"ERR",msg:'Token is either expired or invalid'});
     else return next();
 }
 
@@ -134,7 +133,8 @@ app.post("/get_panels", async (req, res) =>
 app.post("/get_users", async (req, res) => 
 {
     var { access_token } = req.body;
-    var obj = await get_users();
+    var agent_id = (await token_to_account(access_token)).id
+    var obj = await get_users(agent_id);
     res.send(obj);
 });
 
@@ -264,28 +264,34 @@ app.post("/create_panel", async (req, res) =>
 
 app.post("/create_user", async (req, res) => 
 {
-    const { username, expire, data_limit, access_token } = req.body;
+    const { username,
+            expire, 
+            data_limit,
+            country,
+            access_token } = req.body;
 
-    try {
-
-        var create_user = (await axios.post(API_SERVER_URL + '/api/user/create/',
-            {
-                username: username,
-                expire: parseInt(expire) + parseInt(Date.now() / 1000),
-                data_limit: parseInt(data_limit)*((2**10)**3),
-                country: "DE"
-            },
-            { headers: { accept: 'application/json', Authorization: access_token } }));
+     var agent_id = (await token_to_account(access_token)).id;
+        
+    if( !username || !expire || !data_limit || !country ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    
+    else 
+    {
+        await insert_to_users({    id:uid(),
+                                   agent_id,
+                                   status:"active",
+                                   disable:0,
+                                   username,
+                                   expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
+                                   data_limit: data_limit*((2**10)**3),
+                                   used_traffic:0,
+                                   country,
+                                   subscription_url:"",
+                                   links:[]
+                                });
 
         res.send("DONE");
-
-        }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
     }
+
 
 
 });
@@ -306,27 +312,9 @@ app.post("/delete_panel", async (req, res) =>
 
 app.post("/delete_user", async (req, res) => 
 {
-    var { access_token,username } = req.body;
-
-    try 
-    {
-        console.log(username);
-
-        var delete_user = (await axios.delete(API_SERVER_URL + '/api/user/delete/',
-            {
-                data: { username:username },
-                headers: { accept: 'application/json', Authorization: access_token }
-            })).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
+    var { access_token, username } = req.body;
+    await users_clct.deleteOne({username});
+    res.send("DONE");
 });
 
 app.post("/disable_panel", async (req, res) => 
@@ -346,24 +334,9 @@ app.post("/disable_agent", async (req, res) =>
 
 app.post("/disable_user", async (req, res) => 
 {
-    var { access_token, username } = req.body;
-
-    try 
-    {
-        var disable_user = (await axios.put(API_SERVER_URL + '/api/user/edit/',
-                { username:username,status:"disabled" },
-                {headers: { accept: 'application/json', Authorization: access_token }}
-            )).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
+    var { access_token, user_id } = req.body;
+    await update_user(user_id,{status:"disable",disable:1});
+    res.send("DONE");
 });
 
 app.post("/enable_agent", async (req, res) => 
@@ -382,24 +355,9 @@ app.post("/enable_panel", async (req, res) =>
 
 app.post("/enable_user", async (req, res) => 
 {
-    var { access_token, panel_id } = req.body;
-
-    try 
-    {
-        var enable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/enable/',
-               { panel_id },
-               { headers: { accept: 'application/json', Authorization: access_token } }
-            )).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
+    var { access_token, user_id } = req.body;
+    await update_user(user_id,{status:"active",disable:0});
+    res.send("DONE");
 });
 
 app.post("/edit_agent", async (req, res) => 
@@ -467,28 +425,26 @@ app.post("/edit_panel", async (req, res) =>
 
 app.post("/edit_user", async (req, res) => 
 {
-    const { username, expire, data_limit, access_token } = req.body;
+        const { user_id,
+                expire, 
+                data_limit,
+                country,
+                access_token } = req.body;
 
-    try 
+                console.log(req.body);
+
+        
+    if( !user_id || !expire || !data_limit || !country ) res.send({status:"ERR",msg:"fill all of the inputs"})
+
+    else 
     {
-
-        var edit_user = (await axios.put(API_SERVER_URL + '/api/user/edit/',
-            {
-                username: username,
-                expire: parseInt(expire) + parseInt(Date.now() / 1000),
-                data_limit: parseInt(data_limit)*((2**10)**3),
-                country: "DE"
-            },
-            { headers: { accept: 'application/json', Authorization: access_token } }));
+        await update_user(user_id,{    
+                                        expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
+                                        data_limit: data_limit*((2**10)**3),
+                                        country,
+                                    });
 
         res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-        
     }
 
 

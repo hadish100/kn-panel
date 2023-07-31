@@ -32,7 +32,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
         }
 
         catch (err) {
-            if(err.response.status == 400) error_message = "Please check your username and password";
+            if(err.response.status == 401) error_message = "Please check your username and password";
             else error_message = "server is not responding";
             res = {};
             res.data = "ERR";

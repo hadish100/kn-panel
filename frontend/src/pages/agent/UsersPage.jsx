@@ -41,7 +41,7 @@ const UsersPage = () => {
     }
 
     const handleDeleteUser = async (e, username) => {
-        setShowEditUser(true)
+        setShowVerifyDelete(true)
     }
 
     
@@ -64,6 +64,28 @@ const UsersPage = () => {
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
         setShowVerifyDelete(false)
+        setShowEditUser(false)
+    }
+
+    async function handlePowerUser(e,user_id,status) {
+        e.stopPropagation();
+        console.log(status)
+        const access_token = sessionStorage.getItem("access_token");
+        if(status=="active") await axios.post("/disable_user", { access_token, user_id });
+        else await axios.post("/enable_user", { access_token, user_id });
+        var users = (await axios.post("/get_users", { access_token })).data;
+        var slctd = users.find(user => user.id === user_id);
+        setSelectedUser(slctd)
+        sessionStorage.setItem("users", JSON.stringify(users));
+        setUsers(users);
+    }
+
+    const handleEditUser = async (user_id, data_limit, expire, country) => {
+        const access_token = sessionStorage.getItem("access_token");
+        await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country });
+        let users = (await axios.post("/get_users", { access_token })).data;
+        sessionStorage.setItem("users", JSON.stringify(users))
+        setUsers(users)
         setShowEditUser(false)
     }
 
@@ -155,6 +177,8 @@ const UsersPage = () => {
                 showForm={showEditUser}
                 item={selectedUser}
                 onDeleteItem={handleDeleteUser}
+                onPowerItem={handlePowerUser}
+                onEditItem={handleEditUser}
             />
 
             <VerifyDelete

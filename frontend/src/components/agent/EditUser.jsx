@@ -6,14 +6,7 @@ import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Form from '../form/Form'
 
-const EditUser = ({ onClose, showForm, onDeleteItem, item }) => {
-    async function power_user(e, panel_id) {
-        e.stopPropagation();
-        const access_token = sessionStorage.getItem("access_token");
-        var disable_panel = (await axios.post("/disable_panel", { access_token, panel_id })).data;
-        var panels = (await axios.post("/get_panels", { access_token })).data;
-        sessionStorage.setItem("panels", JSON.stringify(panels));
-    }
+const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem }) => {
 
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username", disabled: true },
@@ -23,12 +16,17 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item }) => {
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Edit User", className: "primary", onClick: onClose },
+        { label: "Edit User", className: "primary", onClick: () => onEditItem(
+            item.id,
+            document.getElementById("data_limit").value,
+            document.getElementById("expire").value,
+            "HI"
+        ) },
     ]
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.username) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: power_user },
+        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick:(e) => onPowerItem(e,item.id,item.status) },
     ]
 
     return (
