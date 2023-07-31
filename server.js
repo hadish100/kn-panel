@@ -58,7 +58,10 @@ const get_user = async (id) => {const result = await users_clct.find({id}).toArr
 const update_user = async(id,value) => {await users_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
 
-const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
+const b2gb = (bytes) => 
+{
+    return (bytes / (2 ** 10) ** 3).toFixed(2);
+}
 
 
 const add_token = async (id) => 
@@ -93,10 +96,19 @@ async function get_admin_logs(access_token)
 
 async function auth_middleware(req, res, next)
 {
+
+    var accounts = await get_accounts();
+    accounts.forEach(async (account) => 
+    {
+        var tokens = account.tokens;
+        var new_tokens = tokens.filter(x => x.expire > Math.floor(Date.now()/1000));
+        await update_account(account.id,{tokens:new_tokens});
+    });
+
     if(req.url == "/login") return next();
-    var access_token = req.body.access_token;
+    var {access_token} = req.body;
     var account = await token_to_account(access_token);
-    if(!account) return res.status(400).send({message: 'Token is either expired or invalid'});
+    if(!account) return res.status(401).send({message: 'Token is either expired or invalid'});
     else return next();
 }
 
@@ -164,7 +176,7 @@ app.post("/login", async (req, res) =>
 
     else
     {
-        res.status(400).send({message: 'NOT FOUND'});
+        res.status(401).send({message: 'NOT FOUND'});
     }
 
 });
@@ -204,6 +216,7 @@ app.post("/create_agent", async (req, res) =>
                                     country,
                                     used_traffic:0,
                                     active_users:0,
+                                    total_users:0,
                                     tokens:[] 
                                 });
 

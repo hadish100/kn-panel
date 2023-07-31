@@ -14,7 +14,9 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
 
     console.log(item);
     console.log("SSS")
-    const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
+    const b2gb = (bytes) => {
+        return (bytes / (2 ** 10) ** 3).toFixed(2);
+    }
 
     const timeStampToDay = (timeStamp) => {
         const time = timeStamp - Math.floor(Date.now() / 1000)

@@ -3,8 +3,8 @@ import React from "react"
 import "./AgentsTable.css"
 import EmptyTable from "../EmptyTable"
 
-function b2gb(x) {
-    return parseInt(x / (2 ** 10) ** 3)
+const b2gb = (bytes) => {
+    return (bytes / (2 ** 10) ** 3).toFixed(2);
 }
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
@@ -34,7 +34,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                         {item.disable ? "Disabled" : "Active"}
                                     </span>
                                 </td> 
-                                <td >{item.active_users}</td>
+                                <td >{item.active_users + " / " + item.total_users}</td>
                                 <td>{item.used_traffic + " GB"}</td>
                                 <td>{item.volume + " GB"}</td>
                                 <td>{item.volume + " GB"}</td>
