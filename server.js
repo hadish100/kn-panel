@@ -13,6 +13,7 @@ var db,accounts_clct;
     await client.connect();
     db = client.db('KN_PANEL');
     accounts_clct = db.collection('accounts');
+    panels_clct = db.collection('panels');
 })();
 
 // --- UTILS --- //
@@ -38,6 +39,12 @@ const get_accounts = async () => {const result = await accounts_clct.find().toAr
 const get_account = async (id) => {const result = await accounts_clct.find({id}).toArray();return result[0];}
 const update_account = async (id,value) => {await accounts_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
+const insert_to_panels = async (obj) => { await panels_clct.insertOne(obj);return "DONE"; }
+const get_panels = async () => {const result = await panels_clct.find().toArray();return result;}
+const get_panel = async (id) => {const result = await panels_clct.find({id}).toArray();return result[0];}
+const update_panel = async (id,value) => {await panels_clct.updateOne({id},{$set:value},function(){});return "DONE";}
+
+
 const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
 
 
@@ -54,12 +61,6 @@ const token_to_account = async (token) =>
     var accounts = await get_accounts();
     var account = accounts.filter(x => x.tokens.filter(y => y.token == token)[0])[0];
     return account;
-}
-
-function send_resp(err)
-{
-    if(!err.response) return {status:"ERR",msg:(err.code || "An error occurred")}
-    return {status:"ERR",msg:(err.response.data.detail || Object.keys(err.response.data)[0] + " : " + err.response.data[Object.keys(err.response.data)[0]])}
 }
 
 async function get_agent_logs(access_token) 
@@ -107,14 +108,14 @@ app.post("/get_agents", async (req, res) =>
     var {access_token} = req.body;
     var admin_id = (await token_to_account(access_token)).id;
     var obj_arr = await accounts_clct.find({is_admin:0,admin_id}).toArray();
-    console.log(obj_arr);
     res.send(obj_arr);
 });
 
 app.post("/get_panels", async (req, res) => 
 {
-    var { access_token } = req.body;
-    var obj_arr = [{panel_name:"test",disable:0,panel_disable:false,panel_traffic:100,active_user:10,total_user:100,panel_user_max_count:100,country:"DE"}];
+    var {access_token} = req.body;
+    var admin_id = (await token_to_account(access_token)).id;
+    var obj_arr = await panels_clct.find({admin_id}).toArray();
     res.send(obj_arr);
 });
 
@@ -201,39 +202,41 @@ app.post("/create_agent", async (req, res) =>
                                 used_traffic:0,
                                 active_users:0,
                                 tokens:[] });
-    res.send("DONE");
+    if(!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({status:"ERR",msg:"fill all of the inputs"})
+    else res.send("DONE");
 });
 
 app.post("/create_panel", async (req, res) => 
 {
-    const { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token } = req.body;
+    const { panel_name,
+            panel_url,
+            panel_username,
+            panel_password,
+            panel_country,
+            panel_user_max_count,
+            panel_user_max_date,
+            panel_traffic,
+            access_token } = req.body;
 
-    try 
-    {
+    const admin_id = (await token_to_account(access_token)).id;
 
-        var create_panel = (await axios.post(API_SERVER_URL + '/api/admin/panel/create/',
-            {
-                panel_name: panel_name,
-                panel_url: panel_url,
-                panel_username: panel_username,
-                panel_password: panel_password,
-                panel_country: panel_country,
-                panel_user_max_count: parseInt(panel_user_max_count),
-                panel_user_max_date: parseInt(panel_user_max_date),
-                panel_traffic: parseInt(panel_traffic),
-            },
-            { headers: { accept: 'application/json', Authorization: access_token } }));
+    await insert_to_panels({ id:uid(),
+                             admin_id,
+                             disable:0,
+                             panel_name,
+                             panel_username,
+                             panel_password,
+                             panel_url,
+                             panel_country,
+                             panel_user_max_count,
+                             panel_user_max_date,
+                             panel_traffic,
+                             active_users:0,
+                             total_users:0,
+                            });
 
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
-
+    if(!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    else res.send("DONE");
 });
 
 app.post("/create_user", async (req, res) => 
@@ -274,24 +277,8 @@ app.post("/delete_agent", async (req, res) =>
 app.post("/delete_panel", async (req, res) => 
 {
     var { access_token, panel_id } = req.body;
-
-    try 
-    {
-        var delete_panel = (await axios.delete(API_SERVER_URL + '/api/admin/panel/delete/',
-        {
-            data: { panel_id: panel_id },
-            headers: { accept: 'application/json', Authorization: access_token }
-        })).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
+    await panels_clct.deleteOne({id:panel_id});
+    res.send("DONE");
 });
 
 app.post("/delete_user", async (req, res) => 
@@ -322,23 +309,8 @@ app.post("/delete_user", async (req, res) =>
 app.post("/disable_panel", async (req, res) => 
 {
     var { access_token, panel_id } = req.body;
-
-    try 
-    {
-        var disable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/disable/',
-               { panel_id },
-               { headers: { accept: 'application/json', Authorization: access_token } }
-            )).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
+    await update_panel(panel_id,{disable:1});
+    res.send("DONE");
 });
 
 app.post("/disable_agent", async (req, res) => 
@@ -381,23 +353,8 @@ app.post("/enable_agent", async (req, res) =>
 app.post("/enable_panel", async (req, res) => 
 {
     var { access_token, panel_id } = req.body;
-
-    try 
-    {
-        var enable_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/enable/',
-               { panel_id },
-               { headers: { accept: 'application/json', Authorization: access_token } }
-            )).data;
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
+    await update_panel(panel_id,{disable:0});
+    res.send("DONE");
 });
 
 app.post("/enable_user", async (req, res) => 
@@ -445,41 +402,34 @@ app.post("/edit_agent", async (req, res) =>
                                     max_days,
                                     prefix,
                                     country});
-    res.send("DONE");
+
+    if(!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({status:"ERR",msg:"fill all of the inputs"})
+    else res.send("DONE");
 
 
 });
 
 app.post("/edit_panel", async (req, res) => 
 {
-    const { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token } = req.body;
+    const { panel_id,
+            panel_name,
+            panel_username,
+            panel_password,
+            panel_user_max_count,
+            panel_user_max_date,
+            panel_traffic,
+            access_token } = req.body;
 
-    try 
-    {
+    await update_panel(panel_id,{panel_name,
+                                panel_username,
+                                panel_password,
+                                panel_user_max_count,
+                                panel_user_max_date,
+                                panel_traffic,
+                                });
 
-        var edit_panel = (await axios.put(API_SERVER_URL + '/api/admin/panel/edit/',
-        {
-            panel_name: panel_name,
-            panel_url: panel_url,
-            panel_username: panel_username,
-            panel_password: panel_password,
-            panel_country: panel_country,
-            panel_user_max_count: parseInt(panel_user_max_count),
-            panel_user_max_date: parseInt(panel_user_max_date),
-            panel_traffic: parseInt(panel_traffic),
-        },
-        { headers: { accept: 'application/json', Authorization: access_token } }));
-
-        res.send("DONE");
-    }
-
-    catch (err) 
-    {
-        console.log(err);
-        res.send(send_resp(err));
-    }
-
-
+    if(!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    else res.send("DONE");
 });
 
 app.post("/edit_user", async (req, res) => 

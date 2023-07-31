@@ -27,14 +27,15 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
         var res;
 
         try {
-            error_message = "Please check your username and password";
+            
             res = await axios.post("/login", { username, password }, { timeout: 20000 });
         }
 
         catch (err) {
+            if(err.response.status == 400) error_message = "Please check your username and password";
+            else error_message = "server is not responding";
             res = {};
             res.data = "ERR";
-            error_message = "server is not responding";
         }
 
 
