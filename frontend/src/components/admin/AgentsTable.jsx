@@ -3,8 +3,8 @@ import React from "react"
 import "./AgentsTable.css"
 import EmptyTable from "../EmptyTable"
 
-function b2gb(x) {
-    return parseInt(x / (2 ** 10) ** 3)
+const b2gb = (bytes) => {
+    return (bytes / (2 ** 10) ** 3).toFixed(2);
 }
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
@@ -28,16 +28,16 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                         ? <EmptyTable tableType={"agent"} colSpan={8} onCreateButton={onCreateItem} />
                         : currentItems.map((item) => (
                             <tr onClick={() => onEditItem(item)} key={item.id} agent_id={item.id} >
-                                <td>{item.agent_name}</td>
+                                <td>{item.name}</td>
                                 <td>
                                     <span className={`status ${item.disable ? "limited" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}
                                     </span>
                                 </td> 
-                                <td >{item.active_user}</td>
+                                <td >{item.active_users + " / " + item.total_users}</td>
                                 <td>{item.used_traffic + " GB"}</td>
-                                <td>{b2gb(item.volume) + " GB"}</td>
-                                <td>{b2gb(item.weight_dividable) + " GB"}</td>
+                                <td>{item.volume + " GB"}</td>
+                                <td>{item.volume + " GB"}</td>
                                 <td>{item.prefix}</td>
                                 <td>{item.country}</td>
                             </tr>

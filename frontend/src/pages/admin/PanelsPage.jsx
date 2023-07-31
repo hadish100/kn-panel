@@ -35,7 +35,7 @@ const PanelsPage = () => {
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/get_panels_fake",{access_token}).then(res => 
+        axios.post("/get_panels",{access_token}).then(res => 
         {
             sessionStorage.setItem("panels", JSON.stringify(res.data));
             setRefresh(false);
@@ -63,7 +63,9 @@ const PanelsPage = () => {
         var panels = (await axios.post("/get_panels", { access_token })).data;
         sessionStorage.setItem("panels", JSON.stringify(panels));
         setPanels(panels)
-        setShowEditPanel(false)
+        var slctd = panels.find(panel => panel.id === panel_id);
+        setSelectedPanel(slctd)
+        //setShowEditPanel(false)
         console.log(panels);
 
     }
@@ -90,6 +92,17 @@ const PanelsPage = () => {
         setShowEditPanel(true)
     }
 
+    const handleEditPanel = async (panel_id,panel_name,panel_username,panel_password,panel_user_max_count,panel_user_max_date,panel_traffic) => {
+
+        const access_token = sessionStorage.getItem("access_token");
+        await axios.post("/edit_panel", { panel_id,panel_name,panel_username,panel_password,panel_user_max_count,panel_user_max_date,panel_traffic,access_token });
+        var panels = (await axios.post("/get_panels", { access_token })).data;
+        sessionStorage.setItem("panels", JSON.stringify(panels));
+        setPanels(panels)
+        setShowEditPanel(false)
+
+    }
+
     return (
         <div className='admin_panels_body'>
             <UsageStats dataUsage="201.3 TB" activeUsers={500} totalUsers={900} />
@@ -113,6 +126,7 @@ const PanelsPage = () => {
                 showForm={showEditPanel}
                 onDeleteItem={handleDeletePanel}
                 onPowerItem={handlePowerPanel}
+                onEditItem={handleEditPanel}
             />
 
             <VerifyDelete

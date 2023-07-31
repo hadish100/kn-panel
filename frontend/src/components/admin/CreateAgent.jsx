@@ -37,15 +37,16 @@ const CreateAgent = ({ onClose }) => {
 
     const handleSubmitForm = () => {
         // Gather form data
+
         const name = document.getElementById("name").value;
         const username = document.getElementById("userName").value;
         const password = document.getElementById("password").value;
         const volume = document.getElementById("volume").value;
         const min_vol = document.getElementById("min_vol").value;
         const max_users = document.getElementById("max_users").value;
-        const max_days = document.getElementById("maxDays").value;
+        const max_days = document.getElementById("max_days").value;
         const prefix = document.getElementById("prefix").value;
-        const country = document.getElementById("country").value;
+        const country = "HI" //document.getElementById("country").value;
         // Send form data to backend
         createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country)
     }
@@ -60,7 +61,7 @@ const CreateAgent = ({ onClose }) => {
         ],
         [
             { label: "Maximum Users", type: "number", id: "max_users", name: "max_users" },
-            { label: "MaxDays", type: "number", id: "maxDays", name: "maxDays" },
+            { label: "MaxDays", type: "number", id: "max_days", name: "maxDays" },
         ],
         [
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },

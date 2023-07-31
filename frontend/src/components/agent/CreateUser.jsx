@@ -11,10 +11,9 @@ const CreateUser = ({ onClose, showForm }) => {
     const [error_msg, setError_msg] = useState("failed to create user");
     const access_token = sessionStorage.getItem("access_token");
     const createUserOnServer = async (
-        username, data_limit, expire
+        username, data_limit, expire, country
     ) => {
-        expire *= 86400;
-        var res = await axios.post("/create_user", { username, expire, data_limit, access_token });
+        var res = await axios.post("/create_user", { username, expire, data_limit, country, access_token });
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
@@ -31,8 +30,9 @@ const CreateUser = ({ onClose, showForm }) => {
         const username = document.getElementById("username").value;
         const data_limit = document.getElementById("dataLimit").value;
         const expire = document.getElementById("daysToExpire").value;
+        const country = "HI";
         // Send form data to backend
-        createUserOnServer(username, data_limit, expire)
+        createUserOnServer(username, data_limit, expire, country)
     }
 
     const formFields = [

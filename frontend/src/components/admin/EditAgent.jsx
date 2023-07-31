@@ -10,16 +10,16 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
 console.log(item)
 
     const formFields = [
-        { label: "Name", type: "text", id: "agent_name", name: "name" },
+        { label: "Name", type: "text", id: "name", name: "name" },
         { label: "Username", type: "text", id: "username", name: "username" },
-        { label: "New Password", type: "text", id: "password", name: "password" },
+        { label: "Password", type: "text", id: "password", name: "password" },
         [
             { label: "Volume", type: "number", id: "volume", name: "volume" },
-            { label: "Minimum Volume", type: "number", id: "minimum_volume", name: "min_vol" },
+            { label: "Minimum Volume", type: "number", id: "min_vol", name: "min_vol" },
         ],
         [
-            { label: "Maximum Users", type: "number", id: "maximum_user", name: "max_users" },
-            { label: "MaxDays", type: "number", id: "maximum_day", name: "maxDays" },
+            { label: "Maximum Users", type: "number", id: "max_users", name: "max_users" },
+            { label: "MaxDays", type: "number", id: "max_days", name: "maxDays" },
         ],
         [
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
@@ -31,13 +31,13 @@ console.log(item)
         { label: "Cancel", className: "outlined", onClick: onClose },
         { label: "Edit Agent", className: "primary", onClick: () => onEditItem(
             item.id,
-            document.getElementById("agent_name").value,
+            document.getElementById("name").value,
             document.getElementById("username").value,
             document.getElementById("password").value,
             document.getElementById("volume").value,
-            document.getElementById("minimum_volume").value,
-            document.getElementById("maximum_user").value,
-            document.getElementById("maximum_day").value,
+            document.getElementById("min_vol").value,
+            document.getElementById("max_users").value,
+            document.getElementById("max_days").value,
             document.getElementById("prefix").value,
             document.getElementById("country").value,
         )},

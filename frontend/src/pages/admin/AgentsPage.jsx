@@ -33,9 +33,10 @@ const AgentsPage = () => {
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/get_agents_fake",{access_token}).then(res => 
+        axios.post("/get_agents",{access_token}).then(res => 
         {
             sessionStorage.setItem("agents", JSON.stringify(res.data));
+            setAgents(JSON.parse(sessionStorage.getItem("agents")))
             setRefresh(false);
         });
     }
@@ -61,16 +62,18 @@ const AgentsPage = () => {
         var agents = (await axios.post("/get_agents", { access_token })).data;
         sessionStorage.setItem("agents", JSON.stringify(agents));
         setAgents(agents)
-        setShowEditAgent(false)
+        var slctd = agents.find(agent => agent.id === agent_id);
+        setSelectedAgent(slctd)
+        //setShowEditAgent(false)
         console.log(agents);
 
     }
 
 
-    const handleEditAgent = async (agent_id,agent_name,username,password,volume,minimum_volume,maximum_user,maximum_day,prefix,country) => {
+    const handleEditAgent = async (agent_id,name,username,password,volume,min_vol,max_users,max_days,prefix,country) => {
 
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/edit_agent", { agent_id,agent_name,username,password,volume,minimum_volume,maximum_user,maximum_day,prefix,country,access_token });
+        await axios.post("/edit_agent", { agent_id,name,username,password,volume,min_vol,max_users,max_days,prefix,country,access_token });
         var agents = (await axios.post("/get_agents", { access_token })).data;
         sessionStorage.setItem("agents", JSON.stringify(agents));
         setAgents(agents)

@@ -24,14 +24,14 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                             <tr onClick={() => onEditItem(item)} key={item.id}>
                                 <td>{item.panel_name}</td>
                                 <td>
-                                    <span className={`status ${item.panel_disable ? "limited" : "active"}`} >
-                                        {item.panel_disable ? "Disabled" : "Active"}
+                                    <span className={`status ${item.disable ? "limited" : "active"}`} >
+                                        {item.disable ? "Disabled" : "Active"}
                                     </span>
                                 </td>
                                 <td>{item.panel_traffic + " GB"}</td>
-                                <td >{item.active_user + " / " + item.total_user}</td>
+                                <td >{item.active_users + " / " + item.total_users}</td>
                                 <td >{item.panel_user_max_count}</td>
-                                <td>{item.country}</td>
+                                <td>{item.panel_country}</td>
                             </tr>
                         ))}
                 </tbody>

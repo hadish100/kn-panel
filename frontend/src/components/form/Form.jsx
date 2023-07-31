@@ -12,11 +12,15 @@ import IOSSwitch from './inputs/IOSSwitch';
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
 
-    const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
+    console.log(item);
+    console.log("SSS")
+    const b2gb = (bytes) => {
+        return (bytes / (2 ** 10) ** 3).toFixed(2);
+    }
 
     const timeStampToDay = (timeStamp) => {
         const time = timeStamp - Math.floor(Date.now() / 1000)
-        return Math.floor(time / 86400)
+        return Math.floor(time / 86400) + 1
     }
 
     const getDefaultValue = (item, field) => {
@@ -24,14 +28,13 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
             return "";
         }
 
-        if (field.id === "volume" || field.id === "data_limit") {
-            return b2gb(item[field.id]);
-        } else if (field.id === "password") {
-            return "";
-        }
 
         if (field.id === "expire") {
             return timeStampToDay(item[field.id]);
+        }
+
+        if (field.id === "data_limit") {
+            return b2gb(item[field.id]);
         }
 
         return item[field.id];
@@ -67,7 +70,8 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                         <FormGroup key={index}>
                             <FormControlLabel
                                 onClick={button.onClick}
-                                control={<IOSSwitch sx={{ my: 1, mx: 2 }} defaultChecked />}
+                                control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item?Boolean(!item.disable):false} />}
+                                //Boolean(!item.disable)
                             />
                         </FormGroup>
                     ) : null

@@ -30,25 +30,25 @@ const UsersPage = () => {
 
 
     useEffect(() => {
-        const { users } = JSON.parse(sessionStorage.getItem("users"));
+        const users = JSON.parse(sessionStorage.getItem("users"));
         setUsers(users)
     }, [])
 
     var agent = JSON.parse(sessionStorage.getItem("agent"));
 
     const b2gb = (bytes) => {
-        return (bytes / (2 ** 10) ** 3).toFixed(1);
+        return (bytes / (2 ** 10) ** 3).toFixed(2);
     }
 
     const handleDeleteUser = async (e, username) => {
-        setShowEditUser(true)
+        setShowVerifyDelete(true)
     }
 
     
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/get_users_fake",{access_token}).then(res => 
+        axios.post("/get_users",{access_token}).then(res => 
         {
             sessionStorage.setItem("users", JSON.stringify(res.data));
             setRefresh(false);
@@ -60,10 +60,32 @@ const UsersPage = () => {
         username = selectedUser.username;
         const access_token = sessionStorage.getItem("access_token");
         await axios.post("/delete_user", { access_token, username });
-        let { users } = (await axios.post("/get_users", { access_token })).data;
+        let users = (await axios.post("/get_users", { access_token })).data;
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
         setShowVerifyDelete(false)
+        setShowEditUser(false)
+    }
+
+    async function handlePowerUser(e,user_id,status) {
+        e.stopPropagation();
+        console.log(status)
+        const access_token = sessionStorage.getItem("access_token");
+        if(status=="active") await axios.post("/disable_user", { access_token, user_id });
+        else await axios.post("/enable_user", { access_token, user_id });
+        var users = (await axios.post("/get_users", { access_token })).data;
+        var slctd = users.find(user => user.id === user_id);
+        setSelectedUser(slctd)
+        sessionStorage.setItem("users", JSON.stringify(users));
+        setUsers(users);
+    }
+
+    const handleEditUser = async (user_id, data_limit, expire, country) => {
+        const access_token = sessionStorage.getItem("access_token");
+        await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country });
+        let users = (await axios.post("/get_users", { access_token })).data;
+        sessionStorage.setItem("users", JSON.stringify(users))
+        setUsers(users)
         setShowEditUser(false)
     }
 
@@ -73,7 +95,7 @@ const UsersPage = () => {
 
     const handleCloseCreateUser = () => {
         setShowCreateUser(false)
-        setUsers(JSON.parse(sessionStorage.getItem("users")).users)
+        setUsers(JSON.parse(sessionStorage.getItem("users")))
     }
 
     const handlePageChange = (page) => {
@@ -113,8 +135,7 @@ const UsersPage = () => {
     return (
 
         <div className='panel_body'>
-            <UsageStats activeUsers={agent.active_user} totalUsers={agent.total_users} dataUsage={b2gb(agent.used_traffic) + " GB"} remainingData={b2gb(agent.volume) + " GB"} allocableData={b2gb(agent.weight_dividable
-            ) + " GB"} />
+            <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} dataUsage={b2gb(agent.used_traffic) + " GB"} remainingData={b2gb(agent.volume) + " GB"} allocableData={b2gb(agent.volume) + " GB"} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
             <Search items={users} setItems={setUsers} mode="3" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
@@ -156,6 +177,8 @@ const UsersPage = () => {
                 showForm={showEditUser}
                 item={selectedUser}
                 onDeleteItem={handleDeleteUser}
+                onPowerItem={handlePowerUser}
+                onEditItem={handleEditUser}
             />
 
             <VerifyDelete
