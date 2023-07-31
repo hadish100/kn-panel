@@ -1,7 +1,7 @@
 const express = require('express');const app = express();
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
-const client = new MongoClient('mongodb://localhost:27017');
+const client = new MongoClient('mongodb://127.0.0.1:27017');
 
 app.use(express.json());
 app.use(auth_middleware);
