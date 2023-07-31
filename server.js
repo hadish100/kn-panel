@@ -26,7 +26,7 @@ const uidv2 = () =>
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     let counter = 0;
-    while (counter < 20) 
+    while (counter < 30) 
     {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
       counter += 1;
@@ -92,7 +92,7 @@ async function auth_middleware(req, res, next)
     if(req.url == "/login") return next();
     var access_token = req.body.access_token;
     var account = await token_to_account(access_token);
-    if(!account) return res.status(400).send({message: 'NOT FOUND'});
+    if(!account) return res.status(400).send({message: 'Token is either expired or invalid'});
     else return next();
 }
 
@@ -129,7 +129,7 @@ app.post("/get_users", async (req, res) =>
 app.post("/get_agent", async (req, res) => 
 {
     var { access_token } = req.body;
-    var agent = (await axios.get(API_SERVER_URL + '/api/agent/', { headers: { accept: 'application/json', Authorization: access_token } })).data
+    var agent = await token_to_account(access_token);
     res.send(agent);
 });
 
@@ -186,24 +186,32 @@ app.post("/create_agent", async (req, res) =>
 
     const admin_id = (await token_to_account(access_token)).id;
 
-    await insert_to_accounts({  id:uid(),
-                                admin_id,
-                                is_admin:0,
-                                disable:0,
-                                name,
-                                username,
-                                password,
-                                volume,
-                                min_vol,
-                                max_users,
-                                max_days,
-                                prefix,
-                                country,
-                                used_traffic:0,
-                                active_users:0,
-                                tokens:[] });
+
     if(!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({status:"ERR",msg:"fill all of the inputs"})
-    else res.send("DONE");
+    
+    else 
+    {
+        await insert_to_accounts({  id:uid(),
+                                    admin_id,
+                                    is_admin:0,
+                                    disable:0,
+                                    name,
+                                    username,
+                                    password,
+                                    volume,
+                                    min_vol,
+                                    max_users,
+                                    max_days,
+                                    prefix,
+                                    country,
+                                    used_traffic:0,
+                                    active_users:0,
+                                    tokens:[] 
+                                });
+
+        res.send("DONE");
+    }
+
 });
 
 app.post("/create_panel", async (req, res) => 
@@ -220,23 +228,29 @@ app.post("/create_panel", async (req, res) =>
 
     const admin_id = (await token_to_account(access_token)).id;
 
-    await insert_to_panels({ id:uid(),
-                             admin_id,
-                             disable:0,
-                             panel_name,
-                             panel_username,
-                             panel_password,
-                             panel_url,
-                             panel_country,
-                             panel_user_max_count,
-                             panel_user_max_date,
-                             panel_traffic,
-                             active_users:0,
-                             total_users:0,
-                            });
+
 
     if(!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
-    else res.send("DONE");
+    
+    else 
+    {
+        await insert_to_panels({    id:uid(),
+                                    admin_id,
+                                    disable:0,
+                                    panel_name,
+                                    panel_username,
+                                    panel_password,
+                                    panel_url,
+                                    panel_country,
+                                    panel_user_max_count,
+                                    panel_user_max_date,
+                                    panel_traffic,
+                                    active_users:0,
+                                    total_users:0,
+                                });
+
+        res.send("DONE");
+    }
 });
 
 app.post("/create_user", async (req, res) => 
@@ -393,18 +407,23 @@ app.post("/edit_agent", async (req, res) =>
             country,
             access_token } = req.body;
 
-    await update_account(agent_id,{ name,
-                                    username,
-                                    password,
-                                    volume,
-                                    min_vol,
-                                    max_users,
-                                    max_days,
-                                    prefix,
-                                    country});
 
     if(!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({status:"ERR",msg:"fill all of the inputs"})
-    else res.send("DONE");
+    
+    else 
+    {
+        await update_account(agent_id,{ name,
+                                        username,
+                                        password,
+                                        volume,
+                                        min_vol,
+                                        max_users,
+                                        max_days,
+                                        prefix,
+                                        country
+                                      });
+        res.send("DONE");
+    }
 
 
 });
@@ -420,16 +439,21 @@ app.post("/edit_panel", async (req, res) =>
             panel_traffic,
             access_token } = req.body;
 
-    await update_panel(panel_id,{panel_name,
-                                panel_username,
-                                panel_password,
-                                panel_user_max_count,
-                                panel_user_max_date,
-                                panel_traffic,
-                                });
 
     if(!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
-    else res.send("DONE");
+   
+    else
+    { 
+        await update_panel(panel_id,{panel_name,
+                                     panel_username,
+                                     panel_password,
+                                     panel_user_max_count,
+                                     panel_user_max_date,
+                                     panel_traffic,
+                                    });
+        res.send("DONE");
+    }
+
 });
 
 app.post("/edit_user", async (req, res) => 
