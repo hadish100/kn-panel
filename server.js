@@ -38,7 +38,7 @@ const uidv2 = () =>
 }
 
 const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj);return "DONE"; }
-const get_accounts = async () => {const result = await accounts_clct.find().toArray();return result;}
+const get_accounts = async () => {const result = await accounts_clct.find({}).toArray();return result;}
 const get_account = async (id) => {const result = await accounts_clct.find({id}).toArray();return result[0];}
 const update_account = async (id,value) => {await accounts_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
