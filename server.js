@@ -7,13 +7,16 @@ app.use(express.json());
 app.use(auth_middleware);
 
 
-var db,accounts_clct;
+var db,accounts_clct,panels_clct,logs_clct,users_clct;
+
 (async function connect_to_db()
 {
     await client.connect();
     db = client.db('KN_PANEL');
     accounts_clct = db.collection('accounts');
     panels_clct = db.collection('panels');
+    users_clct = db.collection('users');
+    logs_clct = db.collection('logs');
 })();
 
 // --- UTILS --- //
@@ -43,6 +46,16 @@ const insert_to_panels = async (obj) => { await panels_clct.insertOne(obj);retur
 const get_panels = async () => {const result = await panels_clct.find().toArray();return result;}
 const get_panel = async (id) => {const result = await panels_clct.find({id}).toArray();return result[0];}
 const update_panel = async (id,value) => {await panels_clct.updateOne({id},{$set:value},function(){});return "DONE";}
+
+const insert_to_logs = async (obj) => { await logs_clct.insertOne(obj);return "DONE"; }
+const get_logs = async () => {const result = await logs_clct.find().toArray();return result;}
+const get_log = async (id) => {const result = await logs_clct.find({id}).toArray();return result[0];}
+const update_log = async (id,value) => {await logs_clct.updateOne({id},{$set:value},function(){});return "DONE";}
+
+const insert_to_users = async (obj) => { await users_clct.insertOne(obj);return "DONE"; }
+const get_users = async () => {const result = await users_clct.find().toArray();return result;}
+const get_user = async (id) => {const result = await users_clct.find({id}).toArray();return result[0];}
+const update_user = async(id,value) => {await users_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
 
 const b2gb = (x) => parseInt(x / (2 ** 10) ** 3)
@@ -75,15 +88,6 @@ async function get_admin_logs(access_token)
     return obj;
 }
 
-async function get_users(access_token) 
-{
-    var users = (await axios.get(API_SERVER_URL + '/api/user/view/', { headers: { accept: 'application/json', Authorization: access_token } })).data
-    var inner_users = users.users;
-    inner_users.map(x=>x.temp_id = uid());
-    users.users = inner_users;
-    return users;
-}
-
 
 // --- MIDDLEWARE --- //
 
@@ -105,24 +109,20 @@ async function log_middleware(req, res, next)
 
 app.post("/get_agents", async (req, res) => 
 {
-    var {access_token} = req.body;
-    var admin_id = (await token_to_account(access_token)).id;
-    var obj_arr = await accounts_clct.find({is_admin:0,admin_id}).toArray();
+    var obj_arr = await accounts_clct.find({is_admin:0}).toArray();
     res.send(obj_arr);
 });
 
 app.post("/get_panels", async (req, res) => 
 {
-    var {access_token} = req.body;
-    var admin_id = (await token_to_account(access_token)).id;
-    var obj_arr = await panels_clct.find({admin_id}).toArray();
+    var obj_arr = await panels_clct.find({}).toArray();
     res.send(obj_arr);
 });
 
 app.post("/get_users", async (req, res) => 
 {
     var { access_token } = req.body;
-    var obj = await get_users(access_token);
+    var obj = await get_users();
     res.send(obj);
 });
 
@@ -184,7 +184,6 @@ app.post("/create_agent", async (req, res) =>
             country,
             access_token } = req.body;
 
-    const admin_id = (await token_to_account(access_token)).id;
 
 
     if(!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({status:"ERR",msg:"fill all of the inputs"})
@@ -192,7 +191,6 @@ app.post("/create_agent", async (req, res) =>
     else 
     {
         await insert_to_accounts({  id:uid(),
-                                    admin_id,
                                     is_admin:0,
                                     disable:0,
                                     name,
@@ -226,7 +224,6 @@ app.post("/create_panel", async (req, res) =>
             panel_traffic,
             access_token } = req.body;
 
-    const admin_id = (await token_to_account(access_token)).id;
 
 
 
@@ -235,7 +232,6 @@ app.post("/create_panel", async (req, res) =>
     else 
     {
         await insert_to_panels({    id:uid(),
-                                    admin_id,
                                     disable:0,
                                     panel_name,
                                     panel_username,
