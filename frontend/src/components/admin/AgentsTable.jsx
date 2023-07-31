@@ -33,7 +33,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                     <span className={`status ${item.disable ? "limited" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}
                                     </span>
-                                </td> 
+                                </td>
                                 <td >{item.active_users + " / " + item.total_users}</td>
                                 <td>{item.used_traffic + " GB"}</td>
                                 <td>{item.volume + " GB"}</td>
