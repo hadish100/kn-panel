@@ -52,16 +52,29 @@ const MultiSelect = ({ options, placeholder }) => {
         .filter((option) => !selectedOptions.some((selectedOption) => selectedOption.value === option.value))
         .map((option, index) => {
             return (
+
                 <motion.div
-                    className='option'
+                    className='multi-select__option'
                     onClick={() => handleOptionClick(option)}
                     key={option.value}
-                    initial={{ x: -10, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: 0, opacity: 0 }}
-                    transition={{ delay: index * 0.15 }}
+                    initial={{ height: 0 }}
+                    animate={{ height: "auto" }}
+                    exit={{ height: 0 }}
+                    transition={{ duration: .2 }}
+                    layout
                 >
-                    {option.label}
+                    <AnimatePresence>
+                        <motion.div
+                            style={{ padding: "0.43rem 0.7rem" }}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -10 }}
+                            transition={{ duration: .2 }}
+                            layout
+                        >
+                            {option.label}
+                        </motion.div>
+                    </AnimatePresence >
                 </motion.div>
             )
         })
@@ -85,7 +98,7 @@ const MultiSelect = ({ options, placeholder }) => {
 
     return (
         <div className='multi-select-container'>
-            <motion.div ref={divEl} key={options.value}>
+            <div ref={divEl} key={options.value}>
                 <div className="multi-select__value" onClick={handleShowDropdown}>
                     {selectedOptions.length === 0 ? placeholder : null}
                     {renderedSelectedOptions}
@@ -97,17 +110,17 @@ const MultiSelect = ({ options, placeholder }) => {
                 <AnimatePresence>
                     {isOpen &&
                         <motion.div
-                            className='options'
-                            initial={{ height: 0, opacity: 0, y: -10 }} // Initial opacity and position
-                            animate={{ height: "auto", opacity: 1, y: 0 }} // Transition to height and opacity
-                            exit={{ height: 0, opacity: 0, y: -10 }} // Exit to initial opacity and position
-                            transition={{ duration: 0.2 }} // Duration of animation
+                            className='multi-select__options'
+                            initial={{ height: 0 }} // Initial opacity and position
+                            animate={{ height: "auto" }} // Transition to height and opacity
+                            exit={{ height: 0 }} // Exit to initial opacity and position
+                            transition={{ duration: .2 }} // Duration of animation
                         >
                             {renderedOptions}
                         </motion.div>
                     }
                 </AnimatePresence>
-            </motion.div>
+            </div>
         </div >
     )
 }

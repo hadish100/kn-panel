@@ -65,6 +65,18 @@ const CreatePanel = ({ onClose }) => {
                 { value: "US", label: "US" },
                 { value: "NL", label: "NL" },
                 { value: "DE", label: "DE" },
+                { value: "AU", label: "AU" },
+                { value: "CA", label: "CA" },
+                { value: "GB", label: "GB" },
+                { value: "FR", label: "FR" },
+                { value: "IT", label: "IT" },
+                { value: "ES", label: "ES" },
+                { value: "SE", label: "SE" },
+                { value: "CH", label: "CH" },
+                { value: "AT", label: "AT" },
+                { value: "BE", label: "BE" },
+                { value: "DK", label: "DK" },
+
             ],
         }
     ]
