@@ -169,6 +169,15 @@ app.post("/get_agents", async (req, res) =>
 app.post("/get_panels", async (req, res) => 
 {
     var obj_arr = await panels_clct.find({}).toArray();
+
+    for(obj of obj_arr)
+    {
+        var {link,username,password} = obj;
+        var info_obj = await get_panel_info(link,username,password);
+        if(info_obj == "ERR") continue;
+        else await update_panel(obj.id,info_obj);
+    }
+
     res.send(obj_arr);
 });
 
@@ -450,6 +459,7 @@ app.post("/edit_panel", async (req, res) =>
     const { panel_id,
             panel_name,
             panel_username,
+            panel_url,
             panel_password,
             panel_user_max_count,
             panel_user_max_date,
@@ -457,8 +467,12 @@ app.post("/edit_panel", async (req, res) =>
             access_token } = req.body;
 
 
+    var panel_info = await get_panel_info(panel_url,panel_username,panel_password);
+
+
     if(!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
-   
+    else if(panel_info == "ERR") res.send({status:"ERR",msg:"Failed to connect to panel"});
+
     else
     { 
         await update_panel(panel_id,{panel_name,

@@ -103,9 +103,13 @@ const PanelsPage = () => {
 
     }
 
+    var total_active_users = panels.reduce((acc , panel) => acc + panel.active_users,0);
+    var total_total_users = panels.reduce((acc , panel) => acc + panel.total_users,0);
+    var total_data_usage = parseFloat(panels.reduce((acc , panel) => acc + panel.panel_data_usage,0)).toFixed(2);
+
     return (
         <div className='admin_panels_body'>
-            <UsageStats dataUsage="201.3 TB" activeUsers={500} totalUsers={900} />
+            <UsageStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_users} totalUsers={total_total_users} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search items={panels} setItems={setPanels} mode="1" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
