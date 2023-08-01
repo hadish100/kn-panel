@@ -47,6 +47,11 @@ const get_panels = async () => {const result = await panels_clct.find().toArray(
 const get_panel = async (id) => {const result = await panels_clct.find({id}).toArray();return result[0];}
 const update_panel = async (id,value) => {await panels_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
+const insert_to_users = async (obj) => { await users_clct.insertOne(obj);return "DONE"; }
+const get_users = async (agent_id) => {const result = await users_clct.find({agent_id}).toArray();return result;}
+const get_user = async (id) => {const result = await users_clct.find({id}).toArray();return result[0];}
+const update_user = async(id,value) => {await users_clct.updateOne({id},{$set:value},function(){});return "DONE";}
+
 const insert_to_logs = async (account_id,action,msg) => 
 {
     var username = (await get_account(account_id)).username;
@@ -63,11 +68,6 @@ const insert_to_logs = async (account_id,action,msg) =>
 }
 
 const get_logs = async () => {const result = await logs_clct.find().toArray();return result;}
-
-const insert_to_users = async (obj) => { await users_clct.insertOne(obj);return "DONE"; }
-const get_users = async (agent_id) => {const result = await users_clct.find({agent_id}).toArray();return result;}
-const get_user = async (id) => {const result = await users_clct.find({id}).toArray();return result[0];}
-const update_user = async(id,value) => {await users_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
 
 const b2gb = (bytes) => 
@@ -90,6 +90,54 @@ const token_to_account = async (token) =>
     return account;
 }
 
+
+// --- MARZBAN UTILS --- //
+
+const auth_marzban = async (link,username,password) =>
+{
+    try
+    {
+        var auth_res = 
+        {
+            'accept': 'application/json',
+            'Authorization':'',
+            'Content-Type': 'application/json'
+        };
+
+        const headers =
+        {
+            'accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
+
+        var resp = await axios.post(link+"/api/admin/token",{username,password},{headers});
+        auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
+        return auth_res;
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
+}
+
+const get_panel_info = async (link,username,password) =>
+{
+    var headers = await auth_marzban(link,username,password);
+    if(headers == "ERR") return "ERR";
+    var panel_info = (await axios.get(link+"/api/system",{headers})).data;
+
+    var info_obj =
+    {
+        total_users:panel_info['total_user'],
+        active_users:panel_info['users_active'],
+        data_usage:b2gb(panel_info['incoming_bandwidth'] + panel_info['outgoing_bandwidth'])     
+    };
+
+    return info_obj;
+}
+
+
 // --- MIDDLEWARE --- //
 
 async function auth_middleware(req, res, next)
@@ -109,7 +157,6 @@ async function auth_middleware(req, res, next)
     if(!account) return res.send({status:"ERR",msg:'Token is either expired or invalid'});
     else return next();
 }
-
 
 // --- ENDPOINTS --- //
 
@@ -237,9 +284,12 @@ app.post("/create_panel", async (req, res) =>
             access_token } = req.body;
 
 
+    var panel_info = await get_panel_info(panel_url,panel_username,panel_password);
+
 
 
     if(!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    else if(panel_info == "ERR") res.send({status:"ERR",msg:"Failed to connect to panel"});
     
     else 
     {
@@ -253,8 +303,9 @@ app.post("/create_panel", async (req, res) =>
                                     panel_user_max_count,
                                     panel_user_max_date,
                                     panel_traffic,
-                                    active_users:0,
-                                    total_users:0,
+                                    panel_data_usage:panel_info.data_usage,
+                                    active_users:panel_info.active_users,
+                                    total_users:panel_info.total_users,
                                 });
 
         res.send("DONE");

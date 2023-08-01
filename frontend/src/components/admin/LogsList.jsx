@@ -24,7 +24,7 @@ const LogsList = ({ logs }) => {
                         className={`log__text ${expandedId === log.id ? 'expanded' : ''}`}
                         style={{ maxHeight: expandedId === log.id ? '7.5rem' : '2.5rem' }}
                     >
-                        {log.msg}
+                        <div><b style={{fontSize:"18px"}} >{log.msg.split(" ")[0]}</b> <span> {log.msg.split(" ").slice(1).join(" ")} </span> </div>
                         <span className='chevron-icon' style={{ alignSelf: 'center', marginLeft: '0.25rem' }}>
                             <Button className='ghosted' onClick={() => handleClick(log.id)}>
                                 <ChevronDownIcon />

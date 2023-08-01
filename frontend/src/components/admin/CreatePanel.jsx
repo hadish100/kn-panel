@@ -57,7 +57,7 @@ const CreatePanel = ({ onClose }) => {
         { label: "Capacity", type: "number", id: "panel_user_max_count", name: "capacity" },
         { label: "User Max Days", type: "number", id: "panel_user_max_date", name: "panel_user_max_date" },
         { label: "Traffic", type: "number", id: "panel_traffic", name: "traffic" },
-        { label: "Country", type: "number", id: "country", name: "country" },
+        { label: "Country", type: "text", id: "country", name: "country" },
     ]
 
     const primaryButtons = [
