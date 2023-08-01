@@ -159,18 +159,7 @@ const make_vpn = async (link,username,password,vpn_name,data_limit,expire) =>
     var {panel_inbounds} = await get_panel_info(link,username,password);
     var proxy_obj = {};
 
-    for(inbound in panel_inbounds)
-    {
-        if(Object.keys(proxy_obj).length == 0)
-        {
-            proxy_obj[inbound] = {"id":uuidv4()};
-        }
-        
-        else
-        {
-            proxy_obj[inbound] = {}; 
-        }
-    }
+    for(inbound in panel_inbounds) proxy_obj[inbound] = {}; 
 
     var req_obj = 
     {
@@ -182,7 +171,8 @@ const make_vpn = async (link,username,password,vpn_name,data_limit,expire) =>
         "data_limit_reset_strategy":"no_reset"
     };
 
-    await axios.post(link+"/api/user",req_obj,{headers});
+    var res = await axios.post(link+"/api/user",req_obj,{headers});
+    return res.data;
 }
 
 
@@ -414,8 +404,8 @@ app.post("/create_user", async (req, res) =>
                                         used_traffic:0.00,
                                         country,
                                         corresponding_panel:selected_panel.panel_url,
-                                        subscription_url:"",
-                                        links:[]
+                                        subscription_url:selected_panel.panel_url+mv.subscription_url,
+                                        links:mv.links
                                    });
 
              res.send("DONE");
