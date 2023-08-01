@@ -2,6 +2,7 @@ const express = require('express');const app = express();
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
+const { v4: uuidv4 } = require('uuid');
 
 app.use(express.json());
 app.use(auth_middleware);
@@ -49,6 +50,7 @@ const update_panel = async (id,value) => {await panels_clct.updateOne({id},{$set
 
 const insert_to_users = async (obj) => { await users_clct.insertOne(obj);return "DONE"; }
 const get_users = async (agent_id) => {const result = await users_clct.find({agent_id}).toArray();return result;}
+const get_all_users = async () => {const result = await users_clct.find({}).toArray();return result;}
 const get_user = async (id) => {const result = await users_clct.find({id}).toArray();return result[0];}
 const update_user = async(id,value) => {await users_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
@@ -73,6 +75,11 @@ const get_logs = async () => {const result = await logs_clct.find().toArray();re
 const b2gb = (bytes) => 
 {
     return (bytes / (2 ** 10) ** 3).toFixed(2);
+}
+
+const gb2b = (g) => 
+{
+    return (g * (2 ** 10) ** 3);
 }
 
 const dnf = (x) => // Desired Number Format
@@ -131,6 +138,8 @@ const get_panel_info = async (link,username,password) =>
     var headers = await auth_marzban(link,username,password);
     if(headers == "ERR") return "ERR";
     var panel_info = (await axios.get(link+"/api/system",{headers})).data;
+    var panel_inbounds = (await axios.get(link+"/api/inbounds",{headers})).data;
+    console.log(panel_inbounds);
 
     var info_obj =
     {
@@ -140,6 +149,26 @@ const get_panel_info = async (link,username,password) =>
     };
 
     return info_obj;
+}
+
+const make_vpn = async (link,username,password,vpn_name,data_limit,expire) =>
+{
+    var headers = await auth_marzban(link,username,password);
+    if(headers == "ERR") return "ERR";
+    var req_obj = 
+    {
+        "username":vpn_name,
+        "proxies":
+        {
+            "vmess":{"id":uuidv4()},
+            "vless":{},
+            "trojan":{}
+        },
+        "inbounds":{},
+        "expire":expire,
+        "data_limit":data_limit,
+        "data_limit_reset_strategy":"no_reset"
+    };
 }
 
 
@@ -333,21 +362,43 @@ app.post("/create_user", async (req, res) =>
             country,
             access_token } = req.body;
 
-     var agent_id = (await token_to_account(access_token)).id;
-        
     if( !username || !expire || !data_limit || !country ) res.send({status:"ERR",msg:"fill all of the inputs"})
-    
+
+     var corresponding_agent = await token_to_account(access_token); 
+     var agent_id = corresponding_agent.id;
+     var all_usernames = [...(await get_all_users()).map( x => x.username )];
+     console.log(all_usernames);
+     var panels_arr = await get_panels();
+     //var selected_panel = panels_arr.filter(x => x.panel_country == country && x.panel_total_users < x.panel_user_max_count && x.disable != 0)[0];
+     
+    if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
+    else if(data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
+    else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
+    else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
+    else if(all_usernames.includes(username)) res.send({status:"ERR",msg:"username already exists"})
+    else if(!selected_panel) res.send({status:"ERR",msg:"no available panel"});
     else 
     {
+
+        var mv = await make_vpn(selected_panel.panel_url,
+                                selected_panel.panel_username,
+                                selected_panel.panel_password,
+                                corresponding_agent.prefix + "_" + username,
+                                gb2b(data_limit),
+                                Math.floor(Date.now()/1000) + expire*24*60*60)
+
+        if(mv == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
+
         await insert_to_users({    id:uid(),
                                    agent_id,
                                    status:"active",
                                    disable:0,
-                                   username,
+                                   username:corresponding_agent.prefix + "_" + username,
                                    expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
-                                   data_limit: data_limit*((2**10)**3),
+                                   data_limit: gb2b(data_limit),
                                    used_traffic:0.00,
                                    country,
+                                   corresponding_panel:selected_panel.panel_url,
                                    subscription_url:"",
                                    links:[]
                                 });
