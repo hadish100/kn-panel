@@ -269,6 +269,7 @@ app.post("/create_agent", async (req, res) =>
                                     username,
                                     password,
                                     volume:dnf(volume),
+                                    allocatable_data:dnf(volume),
                                     min_vol:dnf(min_vol),
                                     max_users:parseInt(max_users),
                                     max_days:parseInt(max_days),
@@ -441,10 +442,15 @@ app.post("/edit_agent", async (req, res) =>
     
     else 
     {
+        var agent = await get_account(agent_id);
+        var old_volume = agent.volume;
+        var old_alloc = agent.allocatable_data;
+
         await update_account(agent_id,{ name,
                                         username,
                                         password,
                                         volume:dnf(volume),
+                                        allocatable_data:dnf(old_alloc) + dnf(volume) - dnf(old_volume),       
                                         min_vol:dnf(volume),
                                         max_users:parseInt(max_users),
                                         max_days:parseInt(max_days),
