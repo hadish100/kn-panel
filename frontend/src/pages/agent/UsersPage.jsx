@@ -34,7 +34,7 @@ const UsersPage = () => {
         setUsers(users)
     }, [])
 
-    var agent = JSON.parse(sessionStorage.getItem("agent"));
+    const [agent,setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")));
 
     const b2gb = (bytes) => {
         return (bytes / (2 ** 10) ** 3).toFixed(2);
@@ -48,6 +48,10 @@ const UsersPage = () => {
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
+        
+        var agent = (await axios.post("/get_agent",{access_token})).data
+        sessionStorage.setItem("agent", JSON.stringify(agent))
+        setAgent(agent)
         axios.post("/get_users",{access_token}).then(res => 
         {
             sessionStorage.setItem("users", JSON.stringify(res.data));
@@ -135,7 +139,7 @@ const UsersPage = () => {
     return (
 
         <div className='panel_body'>
-            <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} dataUsage={b2gb(agent.used_traffic) + " GB"} remainingData={b2gb(agent.volume) + " GB"} allocableData={b2gb(agent.allocatable_data) + " GB"} />
+            <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} dataUsage={agent.used_traffic + " GB"} remainingData={agent.volume + " GB"} allocableData={agent.allocatable_data + " GB"} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
             <Search items={users} setItems={setUsers} mode="3" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
