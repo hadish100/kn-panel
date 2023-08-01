@@ -106,10 +106,13 @@ const AgentsPage = () => {
         setShowEditAgent(true)
     }
 
+    var total_active_users = agents.reduce((acc , agent) => acc + agent.active_users,0);
+    var total_total_users = agents.reduce((acc , agent) => acc + agent.total_users,0);
+    var total_data_usage = parseFloat(agents.reduce((acc , agent) => acc + agent.used_traffic,0)).toFixed(2);
 
     return (
         <div className='admin_panels_body'>
-            <AdminUsageStats dataUsage="8020 GB" activeUsers={512} totalUsers={1000} />
+            <AdminUsageStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_users} totalUsers={total_total_users} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
              <Search items={agents} setItems={setAgents} mode="2" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>

@@ -38,6 +38,7 @@ const PanelsPage = () => {
         axios.post("/get_panels",{access_token}).then(res => 
         {
             sessionStorage.setItem("panels", JSON.stringify(res.data));
+            setPanels(res.data);
             setRefresh(false);
         });
     }
@@ -107,6 +108,8 @@ const PanelsPage = () => {
     var total_active_users = panels.reduce((acc , panel) => acc + panel.active_users,0);
     var total_total_users = panels.reduce((acc , panel) => acc + panel.total_users,0);
     var total_data_usage = parseFloat(panels.reduce((acc , panel) => acc + panel.panel_data_usage,0)).toFixed(2);
+    var country_list = [...new Set(panels.map(panel => panel.country))];
+    sessionStorage.setItem("country_list", JSON.stringify(country_list));
 
     return (
         <div className='admin_panels_body'>

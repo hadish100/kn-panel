@@ -7,13 +7,16 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button'
 import axios from "axios"
 import ErrorCard from '../components/ErrorCard';
+import OkCard from '../components/OkCard';
 
 
 var error_message = "Please check your username and password";
+var ok_message = "Login successful , retrieving data";
 
 
 const Login = ({ setIsLoggedIn, setLocation }) => {
     const [hasError, setHasError] = useState(false)
+    const [hasOk, setHasOk] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate();
 
@@ -29,6 +32,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
         try {
             
             res = await axios.post("/login", { username, password }, { timeout: 20000 });
+            setHasOk(true);
         }
 
         catch (err) {
@@ -106,6 +110,16 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
         />
     )
 
+
+    var okCard = (
+        <OkCard
+            hasError={hasOk}
+            setHasError={setHasOk}
+            errorTitle="WELCOME"
+            errorMessage={ok_message}
+        />
+    )
+
     return (
         <div className='login'>
             <Logo />
@@ -120,6 +134,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
                 </Button>
             </form>
             {errorCard}
+            {okCard}
         </div>
     )
 }

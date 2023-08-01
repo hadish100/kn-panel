@@ -75,6 +75,11 @@ const b2gb = (bytes) =>
     return (bytes / (2 ** 10) ** 3).toFixed(2);
 }
 
+const dnf = (x) => // Desired Number Format
+{
+    return Math.round(x*100)/100;
+}
+
 const add_token = async (id) => 
 {
     var expire = Math.floor(Date.now()/1000) + 3600;
@@ -263,13 +268,13 @@ app.post("/create_agent", async (req, res) =>
                                     name,
                                     username,
                                     password,
-                                    volume,
-                                    min_vol,
-                                    max_users,
-                                    max_days,
+                                    volume:dnf(volume),
+                                    min_vol:dnf(min_vol),
+                                    max_users:parseInt(max_users),
+                                    max_days:parseInt(max_days),
                                     prefix,
                                     country,
-                                    used_traffic:0,
+                                    used_traffic:0.00,
                                     active_users:0,
                                     total_users:0,
                                     tokens:[] 
@@ -308,9 +313,9 @@ app.post("/create_panel", async (req, res) =>
                                     panel_password,
                                     panel_url,
                                     panel_country,
-                                    panel_user_max_count,
-                                    panel_traffic,
-                                    panel_data_usage:panel_info.data_usage,
+                                    panel_user_max_count:parseInt(panel_user_max_count),
+                                    panel_traffic:dnf(panel_traffic),
+                                    panel_data_usage:dnf(panel_info.data_usage),
                                     active_users:panel_info.active_users,
                                     total_users:panel_info.total_users,
                                 });
@@ -340,7 +345,7 @@ app.post("/create_user", async (req, res) =>
                                    username,
                                    expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
                                    data_limit: data_limit*((2**10)**3),
-                                   used_traffic:0,
+                                   used_traffic:0.00,
                                    country,
                                    subscription_url:"",
                                    links:[]
@@ -439,10 +444,10 @@ app.post("/edit_agent", async (req, res) =>
         await update_account(agent_id,{ name,
                                         username,
                                         password,
-                                        volume,
-                                        min_vol,
-                                        max_users,
-                                        max_days,
+                                        volume:dnf(volume),
+                                        min_vol:dnf(volume),
+                                        max_users:parseInt(max_users),
+                                        max_days:parseInt(max_days),
                                         prefix,
                                         country
                                       });
@@ -477,8 +482,8 @@ app.post("/edit_panel", async (req, res) =>
         await update_panel(panel_id,{panel_name,
                                      panel_username,
                                      panel_password,
-                                     panel_user_max_count,
-                                     panel_traffic,
+                                     panel_user_max_count:parseInt(panel_user_max_count),
+                                     panel_traffic:dnf(panel_traffic),
                                     });
         res.send("DONE");
     }

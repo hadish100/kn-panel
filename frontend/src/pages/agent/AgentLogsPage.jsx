@@ -9,16 +9,17 @@ import "../admin/AdminLogsPage.css"
 import loadingGif from '../../assets/loading.gif'
 import axios from 'axios'
 
-var logs = []
 
 const AgentLogsPage = () => {
     const [date, setDate] = useState(dayjs());
     const [log_is_ready,set_log_is_ready] = useState(false);
+    const [logs,setLogs] = useState([])
+
 
     const access_token = sessionStorage.getItem("access_token")
     axios.post("/get_agent_logs",{access_token}).then(res => 
     {
-        logs = res.data;
+        setLogs(res.data);
         set_log_is_ready(true);
     });
 
