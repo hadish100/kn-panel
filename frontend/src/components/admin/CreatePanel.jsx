@@ -20,10 +20,9 @@ const CreatePanel = ({ onClose }) => {
         panel_password,
         panel_country,
         panel_user_max_count,
-        panel_user_max_date,
         panel_traffic
     ) => {
-        const res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic, access_token });
+        const res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_traffic, access_token });
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create panel (BAD REQUEST)")
@@ -43,10 +42,9 @@ const CreatePanel = ({ onClose }) => {
         const panel_password = document.getElementById("panel_password").value;
         const panel_country = document.getElementById("country").value;
         const panel_user_max_count = document.getElementById("panel_user_max_count").value;
-        const panel_user_max_date = document.getElementById("panel_user_max_date").value;
         const panel_traffic = document.getElementById("panel_traffic").value;
         // Send form data to backend
-        createPanelOnServer(panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_user_max_date, panel_traffic)
+        createPanelOnServer(panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_traffic)
     }
 
     const formFields = [
@@ -55,7 +53,6 @@ const CreatePanel = ({ onClose }) => {
         { label: "Password", type: "text", id: "panel_password", name: "password" },
         { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url" },
         { label: "Capacity", type: "number", id: "panel_user_max_count", name: "capacity" },
-        { label: "User Max Days", type: "number", id: "panel_user_max_date", name: "panel_user_max_date" },
         { label: "Traffic", type: "number", id: "panel_traffic", name: "traffic" },
         { label: "Country", type: "text", id: "country", name: "country" },
     ]

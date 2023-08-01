@@ -143,13 +143,13 @@ const get_panel_info = async (link,username,password) =>
 async function auth_middleware(req, res, next)
 {
 
-    var accounts = await get_accounts();
-    accounts.forEach(async (account) => 
-    {
-        var tokens = account.tokens;
-        var new_tokens = tokens.filter(x => x.expire > Math.floor(Date.now()/1000));
-        await update_account(account.id,{tokens:new_tokens});
-    });
+    // var accounts = await get_accounts();
+    // accounts.forEach(async (account) => 
+    // {
+    //     var tokens = account.tokens;
+    //     var new_tokens = tokens.filter(x => x.expire > Math.floor(Date.now()/1000));
+    //     await update_account(account.id,{tokens:new_tokens});
+    // });
 
     if(req.url == "/login") return next();
     var {access_token} = req.body;
@@ -288,7 +288,6 @@ app.post("/create_panel", async (req, res) =>
             panel_password,
             panel_country,
             panel_user_max_count,
-            panel_user_max_date,
             panel_traffic,
             access_token } = req.body;
 
@@ -297,7 +296,7 @@ app.post("/create_panel", async (req, res) =>
 
 
 
-    if(!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    if(!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
     else if(panel_info == "ERR") res.send({status:"ERR",msg:"Failed to connect to panel"});
     
     else 
@@ -310,7 +309,6 @@ app.post("/create_panel", async (req, res) =>
                                     panel_url,
                                     panel_country,
                                     panel_user_max_count,
-                                    panel_user_max_date,
                                     panel_traffic,
                                     panel_data_usage:panel_info.data_usage,
                                     active_users:panel_info.active_users,
@@ -462,15 +460,16 @@ app.post("/edit_panel", async (req, res) =>
             panel_url,
             panel_password,
             panel_user_max_count,
-            panel_user_max_date,
             panel_traffic,
             access_token } = req.body;
+
+            console.log(req.body);
 
 
     var panel_info = await get_panel_info(panel_url,panel_username,panel_password);
 
 
-    if(!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_user_max_date || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    if(!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
     else if(panel_info == "ERR") res.send({status:"ERR",msg:"Failed to connect to panel"});
 
     else
@@ -479,7 +478,6 @@ app.post("/edit_panel", async (req, res) =>
                                      panel_username,
                                      panel_password,
                                      panel_user_max_count,
-                                     panel_user_max_date,
                                      panel_traffic,
                                     });
         res.send("DONE");

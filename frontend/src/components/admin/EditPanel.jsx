@@ -24,6 +24,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditI
             document.getElementById("panel_name").value,
             document.getElementById("panel_username").value,
             document.getElementById("panel_password").value,
+            document.getElementById("panel_url").value,
             document.getElementById("panel_user_max_count").value,
             document.getElementById("panel_traffic").value,
             document.getElementById("panel_country").value

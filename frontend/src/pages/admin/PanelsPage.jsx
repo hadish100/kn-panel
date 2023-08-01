@@ -92,17 +92,18 @@ const PanelsPage = () => {
         setShowEditPanel(true)
     }
 
-    const handleEditPanel = async (panel_id,panel_name,panel_username,panel_password,panel_user_max_count,panel_user_max_date,panel_traffic) => {
+    const handleEditPanel = async (panel_id,panel_name,panel_username,panel_password,panel_url,panel_user_max_count,panel_traffic) => {
 
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/edit_panel", { panel_id,panel_name,panel_username,panel_password,panel_user_max_count,panel_user_max_date,panel_traffic,access_token });
+        var res = await axios.post("/edit_panel", { panel_id,panel_name,panel_username,panel_password,panel_url,panel_user_max_count,panel_traffic,access_token });
+        console.log(res.data)
         var panels = (await axios.post("/get_panels", { access_token })).data;
         sessionStorage.setItem("panels", JSON.stringify(panels));
         setPanels(panels)
         setShowEditPanel(false)
 
     }
-
+    console.log(panels);
     var total_active_users = panels.reduce((acc , panel) => acc + panel.active_users,0);
     var total_total_users = panels.reduce((acc , panel) => acc + panel.total_users,0);
     var total_data_usage = parseFloat(panels.reduce((acc , panel) => acc + panel.panel_data_usage,0)).toFixed(2);
