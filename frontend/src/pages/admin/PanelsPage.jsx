@@ -13,10 +13,14 @@ import VerifyDelete from '../../components/admin/VerifyDelete'
 import './PanelsPage.css'
 import loadingGif from '../../assets/loading.gif'
 import "../../components/LoadingGif.css"
+import ErrorCard from '../../components/ErrorCard';
+
 
 
 const PanelsPage = () => {
     const [showCreatePanel, setShowCreatePanel] = useState(false)
+    const [hasError, setHasError] = useState(false)
+    const [error_msg, setError_msg] = useState("")
     const [showEditPanel, setShowEditPanel] = useState(false)
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [panels, setPanels] = useState([])
@@ -47,8 +51,20 @@ const PanelsPage = () => {
         e.stopPropagation();
         panel_id = selectedPanel.id;
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/delete_panel", { access_token, panel_id });
+        var req_res = await axios.post("/delete_panel", { access_token, panel_id });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
         let panels = (await axios.post("/get_panels", { access_token })).data;
+        if(panels.status == "ERR") 
+        {
+            setError_msg(panels.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("panels", JSON.stringify(panels))
         setPanels(panels)
         setShowEditPanel(false)
@@ -58,10 +74,23 @@ const PanelsPage = () => {
     const handlePowerPanel = async (panel_id,disabled) => {
 
         const access_token = sessionStorage.getItem("access_token");
-        console.log(disabled) 
-        if(disabled) await axios.post("/enable_panel", { access_token, panel_id });
-        else await axios.post("/disable_panel", { access_token, panel_id });
+        console.log(disabled)
+        var req_res;
+        if(disabled) req_res = await axios.post("/enable_panel", { access_token, panel_id });
+        else req_res = await axios.post("/disable_panel", { access_token, panel_id });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
         var panels = (await axios.post("/get_panels", { access_token })).data;
+        if(panels.status == "ERR") 
+        {
+            setError_msg(panels.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("panels", JSON.stringify(panels));
         setPanels(panels)
         var slctd = panels.find(panel => panel.id === panel_id);
@@ -97,8 +126,19 @@ const PanelsPage = () => {
 
         const access_token = sessionStorage.getItem("access_token");
         var res = await axios.post("/edit_panel", { panel_id,panel_name,panel_username,panel_password,panel_url,panel_user_max_count,panel_traffic,access_token });
-        console.log(res.data)
+        if(res.data.status == "ERR") 
+        {
+            setError_msg(res.data.msg)
+            setHasError(true)
+            return;
+        }
         var panels = (await axios.post("/get_panels", { access_token })).data;
+        if(panels.status == "ERR") 
+        {
+            setError_msg(panels.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("panels", JSON.stringify(panels));
         setPanels(panels)
         setShowEditPanel(false)
@@ -135,6 +175,13 @@ const PanelsPage = () => {
                 onDeleteItem={handleDeletePanel}
                 onPowerItem={handlePowerPanel}
                 onEditItem={handleEditPanel}
+            />
+
+            <ErrorCard
+                hasError={hasError}
+                setHasError={setHasError}
+                errorTitle="ERROR"
+                errorMessage={error_msg} 
             />
 
             <VerifyDelete

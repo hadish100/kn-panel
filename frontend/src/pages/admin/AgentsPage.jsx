@@ -13,10 +13,14 @@ import VerifyDelete from '../../components/admin/VerifyDelete'
 import './AgentsPage.css'
 import loadingGif from '../../assets/loading.gif'
 import "../../components/LoadingGif.css"
+import ErrorCard from '../../components/ErrorCard';
+
 
 const AgentsPage = () => {
     const [showCreateAgent, setShowCreateAgent] = useState(false);
     const [showEditAgent, setShowEditAgent] = useState(false);
+    const [error_msg, setError_msg] = useState("")
+    const [hasError, setHasError] = useState(false)
     const [refresh, setRefresh] = useState(false);
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [agents, setAgents] = useState([])
@@ -45,8 +49,20 @@ const AgentsPage = () => {
         e.stopPropagation();
         agent_id = selectedAgent.id;
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/delete_agent", { access_token, agent_id });
+        var req_res = await axios.post("/delete_agent", { access_token, agent_id });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
         let agents = (await axios.post("/get_agents", { access_token })).data;
+        if(agents.status == "ERR")
+        {
+            setError_msg(agents.msg)
+            setHasError(true)
+            return;
+        }
         console.log(agents);
         sessionStorage.setItem("agents", JSON.stringify(agents))
         setAgents(agents)
@@ -56,10 +72,23 @@ const AgentsPage = () => {
 
     const handlePowerAgent = async (agent_id,disabled) => {
         const access_token = sessionStorage.getItem("access_token");
-        console.log(disabled) 
-        if(disabled) await axios.post("/enable_agent", { access_token, agent_id });
-        else await axios.post("/disable_agent", { access_token, agent_id });
+        console.log(disabled)
+        var req_res; 
+        if(disabled) req_res = await axios.post("/enable_agent", { access_token, agent_id });
+        else req_res = await axios.post("/disable_agent", { access_token, agent_id });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
         var agents = (await axios.post("/get_agents", { access_token })).data;
+        if(agents.status == "ERR") 
+        {
+            setError_msg(agents.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("agents", JSON.stringify(agents));
         setAgents(agents)
         var slctd = agents.find(agent => agent.id === agent_id);
@@ -73,8 +102,20 @@ const AgentsPage = () => {
     const handleEditAgent = async (agent_id,name,username,password,volume,min_vol,max_users,max_days,prefix,country) => {
 
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/edit_agent", { agent_id,name,username,password,volume,min_vol,max_users,max_days,prefix,country,access_token });
+        var req_res = await axios.post("/edit_agent", { agent_id,name,username,password,volume,min_vol,max_users,max_days,prefix,country,access_token });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
         var agents = (await axios.post("/get_agents", { access_token })).data;
+        if(agents.status == "ERR") 
+        {
+            setError_msg(agents.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("agents", JSON.stringify(agents));
         setAgents(agents)
         setShowEditAgent(false)
@@ -106,9 +147,15 @@ const AgentsPage = () => {
         setShowEditAgent(true)
     }
 
-    var total_active_users = agents.reduce((acc , agent) => acc + agent.active_users,0);
-    var total_total_users = agents.reduce((acc , agent) => acc + agent.total_users,0);
-    var total_data_usage = parseFloat(agents.reduce((acc , agent) => acc + agent.used_traffic,0)).toFixed(2);
+    var [total_active_users,total_total_users,total_data_usage] = [0,0,0];
+    if(agents)
+    {
+        total_active_users = agents.reduce((acc , agent) => acc + agent.active_users,0);
+        total_total_users = agents.reduce((acc , agent) => acc + agent.total_users,0);
+        total_data_usage = parseFloat(agents.reduce((acc , agent) => acc + agent.used_traffic,0)).toFixed(2);
+    }
+
+
 
     return (
         <div className='admin_panels_body'>
@@ -137,6 +184,13 @@ const AgentsPage = () => {
                 onDeleteItem={handleDeleteAgent}
                 onPowerItem={handlePowerAgent}
                 onEditItem={handleEditAgent}
+            />
+
+            <ErrorCard
+                hasError={hasError}
+                setHasError={setHasError}
+                errorTitle="ERROR"
+                errorMessage={error_msg} 
             />
 
 

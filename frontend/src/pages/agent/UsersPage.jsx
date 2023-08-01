@@ -15,11 +15,15 @@ import EditUser from '../../components/agent/EditUser'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import loadingGif from '../../assets/loading.gif'
 import "../../components/LoadingGif.css"
+import ErrorCard from '../../components/ErrorCard';
+
 
 
 const UsersPage = () => {
     const [showCreateUser, setShowCreateUser] = useState(false)
     const [showEditUser, setShowEditUser] = useState(false)
+    const [hasError, setHasError] = useState(false)
+    const [error_msg, setError_msg] = useState("")
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [selection, setSelection] = useState(null)
     const [currentPage, setCurrentPage] = useState(1)
@@ -50,10 +54,22 @@ const UsersPage = () => {
         const access_token = sessionStorage.getItem("access_token");
         
         var agent = (await axios.post("/get_agent",{access_token})).data
+        if(agent.status == "ERR") 
+        {
+            setError_msg(agent.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
         axios.post("/get_users",{access_token}).then(res => 
         {
+            if(res.data.status == "ERR") 
+            {
+                setError_msg(res.data.msg)
+                setHasError(true)
+                return;
+            }
             sessionStorage.setItem("users", JSON.stringify(res.data));
             setUsers(res.data);
             setRefresh(false);
@@ -64,8 +80,20 @@ const UsersPage = () => {
         e.stopPropagation();
         username = selectedUser.username;
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/delete_user", { access_token, username });
+        var req_res = await axios.post("/delete_user", { access_token, username });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
         let users = (await axios.post("/get_users", { access_token })).data;
+        if(users.status == "ERR") 
+        {
+            setError_msg(users.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
         setShowVerifyDelete(false)
@@ -76,9 +104,22 @@ const UsersPage = () => {
         e.stopPropagation();
         console.log(status)
         const access_token = sessionStorage.getItem("access_token");
-        if(status=="active") await axios.post("/disable_user", { access_token, user_id });
-        else await axios.post("/enable_user", { access_token, user_id });
+        var req_res;
+        if(status=="active") req_res = await axios.post("/disable_user", { access_token, user_id });
+        else req_res = await axios.post("/enable_user", { access_token, user_id });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
         var users = (await axios.post("/get_users", { access_token })).data;
+        if(users.status == "ERR") 
+        {
+            setError_msg(users.msg)
+            setHasError(true)
+            return;
+        }
         var slctd = users.find(user => user.id === user_id);
         setSelectedUser(slctd)
         sessionStorage.setItem("users", JSON.stringify(users));
@@ -87,8 +128,21 @@ const UsersPage = () => {
 
     const handleEditUser = async (user_id, data_limit, expire, country) => {
         const access_token = sessionStorage.getItem("access_token");
-        await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country });
+        var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country });
+        if(req_res.data.status == "ERR") 
+        {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
+
         let users = (await axios.post("/get_users", { access_token })).data;
+        if(users.status == "ERR") 
+        {
+            setError_msg(users.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
         setShowEditUser(false)
@@ -184,6 +238,13 @@ const UsersPage = () => {
                 onDeleteItem={handleDeleteUser}
                 onPowerItem={handlePowerUser}
                 onEditItem={handleEditUser}
+            />
+
+            <ErrorCard
+                hasError={hasError}
+                setHasError={setHasError}
+                errorTitle="ERROR"
+                errorMessage={error_msg} 
             />
 
             <VerifyDelete
