@@ -172,8 +172,8 @@ app.post("/get_panels", async (req, res) =>
 
     for(obj of obj_arr)
     {
-        var {link,username,password} = obj;
-        var info_obj = await get_panel_info(link,username,password);
+        var {panel_url,panel_username,panel_password} = obj;
+        var info_obj = await get_panel_info(panel_url,panel_username,panel_password);
         if(info_obj == "ERR") continue;
         else await update_panel(obj.id,info_obj);
     }
