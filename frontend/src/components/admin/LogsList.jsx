@@ -3,6 +3,12 @@ import React, { useState } from 'react';
 import Button from '../../components/Button';
 import { ReactComponent as ChevronDownIcon } from '../../assets/svg/chevron-down.svg';
 
+const timestamp_to_date = (timestamp) => {
+    var date = new Date(timestamp*1000);
+    return date.toLocaleString();
+}
+
+
 const LogsList = ({ logs }) => {
     const [expandedId, setExpandedId] = useState(null);
 
@@ -18,14 +24,14 @@ const LogsList = ({ logs }) => {
                         className={`log__text ${expandedId === log.id ? 'expanded' : ''}`}
                         style={{ maxHeight: expandedId === log.id ? '7.5rem' : '2.5rem' }}
                     >
-                        {log.logText}
+                        {log.msg}
                         <span className='chevron-icon' style={{ alignSelf: 'center', marginLeft: '0.25rem' }}>
                             <Button className='ghosted' onClick={() => handleClick(log.id)}>
                                 <ChevronDownIcon />
                             </Button>
                         </span>
                     </div>
-                    <div className='log__date'>{log.logDate}</div>
+                    <div className='log__date'>{timestamp_to_date(log.time)}</div>
                 </li>
             ))}
         </ul>

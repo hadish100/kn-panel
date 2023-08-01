@@ -9,31 +9,16 @@ import "../admin/AdminLogsPage.css"
 import loadingGif from '../../assets/loading.gif'
 import axios from 'axios'
 
-const logs = [
-    {
-        logText: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-        logDate: "Today at 12:30 PM",
-        id: 1
-    },
-    {
-        logText: "lorem;asdlnalsdnlandnkbfiwfjqwefbqebfbqefbjqw c wekl eq eclbdlbqfl qelqbefl qefblqbeflqbefbqlefblq e,efbqljfbejlb",
-        logDate: "Today at 2:30 AM",
-        id: 2
-    },
-    {
-        logText: "lorem;asdlnalsdnlandnkbfiwfjqwefbqebfbqefbjqw c wekl eq eclbdlbqfl qelqbefl qefblqbeflqbefbqlefblq e,efbqljfbejlb",
-        logDate: "Today at 2:30 AM",
-        id: 3
-    },
-]
+var logs = []
 
 const AgentLogsPage = () => {
     const [date, setDate] = useState(dayjs());
     const [log_is_ready,set_log_is_ready] = useState(false);
 
     const access_token = sessionStorage.getItem("access_token")
-    axios.post("/get_admin_logs",{access_token}).then(res => 
+    axios.post("/get_agent_logs",{access_token}).then(res => 
     {
+        logs = res.data;
         set_log_is_ready(true);
     });
 

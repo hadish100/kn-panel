@@ -38,7 +38,7 @@ const uidv2 = () =>
 }
 
 const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj);return "DONE"; }
-const get_accounts = async () => {const result = await accounts_clct.find({}).toArray();return result;}
+const get_accounts = async () => {const result = await accounts_clct.find().toArray();return result;}
 const get_account = async (id) => {const result = await accounts_clct.find({id}).toArray();return result[0];}
 const update_account = async (id,value) => {await accounts_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
@@ -47,10 +47,22 @@ const get_panels = async () => {const result = await panels_clct.find().toArray(
 const get_panel = async (id) => {const result = await panels_clct.find({id}).toArray();return result[0];}
 const update_panel = async (id,value) => {await panels_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
-const insert_to_logs = async (obj) => { await logs_clct.insertOne(obj);return "DONE"; }
+const insert_to_logs = async (account_id,action,msg) => 
+{
+    var username = (await get_account(account_id)).username;
+    var obj = { 
+                id:uid(),
+                account_id,
+                action,
+                msg:username + " " + msg,
+                time:Math.floor(Date.now()/1000)
+              }
+
+    await logs_clct.insertOne(obj);
+    return "DONE"; 
+}
+
 const get_logs = async () => {const result = await logs_clct.find().toArray();return result;}
-const get_log = async (id) => {const result = await logs_clct.find({id}).toArray();return result[0];}
-const update_log = async (id,value) => {await logs_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
 const insert_to_users = async (obj) => { await users_clct.insertOne(obj);return "DONE"; }
 const get_users = async (agent_id) => {const result = await users_clct.find({agent_id}).toArray();return result;}
@@ -78,19 +90,6 @@ const token_to_account = async (token) =>
     return account;
 }
 
-async function get_agent_logs(access_token) 
-{
-    var obj = (await axios.get(API_SERVER_URL + '/api/logs/all/', { headers: { accept: 'application/json', Authorization: access_token } })).data
-    return obj;
-}
-
-async function get_admin_logs(access_token) 
-{
-    var obj = (await axios.get(API_SERVER_URL + '/admin/logs/', { headers: { accept: 'application/json', Authorization: access_token }})).data
-    return obj;
-}
-
-
 // --- MIDDLEWARE --- //
 
 async function auth_middleware(req, res, next)
@@ -111,10 +110,6 @@ async function auth_middleware(req, res, next)
     else return next();
 }
 
-async function log_middleware(req, res, next)
-{
-    console.log("HI");
-}
 
 // --- ENDPOINTS --- //
 
@@ -147,17 +142,20 @@ app.post("/get_agent", async (req, res) =>
 
 app.post("/get_agent_logs", async (req, res) => 
 {
-    var { access_token } = req.body;
-    var obj = await get_agent_logs(access_token);
+    const { access_token } = req.body;
+    var obj = await get_logs();
+    var account_id = (await token_to_account(access_token)).id;
+    obj.sort((a,b) => b.time - a.time);
+    obj = obj.filter(x => x.account_id == account_id);
+    obj = obj.slice(0,Math.min(obj.length,10));
     res.send(obj);
 });
 
 app.post("/get_admin_logs", async (req, res) => 
 {
-    var { access_token } = req.body;
-    var obj = await get_admin_logs(access_token);
-    console.log(access_token);
-    console.log(obj);
+    var obj = await get_logs();
+    obj.sort((a,b) => b.time - a.time);
+    obj = obj.slice(0,Math.min(obj.length,10));
     res.send(obj);
 });
 
@@ -171,6 +169,7 @@ app.post("/login", async (req, res) =>
     if(account)
     {
         var access_token = await add_token(account.id);
+        await insert_to_logs(account.id,"LOGIN","logged in");
         res.send({is_admin:account.is_admin,access_token});
     }
 
@@ -448,6 +447,14 @@ app.post("/edit_user", async (req, res) =>
     }
 
 
+});
+
+app.post("/edit_self", async (req, res) => 
+{
+        const { username,password,access_token } = req.body;
+        var account_id = (await token_to_account(access_token)).id;
+        await update_account(account_id,{username,password});
+        res.send("DONE");
 });
 
 

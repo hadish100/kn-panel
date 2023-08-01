@@ -37,21 +37,21 @@ const AdminSettingsPage = () => {
         else
         {
             const access_token = sessionStorage.getItem("access_token")
-            setHasOk(true)
-            // var res = await axios.post("/change_credentials", {username, password, access_token})
+            var res = await axios.post("/edit_self", {username, password, access_token})
 
-            // if (res.data.status === "ERR") 
-            // {
-            //     setError_msg(res.data.msg || "BAD REQUEST")
-            //     setHasError(true)
-            // } 
+            if (res.data.status === "ERR") 
+            {
+                setError_msg(res.data.msg || "BAD REQUEST")
+                setHasError(true)
+            } 
             
-            // else 
-            // {
-            //     setHasOk(true)
-            // }
-            
-
+            else 
+            {
+                setHasOk(true)
+                document.getElementById("username").value = "";
+                document.getElementById("password").value = "";
+                document.getElementById("password2").value = "";
+            }
         }
     }
 
