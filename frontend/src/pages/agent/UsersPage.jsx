@@ -55,6 +55,7 @@ const UsersPage = () => {
         axios.post("/get_users",{access_token}).then(res => 
         {
             sessionStorage.setItem("users", JSON.stringify(res.data));
+            setUsers(res.data);
             setRefresh(false);
         });
     }

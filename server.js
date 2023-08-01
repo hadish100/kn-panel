@@ -136,76 +136,126 @@ const auth_marzban = async (link,username,password) =>
 
 const get_panel_info = async (link,username,password) =>
 {
-    var headers = await auth_marzban(link,username,password);
-    if(headers == "ERR") return "ERR";
-    var panel_info = (await axios.get(link+"/api/system",{headers})).data;
-    var panel_inbounds = (await axios.get(link+"/api/inbounds",{headers})).data;
-    console.log(panel_inbounds);
-
-    var info_obj =
+    try
     {
-        total_users:panel_info['total_user'],
-        active_users:panel_info['users_active'],
-        data_usage:b2gb(panel_info['incoming_bandwidth'] + panel_info['outgoing_bandwidth']),
-        panel_inbounds     
-    };
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var panel_info = (await axios.get(link+"/api/system",{headers})).data;
+        var panel_inbounds = (await axios.get(link+"/api/inbounds",{headers})).data;
+    
+        var info_obj =
+        {
+            total_users:panel_info['total_user'],
+            active_users:panel_info['users_active'],
+            data_usage:b2gb(panel_info['incoming_bandwidth'] + panel_info['outgoing_bandwidth']),
+            panel_inbounds     
+        };
+    
+        return info_obj;
+    }
 
-    return info_obj;
+    catch(err)
+    {
+        return "ERR"
+    }
 }
 
 const make_vpn = async (link,username,password,vpn_name,data_limit,expire) =>
 {
-    var headers = await auth_marzban(link,username,password);
-    if(headers == "ERR") return "ERR";
-    var {panel_inbounds} = await get_panel_info(link,username,password);
-    var proxy_obj = {};
-
-    for(inbound in panel_inbounds) proxy_obj[inbound] = {}; 
-
-    var req_obj = 
+    try
     {
-        "username":vpn_name,
-        "proxies":proxy_obj,
-        "inbounds":{},
-        "expire":expire,
-        "data_limit":data_limit,
-        "data_limit_reset_strategy":"no_reset"
-    };
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var {panel_inbounds} = await get_panel_info(link,username,password);
+        var proxy_obj = {};
 
-    var res = await axios.post(link+"/api/user",req_obj,{headers});
-    return res.data;
+        for(inbound in panel_inbounds) proxy_obj[inbound] = {}; 
+
+        var req_obj = 
+        {
+            "username":vpn_name,
+            "proxies":proxy_obj,
+            "inbounds":{},
+            "expire":expire,
+            "data_limit":data_limit,
+            "data_limit_reset_strategy":"no_reset"
+        };
+
+        var res = await axios.post(link+"/api/user",req_obj,{headers});
+        return res.data;
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
 }
 
 const delete_vpn = async (link,username,password,vpn_name) =>
 {
-    var headers = await auth_marzban(link,username,password);
-    if(headers == "ERR") return "ERR";
-    var res = await axios.delete(link+"/api/user/"+vpn_name,{headers});
-    return "DONE";
+    try
+    {
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var res = await axios.delete(link+"/api/user/"+vpn_name,{headers});
+        return "DONE";
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
 }
 
 const disable_vpn = async(link,username,password,vpn_name) =>
 {
-    var headers = await auth_marzban(link,username,password);
-    if(headers == "ERR") return "ERR";
-    var res = await axios.put(link+"/api/user/"+vpn_name,{status:"disable"},{headers});
-    return "DONE";
+    try
+    {
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var res = await axios.put(link+"/api/user/"+vpn_name,{status:"disabled"},{headers});
+        return "DONE";
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
 }
 
 const enable_vpn = async(link,username,password,vpn_name) =>
 {
-    var headers = await auth_marzban(link,username,password);
-    if(headers == "ERR") return "ERR";
-    var res = await axios.put(link+"/api/user/"+vpn_name,{status:"active"},{headers});
-    return "DONE";
+    try
+    {
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var res = await axios.put(link+"/api/user/"+vpn_name,{status:"active"},{headers});
+        return "DONE";
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
 }
 
 const edit_vpn = async(link,username,password,vpn_name,data_limit,expire) =>
 {
-    var headers = await auth_marzban(link,username,password);
-    if(headers == "ERR") return "ERR";
-    var res = await axios.put(link+"/api/user/"+vpn_name,{data_limit,expire},{headers});
-    return "DONE";
+    try
+    {
+        console.log(link,username,password,vpn_name,data_limit,expire);
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        console.log(headers);
+        var res = await axios.put(link+"/api/user/"+vpn_name,{data_limit,expire},{headers});
+        console.log(res);
+        return "DONE";
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
 }
 
 
@@ -412,7 +462,7 @@ app.post("/create_user", async (req, res) =>
     else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
     else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
     else if(all_usernames.includes(username)) res.send({status:"ERR",msg:"username already exists"})
-    else if(!selected_panel) res.send({status:"ERR",msg:"no available panel"});
+    else if(!selected_panel) res.send({status:"ERR",msg:"no available server"});
     else 
     {
 
@@ -473,8 +523,8 @@ app.post("/delete_user", async (req, res) =>
     var { access_token, username } = req.body;
     var user_obj = await get_user2(username);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
-    var res = await delete_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,username);
-    if(res == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
+    var result = await delete_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,username);
+    if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
     else
     {
         await users_clct.deleteOne({username});
@@ -501,8 +551,15 @@ app.post("/disable_agent", async (req, res) =>
 app.post("/disable_user", async (req, res) => 
 {
     var { access_token, user_id } = req.body;
-    await update_user(user_id,{status:"disable",disable:1});
-    res.send("DONE");
+    var user_obj = await get_user1(user_id);
+    var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    var result = await disable_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username);
+    if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
+    else
+    {
+        await update_user(user_id,{status:"disable",disable:1});
+        res.send("DONE");
+    }
 });
 
 app.post("/enable_agent", async (req, res) => 
@@ -522,8 +579,15 @@ app.post("/enable_panel", async (req, res) =>
 app.post("/enable_user", async (req, res) => 
 {
     var { access_token, user_id } = req.body;
-    await update_user(user_id,{status:"active",disable:0});
-    res.send("DONE");
+    var user_obj = await get_user1(user_id);
+    var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    var result = await enable_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username);
+    if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
+    else
+    {
+        await update_user(user_id,{status:"active",disable:0});
+        res.send("DONE");
+    }
 });
 
 app.post("/edit_agent", async (req, res) => 
@@ -577,7 +641,6 @@ app.post("/edit_panel", async (req, res) =>
             panel_traffic,
             access_token } = req.body;
 
-            console.log(req.body);
 
 
     var panel_info = await get_panel_info(panel_url,panel_username,panel_password);
@@ -607,20 +670,33 @@ app.post("/edit_user", async (req, res) =>
                 country,
                 access_token } = req.body;
 
-                console.log(req.body);
-
-        
     if( !user_id || !expire || !data_limit || !country ) res.send({status:"ERR",msg:"fill all of the inputs"})
 
+    var user_obj = await get_user1(user_id);
+    var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    var corresponding_agent = await token_to_account(access_token); 
+
+    if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
+    else if(data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
+    else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
+    else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
     else 
     {
-        await update_user(user_id,{    
-                                        expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
-                                        data_limit: data_limit*((2**10)**3),
-                                        country,
-                                    });
+        var result = await edit_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username,data_limit*((2**10)**3),Math.floor(Date.now()/1000) + expire*24*60*60);
+        
+        if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
 
-        res.send("DONE");
+        else
+        {
+            await update_user(user_id,{    
+                                            expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
+                                            data_limit: data_limit*((2**10)**3),
+                                       });
+
+            res.send("DONE");
+        }
+        
+
     }
 
 
