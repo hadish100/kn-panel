@@ -51,7 +51,8 @@ const update_panel = async (id,value) => {await panels_clct.updateOne({id},{$set
 const insert_to_users = async (obj) => { await users_clct.insertOne(obj);return "DONE"; }
 const get_users = async (agent_id) => {const result = await users_clct.find({agent_id}).toArray();return result;}
 const get_all_users = async () => {const result = await users_clct.find({}).toArray();return result;}
-const get_user = async (id) => {const result = await users_clct.find({id}).toArray();return result[0];}
+const get_user1 = async (id) => {const result = await users_clct.find({id}).toArray();return result[0];}
+const get_user2 = async (username) => {const result = await users_clct.find({username}).toArray();return result[0];}
 const update_user = async(id,value) => {await users_clct.updateOne({id},{$set:value},function(){});return "DONE";}
 
 const insert_to_logs = async (account_id,action,msg) => 
@@ -173,6 +174,38 @@ const make_vpn = async (link,username,password,vpn_name,data_limit,expire) =>
 
     var res = await axios.post(link+"/api/user",req_obj,{headers});
     return res.data;
+}
+
+const delete_vpn = async (link,username,password,vpn_name) =>
+{
+    var headers = await auth_marzban(link,username,password);
+    if(headers == "ERR") return "ERR";
+    var res = await axios.delete(link+"/api/user/"+vpn_name,{headers});
+    return "DONE";
+}
+
+const disable_vpn = async(link,username,password,vpn_name) =>
+{
+    var headers = await auth_marzban(link,username,password);
+    if(headers == "ERR") return "ERR";
+    var res = await axios.put(link+"/api/user/"+vpn_name,{status:"disable"},{headers});
+    return "DONE";
+}
+
+const enable_vpn = async(link,username,password,vpn_name) =>
+{
+    var headers = await auth_marzban(link,username,password);
+    if(headers == "ERR") return "ERR";
+    var res = await axios.put(link+"/api/user/"+vpn_name,{status:"active"},{headers});
+    return "DONE";
+}
+
+const edit_vpn = async(link,username,password,vpn_name,data_limit,expire) =>
+{
+    var headers = await auth_marzban(link,username,password);
+    if(headers == "ERR") return "ERR";
+    var res = await axios.put(link+"/api/user/"+vpn_name,{data_limit,expire},{headers});
+    return "DONE";
 }
 
 
@@ -403,6 +436,7 @@ app.post("/create_user", async (req, res) =>
                                         data_limit: gb2b(data_limit),
                                         used_traffic:0.00,
                                         country,
+                                        corresponding_panel_id:selected_panel.id,
                                         corresponding_panel:selected_panel.panel_url,
                                         subscription_url:selected_panel.panel_url+mv.subscription_url,
                                         links:mv.links
@@ -437,8 +471,16 @@ app.post("/delete_panel", async (req, res) =>
 app.post("/delete_user", async (req, res) => 
 {
     var { access_token, username } = req.body;
-    await users_clct.deleteOne({username});
-    res.send("DONE");
+    var user_obj = await get_user2(username);
+    var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    var res = await delete_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,username);
+    if(res == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
+    else
+    {
+        await users_clct.deleteOne({username});
+        res.send("DONE");
+    }
+
 });
 
 app.post("/disable_panel", async (req, res) => 
