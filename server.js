@@ -444,7 +444,7 @@ app.post("/create_agent", async (req, res) =>
                                     tokens:[] 
                                 });
 
-        var account_id = await token_to_account(access_token);
+        var account_id = (await token_to_account(access_token)).id;
         await insert_to_logs(account_id,"CREATE_AGENT",`created agent ${name}`)
 
         res.send("DONE");
@@ -565,7 +565,7 @@ app.post("/delete_agent", async (req, res) =>
 {
     var { access_token, agent_id } = req.body;
     await accounts_clct.deleteOne({id:agent_id});
-    var account_id = await token_to_account(access_token);
+    var account_id = (await token_to_account(access_token)).id;
     var agent_obj = await get_account(agent_id);
     await insert_to_logs(account_id,"DELETE_AGENT",`deleted agent ${agent_obj.name}`);
     res.send("DONE");
@@ -575,7 +575,7 @@ app.post("/delete_panel", async (req, res) =>
 {
     var { access_token, panel_id } = req.body;
     await panels_clct.deleteOne({id:panel_id});
-    var account_id = await token_to_account(access_token);
+    var account_id = (await token_to_account(access_token)).id;
     var panel_obj = await get_panel(panel_id);
     await insert_to_logs(account_id,"DELETE_PANEL",`deleted panel ${panel_obj.panel_name}`);
     res.send("DONE");
@@ -604,7 +604,7 @@ app.post("/disable_panel", async (req, res) =>
     var { access_token, panel_id } = req.body;
     await update_panel(panel_id,{disable:1});
     var panel_obj = await get_panel(panel_id);
-    var account_id = await token_to_account(access_token);
+    var account_id = (await token_to_account(access_token)).id;
     await insert_to_logs(account_id,"DISABLE_PANEL",`disabled panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
@@ -614,7 +614,7 @@ app.post("/disable_agent", async (req, res) =>
     var { access_token, agent_id } = req.body;
     await update_account(agent_id,{disable:1});
     var agent_obj = await get_account(agent_id);
-    var account_id = await token_to_account(access_token);
+    var account_id = (await token_to_account(access_token)).id;
     await insert_to_logs(account_id,"DISABLE_AGENT",`disabled agent ${agent_obj.name}`);
     res.send("DONE");
 });
