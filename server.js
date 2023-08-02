@@ -444,6 +444,9 @@ app.post("/create_agent", async (req, res) =>
                                     tokens:[] 
                                 });
 
+        var account_id = await token_to_account(access_token);
+        await insert_to_logs(account_id,"CREATE_AGENT",`created agent ${name}`)
+
         res.send("DONE");
     }
 
@@ -483,6 +486,9 @@ app.post("/create_panel", async (req, res) =>
                                     active_users:panel_info.active_users,
                                     total_users:panel_info.total_users,
                                 });
+
+        var account_id = await token_to_account(access_token);
+        await insert_to_logs(account_id,"CREATE_PANEL",`created panel ${panel_name}`);
 
         res.send("DONE");
     }
@@ -541,6 +547,8 @@ app.post("/create_user", async (req, res) =>
 
             await update_account(agent_id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit)});
 
+            await insert_to_logs(agent_id,"CREATE_USER",`created user ${username} with ${data_limit} GB data and ${expire} days of expire time`);
+
              res.send("DONE");
         }
 
@@ -557,6 +565,9 @@ app.post("/delete_agent", async (req, res) =>
 {
     var { access_token, agent_id } = req.body;
     await accounts_clct.deleteOne({id:agent_id});
+    var account_id = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    await insert_to_logs(account_id,"DELETE_AGENT",`deleted agent ${agent_obj.name}`);
     res.send("DONE");
 });
 
@@ -564,6 +575,9 @@ app.post("/delete_panel", async (req, res) =>
 {
     var { access_token, panel_id } = req.body;
     await panels_clct.deleteOne({id:panel_id});
+    var account_id = await token_to_account(access_token);
+    var panel_obj = await get_panel(panel_id);
+    await insert_to_logs(account_id,"DELETE_PANEL",`deleted panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
@@ -579,6 +593,7 @@ app.post("/delete_user", async (req, res) =>
     {
         await update_account(agent_obj.id,{allocatable_data:agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)});
         await users_clct.deleteOne({username});
+        await insert_to_logs(agent_obj.id,"DELETE_USER",`deleted user ${username}`);
         res.send("DONE");
     }
 
@@ -588,6 +603,9 @@ app.post("/disable_panel", async (req, res) =>
 {
     var { access_token, panel_id } = req.body;
     await update_panel(panel_id,{disable:1});
+    var panel_obj = await get_panel(panel_id);
+    var account_id = await token_to_account(access_token);
+    await insert_to_logs(account_id,"DISABLE_PANEL",`disabled panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
@@ -595,8 +613,10 @@ app.post("/disable_agent", async (req, res) =>
 {
     var { access_token, agent_id } = req.body;
     await update_account(agent_id,{disable:1});
+    var agent_obj = await get_account(agent_id);
+    var account_id = await token_to_account(access_token);
+    await insert_to_logs(account_id,"DISABLE_AGENT",`disabled agent ${agent_obj.name}`);
     res.send("DONE");
-
 });
 
 app.post("/disable_user", async (req, res) => 
@@ -609,6 +629,8 @@ app.post("/disable_user", async (req, res) =>
     else
     {
         await update_user(user_id,{status:"disable",disable:1});
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id,"DISABLE_USER",`disabled user ${user_obj.username}`);
         res.send("DONE");
     }
 });
@@ -617,6 +639,9 @@ app.post("/enable_agent", async (req, res) =>
 {
     var { access_token, agent_id } = req.body;
     await update_account(agent_id,{disable:0});
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    await insert_to_logs(account.id,"ENABLE_AGENT",`enabled agent ${agent_obj.name}`);
     res.send("DONE");
 });
 
@@ -624,6 +649,9 @@ app.post("/enable_panel", async (req, res) =>
 {
     var { access_token, panel_id } = req.body;
     await update_panel(panel_id,{disable:0});
+    var account = await token_to_account(access_token);
+    var panel_obj = await get_panel(panel_id);
+    await insert_to_logs(account.id,"ENABLE_PANEL",`enabled panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
@@ -637,6 +665,8 @@ app.post("/enable_user", async (req, res) =>
     else
     {
         await update_user(user_id,{status:"active",disable:0});
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id,"ENABLE_USER",`enabled user ${user_obj.username}`);
         res.send("DONE");
     }
 });
@@ -675,6 +705,8 @@ app.post("/edit_agent", async (req, res) =>
                                         prefix,
                                         country
                                       });
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id,"EDIT_AGENT",`edited agent ${name}`);
         res.send("DONE");
     }
 
@@ -708,6 +740,8 @@ app.post("/edit_panel", async (req, res) =>
                                      panel_user_max_count:parseInt(panel_user_max_count),
                                      panel_traffic:dnf(panel_traffic),
                                     });
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id,"EDIT_PANEL",`edited panel ${panel_name}`);
         res.send("DONE");
     }
 
@@ -745,7 +779,8 @@ app.post("/edit_user", async (req, res) =>
                                        });
 
            await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit)});
-
+            var account = await token_to_account(access_token);
+            await insert_to_logs(account.id,"EDIT_USER",`edited user ${user_obj.username}`);
             res.send("DONE");
         }
         
@@ -760,6 +795,8 @@ app.post("/edit_self", async (req, res) =>
         const { username,password,access_token } = req.body;
         var account_id = (await token_to_account(access_token)).id;
         await update_account(account_id,{username,password});
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id,"EDIT_SELF",`was self edited`);
         res.send("DONE");
 });
 
