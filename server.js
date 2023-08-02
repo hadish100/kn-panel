@@ -291,6 +291,21 @@ const get_all_marzban_users = async(link,username,password) =>
     }
 }
 
+const reload_agents = async() =>
+{
+    var obj_arr = await accounts_clct.find({is_admin:0}).toArray();
+
+    for(obj of obj_arr)
+    {
+        var agent_id = obj.id;
+        var agent_users = await get_users(agent_id);
+        var active_users = agent_users.filter(x => x.status == "active").length;
+        var total_users = agent_users.length;
+        var used_traffic = b2gb(agent_users.reduce((acc,curr) => acc + curr.used_traffic,0));
+        await update_account(agent_id,{active_users,total_users,used_traffic});
+    }
+}
+
 
 // --- MIDDLEWARE --- //
 
@@ -316,19 +331,8 @@ async function auth_middleware(req, res, next)
 
 app.post("/get_agents", async (req, res) => 
 {
+    await reload_agents();
     var obj_arr = await accounts_clct.find({is_admin:0}).toArray();
-
-    for(obj of obj_arr)
-    {
-        var agent_id = obj.id;
-        var agent_users = await get_users(agent_id);
-        var active_users = agent_users.filter(x => x.status == "active").length;
-        var total_users = agent_users.length;
-        var used_traffic = b2gb(agent_users.reduce((acc,curr) => acc + curr.used_traffic,0));
-        await update_account(agent_id,{active_users,total_users,used_traffic});
-    }
-
-    obj_arr = await accounts_clct.find({is_admin:0}).toArray();
 
     res.send(obj_arr);
 });
@@ -352,6 +356,7 @@ app.post("/get_panels", async (req, res) =>
 app.post("/get_users", async (req, res) => 
 {
     var { access_token } = req.body;
+    await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
     res.send(obj_arr);
@@ -514,7 +519,7 @@ app.post("/create_user", async (req, res) =>
     else if(data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
     else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
     else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
-    else if(all_usernames.includes(username)) res.send({status:"ERR",msg:"username already exists"})
+    else if(all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({status:"ERR",msg:"username already exists"})
     else if(!selected_panel) res.send({status:"ERR",msg:"no available server"});
     else 
     {
@@ -564,19 +569,19 @@ app.post("/create_user", async (req, res) =>
 app.post("/delete_agent", async (req, res) => 
 {
     var { access_token, agent_id } = req.body;
-    await accounts_clct.deleteOne({id:agent_id});
     var account_id = (await token_to_account(access_token)).id;
     var agent_obj = await get_account(agent_id);
-    await insert_to_logs(account_id,"DELETE_AGENT",`deleted agent ${agent_obj.name}`);
+    await accounts_clct.deleteOne({id:agent_id});
+    await insert_to_logs(account_id,"DELETE_AGENT",`deleted agent ${agent_obj.username}`);
     res.send("DONE");
 });
 
 app.post("/delete_panel", async (req, res) => 
 {
     var { access_token, panel_id } = req.body;
-    await panels_clct.deleteOne({id:panel_id});
     var account_id = (await token_to_account(access_token)).id;
     var panel_obj = await get_panel(panel_id);
+    await panels_clct.deleteOne({id:panel_id});
     await insert_to_logs(account_id,"DELETE_PANEL",`deleted panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
@@ -615,7 +620,7 @@ app.post("/disable_agent", async (req, res) =>
     await update_account(agent_id,{disable:1});
     var agent_obj = await get_account(agent_id);
     var account_id = (await token_to_account(access_token)).id;
-    await insert_to_logs(account_id,"DISABLE_AGENT",`disabled agent ${agent_obj.name}`);
+    await insert_to_logs(account_id,"DISABLE_AGENT",`disabled agent ${agent_obj.username}`);
     res.send("DONE");
 });
 
@@ -641,7 +646,7 @@ app.post("/enable_agent", async (req, res) =>
     await update_account(agent_id,{disable:0});
     var account = await token_to_account(access_token);
     var agent_obj = await get_account(agent_id);
-    await insert_to_logs(account.id,"ENABLE_AGENT",`enabled agent ${agent_obj.name}`);
+    await insert_to_logs(account.id,"ENABLE_AGENT",`enabled agent ${agent_obj.username}`);
     res.send("DONE");
 });
 
@@ -699,7 +704,7 @@ app.post("/edit_agent", async (req, res) =>
                                         password,
                                         volume:dnf(volume),
                                         allocatable_data:dnf(old_alloc) + dnf(volume) - dnf(old_volume),       
-                                        min_vol:dnf(volume),
+                                        min_vol:dnf(min_vol),
                                         max_users:parseInt(max_users),
                                         max_days:parseInt(max_days),
                                         prefix,
@@ -773,12 +778,13 @@ app.post("/edit_user", async (req, res) =>
 
         else
         {
+            var old_data_limit = b2gb(user_obj.data_limit);
             await update_user(user_id,{    
                                             expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
                                             data_limit: data_limit*((2**10)**3),
                                        });
-
-           await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit)});
+        
+           await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit)});
             var account = await token_to_account(access_token);
             await insert_to_logs(account.id,"EDIT_USER",`edited user ${user_obj.username}`);
             res.send("DONE");

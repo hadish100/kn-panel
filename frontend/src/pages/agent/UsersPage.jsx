@@ -143,8 +143,17 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
+        let agent = (await axios.post("/get_agent", { access_token })).data;
+        if(agent.status == "ERR") 
+        {
+            setError_msg(agent.msg)
+            setHasError(true)
+            return;
+        }
         sessionStorage.setItem("users", JSON.stringify(users))
+        sessionStorage.setItem("agent", JSON.stringify(agent))
         setUsers(users)
+        setAgent(agent)
         setShowEditUser(false)
     }
 
@@ -155,6 +164,7 @@ const UsersPage = () => {
     const handleCloseCreateUser = () => {
         setShowCreateUser(false)
         setUsers(JSON.parse(sessionStorage.getItem("users")))
+        setAgent(JSON.parse(sessionStorage.getItem("agent")))
     }
 
     const handlePageChange = (page) => {
@@ -166,6 +176,8 @@ const UsersPage = () => {
     }
 
     const handleCloseEditUser = () => {
+        setUsers(JSON.parse(sessionStorage.getItem("users")))
+        setAgent(JSON.parse(sessionStorage.getItem("agent")))
         setShowEditUser(false)
     }
 
