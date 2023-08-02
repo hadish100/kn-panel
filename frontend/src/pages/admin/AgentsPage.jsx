@@ -147,13 +147,11 @@ const AgentsPage = () => {
         setShowEditAgent(true)
     }
 
-    var [total_active_users,total_total_users,total_data_usage] = [0,0,0];
-    if(agents)
-    {
-        total_active_users = agents.reduce((acc , agent) => acc + agent.active_users,0);
-        total_total_users = agents.reduce((acc , agent) => acc + agent.total_users,0);
-        total_data_usage = parseFloat(agents.reduce((acc , agent) => acc + agent.used_traffic,0)).toFixed(2);
-    }
+
+       var total_active_users = agents.reduce((acc , agent) => acc + agent.active_users,0);
+       var total_total_users = agents.reduce((acc , agent) => acc + agent.total_users,0);
+       var total_data_usage = parseFloat(agents.reduce((acc , agent) => acc + agent.used_traffic,0)).toFixed(2);
+
 
 
 

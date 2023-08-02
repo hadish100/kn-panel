@@ -37,6 +37,11 @@ const uidv2 = () =>
     return result;
 }
 
+const sleep = (ms) =>
+{
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj);return "DONE"; }
 const get_accounts = async () => {const result = await accounts_clct.find().toArray();return result;}
 const get_account = async (id) => {const result = await accounts_clct.find({id}).toArray();return result[0];}
@@ -74,7 +79,8 @@ const get_logs = async () => {const result = await logs_clct.find().toArray();re
 
 const b2gb = (bytes) => 
 {
-    return (bytes / (2 ** 10) ** 3).toFixed(2);
+    var x = (bytes / (2 ** 10) ** 3);
+    return Math.round(x*100)/100;
 }
 
 const gb2b = (g) => 
@@ -145,7 +151,7 @@ const get_panel_info = async (link,username,password) =>
         {
             total_users:panel_info['total_user'],
             active_users:panel_info['users_active'],
-            data_usage:b2gb(panel_info['incoming_bandwidth'] + panel_info['outgoing_bandwidth']),
+            panel_data_usage:b2gb(panel_info['incoming_bandwidth'] + panel_info['outgoing_bandwidth']),
             panel_inbounds     
         };
     
@@ -241,13 +247,42 @@ const edit_vpn = async(link,username,password,vpn_name,data_limit,expire) =>
 {
     try
     {
-        console.log(link,username,password,vpn_name,data_limit,expire);
         var headers = await auth_marzban(link,username,password);
         if(headers == "ERR") return "ERR";
-        console.log(headers);
         var res = await axios.put(link+"/api/user/"+vpn_name,{data_limit,expire},{headers});
-        console.log(res);
         return "DONE";
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
+}
+
+const get_marzban_user = async(link,username,password,vpn_name) =>
+{
+    try
+    {
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var res = await axios.get(link+"/api/user/"+vpn_name,{headers});
+        return res.data;
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
+}
+
+const get_all_marzban_users = async(link,username,password) =>
+{
+    try
+    {
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var res = await axios.get(link+"/api/users",{headers});
+        return res.data;
     }
 
     catch(err)
@@ -282,6 +317,19 @@ async function auth_middleware(req, res, next)
 app.post("/get_agents", async (req, res) => 
 {
     var obj_arr = await accounts_clct.find({is_admin:0}).toArray();
+
+    for(obj of obj_arr)
+    {
+        var agent_id = obj.id;
+        var agent_users = await get_users(agent_id);
+        var active_users = agent_users.filter(x => x.status == "active").length;
+        var total_users = agent_users.length;
+        var used_traffic = b2gb(agent_users.reduce((acc,curr) => acc + curr.used_traffic,0));
+        await update_account(agent_id,{active_users,total_users,used_traffic});
+    }
+
+    obj_arr = await accounts_clct.find({is_admin:0}).toArray();
+
     res.send(obj_arr);
 });
 
@@ -297,6 +345,7 @@ app.post("/get_panels", async (req, res) =>
         else await update_panel(obj.id,info_obj);
     }
 
+    obj_arr = await panels_clct.find({}).toArray();
     res.send(obj_arr);
 });
 
@@ -304,8 +353,8 @@ app.post("/get_users", async (req, res) =>
 {
     var { access_token } = req.body;
     var agent_id = (await token_to_account(access_token)).id
-    var obj = await get_users(agent_id);
-    res.send(obj);
+    var obj_arr = await get_users(agent_id);
+    res.send(obj_arr);
 });
 
 app.post("/get_agent", async (req, res) => 
@@ -490,6 +539,8 @@ app.post("/create_user", async (req, res) =>
                                         links:mv.links
                                    });
 
+            await update_account(agent_id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit)});
+
              res.send("DONE");
         }
 
@@ -520,11 +571,13 @@ app.post("/delete_user", async (req, res) =>
 {
     var { access_token, username } = req.body;
     var user_obj = await get_user2(username);
+    var agent_obj = await get_account(user_obj.agent_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     var result = await delete_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,username);
     if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
     else
     {
+        await update_account(agent_obj.id,{allocatable_data:agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)});
         await users_clct.deleteOne({username});
         res.send("DONE");
     }
@@ -691,6 +744,8 @@ app.post("/edit_user", async (req, res) =>
                                             data_limit: data_limit*((2**10)**3),
                                        });
 
+           await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit)});
+
             res.send("DONE");
         }
         
@@ -715,6 +770,63 @@ app.listen(5000, () => {
     console.log("SERVER STARTED !");
     console.log("--------------");
 });
+
+
+
+
+
+
+// --------- FETCH USERS DATA --------- //
+
+(async () => 
+{
+    await sleep(10000);
+
+    while(true)
+    {
+        var panels_arr = await get_panels();
+        var db_users_arr = await get_all_users();
+        for(panel of panels_arr)
+        {
+            var today = new Date();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            console.log(time + " ---> fetching " + panel.panel_url);
+            var marzban_users = await get_all_marzban_users(panel.panel_url,panel.panel_username,panel.panel_password);
+            if(marzban_users == "ERR") 
+            {
+                console.log("failed to fetch " + panel.panel_url);
+                continue;
+            }
+
+            marzban_users = marzban_users.users;
+
+            for(marzban_user of marzban_users)
+            {
+                var user = db_users_arr.find(user => user.username == marzban_user.username);
+
+                if(user)
+                {
+                    if(user.status == "active" && marzban_user.status == "disabled") await update_user(user.id,{status:"disable",disable:1});
+                    else if(user.status == "disable" && marzban_user.status == "active") await update_user(user.id,{status:"active",disable:0});
+
+                    if(user.expire != marzban_user.expire) await update_user(user.id,{expire:marzban_user.expire});
+                    if(user.data_limit != marzban_user.data_limit) await update_user(user.id,{data_limit:marzban_user.data_limit});
+                    if(user.used_traffic != marzban_user.used_traffic) 
+                    {
+                        var agent = await get_account(user.corresponding_agent_id);
+                        agent.volume -= marzban_user.used_traffic - user.used_traffic;
+                        await update_account(agent.id,{volume:dnf(agent.volume)});
+                        await update_user(user.id,{used_traffic:marzban_user.used_traffic});
+
+                    }
+                }
+            }
+        }
+
+
+        await sleep(20000);
+    }
+})();
 
 
 
