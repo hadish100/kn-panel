@@ -46,7 +46,7 @@ const CreateAgent = ({ onClose }) => {
         const max_users = document.getElementById("max_users").value;
         const max_days = document.getElementById("max_days").value;
         const prefix = document.getElementById("prefix").value;
-        const country = document.getElementById("country").value;
+        const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value;
         // Send form data to backend
         createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country)
     }
@@ -65,19 +65,12 @@ const CreateAgent = ({ onClose }) => {
         ],
         [
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
-            { label: "Country", type: "text", id: "country", name: "country" }
-            // {
-            //     label: "Country",
-            //     type: "multi-select",
-            //     placeholder: "Select Country",
-            //     id: "country",
-            //     name: "country",
-            //     options: [
-            //         { value: "US", label: "US" },
-            //         { value: "NL", label: "NL" },
-            //         { value: "DE", label: "DE" },
-            //     ]
-            // }
+            {
+                label: "Country",
+                type: "multi-select",
+                id: "country",
+                name: "country"
+            }
         ]
     ]
 

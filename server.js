@@ -514,11 +514,13 @@ app.post("/create_user", async (req, res) =>
      var all_usernames = [...(await get_all_users()).map( x => x.username )];
      var panels_arr = await get_panels();
      var selected_panel = panels_arr.filter(x => x.panel_country == country && (x.total_users < x.panel_user_max_count) && (x.disable == 0))[0];
+     var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
      
     if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
     else if(data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
     else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
     else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
+    else if(corresponding_agent.max_users <=  agent_user_count) res.send({status:"ERR",msg:"maximum allowed users is " + corresponding_agent.max_users} )
     else if(all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({status:"ERR",msg:"username already exists"})
     else if(!selected_panel) res.send({status:"ERR",msg:"no available server"});
     else 
@@ -837,7 +839,7 @@ app.listen(5000, () => {
             var marzban_users = await get_all_marzban_users(panel.panel_url,panel.panel_username,panel.panel_password);
             if(marzban_users == "ERR") 
             {
-                console.log("failed to fetch " + panel.panel_url);
+                console.log(time + " ===> failed to fetch " + panel.panel_url);
                 continue;
             }
 

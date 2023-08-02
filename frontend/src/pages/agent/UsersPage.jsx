@@ -94,6 +94,15 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
+        var agent = (await axios.post("/get_agent",{access_token})).data
+        if(agent.status == "ERR") 
+        {
+            setError_msg(agent.msg)
+            setHasError(true)
+            return;
+        }
+        sessionStorage.setItem("agent", JSON.stringify(agent))
+        setAgent(agent)
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
         setShowVerifyDelete(false)
@@ -120,6 +129,15 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
+        var agent = (await axios.post("/get_agent",{access_token})).data
+        if(agent.status == "ERR") 
+        {
+            setError_msg(agent.msg)
+            setHasError(true)
+            return;
+        }
+        sessionStorage.setItem("agent", JSON.stringify(agent))
+        setAgent(agent)
         var slctd = users.find(user => user.id === user_id);
         setSelectedUser(slctd)
         sessionStorage.setItem("users", JSON.stringify(users));
@@ -150,6 +168,9 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
+        console.log("###");
+        console.log(agent);
+        console.log("###");
         sessionStorage.setItem("users", JSON.stringify(users))
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setUsers(users)

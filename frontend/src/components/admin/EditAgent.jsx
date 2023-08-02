@@ -8,6 +8,7 @@ import Form from '../form/Form'
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem }) => {
 
 console.log(item)
+//document.querySelectorAll(".MuiSelect-nativeInput")[0].value = item.country;
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -23,9 +24,15 @@ console.log(item)
         ],
         [
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
-            { label: "Country", type: "text", id: "country", name: "country" }
+            {
+                label: "Country",
+                type: "multi-select",
+                id: "country",
+                name: "country"
+            }
         ]
     ]
+    
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
@@ -39,7 +46,7 @@ console.log(item)
             document.getElementById("max_users").value,
             document.getElementById("max_days").value,
             document.getElementById("prefix").value,
-            document.getElementById("country").value,
+            document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         )},
     ]
 
@@ -47,6 +54,8 @@ console.log(item)
         { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
         { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id,item.disable) },
     ]
+
+    
 
     return (
         <Form
