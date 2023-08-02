@@ -487,7 +487,7 @@ app.post("/create_panel", async (req, res) =>
                                     total_users:panel_info.total_users,
                                 });
 
-        var account_id = await token_to_account(access_token);
+        var account_id = (await token_to_account(access_token)).id;
         await insert_to_logs(account_id,"CREATE_PANEL",`created panel ${panel_name}`);
 
         res.send("DONE");
