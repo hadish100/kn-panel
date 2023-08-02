@@ -21,11 +21,14 @@ const MenuProps = {
 
 
 
-export default function MultipleSelectCheckmarks() {
+export default function MultipleSelectCheckmarks({editValue}) {
 
   const [names, setNames] = React.useState(JSON.parse(sessionStorage.getItem("country_list")));
   const [personName, setPersonName] = React.useState([]);
-  //if(edit_value) setPersonName(edit_value);
+
+  React.useEffect(() => {
+    if (editValue) setPersonName(editValue);
+  }, [editValue]);
 
   const handleChange = (event) => {
     const {

@@ -12,8 +12,6 @@ import IOSSwitch from './inputs/IOSSwitch';
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
 
-    console.log(item);
-    console.log("SSS")
     const b2gb = (bytes) => {
         return (bytes / (2 ** 10) ** 3).toFixed(2);
     }
@@ -36,6 +34,8 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
         if (field.id === "data_limit") {
             return b2gb(item[field.id]);
         }
+
+
 
         return item[field.id];
     };
@@ -115,6 +115,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             value={field.value}
                                             onChange={field.onChange}
                                             placeholder={field.placeholder}
+                                            editValue={item?item.country?item.country.split(","):"":""}
                                         />);
                                     }) : (
                                         <FormField
@@ -130,6 +131,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             value={group.value}
                                             onChange={group.onChange}
                                             placeholder={group.placeholder}
+                                            editValue={item?item.country?item.country.split(","):"":""}
                                         />
                                     )}
                                 </div>
