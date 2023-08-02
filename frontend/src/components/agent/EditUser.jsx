@@ -12,6 +12,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         { label: "Username", type: "text", id: "username", name: "username", disabled: true },
         { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit" },
         { label: "Days To Expire", type: "number", id: "expire", name: "expire" },
+        { label: "Country", type: "text", id: "country", name: "country", disabled: true }
     ]
 
     const primaryButtons = [
@@ -20,7 +21,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
             item.id,
             document.getElementById("data_limit").value,
             document.getElementById("expire").value,
-            "HI"
+            document.getElementById("country").value,
         ) },
     ]
 
