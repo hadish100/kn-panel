@@ -767,9 +767,10 @@ app.post("/edit_user", async (req, res) =>
     var user_obj = await get_user1(user_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     var corresponding_agent = await token_to_account(access_token); 
+    var old_data_limit = b2gb(user_obj.data_limit);
 
     if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
-    else if(data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
+    else if(data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
     else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
     else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
     else 
@@ -780,7 +781,7 @@ app.post("/edit_user", async (req, res) =>
 
         else
         {
-            var old_data_limit = b2gb(user_obj.data_limit);
+            
             await update_user(user_id,{    
                                             expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
                                             data_limit: data_limit*((2**10)**3),

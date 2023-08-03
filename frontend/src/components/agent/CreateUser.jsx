@@ -44,7 +44,7 @@ const CreateUser = ({ onClose, showForm }) => {
         const username = document.getElementById("username").value;
         const data_limit = document.getElementById("dataLimit").value;
         const expire = document.getElementById("daysToExpire").value;
-        const country = document.getElementById("country").value;
+        const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value;
         // Send form data to backend
         createUserOnServer(username, data_limit, expire, country)
     }
@@ -53,7 +53,7 @@ const CreateUser = ({ onClose, showForm }) => {
         { label: "Username", type: "text", id: "username", name: "username" },
         { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit" },
         { label: "Days To Expire", type: "number", id: "daysToExpire", name: "daysToExpire" },
-        { label: "Country", type: "text", id: "country", name: "country" }
+        { label: "Country", type: "multi-select2", id: "country", name: "country" }
     ]
 
     const primaryButtons = [

@@ -20,7 +20,6 @@ const MenuProps = {
 
 
 
-
 export default function MultipleSelectCheckmarks({editValue}) {
 
   const [names, setNames] = React.useState(JSON.parse(sessionStorage.getItem("country_list")));

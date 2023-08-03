@@ -3,6 +3,7 @@ import React from 'react'
 import { motion } from "framer-motion"
 import Dropdown from "../Dropdown"
 import MultiSelect from "./inputs/MultiSelect"
+import MultiSelect2 from "./inputs/MultiSelect2"
 
 const FormField = ({
     label,
@@ -26,6 +27,16 @@ const FormField = ({
                 <MultiSelect editValue={editValue} />
             </motion.div>
         )
+    }
+
+    if(type === "multi-select2")
+    {
+        return (
+            <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+                <label className="modal__form__label" htmlFor={id}>{label}</label>
+                <MultiSelect2 editValue={editValue} />
+            </motion.div>
+        )        
     }
 
     return (
