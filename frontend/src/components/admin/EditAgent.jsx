@@ -2,7 +2,6 @@ import React from 'react'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
-import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import Form from '../form/Form'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem }) => {
@@ -52,7 +51,6 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
         { type: "switch", label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.disable) },
-        { icon: <RefreshIcon />, type: "button", label: "Reset Usage", className: "ghosted", onClick: () => { } }
     ]
 
 
