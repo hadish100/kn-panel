@@ -11,9 +11,13 @@ import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditPanel from '../../components/admin/EditPanel'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import './PanelsPage.css'
-import loadingGif from '../../assets/loading.gif'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
+import CircularProgress from '../../components/CircularProgress';
+
+
+
+
 
 
 
@@ -188,7 +192,7 @@ const PanelsPage = () => {
                 onDeleteItem={handleVerifyDelete}
             />
 
-            {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
+            {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
 
             {!refresh && <PanelsTable
                 items={panels}

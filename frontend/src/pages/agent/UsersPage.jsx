@@ -12,9 +12,12 @@ import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 import EditUser from '../../components/agent/EditUser'
 import VerifyDelete from '../../components/admin/VerifyDelete'
-import loadingGif from '../../assets/loading.gif'
+import VerifyReset from '../../components/admin/VerifyReset'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
+import CircularProgress from '../../components/CircularProgress';
+
+
 
 const UsersPage = () => {
     const [showCreateUser, setShowCreateUser] = useState(false)
@@ -26,6 +29,7 @@ const UsersPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [selectedUser, setSelectedUser] = useState(null)
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
+    const [showVerifyReset, setShowVerifyReset] = useState(false)
     const [users, setUsers] = useState([])
     const [showQRCode, setShowQRCode] = useState(false);
     const [refresh, setRefresh] = useState(false);
@@ -44,6 +48,41 @@ const UsersPage = () => {
 
     const handleDeleteUser = async (e, username) => {
         setShowVerifyDelete(true)
+    }
+
+    const handleResetUser = async (e, username) => {
+        setShowVerifyReset(true)
+    }
+
+
+    const handleVerifyReset = async (e, username) => {
+        e.stopPropagation();
+        username = selectedUser.username;
+        const access_token = sessionStorage.getItem("access_token");
+        var req_res = await axios.post("/reset_user", { access_token, username });
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return;
+        }
+        let users = (await axios.post("/get_users", { access_token })).data;
+        if (users.status === "ERR") {
+            setError_msg(users.msg)
+            setHasError(true)
+            return;
+        }
+        var agent = (await axios.post("/get_agent", { access_token })).data
+        if (agent.status === "ERR") {
+            setError_msg(agent.msg)
+            setHasError(true)
+            return;
+        }
+        sessionStorage.setItem("agent", JSON.stringify(agent))
+        setAgent(agent)
+        sessionStorage.setItem("users", JSON.stringify(users))
+        setUsers(users)
+        setShowVerifyDelete(false)
+        setShowEditUser(false)
     }
 
 
@@ -182,6 +221,10 @@ const UsersPage = () => {
         setShowVerifyDelete(false)
     }
 
+    const handleCloseVerifyReset = () => {
+        setShowVerifyReset(false)
+    }
+
     const handleCloseEditUser = () => {
         setUsers(JSON.parse(sessionStorage.getItem("users")))
         setAgent(JSON.parse(sessionStorage.getItem("agent")))
@@ -232,7 +275,7 @@ const UsersPage = () => {
                 items={users}
             />
 
-            {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
+            {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
             {!refresh && <UsersTable
                 items={users}
                 currentItems={currentRows}
@@ -258,6 +301,7 @@ const UsersPage = () => {
                 item={selectedUser}
                 onDeleteItem={handleDeleteUser}
                 onPowerItem={handlePowerUser}
+                onResetItem={handleResetUser}
                 onEditItem={handleEditUser}
             />
 
@@ -272,6 +316,12 @@ const UsersPage = () => {
                 onClose={handleCloseVerifyDelete}
                 showForm={showVerifyDelete}
                 onDeleteItem={handleVerifyDelete}
+            />
+
+            <VerifyReset
+                onClose={handleCloseVerifyReset}
+                showForm={showVerifyReset}
+                onDeleteItem={handleVerifyReset}
             />
         </div >
 

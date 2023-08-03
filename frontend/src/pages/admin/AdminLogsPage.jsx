@@ -6,9 +6,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import LogsList from '../../components/admin/LogsList';
 import "./AdminLogsPage.css"
-import loadingGif from '../../assets/loading.gif'
 import axios from 'axios'
 import ErrorCard from '../../components/ErrorCard';
+import CircularProgress from '../../components/CircularProgress';
 
 
 
@@ -54,7 +54,7 @@ const AdminLogsPage = () => {
                     />
                 </LocalizationProvider>
             </div>
-            { !log_is_ready && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div> }
+            { !log_is_ready && <div className='loading_gif_container'> <CircularProgress /> </div> }
             { log_is_ready && <LogsList logs={logs} /> }
             <ErrorCard
                 hasError={hasError}
