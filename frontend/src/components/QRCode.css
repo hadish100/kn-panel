@@ -1,0 +1,43 @@
+.links__slider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.qr-code__links {
+    display: flex;
+    max-width: 300px;
+    gap: 1rem;
+    overflow-x: hidden;
+}
+
+.links__slider .arrow-left svg,
+.links__slider .arrow-right svg {
+    width: 20px;
+    height: 20px;
+}
+
+.inner {
+    display: flex;
+    gap: 1rem;
+}
+
+.qr-code__links>svg {
+    flex: 0 0 200px;
+}
+
+.qr-code__modal .modal__content {
+    position: fixed;
+    width: fit-content;
+}
+
+@media (max-width: 900px) {
+    .qr-code__main {
+        flex-direction: column;
+    }
+
+    .qr-code__modal .modal__content {
+        top: 10px;
+        width: 1;
+    }
+}

@@ -47,7 +47,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                 const expireTime = handleExpireTime(item.expire)
                 const subscriptionLink = item.subscription_url
                 const config = item.links.join("\n");
-                const QRCodeLink = item.id
+                const QRCodeLinks = item.links
                 const key = item.id
 
                 return (
@@ -70,7 +70,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                             <td>
                                 <div className="users-table__subscription-actions">
                                     <div className="table-actions">
-                                        {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} QRCodeLink={QRCodeLink} />}
+                                        {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} QRCodeLinks={QRCodeLinks} />}
                                     </div>
                                     <div className={`accordion chevron-icon${expandedId === item.id ? "--up" : ""}`}>
                                         <Button className="ghosted" onClick={() => handleShowAccordion(item.id)}>
