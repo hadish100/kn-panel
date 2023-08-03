@@ -5,12 +5,14 @@ import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
 import ErrorCard from '../ErrorCard';
 import Form from '../form/Form';
 
-const CreateAgent = ({ onClose }) => {
+const CreateAgent = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("failed to create agent");
 
 
     const access_token = sessionStorage.getItem("access_token");
+
+    console.log(showForm);
 
     const createAgentOnServer = async (
         name,
@@ -83,7 +85,7 @@ const CreateAgent = ({ onClose }) => {
         <>
             <Form
                 onClose={onClose}
-                showForm={true}
+                showForm={showForm}
                 title="Create Agent"
                 iconComponent={<AddUserIcon />}
                 primaryButtons={primaryButtons}

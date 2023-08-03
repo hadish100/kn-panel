@@ -2,13 +2,10 @@ import React from 'react'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
-import { ReactComponent as PowerIcon } from '../../assets/svg/power.svg'
+import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import Form from '../form/Form'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem }) => {
-
-console.log(item)
-//document.querySelectorAll(".MuiSelect-nativeInput")[0].value = item.country;
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -26,36 +23,39 @@ console.log(item)
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
             {
                 label: "Country",
-                type: "multi-select",
+                type: "multi-select2",
                 id: "country",
                 name: "country"
             }
         ]
     ]
-    
+
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Edit Agent", className: "primary", onClick: () => onEditItem(
-            item.id,
-            document.getElementById("name").value,
-            document.getElementById("username").value,
-            document.getElementById("password").value,
-            document.getElementById("volume").value,
-            document.getElementById("min_vol").value,
-            document.getElementById("max_users").value,
-            document.getElementById("max_days").value,
-            document.getElementById("prefix").value,
-            document.querySelectorAll(".MuiSelect-nativeInput")[0].value
-        )},
+        {
+            label: "Edit Agent", className: "primary", onClick: () => onEditItem(
+                item.id,
+                document.getElementById("name").value,
+                document.getElementById("username").value,
+                document.getElementById("password").value,
+                document.getElementById("volume").value,
+                document.getElementById("min_vol").value,
+                document.getElementById("max_users").value,
+                document.getElementById("max_days").value,
+                document.getElementById("prefix").value,
+                document.querySelectorAll(".MuiSelect-nativeInput")[0].value
+            )
+        },
     ]
 
     const secondaryButtons = [
-        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id,item.disable) },
+        { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
+        { type: "switch", label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.disable) },
+        { icon: <RefreshIcon />, type: "button", label: "Reset Usage", className: "ghosted", onClick: () => { } }
     ]
 
-    
+
 
     return (
         <Form

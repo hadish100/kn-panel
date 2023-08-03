@@ -20,15 +20,13 @@ const CreateUser = ({ onClose, showForm }) => {
             setHasError(true)
         } else {
             var users = (await axios.post("/get_users", { access_token })).data;
-            if (users.status === "ERR") 
-            {
+            if (users.status === "ERR") {
                 setError_msg(users.msg)
                 setHasError(true)
                 return;
             }
             var agent = (await axios.post("/get_agent", { access_token })).data;
-            if (agent.status === "ERR") 
-            {
+            if (agent.status === "ERR") {
                 setError_msg(agent.msg)
                 setHasError(true)
                 return;

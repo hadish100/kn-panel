@@ -54,39 +54,37 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
 
     const formFooter = (
         <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div style={{ marginRight: "auto", display: "flex" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
                 {secondaryButtons?.map((button, index) => (
-
-                    index === 0 ? (
+                    button.type === "button" ? (
                         <Button
                             key={index}
                             className={button.className}
                             onClick={button.onClick}
                         >
                             {button.icon}
-                            {/* {button.label} */}
                         </Button>
-                    ) : index === 1 ? (
-                        <FormGroup key={index}>
-                            <FormControlLabel
-                                onClick={button.onClick}
-                                control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item?Boolean(!item.disable):false} />}
-                                //Boolean(!item.disable)
-                            />
-                        </FormGroup>
+                    ) : button.type === "switch" ? (
+                        <FormControlLabel
+                            key={index}
+                            onClick={button.onClick}
+                            control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(!item.disable) : false} />}
+                        //Boolean(!item.disable)
+                        />
                     ) : null
-
                 ))}
             </div>
-            {primaryButtons.map((button, index) => (
-                <Button
-                    key={index}
-                    className={button.className}
-                    onClick={button.onClick}
-                >
-                    {button.label}
-                </Button>
-            ))}
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                {primaryButtons.map((button, index) => (
+                    <Button
+                        key={index}
+                        className={button.className}
+                        onClick={button.onClick}
+                    >
+                        {button.label}
+                    </Button>
+                ))}
+            </div>
         </motion.footer>
     )
 
@@ -115,7 +113,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             value={field.value}
                                             onChange={field.onChange}
                                             placeholder={field.placeholder}
-                                            editValue={item?item.country?item.country.split(","):"":""}
+                                            editValue={item ? item.country ? item.country.split(",") : "" : ""}
                                         />);
                                     }) : (
                                         <FormField
@@ -131,7 +129,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             value={group.value}
                                             onChange={group.onChange}
                                             placeholder={group.placeholder}
-                                            editValue={item?item.country?item.country.split(","):"":""}
+                                            editValue={item ? item.country ? item.country.split(",") : "" : ""}
                                         />
                                     )}
                                 </div>

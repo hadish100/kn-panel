@@ -7,7 +7,7 @@ import Form from "../form/Form"
 import "../agent/CreateUser.css"
 
 
-const CreatePanel = ({ onClose }) => {
+const CreatePanel = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("Failed to create panel")
 
@@ -66,7 +66,7 @@ const CreatePanel = ({ onClose }) => {
         <>
             <Form
                 onClose={onClose}
-                showForm={true}
+                showForm={showForm}
                 title="Create new panel"
                 iconComponent={<PanelIcon />}
                 primaryButtons={primaryButtons}

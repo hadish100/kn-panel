@@ -62,3 +62,8 @@ body {
     font-family: Inter;
     padding: 1.5rem;
 }
+
+.css-1sy2mon-MuiSwitch-root,
+.css-j204z7-MuiFormControlLabel-root {
+    margin: 0 !important;
+}

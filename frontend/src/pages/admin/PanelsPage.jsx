@@ -39,8 +39,7 @@ const PanelsPage = () => {
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/get_panels",{access_token}).then(res => 
-        {
+        axios.post("/get_panels", { access_token }).then(res => {
             sessionStorage.setItem("panels", JSON.stringify(res.data));
             setPanels(res.data);
             setRefresh(false);
@@ -52,15 +51,13 @@ const PanelsPage = () => {
         panel_id = selectedPanel.id;
         const access_token = sessionStorage.getItem("access_token");
         var req_res = await axios.post("/delete_panel", { access_token, panel_id });
-        if(req_res.data.status == "ERR") 
-        {
+        if (req_res.data.status == "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
         let panels = (await axios.post("/get_panels", { access_token })).data;
-        if(panels.status == "ERR") 
-        {
+        if (panels.status == "ERR") {
             setError_msg(panels.msg)
             setHasError(true)
             return;
@@ -71,22 +68,20 @@ const PanelsPage = () => {
         setShowVerifyDelete(false)
     }
 
-    const handlePowerPanel = async (panel_id,disabled) => {
+    const handlePowerPanel = async (panel_id, disabled) => {
 
         const access_token = sessionStorage.getItem("access_token");
         console.log(disabled)
         var req_res;
-        if(disabled) req_res = await axios.post("/enable_panel", { access_token, panel_id });
+        if (disabled) req_res = await axios.post("/enable_panel", { access_token, panel_id });
         else req_res = await axios.post("/disable_panel", { access_token, panel_id });
-        if(req_res.data.status == "ERR") 
-        {
+        if (req_res.data.status == "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
         var panels = (await axios.post("/get_panels", { access_token })).data;
-        if(panels.status == "ERR") 
-        {
+        if (panels.status == "ERR") {
             setError_msg(panels.msg)
             setHasError(true)
             return;
@@ -122,19 +117,17 @@ const PanelsPage = () => {
         setShowEditPanel(true)
     }
 
-    const handleEditPanel = async (panel_id,panel_name,panel_username,panel_password,panel_url,panel_user_max_count,panel_traffic) => {
+    const handleEditPanel = async (panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic) => {
 
         const access_token = sessionStorage.getItem("access_token");
-        var res = await axios.post("/edit_panel", { panel_id,panel_name,panel_username,panel_password,panel_url,panel_user_max_count,panel_traffic,access_token });
-        if(res.data.status == "ERR") 
-        {
+        var res = await axios.post("/edit_panel", { panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic, access_token });
+        if (res.data.status == "ERR") {
             setError_msg(res.data.msg)
             setHasError(true)
             return;
         }
         var panels = (await axios.post("/get_panels", { access_token })).data;
-        if(panels.status == "ERR") 
-        {
+        if (panels.status == "ERR") {
             setError_msg(panels.msg)
             setHasError(true)
             return;
@@ -144,10 +137,9 @@ const PanelsPage = () => {
         setShowEditPanel(false)
 
     }
-    console.log(panels);
     var total_panel_count = panels.length;
     var total_active_panel_count = panels.filter(panel => panel.disable == 0).length;
-    var total_data_usage = parseFloat(panels.reduce((acc , panel) => acc + panel.panel_data_usage,0)).toFixed(2);
+    var total_data_usage = parseFloat(panels.reduce((acc, panel) => acc + panel.panel_data_usage, 0)).toFixed(2);
     var country_list = [...new Set(panels.map(panel => panel.panel_country))];
     sessionStorage.setItem("country_list", JSON.stringify(country_list));
 
@@ -162,11 +154,10 @@ const PanelsPage = () => {
                 </span>
             </div>
 
-            <AnimatePresence>
-                {showCreatePanel && <CreatePanel
-                    onClose={handleCloseCreatePanel}
-                />}
-            </AnimatePresence>
+            <CreatePanel
+                onClose={handleCloseCreatePanel}
+                showForm={showCreatePanel}
+            />
 
             <EditPanel
                 item={selectedPanel}
@@ -181,7 +172,7 @@ const PanelsPage = () => {
                 hasError={hasError}
                 setHasError={setHasError}
                 errorTitle="ERROR"
-                errorMessage={error_msg} 
+                errorMessage={error_msg}
             />
 
             <VerifyDelete
@@ -190,15 +181,15 @@ const PanelsPage = () => {
                 onDeleteItem={handleVerifyDelete}
             />
 
-{refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
+            {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
 
-{!refresh &&      <PanelsTable
+            {!refresh && <PanelsTable
                 items={panels}
                 itemsPerPage={10}
                 currentItems={panels}
                 onEditItem={handleShowEditPanel}
                 onCreateItem={handleShowCreatePanel}
-            /> }
+            />}
 
         </div>
     )

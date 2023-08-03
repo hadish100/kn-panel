@@ -6,7 +6,6 @@ import Button from '../../components/Button'
 import AgentsTable from '../../components/admin/AgentsTable'
 import AgentStats from '../../components/admin/AgentStats'
 import CreateAgent from '../../components/admin/CreateAgent'
-import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditAgent from '../../components/admin/EditAgent'
 import VerifyDelete from '../../components/admin/VerifyDelete'
@@ -37,8 +36,7 @@ const AgentsPage = () => {
     const refreshItems = async () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
-        axios.post("/get_agents",{access_token}).then(res => 
-        {
+        axios.post("/get_agents", { access_token }).then(res => {
             sessionStorage.setItem("agents", JSON.stringify(res.data));
             setAgents(JSON.parse(sessionStorage.getItem("agents")))
             setRefresh(false);
@@ -50,15 +48,13 @@ const AgentsPage = () => {
         agent_id = selectedAgent.id;
         const access_token = sessionStorage.getItem("access_token");
         var req_res = await axios.post("/delete_agent", { access_token, agent_id });
-        if(req_res.data.status == "ERR") 
-        {
+        if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
         let agents = (await axios.post("/get_agents", { access_token })).data;
-        if(agents.status == "ERR")
-        {
+        if (agents.status === "ERR") {
             setError_msg(agents.msg)
             setHasError(true)
             return;
@@ -70,21 +66,18 @@ const AgentsPage = () => {
         setShowEditAgent(false)
     }
 
-    const handlePowerAgent = async (agent_id,disabled) => {
+    const handlePowerAgent = async (agent_id, disabled) => {
         const access_token = sessionStorage.getItem("access_token");
-        console.log(disabled)
-        var req_res; 
-        if(disabled) req_res = await axios.post("/enable_agent", { access_token, agent_id });
+        var req_res;
+        if (disabled) req_res = await axios.post("/enable_agent", { access_token, agent_id });
         else req_res = await axios.post("/disable_agent", { access_token, agent_id });
-        if(req_res.data.status == "ERR") 
-        {
+        if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
         var agents = (await axios.post("/get_agents", { access_token })).data;
-        if(agents.status == "ERR") 
-        {
+        if (agents.status === "ERR") {
             setError_msg(agents.msg)
             setHasError(true)
             return;
@@ -93,25 +86,20 @@ const AgentsPage = () => {
         setAgents(agents)
         var slctd = agents.find(agent => agent.id === agent_id);
         setSelectedAgent(slctd)
-        //setShowEditAgent(false)
-        console.log(agents);
-
     }
 
 
-    const handleEditAgent = async (agent_id,name,username,password,volume,min_vol,max_users,max_days,prefix,country) => {
+    const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country) => {
 
         const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/edit_agent", { agent_id,name,username,password,volume,min_vol,max_users,max_days,prefix,country,access_token });
-        if(req_res.data.status == "ERR") 
-        {
+        var req_res = await axios.post("/edit_agent", { agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token });
+        if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
         var agents = (await axios.post("/get_agents", { access_token })).data;
-        if(agents.status == "ERR") 
-        {
+        if (agents.status === "ERR") {
             setError_msg(agents.msg)
             setHasError(true)
             return;
@@ -148,9 +136,9 @@ const AgentsPage = () => {
     }
 
 
-       var total_agent_count = agents.length;
-       var total_active_agent_count = agents.filter(agent => agent.disable == 0).length;
-       var total_data_usage = parseFloat(agents.reduce((acc , agent) => acc + agent.used_traffic,0)).toFixed(2);
+    var total_agent_count = agents.length;
+    var total_active_agent_count = agents.filter(agent => agent.disable === 0).length;
+    var total_data_usage = parseFloat(agents.reduce((acc, agent) => acc + agent.used_traffic, 0)).toFixed(2);
 
 
 
@@ -159,21 +147,20 @@ const AgentsPage = () => {
         <div className='admin_panels_body'>
             <AgentStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_agent_count} totalUsers={total_agent_count} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-             <Search items={agents} setItems={setAgents} mode="2" />
+                <Search items={agents} setItems={setAgents} mode="2" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Agent</Button>
                 </span>
             </div>
 
-            <AnimatePresence>
-                {showCreateAgent && <CreateAgent
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClose={handleCloseCreateAgent}
-                />}
-            </AnimatePresence>
+            <CreateAgent
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClose={handleCloseCreateAgent}
+                showForm={showCreateAgent}
+            />
 
             <EditAgent
                 item={selectedAgent}
@@ -188,9 +175,8 @@ const AgentsPage = () => {
                 hasError={hasError}
                 setHasError={setHasError}
                 errorTitle="ERROR"
-                errorMessage={error_msg} 
+                errorMessage={error_msg}
             />
-
 
             <VerifyDelete
                 onClose={handleCloseVerifyDelete}
@@ -198,9 +184,9 @@ const AgentsPage = () => {
                 onDeleteItem={handleVerifyDelete}
             />
 
-{refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}     
+            {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
 
-                {!refresh && <AgentsTable
+            {!refresh && <AgentsTable
                 items={agents}
                 itemsPerPage={10}
                 currentItems={agents}

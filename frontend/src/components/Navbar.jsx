@@ -27,7 +27,7 @@ const Navbar = () => {
             if (activeLiElement) {
                 calculateLinkStyles(activeLiElement);
             }
-        }, 100)
+        }, 400)
     }, [location.pathname]);
 
     const agentLinks = [
