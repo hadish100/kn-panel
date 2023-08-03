@@ -11,7 +11,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditI
         { label: "Name", type: "text", id: "panel_name", name: "name" },
         { label: "Username", type: "text", id: "panel_username", name: "username" },
         { label: "Password", type: "text", id: "panel_password", name: "password" },
-        { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url" , disabled: true },
+        { label: "Panel Url", type: "text", id: "panel_url", name: "panel_url", disabled: true },
         { label: "Capacity", type: "number", id: "panel_user_max_count", name: "capacity" },
         { label: "Traffic", type: "number", id: "panel_traffic", name: "traffic" },
         { label: "Country", type: "text", id: "panel_country", name: "country", disabled: true }
@@ -19,21 +19,23 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditI
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Edit Panel", className: "primary", onClick:() => onEditItem(
-            item.id,
-            document.getElementById("panel_name").value,
-            document.getElementById("panel_username").value,
-            document.getElementById("panel_password").value,
-            document.getElementById("panel_url").value,
-            document.getElementById("panel_user_max_count").value,
-            document.getElementById("panel_traffic").value,
-            document.getElementById("panel_country").value
-        )},
+        {
+            label: "Edit Panel", className: "primary", onClick: () => onEditItem(
+                item.id,
+                document.getElementById("panel_name").value,
+                document.getElementById("panel_username").value,
+                document.getElementById("panel_password").value,
+                document.getElementById("panel_url").value,
+                document.getElementById("panel_user_max_count").value,
+                document.getElementById("panel_traffic").value,
+                document.getElementById("panel_country").value
+            )
+        },
     ]
 
     const secondaryButtons = [
-        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.disable) },
+        { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
+        { type: "switch", label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.disable) },
     ]
 
     return (
