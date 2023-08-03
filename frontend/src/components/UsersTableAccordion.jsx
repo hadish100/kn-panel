@@ -6,6 +6,7 @@ import Accordion from "./Accordion"
 import convertData from "../utils/file-size-util"
 
 const UsersTableAccordion = ({
+    item,
     itemKey,
     userStatus,
     expireTime,
@@ -32,7 +33,7 @@ const UsersTableAccordion = ({
                             <span className="accordion__expire-time">{expireTime}</span>
                         </div>
                         <div className="accordion__subscription-actions" style={{ display: "flex", justifyContent: "space-around", width: "6rem" }}>
-                            {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} onEditItem={onEditItem} shouldRenderTr QRCodeLinks={QRCodeLinks} />}
+                            {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} onEditItem={onEditItem} shouldRenderTr QRCodeLinks={QRCodeLinks} item={item} />}
                         </div>
                     </div>
                 </Accordion>
