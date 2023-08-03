@@ -5,7 +5,7 @@ import Search from '../../components/Search'
 import Button from '../../components/Button'
 import PanelsTable from '../../components/admin/PanelsTable'
 import CreatePanel from '../../components/admin/CreatePanel'
-import UsageStats from '../../components/admin/UsageStats'
+import PanelStats from '../../components/admin/PanelStats'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditPanel from '../../components/admin/EditPanel'
@@ -145,15 +145,15 @@ const PanelsPage = () => {
 
     }
     console.log(panels);
-    var total_active_users = panels.reduce((acc , panel) => acc + panel.active_users,0);
-    var total_total_users = panels.reduce((acc , panel) => acc + panel.total_users,0);
+    var total_panel_count = panels.length;
+    var total_active_panel_count = panels.filter(panel => panel.disable == 0).length;
     var total_data_usage = parseFloat(panels.reduce((acc , panel) => acc + panel.panel_data_usage,0)).toFixed(2);
     var country_list = [...new Set(panels.map(panel => panel.panel_country))];
     sessionStorage.setItem("country_list", JSON.stringify(country_list));
 
     return (
         <div className='admin_panels_body'>
-            <UsageStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_users} totalUsers={total_total_users} />
+            <PanelStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_panel_count} totalUsers={total_panel_count} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search items={panels} setItems={setPanels} mode="1" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>

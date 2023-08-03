@@ -4,7 +4,7 @@ import axios from 'axios'
 import Search from '../../components/Search'
 import Button from '../../components/Button'
 import AgentsTable from '../../components/admin/AgentsTable'
-import AdminUsageStats from '../../components/admin/UsageStats'
+import AgentStats from '../../components/admin/AgentStats'
 import CreateAgent from '../../components/admin/CreateAgent'
 import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
@@ -148,8 +148,8 @@ const AgentsPage = () => {
     }
 
 
-       var total_active_users = agents.reduce((acc , agent) => acc + agent.active_users,0);
-       var total_total_users = agents.reduce((acc , agent) => acc + agent.total_users,0);
+       var total_agent_count = agents.length;
+       var total_active_agent_count = agents.filter(agent => agent.disable == 0).length;
        var total_data_usage = parseFloat(agents.reduce((acc , agent) => acc + agent.used_traffic,0)).toFixed(2);
 
 
@@ -157,7 +157,7 @@ const AgentsPage = () => {
 
     return (
         <div className='admin_panels_body'>
-            <AdminUsageStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_users} totalUsers={total_total_users} />
+            <AgentStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_agent_count} totalUsers={total_agent_count} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
              <Search items={agents} setItems={setAgents} mode="2" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
