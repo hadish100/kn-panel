@@ -12,9 +12,11 @@ import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 import EditUser from '../../components/agent/EditUser'
 import VerifyDelete from '../../components/admin/VerifyDelete'
-import loadingGif from '../../assets/loading.gif'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
+import CircularProgress from '../../components/CircularProgress';
+
+
 
 const UsersPage = () => {
     const [showCreateUser, setShowCreateUser] = useState(false)
@@ -232,7 +234,7 @@ const UsersPage = () => {
                 items={users}
             />
 
-            {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
+            {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
             {!refresh && <UsersTable
                 items={users}
                 currentItems={currentRows}

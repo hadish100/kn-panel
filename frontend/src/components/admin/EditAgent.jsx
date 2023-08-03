@@ -5,7 +5,8 @@ import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as LoginAsAgentIcon } from '../../assets/svg/LoginAsAgent.svg'
 import Form from '../form/Form'
 
-const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem }) => {
+const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem }) => {
+
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -51,7 +52,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <LoginAsAgentIcon />, type: "button", label: "Login", className: "ghosted" /* , onClick: (e) => onLoginItem(e,item.username,item.password) */ },
+        { icon: <LoginAsAgentIcon />, type: "button", label: "Login", className: "ghosted"  , onClick: (e) => onLoginItem(e,item.username,item.password)  },
         { type: "switch", label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.disable) },
     ]
 

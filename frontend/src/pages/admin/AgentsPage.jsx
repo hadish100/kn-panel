@@ -4,18 +4,19 @@ import axios from 'axios'
 import Search from '../../components/Search'
 import Button from '../../components/Button'
 import AgentsTable from '../../components/admin/AgentsTable'
+import { useNavigate } from 'react-router-dom';
 import AgentStats from '../../components/admin/AgentStats'
 import CreateAgent from '../../components/admin/CreateAgent'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditAgent from '../../components/admin/EditAgent'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import './AgentsPage.css'
-import loadingGif from '../../assets/loading.gif'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
+import CircularProgress from '../../components/CircularProgress';
 
 
-const AgentsPage = () => {
+const AgentsPage = ({ setIsLoggedIn, setLocation }) => {
     const [showCreateAgent, setShowCreateAgent] = useState(false);
     const [showEditAgent, setShowEditAgent] = useState(false);
     const [error_msg, setError_msg] = useState("")
@@ -24,6 +25,7 @@ const AgentsPage = () => {
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [agents, setAgents] = useState([])
     const [selectedAgent, setSelectedAgent] = useState(null)
+    const navigate = useNavigate();
 
     useEffect(() => {
         setAgents(JSON.parse(sessionStorage.getItem("agents")))
@@ -49,6 +51,51 @@ const AgentsPage = () => {
             setAgents(JSON.parse(sessionStorage.getItem("agents")))
             setRefresh(false);
         });
+    }
+
+    const handleAdminAsAgent = async (e,username,password) =>
+    {
+        var res;
+
+        try {res = await axios.post("/login", { username, password }, { timeout: 20000 });}
+
+        catch (err) {
+            if(err.response.status == 401) setError_msg("Please check your username and password");
+            else setError_msg("server is not responding");
+            res = {};
+            res.data = "ERR";
+            console.log(err)
+        }
+
+
+        if (res.data === "ERR") {
+            setHasError(true)
+        }
+
+
+        else {
+            setIsLoggedIn(true)
+            var access_token = res.data.access_token;
+                sessionStorage.setItem("isLoggedIn", "true");
+                sessionStorage.setItem("access_token", res.data.access_token)
+
+                try {
+                    var users = (await axios.post("/get_users", { access_token }, { timeout: 20000 })).data;
+                    var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data;
+                    sessionStorage.setItem("users", JSON.stringify(users));
+                    sessionStorage.setItem("agent", JSON.stringify(agent));
+                    setLocation("/agent/users");
+                    navigate('/agent/users');
+                }
+
+                catch (err) {
+                    console.log(err)
+                    setError_msg("server is not responding");
+                    setHasError(true)
+                }
+
+        }
+    
     }
 
     const handleVerifyDelete = async (e, agent_id) => {
@@ -177,6 +224,7 @@ const AgentsPage = () => {
                 onDeleteItem={handleDeleteAgent}
                 onPowerItem={handlePowerAgent}
                 onEditItem={handleEditAgent}
+                onLoginItem={handleAdminAsAgent}
             />
 
             <ErrorCard
@@ -192,7 +240,7 @@ const AgentsPage = () => {
                 onDeleteItem={handleVerifyDelete}
             />
 
-            {refresh && <div className='loading_gif_container'> <img src={loadingGif} className='loading_gif' /> </div>}
+            {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
 
             {!refresh && <AgentsTable
                 items={agents}
