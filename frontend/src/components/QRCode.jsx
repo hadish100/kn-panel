@@ -46,7 +46,6 @@ const QRCode = ({ onClose, showQRCode, QRCodeLinks, subscriptionLink }) => {
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                                 <div className='links__slider'>
-                                    <Button className="outlined arrow-left" onClick={handlePrevious}><ArrowLeftIcon /></Button>
                                     <div className='qr-code__links'>
                                         <motion.div
                                             className="inner"
@@ -60,9 +59,12 @@ const QRCode = ({ onClose, showQRCode, QRCodeLinks, subscriptionLink }) => {
                                             })}
                                         </motion.div>
                                     </div>
-                                    <Button className="outlined arrow-right" onClick={handleNext}><ArrowRightIcon /></Button>
                                 </div>
+                                <div class="qrcode_navigation_handler" >
+                                <Button className="outlined arrow-left" onClick={handlePrevious}><ArrowLeftIcon /></Button>
                                 {currentIndex + 1} / {QRCodeLinks.length}
+                                <Button className="outlined arrow-right" onClick={handleNext}><ArrowRightIcon /></Button>
+                                </div>
                             </div>
                         </main>
                     </Modal>

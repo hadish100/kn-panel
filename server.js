@@ -313,7 +313,7 @@ const reset_marzban_user = async(link,username,password,vpn_name) =>
         console.log(link,username,password,vpn_name);
         var headers = await auth_marzban(link,username,password);
         if(headers == "ERR") return "ERR";
-        var res = await axios.post(link+"/api/user/"+vpn_name+"/reset",{headers});
+        var res = await axios.post(link+"/api/user/"+vpn_name+"/reset","",{headers});
         console.log(res);
         return "DONE";
     }
@@ -851,7 +851,6 @@ app.post("/reset_user", async (req, res) =>
            await update_user(user_id,{used_traffic:0});
            await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data + old_data_limit)});
            var account = await token_to_account(access_token);
-           console.log('#EEE');
            await insert_to_logs(account.id,"RESET_USER",`reseted user ${user_obj.username}`);
            res.send("DONE");
         }

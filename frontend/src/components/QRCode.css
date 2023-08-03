@@ -11,8 +11,8 @@
     overflow-x: hidden;
 }
 
-.links__slider .arrow-left svg,
-.links__slider .arrow-right svg {
+.arrow-left svg,
+.arrow-right svg {
     width: 20px;
     height: 20px;
 }
@@ -22,8 +22,9 @@
     gap: 1rem;
 }
 
-.qr-code__links>svg {
-    flex: 0 0 200px;
+.arrow-left svg,
+.arrow-right svg {
+    flex: 0 0 40px;
 }
 
 .qr-code__modal .modal__content {
@@ -40,4 +41,14 @@
         top: 10px;
         width: 1;
     }
+}
+
+.qrcode_navigation_handler
+{
+display:flex;
+justify-content:center;
+align-items:center;
+align-content:center;
+flex-direction:row;
+gap:10px;
 }

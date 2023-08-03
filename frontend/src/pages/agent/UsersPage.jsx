@@ -81,7 +81,7 @@ const UsersPage = () => {
         setAgent(agent)
         sessionStorage.setItem("users", JSON.stringify(users))
         setUsers(users)
-        setShowVerifyDelete(false)
+        setShowVerifyReset(false)
         setShowEditUser(false)
     }
 
