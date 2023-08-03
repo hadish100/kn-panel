@@ -13,6 +13,7 @@ const UsersTableAccordion = ({
     dataUsage,
     subscriptionLink,
     config,
+    QRCodeLinks,
     onEditItem
 }) => {
     return (
@@ -31,7 +32,7 @@ const UsersTableAccordion = ({
                             <span className="accordion__expire-time">{expireTime}</span>
                         </div>
                         <div className="accordion__subscription-actions" style={{ display: "flex", justifyContent: "space-around", width: "6rem" }}>
-                            {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} onEditItem={onEditItem} shouldRenderTr />}
+                            {<SubscriptionActions subscriptionLink={subscriptionLink} config={config} onEditItem={onEditItem} shouldRenderTr QRCodeLinks={QRCodeLinks} />}
                         </div>
                     </div>
                 </Accordion>

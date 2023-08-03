@@ -1,32 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Modal from './Modal'
 import { AnimatePresence } from 'framer-motion'
 import LeadingIcon from './LeadingIcon'
 import { ReactComponent as QRCodeIcon } from '../assets/svg/qrcode.svg'
 import { ReactComponent as XMarkIcon } from '../assets/svg/x-mark.svg'
+import { ReactComponent as ArrowLeftIcon } from '../assets/svg/arrow-left.svg'
+import { ReactComponent as ArrowRightIcon } from '../assets/svg/arrow-right.svg'
 import { QRCodeSVG } from 'qrcode.react';
+import { motion } from "framer-motion"
+import "./QRCode.css"
+import Button from './Button'
 
-const QRCode = ({ onClose, showQRCode, QRCodeLink }) => {
+const QRCode = ({ onClose, showQRCode, QRCodeLinks, subscriptionLink }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const handleNext = () => {
+        const nextIndex = (currentIndex + 1) % QRCodeLinks.length;
+        setCurrentIndex(nextIndex);
+    };
+
+    const handlePrevious = () => {
+        const previousIndex = (currentIndex - 1 + QRCodeLinks.length) % QRCodeLinks.length;
+        setCurrentIndex(previousIndex);
+    };
+
     return (
-        <AnimatePresence>
-            {showQRCode && (
-                <Modal /*onClose={onClose}*/>
-                    <header className="modal__header">
-                        <LeadingIcon>
-                            <QRCodeIcon />
-                        </LeadingIcon>
-                        <h1 className='modal__title'>QR Code</h1>
-                        <div className="close-icon" onClick={onClose}>
-                            <XMarkIcon />
-                        </div>
-                    </header>
-                    <main style={{ display: "flex", justifyContent: "center" }}>
-                        <QRCodeSVG value={QRCodeLink} size={200} />
-                    </main>
-                </Modal>
-            )}
-        </AnimatePresence>
+        <div className="qr-code">
+            <AnimatePresence>
+                {showQRCode && (
+                    <Modal onClose={onClose} className={"qr-code__modal"}>
+                        <header className="modal__header">
+                            <LeadingIcon>
+                                <QRCodeIcon />
+                            </LeadingIcon>
+                            <h1 className='modal__title'>QR Code</h1>
+                            <div className="close-icon" onClick={onClose}>
+                                <XMarkIcon />
+                            </div>
+                        </header>
+                        <main className='qr-code__main' style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+                                <QRCodeSVG value={subscriptionLink} size={300} />
+                                Subscribe Link
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+                                <div className='links__slider'>
+                                    <Button className="outlined arrow-left" onClick={handlePrevious}><ArrowLeftIcon /></Button>
+                                    <div className='qr-code__links'>
+                                        <motion.div
+                                            className="inner"
+                                            animate={{ transform: `translateX(-${currentIndex * 300 + currentIndex * 16}px)` }}
+                                            transition={{ duration: .3 }}
+                                        >
+                                            {QRCodeLinks.map((QRCodeLink, index) => {
+                                                return (
+                                                    <QRCodeSVG key={index} value={QRCodeLink} size={300} />
+                                                )
+                                            })}
+                                        </motion.div>
+                                    </div>
+                                    <Button className="outlined arrow-right" onClick={handleNext}><ArrowRightIcon /></Button>
+                                </div>
+                                {currentIndex + 1} / {QRCodeLinks.length}
+                            </div>
+                        </main>
+                    </Modal>
+                )}
+            </AnimatePresence>
+        </div>
     )
 }
 

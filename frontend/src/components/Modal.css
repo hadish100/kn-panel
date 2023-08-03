@@ -10,14 +10,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overscroll-behavior-y: none;
+    overflow: auto;
 }
 
 .modal__background {
     min-height: 100vh;
+    display: flex;
+    overscroll-behavior-y: none;
 }
 
 .modal__content {
-    overflow: auto;
+    overscroll-behavior-y: none;
     padding: 10px;
     width: 40rem;
     margin: 1rem;
@@ -70,8 +74,9 @@
     background-color: var(--gray-clr-200);
 }
 
+/* 
 @media (max-width: 440px) {
     .modal__footer {
         flex-direction: column;
     }
-}
+} */

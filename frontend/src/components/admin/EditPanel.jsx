@@ -2,7 +2,6 @@ import React from 'react'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
-import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import Form from '../form/Form'
 
 const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditItem }) => {

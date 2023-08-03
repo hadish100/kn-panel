@@ -10,7 +10,7 @@ import { ReactComponent as CheckedIcon } from "../../assets/svg/checked.svg";
 import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
 import QRCode from "../QRCode";
 
-const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRenderTr, QRCodeLink }) => {
+const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRenderTr, QRCodeLinks }) => {
     const [clickedButton, setClickedButton] = useState(null);
     const [showQRCode, setShowQRCode] = useState(false);
 
@@ -45,7 +45,7 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
         tempInput.select();
         document.execCommand('copy');
         document.body.removeChild(tempInput);
-        
+
         setClickedButton("subscriptionLink");
         e.stopPropagation();
 
@@ -73,7 +73,7 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
         tempInput.select();
         document.execCommand('copy');
         document.body.removeChild(tempInput);
- 
+
         setClickedButton("config");
         e.stopPropagation();
 
@@ -92,7 +92,6 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
     };
 
     const handleShowQRCode = (e) => {
-        console.log(e) 
         e.stopPropagation()
         setShowQRCode(true)
     };
@@ -148,7 +147,8 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
             <QRCode
                 showQRCode={showQRCode}
                 onClose={() => setShowQRCode(false)}
-                QRCodeLink={QRCodeLink}
+                QRCodeLinks={QRCodeLinks}
+                subscriptionLink={subscriptionLink}
             />
         </div>
     );

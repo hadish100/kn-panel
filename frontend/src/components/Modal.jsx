@@ -4,10 +4,10 @@ import { motion } from "framer-motion"
 
 import "./Modal.css";
 
-const Modal = ({ children, onClose, v2, tall }) => {
+const Modal = ({ children, onClose, v2, tall, className }) => {
     return ReactDOM.createPortal(
         <motion.div
-            className="modal"
+            className={`modal ${className}`}
             onMouseDown={onClose}
             onMouseUp={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
