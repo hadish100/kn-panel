@@ -78,3 +78,12 @@
         transform: rotate(360deg);
     }
 }
+
+.login__logo
+{
+    width: 130px;
+    height: 130px;
+    margin-bottom: 20px;
+    background:transparent;
+    opacity:1;
+}

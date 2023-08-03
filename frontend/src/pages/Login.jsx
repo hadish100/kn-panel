@@ -3,6 +3,7 @@ import './Login.css'
 import { ReactComponent as LoginIcon } from "../assets/svg/login.svg"
 import { ReactComponent as Logo } from "../assets/svg/logo.svg"
 import { ReactComponent as RefreshIcon } from "../assets/svg/refresh.svg"
+import LogoIcon from "../assets/logo.png"
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button'
 import axios from "axios"
@@ -109,7 +110,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
             errorMessage={error_message}
         />
     )
-
+ 
 
     var okCard = (
         <OkCard
@@ -122,7 +123,7 @@ const Login = ({ setIsLoggedIn, setLocation }) => {
 
     return (
         <div className='login'>
-            <Logo />
+            <img src={LogoIcon} alt="logo" className="login__logo" />
             <h1 className='login__title'>Login to your account</h1>
             <h2 className='login__subtitle'>Welcome back, please enter your details</h2>
             <form className='login__form' action="" onSubmit={send_login_data}>
