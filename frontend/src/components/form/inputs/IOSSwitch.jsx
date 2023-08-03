@@ -52,6 +52,9 @@ const IOSSwitch = styled((props) => (
             duration: 500,
         }),
     },
+    '& .MuiSwitch-root': {
+        marginLeft:50,
+    },
 }));
 
 export default IOSSwitch;
