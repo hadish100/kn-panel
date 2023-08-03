@@ -8,11 +8,11 @@ import { ReactComponent as PasteIcon } from "../../assets/svg/paste.svg";
 import { ReactComponent as QRCodeIcon } from "../../assets/svg/qr-code.svg";
 import { ReactComponent as CheckedIcon } from "../../assets/svg/checked.svg";
 import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
+import QRCode from "../QRCode";
 
-
-
-const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRenderTr }) => {
+const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRenderTr, QRCodeLink }) => {
     const [clickedButton, setClickedButton] = useState(null);
+    const [showQRCode, setShowQRCode] = useState(false);
 
     const {
         isHovered: isHovered1,
@@ -71,7 +71,11 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
                 setClickedButton(null);
             }, 1000);
         }
+    };
 
+    const handleShowQRCode = (e) => {
+        e.stopPropagation()
+        setShowQRCode(true)
     };
 
     return (
@@ -106,7 +110,7 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
                     className="subscription-section__button"
                     onMouseEnter={handleMouseEnter3}
                     onMouseLeave={handleMouseLeave3}
-                    onClick={e => e.stopPropagation()}
+                    onClick={handleShowQRCode}
                 >
                     <Tooltip isHovered={isHovered3}>QR Code</Tooltip>
                     <QRCodeIcon />
@@ -121,6 +125,12 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
                     <EditIcon />
                 </button>}
             </div>
+
+            <QRCode
+                showQRCode={showQRCode}
+                onClose={() => setShowQRCode(false)}
+                QRCodeLink={QRCodeLink}
+            />
         </div>
     );
 };

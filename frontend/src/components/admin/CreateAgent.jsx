@@ -90,6 +90,7 @@ const CreateAgent = ({ onClose, showForm }) => {
                 iconComponent={<AddUserIcon />}
                 primaryButtons={primaryButtons}
                 formFields={formFields}
+                tall={true}
             />
             <ErrorCard
                 hasError={hasError}

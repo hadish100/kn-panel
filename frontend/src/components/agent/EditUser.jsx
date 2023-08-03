@@ -4,6 +4,7 @@ import axios from 'axios'
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
+import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import Form from '../form/Form'
 
 const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem }) => {
@@ -17,17 +18,20 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Edit User", className: "primary", onClick: () => onEditItem(
-            item.id,
-            document.getElementById("data_limit").value,
-            document.getElementById("expire").value,
-            document.getElementById("country").value,
-        ) },
+        {
+            label: "Edit User", className: "primary", onClick: () => onEditItem(
+                item.id,
+                document.getElementById("data_limit").value,
+                document.getElementById("expire").value,
+                document.getElementById("country").value,
+            )
+        },
     ]
 
     const secondaryButtons = [
-        { icon: <DeleteIcon />, label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.username) },
-        { icon: <PowerIcon />, label: "Power", className: "ghosted", onClick:(e) => onPowerItem(e,item.id,item.status) },
+        { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.username) },
+        { icon: <RefreshIcon />, type: "button", label: "Reset Usage", className: "ghosted", onClick: () => { } },
+        { icon: <PowerIcon />, type: "switch", label: "Power", className: "ghosted", onClick: (e) => onPowerItem(e, item.id, item.status) },
     ]
 
     return (

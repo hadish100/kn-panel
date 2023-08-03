@@ -121,13 +121,13 @@ const PanelsPage = () => {
 
         const access_token = sessionStorage.getItem("access_token");
         var res = await axios.post("/edit_panel", { panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic, access_token });
-        if (res.data.status == "ERR") {
+        if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
             setHasError(true)
             return;
         }
         var panels = (await axios.post("/get_panels", { access_token })).data;
-        if (panels.status == "ERR") {
+        if (panels.status === "ERR") {
             setError_msg(panels.msg)
             setHasError(true)
             return;
