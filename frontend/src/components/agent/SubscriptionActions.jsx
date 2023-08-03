@@ -11,7 +11,7 @@ import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
 
 
 
-const SubscriptionActions = ({ subscriptionLink, config, setShowEditModal, shouldRenderTr }) => {
+const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRenderTr }) => {
     const [clickedButton, setClickedButton] = useState(null);
 
     const {
@@ -115,7 +115,7 @@ const SubscriptionActions = ({ subscriptionLink, config, setShowEditModal, shoul
                     className="subscription-section__button"
                     onMouseEnter={handleMouseEnter4}
                     onMouseLeave={handleMouseLeave4}
-                    onClick={() => setShowEditModal(true)}
+                    onClick={onEditItem}
                 >
                     <Tooltip isHovered={isHovered4}>Edit</Tooltip>
                     <EditIcon />
