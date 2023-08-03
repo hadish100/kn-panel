@@ -8,7 +8,9 @@ const Modal = ({ children, onClose, v2, tall }) => {
     return ReactDOM.createPortal(
         <motion.div
             className="modal"
-            //onClick={onClose}
+            onMouseDown={onClose}
+            onMouseUp={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -18,7 +20,8 @@ const Modal = ({ children, onClose, v2, tall }) => {
             <div className="modal__background" ></div>
             <motion.div
                 className={v2 ? "modal__content modal_content_v2" : "modal__content"}
-                onClick={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
                 initial={{ scale: 0.9, opacity: 1 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 1 }}

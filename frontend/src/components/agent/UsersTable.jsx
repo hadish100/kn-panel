@@ -52,7 +52,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
 
                 return (
                     <>
-                        <tr key={key} onClick={!shouldRenderTr ? () => onEditItem(item) : undefined}>
+                        <tr key={key} onClick={shouldRenderTr ? undefined : () => onEditItem(item)}>
                             <td style={{ maxWidth: "10rem" }}>{item.username}</td>
                             <td>
                                 <span className={`status ${userStatus}`}>{userStatus}</span>
