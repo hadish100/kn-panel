@@ -23,7 +23,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
             {
                 label: "Country",
-                type: "multi-select2",
+                type: "multi-select",
                 id: "country",
                 name: "country"
             }
