@@ -10,7 +10,7 @@ import { ReactComponent as CheckedIcon } from "../../assets/svg/checked.svg";
 import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
 import QRCode from "../QRCode";
 
-const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRenderTr, QRCodeLinks }) => {
+const SubscriptionActions = ({ item, subscriptionLink, config, onEditItem, shouldRenderTr, QRCodeLinks }) => {
     const [clickedButton, setClickedButton] = useState(null);
     const [showQRCode, setShowQRCode] = useState(false);
 
@@ -137,7 +137,7 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
                     className="subscription-section__button"
                     onMouseEnter={handleMouseEnter4}
                     onMouseLeave={handleMouseLeave4}
-                    onClick={onEditItem}
+                    onClick={() => onEditItem(item)}
                 >
                     <Tooltip isHovered={isHovered4}>Edit</Tooltip>
                     <EditIcon />

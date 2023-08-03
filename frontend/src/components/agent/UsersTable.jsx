@@ -85,6 +85,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                             {
                                 shouldRenderTr && key === expandedId &&
                                 <UsersTableAccordion
+                                    item={item}
                                     itemKey={key}
                                     userStatus={userStatus}
                                     expireTime={expireTime}
