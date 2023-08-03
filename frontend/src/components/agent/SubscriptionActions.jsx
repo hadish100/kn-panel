@@ -36,7 +36,16 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
     } = useHover();
 
     const handleCopySubscriptionLink = (e) => {
-        navigator.clipboard.writeText(subscriptionLink);
+        //navigator.clipboard.writeText(subscriptionLink);
+
+        const tempInput = document.createElement('input');
+        tempInput.setAttribute('type', 'text');
+        tempInput.setAttribute('value', subscriptionLink);
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
         setClickedButton("subscriptionLink");
         e.stopPropagation();
 
@@ -55,7 +64,16 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
     };
 
     const handleCopyConfigLink = (e) => {
-        navigator.clipboard.writeText(config);
+        //navigator.clipboard.writeText(config);
+
+        const tempInput = document.createElement('input');
+        tempInput.setAttribute('type', 'text');
+        tempInput.setAttribute('value', config);
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+ 
         setClickedButton("config");
         e.stopPropagation();
 
@@ -74,6 +92,7 @@ const SubscriptionActions = ({ subscriptionLink, config, onEditItem, shouldRende
     };
 
     const handleShowQRCode = (e) => {
+        console.log(e) 
         e.stopPropagation()
         setShowQRCode(true)
     };

@@ -189,6 +189,7 @@ const UsersPage = () => {
     }
 
     const handleShowEditUser = (item) => {
+        console.log("ERERERERE");
         setSelectedUser(item)
         setShowEditUser(true)
     }

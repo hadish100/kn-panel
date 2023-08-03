@@ -8,7 +8,7 @@ const Modal = ({ children, onClose, v2, tall }) => {
     return ReactDOM.createPortal(
         <motion.div
             className="modal"
-            onClick={onClose}
+            //onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

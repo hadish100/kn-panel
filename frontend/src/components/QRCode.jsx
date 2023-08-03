@@ -11,7 +11,7 @@ const QRCode = ({ onClose, showQRCode, QRCodeLink }) => {
     return (
         <AnimatePresence>
             {showQRCode && (
-                <Modal onClose={onClose}>
+                <Modal /*onClose={onClose}*/>
                     <header className="modal__header">
                         <LeadingIcon>
                             <QRCodeIcon />
