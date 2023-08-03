@@ -92,6 +92,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                                     dataUsage={item.used_traffic}
                                     config={config}
                                     subscriptionLink={subscriptionLink}
+                                    QRCodeLinks={QRCodeLinks}
                                     onEditItem={onEditItem}
                                 />
                             }
