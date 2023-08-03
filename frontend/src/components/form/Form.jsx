@@ -10,7 +10,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IOSSwitch from './inputs/IOSSwitch';
 
-const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item }) => {
+const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item, tall }) => {
 
     const b2gb = (bytes) => {
         return (bytes / (2 ** 10) ** 3).toFixed(2);
@@ -91,7 +91,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
     return (
         <AnimatePresence>
             {showForm && (
-                <Modal onClose={onClose}>
+                <Modal onClose={onClose} tall={tall}>
                     {formHeader}
                     <main className="modal__body">
                         <form className="modal__form">

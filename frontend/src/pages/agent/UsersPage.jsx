@@ -27,6 +27,7 @@ const UsersPage = () => {
     const [selectedUser, setSelectedUser] = useState(null)
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [users, setUsers] = useState([])
+    const [showQRCode, setShowQRCode] = useState(false);
     const [refresh, setRefresh] = useState(false);
 
 
@@ -51,7 +52,7 @@ const UsersPage = () => {
         const access_token = sessionStorage.getItem("access_token");
 
         var agent = (await axios.post("/get_agent", { access_token })).data
-        if (agent.status == "ERR") {
+        if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
             return;
@@ -59,7 +60,7 @@ const UsersPage = () => {
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
         axios.post("/get_users", { access_token }).then(res => {
-            if (res.data.status == "ERR") {
+            if (res.data.status === "ERR") {
                 setError_msg(res.data.msg)
                 setHasError(true)
                 return;
@@ -75,19 +76,19 @@ const UsersPage = () => {
         username = selectedUser.username;
         const access_token = sessionStorage.getItem("access_token");
         var req_res = await axios.post("/delete_user", { access_token, username });
-        if (req_res.data.status == "ERR") {
+        if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
         let users = (await axios.post("/get_users", { access_token })).data;
-        if (users.status == "ERR") {
+        if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
             return;
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
-        if (agent.status == "ERR") {
+        if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
             return;
@@ -105,21 +106,21 @@ const UsersPage = () => {
         console.log(status)
         const access_token = sessionStorage.getItem("access_token");
         var req_res;
-        if (status == "active") req_res = await axios.post("/disable_user", { access_token, user_id });
+        if (status === "active") req_res = await axios.post("/disable_user", { access_token, user_id });
         else req_res = await axios.post("/enable_user", { access_token, user_id });
-        if (req_res.data.status == "ERR") {
+        if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
         var users = (await axios.post("/get_users", { access_token })).data;
-        if (users.status == "ERR") {
+        if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
             return;
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
-        if (agent.status == "ERR") {
+        if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
             return;
@@ -135,20 +136,20 @@ const UsersPage = () => {
     const handleEditUser = async (user_id, data_limit, expire, country) => {
         const access_token = sessionStorage.getItem("access_token");
         var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country });
-        if (req_res.data.status == "ERR") {
+        if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
             return;
         }
 
         let users = (await axios.post("/get_users", { access_token })).data;
-        if (users.status == "ERR") {
+        if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
             return;
         }
         let agent = (await axios.post("/get_agent", { access_token })).data;
-        if (agent.status == "ERR") {
+        if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
             return;

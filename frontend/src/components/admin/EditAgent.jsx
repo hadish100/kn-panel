@@ -67,6 +67,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
             secondaryButtons={secondaryButtons}
             formFields={formFields}
             item={item}
+            tall={true}
         />
     )
 }
