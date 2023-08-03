@@ -37,6 +37,14 @@ const AgentsPage = () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
         axios.post("/get_agents", { access_token }).then(res => {
+
+            if (res.data.status === "ERR") {
+                setError_msg(res.data.msg)
+                setHasError(true)
+                return;
+            }
+
+
             sessionStorage.setItem("agents", JSON.stringify(res.data));
             setAgents(JSON.parse(sessionStorage.getItem("agents")))
             setRefresh(false);

@@ -14,6 +14,9 @@ import AgentsPage from './pages/admin/AgentsPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AdminHomePage from './pages/admin/AdminHomePage';
 import AgentHomePage from './pages/agent/AgentHomePage';
+import axios from './axiosConfig';
+ 
+
 
 const App = () => {
     const [location, setLocation] = useState(window.location.pathname);

@@ -40,6 +40,13 @@ const PanelsPage = () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
         axios.post("/get_panels", { access_token }).then(res => {
+            
+            if (res.data.status === "ERR") {
+                setError_msg(res.data.msg)
+                setHasError(true)
+                return;
+            }
+
             sessionStorage.setItem("panels", JSON.stringify(res.data));
             setPanels(res.data);
             setRefresh(false);
