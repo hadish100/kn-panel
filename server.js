@@ -306,6 +306,25 @@ const reload_agents = async() =>
     }
 }
 
+const reset_marzban_user = async(link,username,password,vpn_name) =>
+{
+    try
+    {
+        console.log(link,username,password,vpn_name);
+        var headers = await auth_marzban(link,username,password);
+        if(headers == "ERR") return "ERR";
+        var res = await axios.post(link+"/api/user/"+vpn_name+"/reset",{headers});
+        console.log(res);
+        return "DONE";
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        return "ERR";
+    }
+}
+
 
 // --- MIDDLEWARE --- //
 
@@ -807,6 +826,39 @@ app.post("/edit_self", async (req, res) =>
         var account = await token_to_account(access_token);
         await insert_to_logs(account.id,"EDIT_SELF",`was self edited`);
         res.send("DONE");
+});
+
+app.post("/reset_user", async (req, res) =>
+{
+    const { username,access_token } = req.body;
+    var user_obj = await get_user2(username);
+    var user_id = user_obj.id;
+    var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    var corresponding_agent = await token_to_account(access_token); 
+    var old_data_limit = b2gb(user_obj.data_limit);
+
+    if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
+    else if( b2gb(user_obj.used_traffic) > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
+    else 
+    {
+        var result = await reset_marzban_user(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username);
+        
+        if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
+
+        else
+        {
+            
+           await update_user(user_id,{used_traffic:0});
+           await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data + old_data_limit)});
+           var account = await token_to_account(access_token);
+           console.log('#EEE');
+           await insert_to_logs(account.id,"RESET_USER",`reseted user ${user_obj.username}`);
+           res.send("DONE");
+        }
+        
+
+    }
+
 });
 
 
