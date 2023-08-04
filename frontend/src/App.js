@@ -52,7 +52,7 @@ const App = () => {
                 {/* Admin Routes */}
                 {isAdminPath && isLoggedIn && <Route path='/admin/home' element={<AdminHomePage setLocation={setLocation} />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/panels' element={<PanelsPage />} />}
-                {isAdminPath && isLoggedIn && <Route path='/admin/agents' element={<AgentsPage />} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setLocation={setLocation} />}
+                {isAdminPath && isLoggedIn && <Route path='/admin/agents' element={<AgentsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/settings' element={<AdminSettingsPage />} />}
                 {isAdminPath && isLoggedIn && <Route path='/admin/log' element={<AdminLogsPage />} />}
 

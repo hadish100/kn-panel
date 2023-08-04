@@ -9,6 +9,8 @@ import "../admin/AdminLogsPage.css"
 import ErrorCard from '../../components/ErrorCard';
 import axios from 'axios'
 import CircularProgress from '../../components/CircularProgress';
+import Ms3 from '../../components/form/inputs/MultiSelect3';
+import Ms4 from '../../components/form/inputs/MultiSelect4';
 
 
 const AgentLogsPage = () => {
@@ -18,8 +20,6 @@ const AgentLogsPage = () => {
     const [shouldreq,setShouldreq] = useState(true)
     const [error_msg, setError_msg] = useState("")
     const [hasError, setHasError] = useState(false)
-
-
 
     const access_token = sessionStorage.getItem("access_token")
     if(shouldreq)
@@ -39,32 +39,32 @@ const AgentLogsPage = () => {
                 set_log_is_ready(true);
                 setShouldreq(false)
             }
-
         });
     }
+
 
     return (
         <div className="admin-log-page">
             <div className="admin-log-page__filter">
-                <Search />
+                <Ms3 />
+                <Ms4 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         value={date}
                         onChange={newDate => setDate(newDate)}
                         slotProps={{ textField: { size: 'small' } }}
+                        sx={{width:'50vw'}}
                     />
                 </LocalizationProvider>
             </div>
             { !log_is_ready && <div className='loading_gif_container'> <CircularProgress /> </div> }
             { log_is_ready && <LogsList logs={logs} /> }
-       
             <ErrorCard
                 hasError={hasError}
                 setHasError={setHasError}
                 errorTitle="ERROR"
                 errorMessage={error_msg}
             />
-       
         </div>
 
     )

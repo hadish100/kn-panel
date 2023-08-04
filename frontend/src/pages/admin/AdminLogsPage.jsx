@@ -9,6 +9,8 @@ import "./AdminLogsPage.css"
 import axios from 'axios'
 import ErrorCard from '../../components/ErrorCard';
 import CircularProgress from '../../components/CircularProgress';
+import Ms3 from '../../components/form/inputs/MultiSelect3';
+import Ms4 from '../../components/form/inputs/MultiSelect4';
 
 
 
@@ -45,12 +47,14 @@ const AdminLogsPage = () => {
     return (
         <div className="admin-log-page">
             <div className="admin-log-page__filter">
-                <Search />
+                <Ms3 />
+                <Ms4 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         value={date}
                         onChange={newDate => setDate(newDate)}
                         slotProps={{ textField: { size: 'small' } }}
+                        sx={{width:'50vw'}}
                     />
                 </LocalizationProvider>
             </div>

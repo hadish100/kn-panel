@@ -16,7 +16,7 @@ import ErrorCard from '../../components/ErrorCard';
 import CircularProgress from '../../components/CircularProgress';
 
 
-const AgentsPage = ({ setIsLoggedIn, setLocation }) => {
+const AgentsPage = () => {
     const [showCreateAgent, setShowCreateAgent] = useState(false);
     const [showEditAgent, setShowEditAgent] = useState(false);
     const [error_msg, setError_msg] = useState("")
@@ -74,7 +74,6 @@ const AgentsPage = ({ setIsLoggedIn, setLocation }) => {
 
 
         else {
-            setIsLoggedIn(true)
             var access_token = res.data.access_token;
                 sessionStorage.setItem("isLoggedIn", "true");
                 sessionStorage.setItem("access_token", res.data.access_token)
@@ -84,8 +83,7 @@ const AgentsPage = ({ setIsLoggedIn, setLocation }) => {
                     var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data;
                     sessionStorage.setItem("users", JSON.stringify(users));
                     sessionStorage.setItem("agent", JSON.stringify(agent));
-                    setLocation("/agent/users");
-                    navigate('/agent/users');
+                    window.location.href = "/agent/users";
                 }
 
                 catch (err) {

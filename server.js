@@ -872,7 +872,6 @@ app.listen(5000, () => {
 
 
 
-
 // --------- FETCH USERS DATA --------- //
 
 (async () => 
