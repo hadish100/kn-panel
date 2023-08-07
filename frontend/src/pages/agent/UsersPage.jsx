@@ -16,6 +16,7 @@ import VerifyReset from '../../components/admin/VerifyReset'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
 import CircularProgress from '../../components/CircularProgress';
+import gbOrTb from "../../utils/gbOrTb"
 
 
 
@@ -257,7 +258,7 @@ const UsersPage = () => {
     return (
 
         <div className='panel_body'>
-            <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} dataUsage={agent.used_traffic + " GB"} remainingData={agent.volume + " GB"} allocableData={agent.allocatable_data + " GB"} />
+            <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} dataUsage={gbOrTb(agent.used_traffic)} remainingData={gbOrTb(agent.volume)} allocableData={gbOrTb(agent.allocatable_data)} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search items={users} setItems={setUsers} mode="3" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>

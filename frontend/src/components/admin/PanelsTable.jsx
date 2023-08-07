@@ -2,7 +2,7 @@ import React from "react"
 
 import EmptyTable from "../EmptyTable"
 import "./PanelsTable.css"
-
+import gbOrTb from "../../utils/gbOrTb"
 const show_url = (str) =>
 {
     //remove http or https from the beginning and port at the end
@@ -38,8 +38,8 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                         {item.disable ? "Disabled" : "Active"}
                                     </span>
                                 </td>
-                                <td>{item.panel_data_usage + " GB"}</td>
-                                <td>{item.panel_traffic + " GB"}</td>
+                                <td>{gbOrTb(item.panel_data_usage)}</td>
+                                <td>{gbOrTb(item.panel_traffic)}</td>
                                 <td >{item.active_users + " / " + item.total_users}</td>
                                 <td >{item.panel_user_max_count}</td>
                                 <td>{item.panel_country}</td>

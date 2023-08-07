@@ -14,6 +14,7 @@ import './PanelsPage.css'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
 import CircularProgress from '../../components/CircularProgress';
+import gbOrTb from "../../utils/gbOrTb"
 
 
 
@@ -156,7 +157,7 @@ const PanelsPage = () => {
 
     return (
         <div className='admin_panels_body'>
-            <PanelStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_panel_count} totalUsers={total_panel_count} />
+            <PanelStats dataUsage={gbOrTb(total_data_usage)} activeUsers={total_active_panel_count} totalUsers={total_panel_count} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search items={panels} setItems={setPanels} mode="1" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>

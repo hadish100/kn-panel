@@ -14,6 +14,7 @@ import './AgentsPage.css'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
 import CircularProgress from '../../components/CircularProgress';
+import gbOrTb from "../../utils/gbOrTb"
 
 
 const AgentsPage = () => {
@@ -198,7 +199,7 @@ const AgentsPage = () => {
 
     return (
         <div className='admin_panels_body'>
-            <AgentStats dataUsage={total_data_usage + " GB"} activeUsers={total_active_agent_count} totalUsers={total_agent_count} />
+            <AgentStats dataUsage={gbOrTb(total_data_usage)} activeUsers={total_active_agent_count} totalUsers={total_agent_count} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <Search items={agents} setItems={setAgents} mode="2" />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>

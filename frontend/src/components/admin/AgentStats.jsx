@@ -5,6 +5,7 @@ import LeadingIcon from "../LeadingIcon";
 import { ReactComponent as GraphBarIcon } from "../../assets/svg/graph-bar.svg"
 import { ReactComponent as UsersIcon } from "../../assets/svg/users.svg"
 
+
 const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData }) => {
     return (
         <div className="usage-stats">
