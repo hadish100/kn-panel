@@ -132,3 +132,8 @@
     display: flex;
     justify-content: center;
 }
+
+.panelUrl
+{
+    font-size:12px;
+}

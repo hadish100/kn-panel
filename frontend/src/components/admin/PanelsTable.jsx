@@ -3,6 +3,14 @@ import React from "react"
 import EmptyTable from "../EmptyTable"
 import "./PanelsTable.css"
 
+const show_url = (str) =>
+{
+    //remove http or https from the beginning and port at the end
+    str = str.replace(/^https?:\/\//, '');
+    str = str.replace(/:\d+$/, '');
+    return "(" + str + ")";
+}
+
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
     console.log(items)
     return (
@@ -24,7 +32,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                         ? <EmptyTable tableType={"panel"} colSpan={7} onCreateButton={onCreateItem} />
                         : currentItems.map((item) => (
                             <tr onClick={() => onEditItem(item)} key={item.id}>
-                                <td>{item.panel_name}</td>
+                                <td>{item.panel_name} <br></br> <span className='panelUrl' >{show_url(item.panel_url)} </span> </td>
                                 <td>
                                     <span className={`status ${item.disable ? "limited" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}

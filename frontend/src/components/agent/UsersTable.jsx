@@ -11,6 +11,14 @@ import convertData from "../../utils/file-size-util";
 import handleExpireTime from "../../utils/expire-time-util";
 import EmptyTable from "../EmptyTable";
 
+const show_url = (str) =>
+{
+    //remove http or https from the beginning and port at the end
+    str = str.replace(/^https?:\/\//, '');
+    str = str.replace(/:\d+$/, '');
+    return "(" + str + ")";
+}
+
 const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
     const [screenWidth, setScreenWidth] = useState(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
     const [expandedId, setExpandedId] = useState(null);
@@ -53,7 +61,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                 return (
                     <>
                         <tr key={key} onClick={shouldRenderTr ? undefined : () => onEditItem(item)}>
-                            <td style={{ maxWidth: "10rem" }}>{item.username}</td>
+                            <td style={{ maxWidth: "10rem" }}>{item.username} <br></br> <span className='panelUrl' >{show_url(item.corresponding_panel)} </span> </td>
                             <td>
                                 <span className={`status ${userStatus}`}>{userStatus}</span>
                                 <span className="expire-time">{expireTime}</span>

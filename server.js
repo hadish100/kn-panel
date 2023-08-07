@@ -931,7 +931,6 @@ app.listen(5000, () => {
             console.log(time + " ---> fetching " + panel.panel_url);
 
             var info_obj = await get_panel_info(panel.panel_url,panel.panel_username,panel.panel_password);
-            console.log(info_obj);
             if(info_obj == "ERR")
             {
                 console.log(time + " ===> failed to fetch " + panel.panel_url);
