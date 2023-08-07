@@ -325,6 +325,38 @@ const reset_marzban_user = async(link,username,password,vpn_name) =>
     }
 }
 
+const ping_panel = async(panel_obj) =>
+{
+    try
+    {
+        var {link,username,password} = panel_obj;
+
+        for(var i=0;i<3;i++)
+        {
+            var headers = await auth_marzban(link,username,password);
+            if(headers == "ERR")
+            {
+                console.log("cannot connect to panel " + panel_obj.panel_url + " ===> retrying (" + (i+1) + "/3)");
+                await sleep(5000);
+            }
+
+            else
+            {
+                return "OK";
+            }
+        }
+
+        console.log("cannot connect to panel " + panel_obj.panel_url + " ===> disabling");
+        await update_panel(panel_obj.id,{disable:1});
+
+    }
+
+    catch(err)
+    {
+        return "ERR";
+    }
+}
+
 
 // --- MIDDLEWARE --- //
 
@@ -501,7 +533,7 @@ app.post("/create_panel", async (req, res) =>
                                     panel_country:panel_country + (panel_countries_arr.filter(x => x == panel_country).length + 1),
                                     panel_user_max_count:parseInt(panel_user_max_count),
                                     panel_traffic:dnf(panel_traffic),
-                                    panel_data_usage:dnf(panel_info.data_usage),
+                                    panel_data_usage:dnf(panel_info.panel_data_usage),
                                     active_users:panel_info.active_users,
                                     total_users:panel_info.total_users,
                                 });
@@ -597,6 +629,20 @@ app.post("/delete_panel", async (req, res) =>
     var { access_token, panel_id } = req.body;
     var account_id = (await token_to_account(access_token)).id;
     var panel_obj = await get_panel(panel_id);
+    var agents_arr = await accounts_clct.find({is_admin:0}).toArray();
+
+    for(agent of agents_arr)
+    {
+        var cindex = agent.country.split(",").indexOf(panel_obj.panel_country);
+        if(cindex != -1)
+        {
+            var old_countries = agent.country.split(",");
+            old_countries.splice(cindex,1);
+            var new_countries = old_countries.join(",");
+            await update_account(agent.id,{country:new_countries});
+        }
+    }
+
     await panels_clct.deleteOne({id:panel_id});
     await insert_to_logs(account_id,"DELETE_PANEL",`deleted panel ${panel_obj.panel_name}`);
     res.send("DONE");
@@ -879,14 +925,17 @@ app.listen(5000, () => {
         var db_users_arr = await get_all_users();
         for(panel of panels_arr)
         {
+            if(panel.disable) continue;
             var today = new Date();
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             console.log(time + " ---> fetching " + panel.panel_url);
 
             var info_obj = await get_panel_info(panel.panel_url,panel.panel_username,panel.panel_password);
+            console.log(info_obj);
             if(info_obj == "ERR")
             {
                 console.log(time + " ===> failed to fetch " + panel.panel_url);
+                await ping_panel(panel);
                 continue;
             }
             else await update_panel(panel.id,info_obj);
