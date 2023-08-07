@@ -489,12 +489,17 @@ app.post("/create_panel", async (req, res) =>
 
 
     var panel_info = await get_panel_info(panel_url,panel_username,panel_password);
+    var available_panels = await get_panels();
+    var panel_countries_arr = available_panels.map(x => x.panel_country);
+    var panel_urls_arr = available_panels.map(x => x.panel_url);
+    var panel_names_arr = available_panels.map(x => x.panel_name);
 
 
 
     if(!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
     else if(panel_info == "ERR") res.send({status:"ERR",msg:"Failed to connect to panel"});
-    
+    else if(panel_urls_arr.includes(panel_url)) res.send({status:"ERR",msg:"panel url already exists"});
+    else if(panel_names_arr.includes(panel_name)) res.send({status:"ERR",msg:"panel name already exists"});
     else 
     {
         await insert_to_panels({    id:uid(),
@@ -503,7 +508,7 @@ app.post("/create_panel", async (req, res) =>
                                     panel_username,
                                     panel_password,
                                     panel_url,
-                                    panel_country,
+                                    panel_country:panel_country + (panel_countries_arr.filter(x => x == panel_country).length + 1),
                                     panel_user_max_count:parseInt(panel_user_max_count),
                                     panel_traffic:dnf(panel_traffic),
                                     panel_data_usage:dnf(panel_info.data_usage),
