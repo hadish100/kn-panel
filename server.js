@@ -951,9 +951,11 @@ app.listen(5000, () => {
             for(marzban_user of marzban_users)
             {
                 var user = db_users_arr.find(user => user.username == marzban_user.username);
-
+                
                 if(user)
                 {
+                    console.log(user);
+                    console.log(marzban_user);
                     if(user.status == "active" && marzban_user.status == "disabled") await update_user(user.id,{status:"disable",disable:1});
                     else if(user.status == "disable" && marzban_user.status == "active") await update_user(user.id,{status:"active",disable:0});
 
@@ -961,7 +963,7 @@ app.listen(5000, () => {
                     if(user.data_limit != marzban_user.data_limit) await update_user(user.id,{data_limit:marzban_user.data_limit});
                     if(user.used_traffic != marzban_user.used_traffic) 
                     {
-                        var agent = await get_account(user.corresponding_agent_id);
+                        var agent = await get_account(user.agent_id);
                         agent.volume -= marzban_user.used_traffic - user.used_traffic;
                         await update_account(agent.id,{volume:dnf(agent.volume)});
                         await update_user(user.id,{used_traffic:marzban_user.used_traffic});
