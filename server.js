@@ -359,16 +359,6 @@ app.post("/get_agents", async (req, res) =>
 app.post("/get_panels", async (req, res) => 
 {
     var obj_arr = await panels_clct.find({}).toArray();
-
-    for(obj of obj_arr)
-    {
-        var {panel_url,panel_username,panel_password} = obj;
-        var info_obj = await get_panel_info(panel_url,panel_username,panel_password);
-        if(info_obj == "ERR") continue;
-        else await update_panel(obj.id,info_obj);
-    }
-
-    obj_arr = await panels_clct.find({}).toArray();
     res.send(obj_arr);
 });
 
@@ -892,6 +882,15 @@ app.listen(5000, () => {
             var today = new Date();
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             console.log(time + " ---> fetching " + panel.panel_url);
+
+            var info_obj = await get_panel_info(panel.panel_url,panel.panel_username,panel.panel_password);
+            if(info_obj == "ERR")
+            {
+                console.log(time + " ===> failed to fetch " + panel.panel_url);
+                continue;
+            }
+            else await update_panel(panel.id,info_obj);
+
             var marzban_users = await get_all_marzban_users(panel.panel_url,panel.panel_username,panel.panel_password);
             if(marzban_users == "ERR") 
             {
