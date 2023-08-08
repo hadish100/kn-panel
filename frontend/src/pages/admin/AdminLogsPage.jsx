@@ -53,6 +53,7 @@ const AdminLogsPage = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             value={startDate}
+                            label="from"
                             onChange={newDate => setStartDate(newDate)}
                             slotProps={{ textField: { size: 'small' } }}
                             style={{ flexGrow: 1, width: '100%' }}
@@ -61,6 +62,7 @@ const AdminLogsPage = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             value={endDate}
+                            label="to"
                             onChange={newDate => setEndDate(newDate)}
                             slotProps={{ textField: { size: 'small' } }}
                             style={{ flexGrow: 1, width: '100%' }}
