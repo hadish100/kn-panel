@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect  } from "react";
 
 import "./Search.css";
 import { ReactComponent as XMarkIcon } from "../assets/svg/x-mark.svg";
@@ -10,14 +10,15 @@ const Search = ({items,setItems,mode}) => {
     const property = mode=="1"?"panel_name":mode=="2"?"agent_name":"username";
 
 
+    useEffect(() => {if (search === "") setItems(JSON.parse(sessionStorage.getItem(item_name)));},[search]);
+
     const handleSearch = (e) => {
-        var val = e.target.value; 
+        var val = e.target.value;
         if(!val) setItems(JSON.parse(sessionStorage.getItem(item_name)));
         else
         {
-            
-            setItems(items.filter((item) => {
-                return item[property].toLowerCase().startsWith(val.toLowerCase())
+            setItems((JSON.parse(sessionStorage.getItem(item_name))).filter((item) => {
+                return item[property].toLowerCase().includes(val.toLowerCase())
             }));
         }
 

@@ -7,7 +7,7 @@ import { ReactComponent as DataCenterIcon } from "../../assets/svg/data-center.s
 import { ReactComponent as GraphBarIcon } from "../../assets/svg/graph-bar.svg"
 import { ReactComponent as UsersIcon } from "../../assets/svg/users.svg"
 
-const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData }) => {
+const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData, remainingUsers }) => {
     return (
         <div className="usage-stats">
             <div className="flex">
@@ -16,7 +16,7 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                         <UsersIcon />
                     </LeadingIcon>
                     <div className="usage-stats__item__label">Active Users</div>
-                    <div className="usage-stats__item__value"><span>{activeUsers}</span> / {totalUsers}</div>
+                    <div className="usage-stats__item__value"><span>{activeUsers}</span> / {totalUsers}  ({remainingUsers} left)</div>
                 </div>
                 <div className="usage-stats__item">
                     <LeadingIcon>
