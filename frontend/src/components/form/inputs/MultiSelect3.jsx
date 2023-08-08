@@ -18,7 +18,7 @@ const MenuProps = {
   },
 };
 
-var actions_array = ["LOGIN","CREATE_USER","EDIT_USER","DELETE_USER","CREATE_PANEL","EDIT_PANEL","DELETE_PANEL","EDIT_SELF","RESET_USER","CREATE_AGENT","EDIT_AGENT","DELETE_AGENT","ENABLE_USER","ENABLE_AGENT","ENABLE_PANEL","DISABLE_USER","DISABLE_PANEL","DISABLE_AGENT"]
+var actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT"]
 
 export default function MultipleSelectCheckmarks() {
 
@@ -38,27 +38,25 @@ export default function MultipleSelectCheckmarks() {
   };
 
   return (
-    <div>
-      <FormControl sx={{ m: 0, width:'25vw',fontSize:10 }} >
-        <InputLabel id="demo-multiple-checkbox-label">ACTIONS</InputLabel>
-        <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
-          multiple
-          value={personName}
-          onChange={handleChange} 
-          input={<OutlinedInput label="ACTIONS"  />}
-          renderValue={(selected) => selected.join(',')}
-          MenuProps={MenuProps}
-        >
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl sx={{ m: 0, fontSize: 10 }} >
+      <InputLabel id="demo-multiple-checkbox-label">ACTIONS</InputLabel>
+      <Select
+        labelId="demo-multiple-checkbox-label"
+        id="demo-multiple-checkbox"
+        multiple
+        value={personName}
+        onChange={handleChange}
+        input={<OutlinedInput label="ACTIONS" />}
+        renderValue={(selected) => selected.join(',')}
+        MenuProps={MenuProps}
+      >
+        {names.map((name) => (
+          <MenuItem key={name} value={name}>
+            <Checkbox checked={personName.indexOf(name) > -1} />
+            <ListItemText primary={name} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }

@@ -1,5 +1,6 @@
 .admin-log-page__filter {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
@@ -26,20 +27,12 @@
     border-radius: var(--border-radius-md);
     background-color: #F9FAFB;
     padding: 1rem;
+    gap: .5rem;
 }
 
 .log__text {
-    display: flex;
     font-family: InterMedium;
-    justify-content: space-between;
-    width: 100%;
     color: var(--dark-clr-300);
-
-    text-size-adjust: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    transition: max-height .5s ease-in-out;
 }
 
 .log__date {
@@ -48,17 +41,12 @@
     color: var(--dark-clr-100);
 }
 
-.log__text .chevron-icon svg {
-    width: 1rem;
-    height: 1rem;
-    fill: var(--dark-clr-100);
-    transform: rotate(0deg);
-    transition: transform 0.2s ease-in-out;
+.admin-log-page__filter .MuiInputBase-root {
+    width: 100%;
 }
 
-.log__text.expanded .chevron-icon svg {
-    transform: rotate(180deg);
-
+.admin-log-page__filter .MuiFormControl-root {
+    width: 100%;
 }
 
 /* @media (max-width: 768px) {
@@ -71,49 +59,44 @@
     }
 } */
 
-.exit-account
-{
-    width:150px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    align-content:center;
-    flex-direction:row;
-    font-size:20px;
+.exit-account {
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-direction: row;
+    font-size: 20px;
     cursor: pointer;
     background-color: #F9FAFB;
     border: 1px solid #d2d2d4;
-    padding:5px;
-    border-radius:0.875rem;
-    transition:all 0.2s;
+    padding: 5px;
+    border-radius: 0.875rem;
+    transition: all 0.2s;
 }
 
-.exit-account:hover
-{
+.exit-account:hover {
     background-color: #ededee;
 }
 
-.exit-account img
-{
-    opacity:1;
-    background:transparent;
-    width:40px;
-    height:40px;
+.exit-account img {
+    opacity: 1;
+    background: transparent;
+    width: 40px;
+    height: 40px;
 }
 
-.loading_gif
-{
-    width:100px;
-    height:100px;
-    background:transparent;
-    opacity:1;
+.loading_gif {
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    opacity: 1;
 }
 
-.loading_gif_container
-{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    align-content:center;
-    flex-direction:row;
+.loading_gif_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-direction: row;
 }
