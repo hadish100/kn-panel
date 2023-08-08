@@ -28,8 +28,6 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
         pageNumbers.push(i);
     }
 
-    console.log(currentPage, totalPages, pageNumbers);
-
     return (
         <div className="pagination">
             <Button
@@ -80,7 +78,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
             <Button
                 className={`outlined pagination-right-btn ${currentPage >= totalPages ? "disabled" : ""}`}
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                disabled={currentPage >= totalPages}
             >
                 <span style={{ marginRight: "5px", fontWeight: "600", fontFamily: "Inter" }}>Next</span>
                 <ArrowRightIcon />

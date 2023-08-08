@@ -1,59 +1,58 @@
-const express = require('express');const app = express();
+const express = require('express'); const app = express();
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
 
-var accounts_clct,panels_clct,users_clct,logs_clct;
+var accounts_clct, panels_clct, users_clct, logs_clct;
 
 const { uid,
-        uidv2,
-        sleep,
-        insert_to_accounts,
-        get_accounts,
-        get_account,
-        update_account,
-        insert_to_panels,
-        get_panels,
-        get_panel,
-        update_panel,
-        insert_to_users,
-        get_users,
-        get_all_users,
-        get_user1,
-        get_user2,
-        update_user,
-        insert_to_logs,
-        get_logs,
-        b2gb,
-        gb2b,
-        dnf,
-        add_token,
-        token_to_account,
-        auth_marzban,
-        get_panel_info,
-        make_vpn,
-        delete_vpn,
-        disable_vpn,
-        enable_vpn,
-        edit_vpn,
-        get_marzban_user,
-        get_all_marzban_users,
-        reload_agents,
-        reset_marzban_user,
-        ping_panel,
-        connect_to_db
-       } = require("./utils");
+    uidv2,
+    sleep,
+    insert_to_accounts,
+    get_accounts,
+    get_account,
+    update_account,
+    insert_to_panels,
+    get_panels,
+    get_panel,
+    update_panel,
+    insert_to_users,
+    get_users,
+    get_all_users,
+    get_user1,
+    get_user2,
+    update_user,
+    insert_to_logs,
+    get_logs,
+    b2gb,
+    gb2b,
+    dnf,
+    add_token,
+    token_to_account,
+    auth_marzban,
+    get_panel_info,
+    make_vpn,
+    delete_vpn,
+    disable_vpn,
+    enable_vpn,
+    edit_vpn,
+    get_marzban_user,
+    get_all_marzban_users,
+    reload_agents,
+    reset_marzban_user,
+    ping_panel,
+    connect_to_db
+} = require("./utils");
 
 
 app.use(express.json());
 app.use(auth_middleware);
 
-connect_to_db().then(res =>
-{
+connect_to_db().then(res => {
     accounts_clct = res.accounts_clct;
     panels_clct = res.panels_clct;
     users_clct = res.users_clct;
-    logs_clct = res. logs_clct;
+    logs_clct = res.logs_clct;
 });
 
 
@@ -62,8 +61,7 @@ connect_to_db().then(res =>
 
 // --- MIDDLEWARE --- //
 
-async function auth_middleware(req, res, next)
-{
+async function auth_middleware(req, res, next) {
 
     // var accounts = await get_accounts();
     // accounts.forEach(async (account) => 
@@ -73,31 +71,28 @@ async function auth_middleware(req, res, next)
     //     await update_account(account.id,{tokens:new_tokens});
     // });
 
-    if(req.url == "/login") return next();
-    var {access_token} = req.body;
+    if (req.url == "/login") return next();
+    var { access_token } = req.body;
     var account = await token_to_account(access_token);
-    if(!account) return res.send({status:"ERR",msg:'Token is either expired or invalid'});
+    if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
     else return next();
 }
 
 // --- ENDPOINTS --- //
 
-app.post("/get_agents", async (req, res) => 
-{
+app.post("/get_agents", async (req, res) => {
     await reload_agents();
-    var obj_arr = await accounts_clct.find({is_admin:0}).toArray();
+    var obj_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
 
     res.send(obj_arr);
 });
 
-app.post("/get_panels", async (req, res) => 
-{
+app.post("/get_panels", async (req, res) => {
     var obj_arr = await panels_clct.find({}).toArray();
     res.send(obj_arr);
 });
 
-app.post("/get_users", async (req, res) => 
-{
+app.post("/get_users", async (req, res) => {
     var { access_token } = req.body;
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
@@ -106,114 +101,107 @@ app.post("/get_users", async (req, res) =>
     res.send(obj_arr);
 });
 
-app.post("/get_agent", async (req, res) => 
-{
+app.post("/get_agent", async (req, res) => {
     var { access_token } = req.body;
     var agent = await token_to_account(access_token);
     res.send(agent);
 });
 
-app.post("/get_agent_logs", async (req, res) => 
-{
-    const { access_token } = req.body;
+app.post("/get_agent_logs", async (req, res) => {
+    const { access_token, number_of_rows, current_page } = req.body;
     var obj = await get_logs();
     var account_id = (await token_to_account(access_token)).id;
-    obj.sort((a,b) => b.time - a.time);
+    obj.sort((a, b) => b.time - a.time);
     obj = obj.filter(x => x.account_id == account_id);
-    obj = obj.slice(0,Math.min(obj.length,10));
-    res.send(obj);
+    var total_pages = Math.ceil(obj.length / number_of_rows);
+    obj = obj.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
+    res.send({ obj, total_pages });
 });
 
-app.post("/get_admin_logs", async (req, res) => 
-{
+app.post("/get_admin_logs", async (req, res) => {
     var obj = await get_logs();
-    obj.sort((a,b) => b.time - a.time);
-    obj = obj.slice(0,Math.min(obj.length,10));
+    obj.sort((a, b) => b.time - a.time);
+    obj = obj.slice(0, Math.min(obj.length, 10));
     res.send(obj);
 });
 
-app.post("/login", async (req, res) => 
-{
+app.post("/login", async (req, res) => {
 
-    const {username,password} = req.body;
+    const { username, password } = req.body;
     const accounts = await get_accounts();
     const account = accounts.filter(x => x.username == username && x.password == password)[0];
 
-    if(account)
-    {
+    if (account) {
         var access_token = await add_token(account.id);
-        await insert_to_logs(account.id,"LOGIN","logged in");
-        res.send({is_admin:account.is_admin,access_token});
+        await insert_to_logs(account.id, "LOGIN", "logged in");
+        res.send({ is_admin: account.is_admin, access_token });
     }
 
-    else
-    {
-        res.status(401).send({message: 'NOT FOUND'});
+    else {
+        res.status(401).send({ message: 'NOT FOUND' });
     }
 
 });
 
-app.post("/create_agent", async (req, res) => 
-{
-    
+app.post("/create_agent", async (req, res) => {
+
 
     const { name,
+        username,
+        password,
+        volume,
+        min_vol,
+        max_users,
+        max_days,
+        prefix,
+        country,
+        access_token } = req.body;
+
+
+
+    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
+
+    else {
+        await insert_to_accounts({
+            id: uid(),
+            is_admin: 0,
+            disable: 0,
+            name,
             username,
             password,
-            volume,
-            min_vol,
-            max_users,
-            max_days,
+            volume: gb2b(volume),
+            allocatable_data: dnf(volume),
+            min_vol: dnf(min_vol),
+            max_users: parseInt(max_users),
+            max_days: parseInt(max_days),
             prefix,
             country,
-            access_token } = req.body;
-
-
-
-    if(!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({status:"ERR",msg:"fill all of the inputs"})
-    
-    else 
-    {
-        await insert_to_accounts({  id:uid(),
-                                    is_admin:0,
-                                    disable:0,
-                                    name,
-                                    username,
-                                    password,
-                                    volume:gb2b(volume),
-                                    allocatable_data:dnf(volume),
-                                    min_vol:dnf(min_vol),
-                                    max_users:parseInt(max_users),
-                                    max_days:parseInt(max_days),
-                                    prefix,
-                                    country,
-                                    used_traffic:0.00,
-                                    active_users:0,
-                                    total_users:0,
-                                    tokens:[] 
-                                });
+            used_traffic: 0.00,
+            active_users: 0,
+            total_users: 0,
+            tokens: []
+        });
 
         var account_id = (await token_to_account(access_token)).id;
-        await insert_to_logs(account_id,"CREATE_AGENT",`created agent ${name}`)
+        await insert_to_logs(account_id, "CREATE_AGENT", `created agent ${name}`)
 
         res.send("DONE");
     }
 
 });
 
-app.post("/create_panel", async (req, res) => 
-{
+app.post("/create_panel", async (req, res) => {
     const { panel_name,
-            panel_url,
-            panel_username,
-            panel_password,
-            panel_country,
-            panel_user_max_count,
-            panel_traffic,
-            access_token } = req.body;
+        panel_url,
+        panel_username,
+        panel_password,
+        panel_country,
+        panel_user_max_count,
+        panel_traffic,
+        access_token } = req.body;
 
 
-    var panel_info = await get_panel_info(panel_url,panel_username,panel_password);
+    var panel_info = await get_panel_info(panel_url, panel_username, panel_password);
     var available_panels = await get_panels();
     var panel_countries_arr = available_panels.map(x => x.panel_country);
     var panel_urls_arr = available_panels.map(x => x.panel_url);
@@ -221,384 +209,359 @@ app.post("/create_panel", async (req, res) =>
 
 
 
-    if(!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
-    else if(panel_info == "ERR") res.send({status:"ERR",msg:"Failed to connect to panel"});
-    else if(panel_urls_arr.includes(panel_url)) res.send({status:"ERR",msg:"panel url already exists"});
-    else if(panel_names_arr.includes(panel_name)) res.send({status:"ERR",msg:"panel name already exists"});
-    else 
-    {
-        await insert_to_panels({    id:uid(),
-                                    disable:0,
-                                    panel_name,
-                                    panel_username,
-                                    panel_password,
-                                    panel_url,
-                                    panel_country:panel_country + (panel_countries_arr.filter(x => x == panel_country).length + 1),
-                                    panel_user_max_count:parseInt(panel_user_max_count),
-                                    panel_traffic:dnf(panel_traffic),
-                                    panel_data_usage:dnf(panel_info.panel_data_usage),
-                                    active_users:panel_info.active_users,
-                                    total_users:panel_info.total_users,
-                                });
+    if (!panel_name || !panel_url || !panel_username || !panel_password || !panel_country || !panel_user_max_count || !panel_traffic) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    else if (panel_info == "ERR") res.send({ status: "ERR", msg: "Failed to connect to panel" });
+    else if (panel_urls_arr.includes(panel_url)) res.send({ status: "ERR", msg: "panel url already exists" });
+    else if (panel_names_arr.includes(panel_name)) res.send({ status: "ERR", msg: "panel name already exists" });
+    else {
+        await insert_to_panels({
+            id: uid(),
+            disable: 0,
+            panel_name,
+            panel_username,
+            panel_password,
+            panel_url,
+            panel_country: panel_country + (panel_countries_arr.filter(x => x == panel_country).length + 1),
+            panel_user_max_count: parseInt(panel_user_max_count),
+            panel_traffic: dnf(panel_traffic),
+            panel_data_usage: dnf(panel_info.panel_data_usage),
+            active_users: panel_info.active_users,
+            total_users: panel_info.total_users,
+        });
 
         var account_id = (await token_to_account(access_token)).id;
-        await insert_to_logs(account_id,"CREATE_PANEL",`created panel ${panel_name}`);
+        await insert_to_logs(account_id, "CREATE_PANEL", `created panel ${panel_name}`);
 
         res.send("DONE");
     }
 });
 
-app.post("/create_user", async (req, res) => 
-{
+app.post("/create_user", async (req, res) => {
     const { username,
-            expire, 
-            data_limit,
-            country,
-            access_token } = req.body;
+        expire,
+        data_limit,
+        country,
+        access_token } = req.body;
 
-    if( !username || !expire || !data_limit || !country ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    if (!username || !expire || !data_limit || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
 
-     var corresponding_agent = await token_to_account(access_token); 
-     var agent_id = corresponding_agent.id;
-     var all_usernames = [...(await get_all_users()).map( x => x.username )];
-     var panels_arr = await get_panels();
-     var selected_panel = panels_arr.filter(x => x.panel_country == country && (x.active_users < x.panel_user_max_count) && (x.disable == 0))[0];
-     var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
-     
-    if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
-    else if(data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
-    else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
-    else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
-    else if(corresponding_agent.max_users <=  agent_user_count) res.send({status:"ERR",msg:"maximum allowed users is " + corresponding_agent.max_users} )
-    else if(all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({status:"ERR",msg:"username already exists"})
-    else if(!selected_panel) res.send({status:"ERR",msg:"no available server"});
-    else 
-    {
+    var corresponding_agent = await token_to_account(access_token);
+    var agent_id = corresponding_agent.id;
+    var all_usernames = [...(await get_all_users()).map(x => x.username)];
+    var panels_arr = await get_panels();
+    var selected_panel = panels_arr.filter(x => x.panel_country == country && (x.active_users < x.panel_user_max_count) && (x.disable == 0))[0];
+    var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
+
+    if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if (data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
+    else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
+    else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
+    else if (all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({ status: "ERR", msg: "username already exists" })
+    else if (!selected_panel) res.send({ status: "ERR", msg: "no available server" });
+    else {
 
         var mv = await make_vpn(selected_panel.panel_url,
-                                selected_panel.panel_username,
-                                selected_panel.panel_password,
-                                corresponding_agent.prefix + "_" + username,
-                                gb2b(data_limit),
-                                Math.floor(Date.now()/1000) + expire*24*60*60)
+            selected_panel.panel_username,
+            selected_panel.panel_password,
+            corresponding_agent.prefix + "_" + username,
+            gb2b(data_limit),
+            Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60)
 
-        if(mv == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
+        if (mv == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
 
-        else
-        {
-            await insert_to_users({     id:uid(),
-                                        agent_id,
-                                        status:"active",
-                                        disable:0,
-                                        username:corresponding_agent.prefix + "_" + username,
-                                        expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
-                                        data_limit: gb2b(data_limit),
-                                        used_traffic:0.00,
-                                        country,
-                                        corresponding_panel_id:selected_panel.id,
-                                        corresponding_panel:selected_panel.panel_url,
-                                        subscription_url:selected_panel.panel_url+mv.subscription_url,
-                                        links:mv.links
-                                   });
+        else {
+            await insert_to_users({
+                id: uid(),
+                agent_id,
+                status: "active",
+                disable: 0,
+                username: corresponding_agent.prefix + "_" + username,
+                expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
+                data_limit: gb2b(data_limit),
+                used_traffic: 0.00,
+                country,
+                corresponding_panel_id: selected_panel.id,
+                corresponding_panel: selected_panel.panel_url,
+                subscription_url: selected_panel.panel_url + mv.subscription_url,
+                links: mv.links
+            });
 
-            await update_account(agent_id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit)});
+            await update_account(agent_id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit) });
 
-            await insert_to_logs(agent_id,"CREATE_USER",`created user ${username} with ${data_limit} GB data and ${expire} days of expire time`);
+            await insert_to_logs(agent_id, "CREATE_USER", `created user ${username} with ${data_limit} GB data and ${expire} days of expire time`);
 
-             res.send("DONE");
+            res.send("DONE");
         }
 
 
 
-        
+
     }
 
 
 
 });
 
-app.post("/delete_agent", async (req, res) => 
-{
+app.post("/delete_agent", async (req, res) => {
     var { access_token, agent_id } = req.body;
     var account_id = (await token_to_account(access_token)).id;
     var agent_obj = await get_account(agent_id);
-    await accounts_clct.deleteOne({id:agent_id});
-    await insert_to_logs(account_id,"DELETE_AGENT",`deleted agent ${agent_obj.username}`);
+    await accounts_clct.deleteOne({ id: agent_id });
+    await insert_to_logs(account_id, "DELETE_AGENT", `deleted agent ${agent_obj.username}`);
     res.send("DONE");
 });
 
-app.post("/delete_panel", async (req, res) => 
-{
+app.post("/delete_panel", async (req, res) => {
     var { access_token, panel_id } = req.body;
     var account_id = (await token_to_account(access_token)).id;
     var panel_obj = await get_panel(panel_id);
-    var agents_arr = await accounts_clct.find({is_admin:0}).toArray();
+    var agents_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
 
-    for(agent of agents_arr)
-    {
+    for (agent of agents_arr) {
         var cindex = agent.country.split(",").indexOf(panel_obj.panel_country);
-        if(cindex != -1)
-        {
+        if (cindex != -1) {
             var old_countries = agent.country.split(",");
-            old_countries.splice(cindex,1);
+            old_countries.splice(cindex, 1);
             var new_countries = old_countries.join(",");
-            await update_account(agent.id,{country:new_countries});
+            await update_account(agent.id, { country: new_countries });
         }
     }
 
-    await panels_clct.deleteOne({id:panel_id});
-    await insert_to_logs(account_id,"DELETE_PANEL",`deleted panel ${panel_obj.panel_name}`);
+    await panels_clct.deleteOne({ id: panel_id });
+    await insert_to_logs(account_id, "DELETE_PANEL", `deleted panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
-app.post("/delete_user", async (req, res) => 
-{
+app.post("/delete_user", async (req, res) => {
     var { access_token, username } = req.body;
     var user_obj = await get_user2(username);
     var agent_obj = await get_account(user_obj.agent_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
-    var result = await delete_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,username);
-    if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
-    else
-    {
-        await update_account(agent_obj.id,{allocatable_data:dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic))});
-        await users_clct.deleteOne({username});
-        await insert_to_logs(agent_obj.id,"DELETE_USER",`deleted user ${username}`);
+    var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
+    if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
+    else {
+        await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
+        await users_clct.deleteOne({ username });
+        await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user ${username}`);
         res.send("DONE");
     }
 
 });
 
-app.post("/disable_panel", async (req, res) => 
-{
+app.post("/disable_panel", async (req, res) => {
     var { access_token, panel_id } = req.body;
-    await update_panel(panel_id,{disable:1});
+    await update_panel(panel_id, { disable: 1 });
     var panel_obj = await get_panel(panel_id);
     var account_id = (await token_to_account(access_token)).id;
-    await insert_to_logs(account_id,"DISABLE_PANEL",`disabled panel ${panel_obj.panel_name}`);
+    await insert_to_logs(account_id, "DISABLE_PANEL", `disabled panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
-app.post("/disable_agent", async (req, res) => 
-{
+app.post("/disable_agent", async (req, res) => {
     var { access_token, agent_id } = req.body;
-    await update_account(agent_id,{disable:1});
+    await update_account(agent_id, { disable: 1 });
     var agent_obj = await get_account(agent_id);
     var account_id = (await token_to_account(access_token)).id;
-    await insert_to_logs(account_id,"DISABLE_AGENT",`disabled agent ${agent_obj.username}`);
+    await insert_to_logs(account_id, "DISABLE_AGENT", `disabled agent ${agent_obj.username}`);
     res.send("DONE");
 });
 
-app.post("/disable_user", async (req, res) => 
-{
+app.post("/disable_user", async (req, res) => {
     var { access_token, user_id } = req.body;
     var user_obj = await get_user1(user_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
-    var result = await disable_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username);
-    if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
-    else
-    {
-        await update_user(user_id,{status:"disable",disable:1});
+    var result = await disable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+    if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
+    else {
+        await update_user(user_id, { status: "disable", disable: 1 });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id,"DISABLE_USER",`disabled user ${user_obj.username}`);
+        await insert_to_logs(account.id, "DISABLE_USER", `disabled user ${user_obj.username}`);
         res.send("DONE");
     }
 });
 
-app.post("/enable_agent", async (req, res) => 
-{
+app.post("/enable_agent", async (req, res) => {
     var { access_token, agent_id } = req.body;
-    await update_account(agent_id,{disable:0});
+    await update_account(agent_id, { disable: 0 });
     var account = await token_to_account(access_token);
     var agent_obj = await get_account(agent_id);
-    await insert_to_logs(account.id,"ENABLE_AGENT",`enabled agent ${agent_obj.username}`);
+    await insert_to_logs(account.id, "ENABLE_AGENT", `enabled agent ${agent_obj.username}`);
     res.send("DONE");
 });
 
-app.post("/enable_panel", async (req, res) => 
-{
+app.post("/enable_panel", async (req, res) => {
     var { access_token, panel_id } = req.body;
-    await update_panel(panel_id,{disable:0});
+    await update_panel(panel_id, { disable: 0 });
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(panel_id);
-    await insert_to_logs(account.id,"ENABLE_PANEL",`enabled panel ${panel_obj.panel_name}`);
+    await insert_to_logs(account.id, "ENABLE_PANEL", `enabled panel ${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
-app.post("/enable_user", async (req, res) => 
-{
+app.post("/enable_user", async (req, res) => {
     var { access_token, user_id } = req.body;
     var user_obj = await get_user1(user_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
-    var result = await enable_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username);
-    if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
-    else
-    {
-        await update_user(user_id,{status:"active",disable:0});
+    var result = await enable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+    if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
+    else {
+        await update_user(user_id, { status: "active", disable: 0 });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id,"ENABLE_USER",`enabled user ${user_obj.username}`);
+        await insert_to_logs(account.id, "ENABLE_USER", `enabled user ${user_obj.username}`);
         res.send("DONE");
     }
 });
 
-app.post("/edit_agent", async (req, res) => 
-{
+app.post("/edit_agent", async (req, res) => {
     const { agent_id,
-            name,
-            username,
-            password,
-            volume,
-            min_vol,
-            max_users,
-            max_days,
-            prefix,
-            country,
-            access_token } = req.body;
+        name,
+        username,
+        password,
+        volume,
+        min_vol,
+        max_users,
+        max_days,
+        prefix,
+        country,
+        access_token } = req.body;
 
 
-    if(!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({status:"ERR",msg:"fill all of the inputs"})
-    
-    else 
-    {
+    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
+
+    else {
         var agent = await get_account(agent_id);
         var old_volume = agent.volume;
         var old_alloc = agent.allocatable_data;
 
-        await update_account(agent_id,{ name,
-                                        username,
-                                        password,
-                                        volume:gb2b(volume),
-                                        allocatable_data:dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),       
-                                        min_vol:dnf(min_vol),
-                                        max_users:parseInt(max_users),
-                                        max_days:parseInt(max_days),
-                                        prefix,
-                                        country
-                                      });
+        await update_account(agent_id, {
+            name,
+            username,
+            password,
+            volume: gb2b(volume),
+            allocatable_data: dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),
+            min_vol: dnf(min_vol),
+            max_users: parseInt(max_users),
+            max_days: parseInt(max_days),
+            prefix,
+            country
+        });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id,"EDIT_AGENT",`edited agent ${name}`);
+        await insert_to_logs(account.id, "EDIT_AGENT", `edited agent ${name}`);
         res.send("DONE");
     }
 
 
 });
 
-app.post("/edit_panel", async (req, res) => 
-{
+app.post("/edit_panel", async (req, res) => {
     const { panel_id,
+        panel_name,
+        panel_username,
+        panel_url,
+        panel_password,
+        panel_user_max_count,
+        panel_traffic,
+        access_token } = req.body;
+
+
+
+    var panel_info = await get_panel_info(panel_url, panel_username, panel_password);
+
+
+    if (!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_traffic) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    else if (panel_info == "ERR") res.send({ status: "ERR", msg: "Failed to connect to panel" });
+
+    else {
+        await update_panel(panel_id, {
             panel_name,
             panel_username,
-            panel_url,
             panel_password,
-            panel_user_max_count,
-            panel_traffic,
-            access_token } = req.body;
-
-
-
-    var panel_info = await get_panel_info(panel_url,panel_username,panel_password);
-
-
-    if(!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_traffic ) res.send({status:"ERR",msg:"fill all of the inputs"})
-    else if(panel_info == "ERR") res.send({status:"ERR",msg:"Failed to connect to panel"});
-
-    else
-    { 
-        await update_panel(panel_id,{panel_name,
-                                     panel_username,
-                                     panel_password,
-                                     panel_user_max_count:parseInt(panel_user_max_count),
-                                     panel_traffic:dnf(panel_traffic),
-                                    });
+            panel_user_max_count: parseInt(panel_user_max_count),
+            panel_traffic: dnf(panel_traffic),
+        });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id,"EDIT_PANEL",`edited panel ${panel_name}`);
+        await insert_to_logs(account.id, "EDIT_PANEL", `edited panel ${panel_name}`);
         res.send("DONE");
     }
 
 });
 
-app.post("/edit_user", async (req, res) => 
-{
-        const { user_id,
-                expire, 
-                data_limit,
-                country,
-                access_token } = req.body;
+app.post("/edit_user", async (req, res) => {
+    const { user_id,
+        expire,
+        data_limit,
+        country,
+        access_token } = req.body;
 
-    if( !user_id || !expire || !data_limit || !country ) res.send({status:"ERR",msg:"fill all of the inputs"})
+    if (!user_id || !expire || !data_limit || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
 
     var user_obj = await get_user1(user_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
-    var corresponding_agent = await token_to_account(access_token); 
+    var corresponding_agent = await token_to_account(access_token);
     var old_data_limit = b2gb(user_obj.data_limit);
 
-    if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
-    else if(data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
-    else if(expire > corresponding_agent.max_days) res.send({status:"ERR",msg:"maximum allowed days is " + corresponding_agent.max_days})
-    else if(corresponding_agent.min_vol > data_limit) res.send({status:"ERR",msg:"minimum allowed data is " + corresponding_agent.min_vol})
-    else 
-    {
-        var result = await edit_vpn(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username,data_limit*((2**10)**3),Math.floor(Date.now()/1000) + expire*24*60*60);
-        
-        if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
+    if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if (data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
+    else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
+    else {
+        var result = await edit_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username, data_limit * ((2 ** 10) ** 3), Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60);
 
-        else
-        {
-            
-            await update_user(user_id,{    
-                                            expire: Math.floor(Date.now()/1000) + expire*24*60*60,  
-                                            data_limit: data_limit*((2**10)**3),
-                                       });
-        
-           await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit)});
+        if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
+
+        else {
+
+            await update_user(user_id, {
+                expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
+                data_limit: data_limit * ((2 ** 10) ** 3),
+            });
+
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);
-            await insert_to_logs(account.id,"EDIT_USER",`edited user ${user_obj.username}`);
+            await insert_to_logs(account.id, "EDIT_USER", `edited user ${user_obj.username}`);
             res.send("DONE");
         }
-        
+
 
     }
 
 
 });
 
-app.post("/edit_self", async (req, res) => 
-{
-        const { username,password,access_token } = req.body;
-        var account_id = (await token_to_account(access_token)).id;
-        await update_account(account_id,{username,password});
-        var account = await token_to_account(access_token);
-        await insert_to_logs(account.id,"EDIT_SELF",`was self edited`);
-        res.send("DONE");
+app.post("/edit_self", async (req, res) => {
+    const { username, password, access_token } = req.body;
+    var account_id = (await token_to_account(access_token)).id;
+    await update_account(account_id, { username, password });
+    var account = await token_to_account(access_token);
+    await insert_to_logs(account.id, "EDIT_SELF", `was self edited`);
+    res.send("DONE");
 });
 
-app.post("/reset_user", async (req, res) =>
-{
-    const { username,access_token } = req.body;
+app.post("/reset_user", async (req, res) => {
+    const { username, access_token } = req.body;
     var user_obj = await get_user2(username);
     var user_id = user_obj.id;
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
-    var corresponding_agent = await token_to_account(access_token); 
+    var corresponding_agent = await token_to_account(access_token);
     var old_data_limit = b2gb(user_obj.data_limit);
 
-    if(corresponding_agent.disable) res.send({status:"ERR",msg:"your account is disabled"})   
-    else if( b2gb(user_obj.used_traffic) > corresponding_agent.allocatable_data) res.send({status:"ERR",msg:"not enough allocatable data"})
-    else 
-    {
-        var result = await reset_marzban_user(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username);
-        
-        if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"});
+    if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if (b2gb(user_obj.used_traffic) > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else {
+        var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
 
-        else
-        {
-            
-           await update_user(user_id,{used_traffic:0});
-           await update_account(corresponding_agent.id,{allocatable_data:dnf(corresponding_agent.allocatable_data + old_data_limit)});
-           var account = await token_to_account(access_token);
-           await insert_to_logs(account.id,"RESET_USER",`reseted user ${user_obj.username}`);
-           res.send("DONE");
+        if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
+
+        else {
+
+            await update_user(user_id, { used_traffic: 0 });
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
+            var account = await token_to_account(access_token);
+            await insert_to_logs(account.id, "RESET_USER", `reseted user ${user_obj.username}`);
+            res.send("DONE");
         }
-        
+
 
     }
 
