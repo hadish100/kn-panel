@@ -18,7 +18,7 @@ import Button from '../../components/Button';
 const AgentLogsPage = () => {
     const [startDate, setStartDate] = useState(dayjs());
     const [endDate, setEndDate] = useState(dayjs());
-    const [log_is_ready, set_log_is_ready] = useState(false);
+    const [IsLogReady, setIsLogReady] = useState(false);
     const [logs, setLogs] = useState([])
     const [error_msg, setError_msg] = useState("")
     const [hasError, setHasError] = useState(false)
@@ -26,40 +26,31 @@ const AgentLogsPage = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [selection, setSelection] = useState(null)
     const [totalPages, setTotalPages] = useState(0)
+    const [actions, setActions] = useState([])
 
     const access_token = sessionStorage.getItem("access_token")
-    // if (shouldreq) {
-    //     axios.post("/get_agent_logs", { access_token }).then(res => {
-    //         if (res.data.status === "ERR") {
-    //             setError_msg(res.data.msg)
-    //             setHasError(true)
-    //             setShouldreq(false)
-    //             return;
-    //         }
+    const fetchLogs = async () => {
+        const res = await axios.post("/get_agent_logs", {
+            access_token,
+            number_of_rows: rowsPerPage,
+            current_page: currentPage,
+        })
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg)
+            setHasError(true)
+            return;
+        }
 
-    //         else {
-    //             setLogs(res.data);
-    //             set_log_is_ready(true);
-    //             setShouldreq(false)
-    //         }
-    //     });
-    // }
+        else {
+            setLogs(res.data.obj)
+            setTotalPages(res.data.total_pages)
+            setIsLogReady(true)
+        }
+    }
 
     useEffect(() => {
-        axios.post("/get_agent_logs", { access_token, number_of_rows: rowsPerPage, current_page: currentPage }).then(res => {
-            if (res.data.status === "ERR") {
-                setError_msg(res.data.msg)
-                setHasError(true)
-                return;
-            }
-
-            else {
-                setLogs(res.data.obj)
-                setTotalPages(res.data.total_pages)
-                set_log_is_ready(true);
-            }
-        });
-        console.log("useEffect");
+        setIsLogReady(false)
+        fetchLogs()
     }, [rowsPerPage, currentPage])
 
     const handlePageChange = (page) => {
@@ -77,11 +68,13 @@ const AgentLogsPage = () => {
         { label: 30, value: 30 },
     ]
 
+    var actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT"]
+
     return (
         <div className="admin-log-page">
             <div className="admin-log-page__filter">
                 <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
-                    <Ms3 />
+                    <Ms3 actions={actions_array} onChange={setActions} value={actions} />
                     <Ms4 />
                 </div>
                 <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
@@ -104,10 +97,10 @@ const AgentLogsPage = () => {
                         />
                     </LocalizationProvider>
                 </div>
-                <Button style={{ alignSelf: "start" }} className='primary'>Filter</Button>
+                <Button onClick={fetchLogs} style={{ alignSelf: "start" }} className='primary'>Filter</Button>
             </div>
-            {!log_is_ready && <div className='loading_gif_container'> <CircularProgress /> </div>}
-            {log_is_ready && <LogsList logs={logs} />}
+            {!IsLogReady && <div className='loading_gif_container'> <CircularProgress /> </div>}
+            {IsLogReady && <LogsList logs={logs} />}
             <ErrorCard
                 hasError={hasError}
                 setHasError={setHasError}

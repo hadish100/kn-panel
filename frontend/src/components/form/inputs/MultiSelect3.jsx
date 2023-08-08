@@ -18,20 +18,15 @@ const MenuProps = {
   },
 };
 
-var actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT"]
+export default function MultipleSelectCheckmarks({ actions, onChange, value }) {
 
-export default function MultipleSelectCheckmarks() {
-
-  const [names, setNames] = React.useState(actions_array);
-  const [personName, setPersonName] = React.useState([]);
-
-
+  const [names, setNames] = React.useState(actions);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
+    onChange(
       typeof value === 'string' ? value.split(',') : value,
 
     );
@@ -44,7 +39,7 @@ export default function MultipleSelectCheckmarks() {
         labelId="demo-multiple-checkbox-label"
         id="demo-multiple-checkbox"
         multiple
-        value={personName}
+        value={value}
         onChange={handleChange}
         input={<OutlinedInput label="ACTIONS" />}
         renderValue={(selected) => selected.join(',')}
@@ -52,7 +47,7 @@ export default function MultipleSelectCheckmarks() {
       >
         {names.map((name) => (
           <MenuItem key={name} value={name}>
-            <Checkbox checked={personName.indexOf(name) > -1} />
+            <Checkbox checked={value.indexOf(name) > -1} />
             <ListItemText primary={name} />
           </MenuItem>
         ))}
