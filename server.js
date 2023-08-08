@@ -127,7 +127,7 @@ const auth_marzban = async (link,username,password) =>
             'Content-Type': 'application/x-www-form-urlencoded'
         };
 
-        var resp = await axios.post(link+"/api/admin/token",{username,password},{headers});
+        var resp = await axios.post(link+"/api/admin/token",{username,password},{headers},{timeout:10000});
         auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
         return auth_res;
     }
