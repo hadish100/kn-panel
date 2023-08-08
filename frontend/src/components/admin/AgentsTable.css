@@ -132,3 +132,12 @@
     display: flex;
     justify-content: center;
 }
+
+.country_span
+{
+    background:#87adff66;
+    padding:5px;
+    margin:5px;
+    border-radius:5px;
+    
+}

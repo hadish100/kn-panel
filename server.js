@@ -144,8 +144,8 @@ const get_panel_info = async (link,username,password) =>
     {
         var headers = await auth_marzban(link,username,password);
         if(headers == "ERR") return "ERR";
-        var panel_info = (await axios.get(link+"/api/system",{headers})).data;
-        var panel_inbounds = (await axios.get(link+"/api/inbounds",{headers})).data;
+        var panel_info = (await axios.get(link+"/api/system",{headers,timeout:10000})).data;
+        var panel_inbounds = (await axios.get(link+"/api/inbounds",{headers,timeout:10000})).data;
     
         var info_obj =
         {
@@ -281,7 +281,7 @@ const get_all_marzban_users = async(link,username,password) =>
     {
         var headers = await auth_marzban(link,username,password);
         if(headers == "ERR") return "ERR";
-        var res = await axios.get(link+"/api/users",{headers});
+        var res = await axios.get(link+"/api/users",{headers,timeout:20000});
         return res.data;
     }
 
@@ -946,6 +946,19 @@ app.listen(5000, () => {
             }
 
             marzban_users = marzban_users.users;
+
+            for(db_user of db_users_arr)
+            {
+                var user = marzban_users.find(user => user.username == db_user.username);
+                if(!user && db_user.corresponding_panel == panel.panel_url)
+                {
+                    console.log("user " + db_user.username + " not found in " + panel.panel_url + " deleting...");
+                    var user_obj = await get_user2(db_user.username);
+                    var agent_obj = await get_account(user_obj.agent_id);
+                    await update_account(agent_obj.id,{allocatable_data:dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic))});
+                    await users_clct.deleteOne({username:db_user.username});
+                }
+            }
 
             for(marzban_user of marzban_users)
             {

@@ -8,6 +8,14 @@ const b2gb = (bytes) => {
     return (bytes / (2 ** 10) ** 3).toFixed(2);
 }
 
+const showCountries = (str) =>
+{
+    var country_arr = str.split(",");
+    return country_arr.map((country) => (
+        <span className="country_span" key={country}>{country}</span>
+    ));
+}
+
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
     return (
         <div className="wrapper" style={{ Width: "1230px", overflowX: "auto" }}>
@@ -40,7 +48,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                 <td>{gbOrTb(b2gb(item.volume))}</td>
                                 <td>{gbOrTb(item.allocatable_data)}</td>
                                 <td>{item.prefix}</td>
-                                <td>{item.country}</td>
+                                <td>{showCountries(item.country)}</td>
                             </tr>
                         ))}
                 </tbody>
