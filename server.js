@@ -398,6 +398,7 @@ app.post("/get_users", async (req, res) =>
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
+    obj_arr = obj_arr.reverse();
     res.send(obj_arr);
 });
 
