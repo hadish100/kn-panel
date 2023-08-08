@@ -139,5 +139,13 @@
     padding:5px;
     margin:5px;
     border-radius:5px;
-    
+}
+
+.country_td
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:flex-start;
+    width:300px;
+
 }

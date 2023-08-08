@@ -7,7 +7,7 @@ import { ReactComponent as SearchIcon } from "../assets/svg/search.svg";
 const Search = ({items,setItems,mode}) => {
     const [search, setSearch] = useState("");
     const item_name = mode=="1"?"panels":mode=="2"?"agents":"users";
-    const property = mode=="1"?"panel_name":mode=="2"?"agent_name":"username";
+    const property = mode=="1"?"panel_name":mode=="2"?"name":"username";
 
 
     useEffect(() => {if (search === "") setItems(JSON.parse(sessionStorage.getItem(item_name)));},[search]);

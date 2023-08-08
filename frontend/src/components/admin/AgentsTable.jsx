@@ -48,7 +48,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                 <td>{gbOrTb(b2gb(item.volume))}</td>
                                 <td>{gbOrTb(item.allocatable_data)}</td>
                                 <td>{item.prefix}</td>
-                                <td>{showCountries(item.country)}</td>
+                                <td className="country_td" >{showCountries(item.country)}</td>
                             </tr>
                         ))}
                 </tbody>
