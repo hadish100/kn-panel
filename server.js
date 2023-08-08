@@ -763,7 +763,7 @@ app.post("/edit_agent", async (req, res) =>
                                         username,
                                         password,
                                         volume:gb2b(volume),
-                                        allocatable_data:dnf(old_alloc) + dnf(volume) - dnf(old_volume),       
+                                        allocatable_data:dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume)),       
                                         min_vol:dnf(min_vol),
                                         max_users:parseInt(max_users),
                                         max_days:parseInt(max_days),
