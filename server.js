@@ -656,7 +656,7 @@ app.post("/delete_user", async (req, res) =>
     if(result == "ERR") res.send({status:"ERR",msg:"failed to connect to marzban"})
     else
     {
-        await update_account(agent_obj.id,{allocatable_data:agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)});
+        await update_account(agent_obj.id,{allocatable_data:dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic))});
         await users_clct.deleteOne({username});
         await insert_to_logs(agent_obj.id,"DELETE_USER",`deleted user ${username}`);
         res.send("DONE");
@@ -763,7 +763,7 @@ app.post("/edit_agent", async (req, res) =>
                                         username,
                                         password,
                                         volume:gb2b(volume),
-                                        allocatable_data:dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume)),       
+                                        allocatable_data:dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),       
                                         min_vol:dnf(min_vol),
                                         max_users:parseInt(max_users),
                                         max_days:parseInt(max_days),
