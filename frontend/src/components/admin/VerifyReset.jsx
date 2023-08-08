@@ -33,7 +33,7 @@ const VerifyDelete = ({ onClose, showForm, onDeleteItem }) => {
     return (
         <AnimatePresence>
         {showForm && (
-            <Modal v2="true" onClose={onClose}>
+            <Modal v2="true" width={"30rem"} onClose={onClose}>
                 {formHeader}
                 {formFooter}
             </Modal>
