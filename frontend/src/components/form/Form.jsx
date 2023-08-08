@@ -35,6 +35,10 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
             return b2gb(item[field.id]);
         }
 
+        if (field.id === "volume") {
+            return b2gb(item[field.id]);
+        }
+
 
 
         return item[field.id];

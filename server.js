@@ -314,13 +314,11 @@ const reset_marzban_user = async(link,username,password,vpn_name) =>
         var headers = await auth_marzban(link,username,password);
         if(headers == "ERR") return "ERR";
         var res = await axios.post(link+"/api/user/"+vpn_name+"/reset","",{headers});
-        console.log(res);
         return "DONE";
     }
 
     catch(err)
     {
-        console.log(err);
         return "ERR";
     }
 }
@@ -477,7 +475,7 @@ app.post("/create_agent", async (req, res) =>
                                     name,
                                     username,
                                     password,
-                                    volume:dnf(volume),
+                                    volume:gb2b(volume),
                                     allocatable_data:dnf(volume),
                                     min_vol:dnf(min_vol),
                                     max_users:parseInt(max_users),
@@ -764,7 +762,7 @@ app.post("/edit_agent", async (req, res) =>
         await update_account(agent_id,{ name,
                                         username,
                                         password,
-                                        volume:dnf(volume),
+                                        volume:gb2b(volume),
                                         allocatable_data:dnf(old_alloc) + dnf(volume) - dnf(old_volume),       
                                         min_vol:dnf(min_vol),
                                         max_users:parseInt(max_users),
@@ -954,8 +952,6 @@ app.listen(5000, () => {
                 
                 if(user)
                 {
-                    console.log(user);
-                    console.log(marzban_user);
                     if(user.status == "active" && marzban_user.status == "disabled") await update_user(user.id,{status:"disable",disable:1});
                     else if(user.status == "disable" && marzban_user.status == "active") await update_user(user.id,{status:"active",disable:0});
 
@@ -965,7 +961,7 @@ app.listen(5000, () => {
                     {
                         var agent = await get_account(user.agent_id);
                         agent.volume -= marzban_user.used_traffic - user.used_traffic;
-                        await update_account(agent.id,{volume:dnf(agent.volume)});
+                        await update_account(agent.id,{volume:agent.volume});
                         await update_user(user.id,{used_traffic:marzban_user.used_traffic});
 
                     }

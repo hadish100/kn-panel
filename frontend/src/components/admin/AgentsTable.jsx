@@ -37,7 +37,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                 </td>
                                 <td >{item.active_users + " / " + item.total_users}</td>
                                 <td>{gbOrTb(item.used_traffic)}</td>
-                                <td>{gbOrTb(item.volume)}</td>
+                                <td>{gbOrTb(b2gb(item.volume))}</td>
                                 <td>{gbOrTb(item.allocatable_data)}</td>
                                 <td>{item.prefix}</td>
                                 <td>{item.country}</td>
