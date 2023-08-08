@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion"
 
 import "./Modal.css";
 
-const Modal = ({ children, onClose, v2, tall, className }) => {
+const Modal = ({ children, onClose, className, width }) => {
+    useEffect(() => {
+        document.body.classList.add("overflow-hidden")
+
+        return () => { document.body.classList.remove("overflow-hidden") }
+    }, [])
+
     return ReactDOM.createPortal(
         <motion.div
             className={`modal ${className}`}
@@ -15,20 +21,22 @@ const Modal = ({ children, onClose, v2, tall, className }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.1 }}
-            style={tall && { position: "absolute" }}
         >
             <div className="modal__background" ></div>
-            <motion.div
-                className={v2 ? "modal__content modal_content_v2" : "modal__content"}
-                onMouseUp={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
-                initial={{ scale: 0.9, opacity: 1 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 1 }}
-                transition={{ duration: 0.1 }}
-            >
-                {children}
-            </motion.div>
+            <div className="modal__content-container">
+                <motion.div
+                    className="modal__content"
+                    onMouseUp={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    initial={{ scale: 0.9, opacity: 1 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 1 }}
+                    transition={{ duration: 0.1 }}
+                    style={{ width: width }}
+                >
+                    {children}
+                </motion.div>
+            </div>
         </motion.div >,
         document.querySelector(".modal-container")
     )

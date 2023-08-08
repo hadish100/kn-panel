@@ -71,6 +71,7 @@ const CreatePanel = ({ onClose, showForm }) => {
                 iconComponent={<PanelIcon />}
                 primaryButtons={primaryButtons}
                 formFields={formFields}
+                width={"40rem"}
             />
             <ErrorCard
                 hasError={hasError}

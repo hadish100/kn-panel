@@ -6,11 +6,10 @@ import LeadingIcon from '../LeadingIcon';
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg';
 import FormField from '../form/FormField';
 import Button from '../Button';
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IOSSwitch from './inputs/IOSSwitch';
 
-const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item, tall }) => {
+const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item, width }) => {
 
     const b2gb = (bytes) => {
         return (bytes / (2 ** 10) ** 3).toFixed(2);
@@ -95,7 +94,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
     return (
         <AnimatePresence>
             {showForm && (
-                <Modal onClose={onClose} tall={tall}>
+                <Modal onClose={onClose} width={width}>
                     {formHeader}
                     <main className="modal__body">
                         <form className="modal__form">

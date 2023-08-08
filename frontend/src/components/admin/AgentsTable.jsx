@@ -8,8 +8,7 @@ const b2gb = (bytes) => {
     return (bytes / (2 ** 10) ** 3).toFixed(2);
 }
 
-const showCountries = (str) =>
-{
+const showCountries = (str) => {
     var country_arr = str.split(",");
     return country_arr.map((country) => (
         <span className="country_span" key={country}>{country}</span>

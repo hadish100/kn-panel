@@ -52,7 +52,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
-        { icon: <LoginAsAgentIcon />, type: "button", label: "Login", className: "ghosted"  , onClick: (e) => onLoginItem(e,item.username,item.password)  },
+        { icon: <LoginAsAgentIcon />, type: "button", label: "Login", className: "ghosted", onClick: (e) => onLoginItem(e, item.username, item.password) },
         { type: "switch", label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.disable) },
     ]
 
@@ -68,7 +68,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
             secondaryButtons={secondaryButtons}
             formFields={formFields}
             item={item}
-            tall={true}
+            width={"40rem"}
         />
     )
 }

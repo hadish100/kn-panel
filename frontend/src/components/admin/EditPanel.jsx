@@ -47,6 +47,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditI
             secondaryButtons={secondaryButtons}
             formFields={formFields}
             item={item}
+            width={"40rem"}
         />
     )
 }

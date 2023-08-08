@@ -68,6 +68,7 @@ const CreateUser = ({ onClose, showForm }) => {
                 formFields={formFields}
                 primaryButtons={primaryButtons}
                 showForm={showForm}
+                width={"40rem"}
             />
             <ErrorCard
                 hasError={hasError}
