@@ -39,27 +39,25 @@ export default function MultipleSelectCheckmarks() {
   };
 
   return (
-    <div>
-      <FormControl sx={{ m: 0, width:'25vw' }} >
-        <InputLabel id="demo-multiple-checkbox-label">ACCOUNTS</InputLabel>
-        <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
-          multiple
-          value={personName}
-          onChange={handleChange} 
-          input={<OutlinedInput label="ACCOUNTS" />}
-          renderValue={(selected) => selected.join(',')}
-          MenuProps={MenuProps}
-        >
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl sx={{ m: 0, width: '100%' }} >
+      <InputLabel id="demo-multiple-checkbox-label">ACCOUNTS</InputLabel>
+      <Select
+        labelId="demo-multiple-checkbox-label"
+        id="demo-multiple-checkbox"
+        multiple
+        value={personName}
+        onChange={handleChange}
+        input={<OutlinedInput label="ACCOUNTS" />}
+        renderValue={(selected) => selected.join(',')}
+        MenuProps={MenuProps}
+      >
+        {names.map((name) => (
+          <MenuItem key={name} value={name}>
+            <Checkbox checked={personName.indexOf(name) > -1} />
+            <ListItemText primary={name} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
