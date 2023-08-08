@@ -6,7 +6,6 @@ import Button from '../../components/Button'
 import PanelsTable from '../../components/admin/PanelsTable'
 import CreatePanel from '../../components/admin/CreatePanel'
 import PanelStats from '../../components/admin/PanelStats'
-import { AnimatePresence } from 'framer-motion'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import EditPanel from '../../components/admin/EditPanel'
 import VerifyDelete from '../../components/admin/VerifyDelete'
@@ -15,12 +14,6 @@ import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
 import CircularProgress from '../../components/CircularProgress';
 import gbOrTb from "../../utils/gbOrTb"
-
-
-
-
-
-
 
 const PanelsPage = () => {
     const [showCreatePanel, setShowCreatePanel] = useState(false)
@@ -31,11 +24,13 @@ const PanelsPage = () => {
     const [panels, setPanels] = useState([])
     const [selectedPanel, setSelectedPanel] = useState(null)
     const [refresh, setRefresh] = useState(false);
-
+    const [searchedPanels, setSearchedPanels] = useState("")
 
     useEffect(() => {
-        setPanels(JSON.parse(sessionStorage.getItem("panels")))
-    }, [])
+        setPanels((JSON.parse(sessionStorage.getItem("panels"))).filter((item) => {
+            return item["panel_name"].toLowerCase().includes(searchedPanels.toLowerCase())
+        }));
+    }, [searchedPanels])
 
     const handleDeletePanel = async (e, panel_id) => {
         setShowVerifyDelete(true)
@@ -45,7 +40,7 @@ const PanelsPage = () => {
         setRefresh(true);
         const access_token = sessionStorage.getItem("access_token");
         axios.post("/get_panels", { access_token }).then(res => {
-            
+
             if (res.data.status === "ERR") {
                 setError_msg(res.data.msg)
                 setHasError(true)
@@ -159,7 +154,7 @@ const PanelsPage = () => {
         <div className='admin_panels_body'>
             <PanelStats dataUsage={gbOrTb(total_data_usage)} activeUsers={total_active_panel_count} totalUsers={total_panel_count} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                <Search items={panels} setItems={setPanels} mode="1" />
+                <Search value={searchedPanels} onChange={setSearchedPanels} />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Panel</Button>

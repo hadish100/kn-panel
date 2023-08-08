@@ -1,29 +1,13 @@
-import React, { useState,useEffect  } from "react";
+import React from "react";
 
 import "./Search.css";
 import { ReactComponent as XMarkIcon } from "../assets/svg/x-mark.svg";
 import { ReactComponent as SearchIcon } from "../assets/svg/search.svg";
 
-const Search = ({items,setItems,mode}) => {
-    const [search, setSearch] = useState("");
-    const item_name = mode=="1"?"panels":mode=="2"?"agents":"users";
-    const property = mode=="1"?"panel_name":mode=="2"?"name":"username";
-
-
-    useEffect(() => {if (search === "") setItems(JSON.parse(sessionStorage.getItem(item_name)));},[search]);
-
-    const handleSearch = (e) => {
-        var val = e.target.value;
-        if(!val) setItems(JSON.parse(sessionStorage.getItem(item_name)));
-        else
-        {
-            setItems((JSON.parse(sessionStorage.getItem(item_name))).filter((item) => {
-                return item[property].toLowerCase().includes(val.toLowerCase())
-            }));
-        }
-
-        setSearch(val);
-    };
+const Search = ({ value, onChange }) => {
+    const handleChnage = (e) => {
+        onChange(e.target.value);
+    }
 
     return (
         <div className="search-wrapper">
@@ -34,12 +18,12 @@ const Search = ({items,setItems,mode}) => {
                 <input
                     type="text"
                     placeholder="Search"
-                    value={search}
-                    onChange={handleSearch}
+                    value={value}
+                    onChange={handleChnage}
                 />
                 {
-                    search.length > 0 &&
-                    <div onClick={() => { setSearch("") }} className="search__icon icon-button">
+                    value.length > 0 &&
+                    <div onClick={() => { onChange("") }} className="search__icon icon-button">
                         <XMarkIcon />
                     </div>
                 }

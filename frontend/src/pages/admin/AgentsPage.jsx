@@ -26,11 +26,14 @@ const AgentsPage = () => {
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [agents, setAgents] = useState([])
     const [selectedAgent, setSelectedAgent] = useState(null)
+    const [searchedAgents, setSearchedAgents] = useState("")
     const navigate = useNavigate();
 
     useEffect(() => {
-        setAgents(JSON.parse(sessionStorage.getItem("agents")))
-    }, [])
+        setAgents((JSON.parse(sessionStorage.getItem("agents"))).filter((item) => {
+            return item["name"].toLowerCase().includes(searchedAgents.toLowerCase())
+        }));
+    }, [searchedAgents])
 
     const handleDeleteAgent = async (e, agent_id) => {
         setShowVerifyDelete(true)
@@ -54,14 +57,13 @@ const AgentsPage = () => {
         });
     }
 
-    const handleAdminAsAgent = async (e,username,password) =>
-    {
+    const handleAdminAsAgent = async (e, username, password) => {
         var res;
 
-        try {res = await axios.post("/login", { username, password }, { timeout: 20000 });}
+        try { res = await axios.post("/login", { username, password }, { timeout: 20000 }); }
 
         catch (err) {
-            if(err.response.status == 401) setError_msg("Please check your username and password");
+            if (err.response.status == 401) setError_msg("Please check your username and password");
             else setError_msg("server is not responding");
             res = {};
             res.data = "ERR";
@@ -76,25 +78,25 @@ const AgentsPage = () => {
 
         else {
             var access_token = res.data.access_token;
-                sessionStorage.setItem("isLoggedIn", "true");
-                sessionStorage.setItem("access_token", res.data.access_token)
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("access_token", res.data.access_token)
 
-                try {
-                    var users = (await axios.post("/get_users", { access_token }, { timeout: 20000 })).data;
-                    var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data;
-                    sessionStorage.setItem("users", JSON.stringify(users));
-                    sessionStorage.setItem("agent", JSON.stringify(agent));
-                    window.location.href = "/agent/users";
-                }
+            try {
+                var users = (await axios.post("/get_users", { access_token }, { timeout: 20000 })).data;
+                var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data;
+                sessionStorage.setItem("users", JSON.stringify(users));
+                sessionStorage.setItem("agent", JSON.stringify(agent));
+                window.location.href = "/agent/users";
+            }
 
-                catch (err) {
-                    console.log(err)
-                    setError_msg("server is not responding");
-                    setHasError(true)
-                }
+            catch (err) {
+                console.log(err)
+                setError_msg("server is not responding");
+                setHasError(true)
+            }
 
         }
-    
+
     }
 
     const handleVerifyDelete = async (e, agent_id) => {
@@ -201,7 +203,7 @@ const AgentsPage = () => {
         <div className='admin_panels_body'>
             <AgentStats dataUsage={gbOrTb(total_data_usage)} activeUsers={total_active_agent_count} totalUsers={total_agent_count} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                <Search items={agents} setItems={setAgents} mode="2" />
+                <Search value={searchedAgents} onChange={setSearchedAgents} />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh"><RefreshIcon /></Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Agent</Button>

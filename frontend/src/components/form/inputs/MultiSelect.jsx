@@ -20,7 +20,7 @@ const MenuProps = {
 
 
 
-export default function MultipleSelectCheckmarks({editValue}) {
+export default function MultipleSelectCheckmarks({ editValue }) {
 
   const [names, setNames] = React.useState(JSON.parse(sessionStorage.getItem("country_list")));
   const [personName, setPersonName] = React.useState([]);
@@ -41,19 +41,19 @@ export default function MultipleSelectCheckmarks({editValue}) {
 
   return (
     <div>
-      <FormControl sx={{ m: 0, width: { xs: "100%", sm: '100%' } }} >
+      <FormControl sx={{ m: 0, width: "100%", maxWidth: "100%", overflow: "hidden" }} >
         <InputLabel id="demo-multiple-checkbox-label"></InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
           value={personName}
-          onChange={handleChange} 
+          onChange={handleChange}
           input={<OutlinedInput label=""
-                sx={{ 
-                    height: 34
-                    //border:'1px solid #e2e8f0'
-                }} 
+            sx={{
+              height: 34
+              //border:'1px solid #e2e8f0'
+            }}
           />}
           renderValue={(selected) => selected.join(',')}
           MenuProps={MenuProps}

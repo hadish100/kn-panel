@@ -18,7 +18,7 @@ const MenuProps = {
   },
 };
 
-export default function MultipleSelectCheckmarks({ actions, onChange, value }) {
+export default function MultipleSelectCheckmarks({ actions, onChange, value, lable }) {
 
   const [names, setNames] = React.useState(actions);
 
@@ -34,14 +34,14 @@ export default function MultipleSelectCheckmarks({ actions, onChange, value }) {
 
   return (
     <FormControl sx={{ m: 0, fontSize: 10 }} >
-      <InputLabel id="demo-multiple-checkbox-label">ACTIONS</InputLabel>
+      <InputLabel id="demo-multiple-checkbox-label">{lable}</InputLabel>
       <Select
         labelId="demo-multiple-checkbox-label"
         id="demo-multiple-checkbox"
         multiple
         value={value}
         onChange={handleChange}
-        input={<OutlinedInput label="ACTIONS" />}
+        input={<OutlinedInput label={lable} />}
         renderValue={(selected) => selected.join(',')}
         MenuProps={MenuProps}
       >

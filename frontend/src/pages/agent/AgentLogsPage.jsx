@@ -10,7 +10,6 @@ import ErrorCard from '../../components/ErrorCard';
 import axios from 'axios'
 import CircularProgress from '../../components/CircularProgress';
 import Ms3 from '../../components/form/inputs/MultiSelect3';
-import Ms4 from '../../components/form/inputs/MultiSelect4';
 import Pagination from '../../components/Pagination';
 import Dropdown from '../../components/Dropdown';
 import Button from '../../components/Button';
@@ -27,13 +26,16 @@ const AgentLogsPage = () => {
     const [selection, setSelection] = useState(null)
     const [totalPages, setTotalPages] = useState(0)
     const [actions, setActions] = useState([])
+    const [accounts, setAccounts] = useState([])
 
     const access_token = sessionStorage.getItem("access_token")
-    const fetchLogs = async () => {
+    const fetchLogs = async (resetCurrentPage) => {
         const res = await axios.post("/get_agent_logs", {
             access_token,
             number_of_rows: rowsPerPage,
             current_page: currentPage,
+            actions,
+            accounts
         })
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
@@ -45,6 +47,7 @@ const AgentLogsPage = () => {
             setLogs(res.data.obj)
             setTotalPages(res.data.total_pages)
             setIsLogReady(true)
+            if (resetCurrentPage) setCurrentPage(1)
         }
     }
 
@@ -68,14 +71,15 @@ const AgentLogsPage = () => {
         { label: 30, value: 30 },
     ]
 
-    var actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT"]
+    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT"]
+    const filter_accounts = JSON.parse(sessionStorage.getItem("agents")).map(agent => agent.username)
 
     return (
         <div className="admin-log-page">
             <div className="admin-log-page__filter">
                 <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
-                    <Ms3 actions={actions_array} onChange={setActions} value={actions} />
-                    <Ms4 />
+                    <Ms3 actions={actions_array} onChange={setActions} value={actions} lable="Actions" />
+                    <Ms3 actions={filter_accounts} onChange={setAccounts} value={accounts} lable="Accounts" />
                 </div>
                 <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -97,7 +101,7 @@ const AgentLogsPage = () => {
                         />
                     </LocalizationProvider>
                 </div>
-                <Button onClick={fetchLogs} style={{ alignSelf: "start" }} className='primary'>Filter</Button>
+                <Button onClick={() => fetchLogs(true)} style={{ alignSelf: "start" }} className='primary'>Filter</Button>
             </div>
             {!IsLogReady && <div className='loading_gif_container'> <CircularProgress /> </div>}
             {IsLogReady && <LogsList logs={logs} />}

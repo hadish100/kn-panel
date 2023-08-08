@@ -108,11 +108,13 @@ app.post("/get_agent", async (req, res) => {
 });
 
 app.post("/get_agent_logs", async (req, res) => {
-    const { access_token, number_of_rows, current_page } = req.body;
+    const { access_token, number_of_rows, current_page, actions, accounts } = req.body;
     var obj = await get_logs();
     var account_id = (await token_to_account(access_token)).id;
     obj.sort((a, b) => b.time - a.time);
     obj = obj.filter(x => x.account_id == account_id);
+    if (actions.length) obj = obj.filter(x => actions.includes(x.action));
+    if (accounts.length) obj = obj.filter(x => accounts.includes(x.account_id));
     var total_pages = Math.ceil(obj.length / number_of_rows);
     obj = obj.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
     res.send({ obj, total_pages });
