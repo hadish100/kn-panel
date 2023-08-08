@@ -15,18 +15,17 @@ import Ms4 from '../../components/form/inputs/MultiSelect4';
 
 
 const AdminLogsPage = () => {
-    const [date, setDate] = useState(dayjs());
-    const [log_is_ready,set_log_is_ready] = useState(false);
-    const [logs,setLogs] = useState([])
-    const [shouldreq,setShouldreq] = useState(true)
+    const [startDate, setStartDate] = useState(dayjs());
+    const [endDate, setEndDate] = useState(dayjs());
+    const [log_is_ready, set_log_is_ready] = useState(false);
+    const [logs, setLogs] = useState([])
+    const [shouldreq, setShouldreq] = useState(true)
     const [error_msg, setError_msg] = useState("")
     const [hasError, setHasError] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token")
-    if(shouldreq)
-    {
-        axios.post("/get_admin_logs",{access_token}).then(res => 
-        {
+    if (shouldreq) {
+        axios.post("/get_admin_logs", { access_token }).then(res => {
             if (res.data.status === "ERR") {
                 setError_msg(res.data.msg)
                 setHasError(true)
@@ -34,8 +33,7 @@ const AdminLogsPage = () => {
                 return;
             }
 
-            else
-            {
+            else {
                 setLogs(res.data);
                 set_log_is_ready(true);
                 setShouldreq(false)
@@ -47,19 +45,31 @@ const AdminLogsPage = () => {
     return (
         <div className="admin-log-page">
             <div className="admin-log-page__filter">
-                <Ms3 />
-                <Ms4 />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        value={date}
-                        onChange={newDate => setDate(newDate)}
-                        slotProps={{ textField: { size: 'small' } }}
-                        sx={{width:'50vw'}}
-                    />
-                </LocalizationProvider>
+                <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
+                    <Ms3 />
+                    <Ms4 />
+                </div>
+                <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            value={startDate}
+                            onChange={newDate => setStartDate(newDate)}
+                            slotProps={{ textField: { size: 'small' } }}
+                            style={{ flexGrow: 1, width: '100%' }}
+                        />
+                    </LocalizationProvider>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            value={endDate}
+                            onChange={newDate => setEndDate(newDate)}
+                            slotProps={{ textField: { size: 'small' } }}
+                            style={{ flexGrow: 1, width: '100%' }}
+                        />
+                    </LocalizationProvider>
+                </div>
             </div>
-            { !log_is_ready && <div className='loading_gif_container'> <CircularProgress /> </div> }
-            { log_is_ready && <LogsList logs={logs} /> }
+            {!log_is_ready && <div className='loading_gif_container'> <CircularProgress /> </div>}
+            {log_is_ready && <LogsList logs={logs} />}
             <ErrorCard
                 hasError={hasError}
                 setHasError={setHasError}
