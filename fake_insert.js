@@ -1,4 +1,4 @@
-const {insert_to_users,connect_to_db,sleep,uid} = require("./utils");
+const {insert_to_users,connect_to_db,sleep,uid,uidv2} = require("./utils");
 
 
 connect_to_db().then(res => {
@@ -13,14 +13,14 @@ connect_to_db().then(res => {
 {
     await sleep(5000);
 
-    for(var i=0;i<100;i++)
+    for(var i=0;i<200;i++)
     {
         var obj =  {
           "id": uid(),
           "agent_id": 214655343,
           "status": "active",
           "disable": 0,
-          "username": "RT_test3553",
+          "username": uidv2().substring(0,5),
           "expire": 1694095487,
           "data_limit": 10737418240,
           "used_traffic": 0,

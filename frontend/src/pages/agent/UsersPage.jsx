@@ -39,7 +39,12 @@ const UsersPage = () => {
 
     const fetchUsers = async (resetCurrentPage) => {
         const access_token = sessionStorage.getItem("access_token");
-        const res = await axios.post("/get_users", {access_token,number_of_rows: rowsPerPage,current_page: currentPage})
+        console.log("HI1")
+        const res = await axios.post("/get_users", {access_token,
+            number_of_rows: rowsPerPage,
+            current_page: currentPage,
+            search_filter:searchedUsers
+        })
         console.log(res.data)
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
@@ -48,6 +53,7 @@ const UsersPage = () => {
         }
 
         else {
+            console.log(res.data)
             sessionStorage.setItem("users", JSON.stringify(res.data.obj_arr))
             setUsers(res.data.obj_arr)
             setTotalPages(res.data.total_pages)
@@ -57,12 +63,11 @@ const UsersPage = () => {
     }
 
 
-console.log("###AASD")
  
     useEffect(() => {
         setRefresh(true)
         fetchUsers()
-    }, [rowsPerPage, currentPage])
+    }, [rowsPerPage, currentPage, searchedUsers])
 
     const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")));
 
@@ -121,10 +126,10 @@ console.log("###AASD")
             return;
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
+        console.log("HI2")
         setAgent(agent)
-        setRowsPerPage(10);
-        setSelection(10);
-        setCurrentPage(1)
+        if(currentPage==1) fetchUsers(true)
+        else setCurrentPage(1)
     }
 
     const handleVerifyDelete = async (e, username) => {

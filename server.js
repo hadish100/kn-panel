@@ -93,16 +93,18 @@ app.post("/get_panels", async (req, res) => {
 });
 
 app.post("/get_users", async (req, res) => {
-    var { access_token,number_of_rows,current_page, } = req.body;
+    var { access_token,number_of_rows,current_page,search_filter } = req.body;
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
     obj_arr = obj_arr.reverse();
+    if(search_filter) obj_arr = obj_arr.filter(x => x.username.includes(search_filter));
     if(!number_of_rows && !current_page) {current_page = 1;number_of_rows = 10;}
     var total_pages = Math.ceil(obj_arr.length / number_of_rows);
     obj_arr = obj_arr.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
     res.send({ obj_arr, total_pages });
 });
+
 
 app.post("/get_agent", async (req, res) => {
     var { access_token } = req.body;
