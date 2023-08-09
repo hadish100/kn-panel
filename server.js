@@ -5,9 +5,8 @@ const client = new MongoClient('mongodb://127.0.0.1:27017');
 
 var accounts_clct, panels_clct, users_clct, logs_clct;
 
-const { uid,
-    uidv2,
-    sleep,
+const { 
+    uid,
     insert_to_accounts,
     get_accounts,
     get_account,
@@ -30,18 +29,14 @@ const { uid,
     dnf,
     add_token,
     token_to_account,
-    auth_marzban,
     get_panel_info,
     make_vpn,
     delete_vpn,
     disable_vpn,
     enable_vpn,
     edit_vpn,
-    get_marzban_user,
-    get_all_marzban_users,
     reload_agents,
     reset_marzban_user,
-    ping_panel,
     connect_to_db
 } = require("./utils");
 
@@ -198,7 +193,7 @@ app.post("/create_agent", async (req, res) => {
         });
 
         var account_id = (await token_to_account(access_token)).id;
-        await insert_to_logs(account_id, "CREATE_AGENT", `created agent ${name}`)
+        await insert_to_logs(account_id, "CREATE_AGENT", `created agent !${name} with !${volume} GB data`)
 
         res.send("DONE");
     }
@@ -245,7 +240,7 @@ app.post("/create_panel", async (req, res) => {
         });
 
         var account_id = (await token_to_account(access_token)).id;
-        await insert_to_logs(account_id, "CREATE_PANEL", `created panel ${panel_name}`);
+        await insert_to_logs(account_id, "CREATE_PANEL", `created panel !${panel_name}`);
 
         res.send("DONE");
     }
@@ -304,7 +299,7 @@ app.post("/create_user", async (req, res) => {
 
             await update_account(agent_id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit) });
 
-            await insert_to_logs(agent_id, "CREATE_USER", `created user ${username} with ${data_limit} GB data and ${expire} days of expire time`);
+            await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time`);
 
             res.send("DONE");
         }
@@ -323,7 +318,7 @@ app.post("/delete_agent", async (req, res) => {
     var account_id = (await token_to_account(access_token)).id;
     var agent_obj = await get_account(agent_id);
     await accounts_clct.deleteOne({ id: agent_id });
-    await insert_to_logs(account_id, "DELETE_AGENT", `deleted agent ${agent_obj.username}`);
+    await insert_to_logs(account_id, "DELETE_AGENT", `deleted agent !${agent_obj.username}`);
     res.send("DONE");
 });
 
@@ -344,7 +339,7 @@ app.post("/delete_panel", async (req, res) => {
     }
 
     await panels_clct.deleteOne({ id: panel_id });
-    await insert_to_logs(account_id, "DELETE_PANEL", `deleted panel ${panel_obj.panel_name}`);
+    await insert_to_logs(account_id, "DELETE_PANEL", `deleted panel !${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
@@ -358,7 +353,7 @@ app.post("/delete_user", async (req, res) => {
     else {
         await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
         await users_clct.deleteOne({ username });
-        await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user ${username}`);
+        await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user !${username}`);
         res.send("DONE");
     }
 
@@ -369,7 +364,7 @@ app.post("/disable_panel", async (req, res) => {
     await update_panel(panel_id, { disable: 1 });
     var panel_obj = await get_panel(panel_id);
     var account_id = (await token_to_account(access_token)).id;
-    await insert_to_logs(account_id, "DISABLE_PANEL", `disabled panel ${panel_obj.panel_name}`);
+    await insert_to_logs(account_id, "DISABLE_PANEL", `disabled panel !${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
@@ -378,7 +373,7 @@ app.post("/disable_agent", async (req, res) => {
     await update_account(agent_id, { disable: 1 });
     var agent_obj = await get_account(agent_id);
     var account_id = (await token_to_account(access_token)).id;
-    await insert_to_logs(account_id, "DISABLE_AGENT", `disabled agent ${agent_obj.username}`);
+    await insert_to_logs(account_id, "DISABLE_AGENT", `disabled agent !${agent_obj.username}`);
     res.send("DONE");
 });
 
@@ -391,7 +386,7 @@ app.post("/disable_user", async (req, res) => {
     else {
         await update_user(user_id, { status: "disable", disable: 1 });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "DISABLE_USER", `disabled user ${user_obj.username}`);
+        await insert_to_logs(account.id, "DISABLE_USER", `disabled user !${user_obj.username}`);
         res.send("DONE");
     }
 });
@@ -401,7 +396,7 @@ app.post("/enable_agent", async (req, res) => {
     await update_account(agent_id, { disable: 0 });
     var account = await token_to_account(access_token);
     var agent_obj = await get_account(agent_id);
-    await insert_to_logs(account.id, "ENABLE_AGENT", `enabled agent ${agent_obj.username}`);
+    await insert_to_logs(account.id, "ENABLE_AGENT", `enabled agent !${agent_obj.username}`);
     res.send("DONE");
 });
 
@@ -410,7 +405,7 @@ app.post("/enable_panel", async (req, res) => {
     await update_panel(panel_id, { disable: 0 });
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(panel_id);
-    await insert_to_logs(account.id, "ENABLE_PANEL", `enabled panel ${panel_obj.panel_name}`);
+    await insert_to_logs(account.id, "ENABLE_PANEL", `enabled panel !${panel_obj.panel_name}`);
     res.send("DONE");
 });
 
@@ -423,7 +418,7 @@ app.post("/enable_user", async (req, res) => {
     else {
         await update_user(user_id, { status: "active", disable: 0 });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "ENABLE_USER", `enabled user ${user_obj.username}`);
+        await insert_to_logs(account.id, "ENABLE_USER", `enabled user !${user_obj.username}`);
         res.send("DONE");
     }
 });
@@ -462,7 +457,13 @@ app.post("/edit_agent", async (req, res) => {
             country
         });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "EDIT_AGENT", `edited agent ${name}`);
+        var log_msg = `edited agent ${name} `
+        if(Math.floor(old_volume) != Math.floor(gb2b(volume))) 
+        {
+            log_msg = `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
+            insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`)
+        }
+        await insert_to_logs(account.id, "EDIT_AGENT", log_msg);
         res.send("DONE");
     }
 
@@ -496,7 +497,7 @@ app.post("/edit_panel", async (req, res) => {
             panel_traffic: dnf(panel_traffic),
         });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "EDIT_PANEL", `edited panel ${panel_name}`);
+        await insert_to_logs(account.id, "EDIT_PANEL", `edited panel !${panel_name}`);
         res.send("DONE");
     }
 
@@ -534,7 +535,7 @@ app.post("/edit_user", async (req, res) => {
 
             await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);
-            await insert_to_logs(account.id, "EDIT_USER", `edited user ${user_obj.username}`);
+            await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`);
             res.send("DONE");
         }
 
@@ -573,7 +574,7 @@ app.post("/reset_user", async (req, res) => {
             await update_user(user_id, { used_traffic: 0 });
             await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
             var account = await token_to_account(access_token);
-            await insert_to_logs(account.id, "RESET_USER", `reseted user ${user_obj.username}`);
+            await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`);
             res.send("DONE");
         }
 
