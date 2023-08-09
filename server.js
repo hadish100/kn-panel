@@ -176,10 +176,17 @@ app.post("/create_agent", async (req, res) => {
         country,
         access_token } = req.body;
 
+        var agents_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
+        var prefix_arr = agents_arr.map(x => x.prefix);
+        var name_arr = agents_arr.map(x => x.name);
+        var username_arr = agents_arr.map(x => x.username);
 
+    
 
     if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
-
+    else if(prefix_arr.includes(prefix)) res.send({ status: "ERR", msg: "prefix already exists" });
+    else if(name_arr.includes(name)) res.send({ status: "ERR", msg: "name already exists" });
+    else if(username_arr.includes(username)) res.send({ status: "ERR", msg: "username already exists" });   
     else {
         await insert_to_accounts({
             id: uid(),
@@ -445,11 +452,19 @@ app.post("/edit_agent", async (req, res) => {
         country,
         access_token } = req.body;
 
+        var agent = await get_account(agent_id);
+        var agents_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
+        var prefix_arr = agents_arr.map(x => x.prefix);
+        var name_arr = agents_arr.map(x => x.name);
+        var username_arr = agents_arr.map(x => x.username);
+        var [old_prefix, old_name, old_username] = [agent.prefix, agent.name, agent.username];
+
 
     if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
-
+    else if(prefix_arr.includes(prefix) && old_prefix != prefix) res.send({ status: "ERR", msg: "prefix already exists" });
+    else if(name_arr.includes(name) && old_name != name) res.send({ status: "ERR", msg: "name already exists" });
+    else if(username_arr.includes(username) && old_username != username) res.send({ status: "ERR", msg: "username already exists" }); 
     else {
-        var agent = await get_account(agent_id);
         var old_volume = agent.volume;
         var old_alloc = agent.allocatable_data;
 
