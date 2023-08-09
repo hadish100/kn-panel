@@ -59,19 +59,23 @@ connect_to_db().then(res => {
 
 async function auth_middleware(req, res, next) {
 
+    if (req.url == "/login") return next();
+
     // var accounts = await get_accounts();
     // accounts.forEach(async (account) => 
     // {
     //     var tokens = account.tokens;
-    //     var new_tokens = tokens.filter(x => x.expire > Math.floor(Date.now()/1000));
+    //     console.log(tokens);
+    //     var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
     //     await update_account(account.id,{tokens:new_tokens});
     // });
 
-    if (req.url == "/login") return next();
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
     else return next();
+
+
 }
 
 // --- ENDPOINTS --- //
@@ -89,12 +93,15 @@ app.post("/get_panels", async (req, res) => {
 });
 
 app.post("/get_users", async (req, res) => {
-    var { access_token } = req.body;
+    var { access_token,number_of_rows,current_page, } = req.body;
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
     obj_arr = obj_arr.reverse();
-    res.send(obj_arr);
+    if(!number_of_rows && !current_page) {current_page = 1;number_of_rows = 10;}
+    var total_pages = Math.ceil(obj_arr.length / number_of_rows);
+    obj_arr = obj_arr.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
+    res.send({ obj_arr, total_pages });
 });
 
 app.post("/get_agent", async (req, res) => {

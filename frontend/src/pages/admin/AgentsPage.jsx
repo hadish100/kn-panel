@@ -82,9 +82,9 @@ const AgentsPage = () => {
             sessionStorage.setItem("access_token", res.data.access_token)
 
             try {
-                var users = (await axios.post("/get_users", { access_token }, { timeout: 20000 })).data;
+                //var users = (await axios.post("/get_users", { access_token }, { timeout: 20000 })).data;
                 var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data;
-                sessionStorage.setItem("users", JSON.stringify(users));
+                //sessionStorage.setItem("users", JSON.stringify(users.data_obj));
                 sessionStorage.setItem("agent", JSON.stringify(agent));
                 window.location.href = "/agent/users";
             }

@@ -31,7 +31,7 @@ const CreateUser = ({ onClose, showForm }) => {
                 setHasError(true)
                 return;
             }
-            sessionStorage.setItem("users", JSON.stringify(users));
+            sessionStorage.setItem("users", JSON.stringify(users.obj_arr));
             sessionStorage.setItem("agent", JSON.stringify(agent));
             onClose()
         }

@@ -19,7 +19,6 @@ import CircularProgress from '../../components/CircularProgress';
 import gbOrTb from "../../utils/gbOrTb"
 
 
-
 const UsersPage = () => {
     const [showCreateUser, setShowCreateUser] = useState(false)
     const [showEditUser, setShowEditUser] = useState(false)
@@ -33,14 +32,37 @@ const UsersPage = () => {
     const [showVerifyReset, setShowVerifyReset] = useState(false)
     const [users, setUsers] = useState([])
     const [showQRCode, setShowQRCode] = useState(false);
-    const [refresh, setRefresh] = useState(false);
+    const [refresh, setRefresh] = useState(true);
     const [searchedUsers, setSearchedUsers] = useState("")
+    const [totalPages, setTotalPages] = useState(0)
 
 
+    const fetchUsers = async (resetCurrentPage) => {
+        const access_token = sessionStorage.getItem("access_token");
+        const res = await axios.post("/get_users", {access_token,number_of_rows: rowsPerPage,current_page: currentPage})
+        console.log(res.data)
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg)
+            setHasError(true)
+            return;
+        }
+
+        else {
+            sessionStorage.setItem("users", JSON.stringify(res.data.obj_arr))
+            setUsers(res.data.obj_arr)
+            setTotalPages(res.data.total_pages)
+            setRefresh(false)
+            if (resetCurrentPage) setCurrentPage(1)
+        }
+    }
+
+
+console.log("###AASD")
+ 
     useEffect(() => {
-        const users = JSON.parse(sessionStorage.getItem("users"));
-        setUsers(users)
-    }, [])
+        setRefresh(true)
+        fetchUsers()
+    }, [rowsPerPage, currentPage])
 
     const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")));
 
@@ -67,7 +89,7 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
-        let users = (await axios.post("/get_users", { access_token })).data;
+        let users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -81,8 +103,8 @@ const UsersPage = () => {
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
-        sessionStorage.setItem("users", JSON.stringify(users))
-        setUsers(users)
+        sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
+        setUsers(users.obj_arr)
         setShowVerifyReset(false)
         setShowEditUser(false)
     }
@@ -100,16 +122,9 @@ const UsersPage = () => {
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
-        axios.post("/get_users", { access_token }).then(res => {
-            if (res.data.status === "ERR") {
-                setError_msg(res.data.msg)
-                setHasError(true)
-                return;
-            }
-            sessionStorage.setItem("users", JSON.stringify(res.data));
-            setUsers(res.data);
-            setRefresh(false);
-        });
+        setRowsPerPage(10);
+        setSelection(10);
+        setCurrentPage(1)
     }
 
     const handleVerifyDelete = async (e, username) => {
@@ -122,7 +137,7 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
-        let users = (await axios.post("/get_users", { access_token })).data;
+        let users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -136,8 +151,8 @@ const UsersPage = () => {
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
-        sessionStorage.setItem("users", JSON.stringify(users))
-        setUsers(users)
+        sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
+        setUsers(users.obj_arr)
         setShowVerifyDelete(false)
         setShowEditUser(false)
     }
@@ -154,7 +169,7 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
-        var users = (await axios.post("/get_users", { access_token })).data;
+        var users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -170,8 +185,8 @@ const UsersPage = () => {
         setAgent(agent)
         var slctd = users.find(user => user.id === user_id);
         setSelectedUser(slctd)
-        sessionStorage.setItem("users", JSON.stringify(users));
-        setUsers(users);
+        sessionStorage.setItem("users", JSON.stringify(users.obj_arr));
+        setUsers(users.obj_arr);
     }
 
     const handleEditUser = async (user_id, data_limit, expire, country) => {
@@ -183,7 +198,7 @@ const UsersPage = () => {
             return;
         }
 
-        let users = (await axios.post("/get_users", { access_token })).data;
+        let users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -195,12 +210,10 @@ const UsersPage = () => {
             setHasError(true)
             return;
         }
-        console.log("###");
-        console.log(agent);
-        console.log("###");
-        sessionStorage.setItem("users", JSON.stringify(users))
+
+        sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
         sessionStorage.setItem("agent", JSON.stringify(agent))
-        setUsers(users)
+        setUsers(users.obj_arr)
         setAgent(agent)
         setShowEditUser(false)
     }
@@ -239,11 +252,9 @@ const UsersPage = () => {
         setShowEditUser(true)
     }
 
-    const LastRowIndex = currentPage * rowsPerPage
-    const FirstRowIndex = LastRowIndex - rowsPerPage
-    const currentRows = users.slice(FirstRowIndex, LastRowIndex)
 
-    const totalPages = Math.ceil(users.length / rowsPerPage)
+
+    
 
     const handleSelect = (option) => {
         setSelection(option)
@@ -279,7 +290,7 @@ const UsersPage = () => {
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
             {!refresh && <UsersTable
                 items={users}
-                currentItems={currentRows}
+                currentItems={users}
                 onCreateItem={handleShowCreateUser}
                 onEditItem={handleShowEditUser}
             />}

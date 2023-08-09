@@ -75,7 +75,7 @@ const dnf = (x) => // Desired Number Format
 }
 
 const add_token = async (id) => {
-    var expire = Math.floor(Date.now() / 1000) + 3600;
+    var expire = Math.floor(Date.now() / 1000) + 86400;
     var token = uidv2();
     var obj = { token, expire };
     await accounts_clct.updateOne({ id }, { $push: { tokens: obj } }, function () { }); return token;
