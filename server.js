@@ -571,11 +571,19 @@ app.post("/edit_user", async (req, res) => {
 
 app.post("/edit_self", async (req, res) => {
     const { username, password, access_token } = req.body;
-    var account_id = (await token_to_account(access_token)).id;
-    await update_account(account_id, { username, password });
-    var account = await token_to_account(access_token);
-    await insert_to_logs(account.id, "EDIT_SELF", `was self edited`);
-    res.send("DONE");
+    var corresponding_account = await token_to_account(access_token);
+    var account_id = corresponding_account.id;
+    var username_arr = await get_accounts();
+    var username_arr = username_arr.map(x => x.username);
+    var old_username = corresponding_account.username;
+    if(username_arr.includes(username) && old_username != username) res.send({ status: "ERR", msg: "username already exists" });
+    else
+    {
+        await update_account(account_id, { username, password });
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id, "EDIT_SELF", `was self edited`);
+        res.send("DONE");
+    }
 });
 
 app.post("/reset_user", async (req, res) => {
