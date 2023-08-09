@@ -41,7 +41,7 @@ export default function MultipleSelectCheckmarks({ editValue }) {
 
   return (
     <div>
-      <FormControl sx={{ m: 0, width: "100%", maxWidth: "100%", overflow: "hidden" }} >
+      <FormControl sx={{ m: 0, width: "100%" }} >
         <InputLabel id="demo-multiple-checkbox-label"></InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"

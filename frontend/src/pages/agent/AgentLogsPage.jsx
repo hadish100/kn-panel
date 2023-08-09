@@ -26,7 +26,7 @@ const AgentLogsPage = () => {
     const [selection, setSelection] = useState(null)
     const [totalPages, setTotalPages] = useState(0)
     const [actions, setActions] = useState([])
-    const [accounts, setAccounts] = useState([])
+    //const [accounts, setAccounts] = useState([])
 
     const access_token = sessionStorage.getItem("access_token")
     const fetchLogs = async (resetCurrentPage) => {
@@ -35,7 +35,9 @@ const AgentLogsPage = () => {
             number_of_rows: rowsPerPage,
             current_page: currentPage,
             actions,
-            accounts
+            // accounts,
+            start_date:Math.floor(new Date(Date.parse(startDate.$d)).setHours(0, 0, 0, 0)/1000),
+            end_date:Math.floor(new Date(Date.parse(endDate.$d)).setHours(23, 59, 59, 999)/1000)
         })
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
@@ -72,14 +74,14 @@ const AgentLogsPage = () => {
     ]
 
     const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT"]
-    const filter_accounts = JSON.parse(sessionStorage.getItem("agents")).map(agent => agent.username)
+    //const filter_accounts = JSON.parse(sessionStorage.getItem("agents")).map(agent => agent.username)
 
     return (
         <div className="admin-log-page">
             <div className="admin-log-page__filter">
                 <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
                     <Ms3 actions={actions_array} onChange={setActions} value={actions} lable="Actions" />
-                    <Ms3 actions={filter_accounts} onChange={setAccounts} value={accounts} lable="Accounts" />
+                    {/* <Ms3 actions={filter_accounts} onChange={setAccounts} value={accounts} lable="Accounts" /> */}
                 </div>
                 <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>

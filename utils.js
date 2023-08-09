@@ -39,6 +39,7 @@ const insert_to_users = async (obj) => { await users_clct.insertOne(obj); return
 const get_users = async (agent_id) => { const result = await users_clct.find({ agent_id }).toArray(); return result; }
 const get_all_users = async () => { const result = await users_clct.find({}).toArray(); return result; }
 const get_user1 = async (id) => { const result = await users_clct.find({ id }).toArray(); return result[0]; }
+const username_to_id = async (username) => { const result = await accounts_clct.find({ username },{id:1}).toArray();return result[0] && result[0].id }
 const get_user2 = async (username) => { const result = await users_clct.find({ username }).toArray(); return result[0]; }
 const update_user = async (id, value) => { await users_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
 
@@ -331,6 +332,7 @@ module.exports = {
     get_users,
     get_all_users,
     get_user1,
+    username_to_id,
     get_user2,
     update_user,
     insert_to_logs,

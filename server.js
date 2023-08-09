@@ -20,6 +20,7 @@ const { uid,
     get_users,
     get_all_users,
     get_user1,
+    username_to_id,
     get_user2,
     update_user,
     insert_to_logs,
@@ -108,23 +109,35 @@ app.post("/get_agent", async (req, res) => {
 });
 
 app.post("/get_agent_logs", async (req, res) => {
-    const { access_token, number_of_rows, current_page, actions, accounts } = req.body;
+    const { access_token, number_of_rows, current_page, actions,start_date,end_date } = req.body;
     var obj = await get_logs();
     var account_id = (await token_to_account(access_token)).id;
     obj.sort((a, b) => b.time - a.time);
     obj = obj.filter(x => x.account_id == account_id);
     if (actions.length) obj = obj.filter(x => actions.includes(x.action));
-    if (accounts.length) obj = obj.filter(x => accounts.includes(x.account_id));
+    if (start_date) obj = obj.filter(x => x.time >= start_date);
+    if (end_date) obj = obj.filter(x => x.time <= end_date);
     var total_pages = Math.ceil(obj.length / number_of_rows);
     obj = obj.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
     res.send({ obj, total_pages });
 });
 
-app.post("/get_admin_logs", async (req, res) => {
+app.post("/get_admin_logs", async (req, res) => 
+{
+    const { number_of_rows, current_page, actions, accounts,start_date,end_date } = req.body;
     var obj = await get_logs();
     obj.sort((a, b) => b.time - a.time);
-    obj = obj.slice(0, Math.min(obj.length, 10));
-    res.send(obj);
+    if (actions.length) obj = obj.filter(x => actions.includes(x.action));
+    if (accounts.length) 
+    {
+        var id_arr = await Promise.all(accounts.map(async (x) => await username_to_id(x)));
+        obj = obj.filter(x => id_arr.includes(x.account_id));
+    }
+    if (start_date) obj = obj.filter(x => x.time >= start_date);
+    if (end_date) obj = obj.filter(x => x.time <= end_date);
+    var total_pages = Math.ceil(obj.length / number_of_rows);
+    obj = obj.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
+    res.send({ obj, total_pages });
 });
 
 app.post("/login", async (req, res) => {
