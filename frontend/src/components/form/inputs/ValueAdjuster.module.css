@@ -1,0 +1,41 @@
+.label {
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    font-family: InterMedium;
+}
+
+.input {
+    width: 100%;
+    padding: 0.25rem 0.75rem;
+    border: var(--border-radius-lg) solid var(--border-clr);
+    border-radius: 4px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #4a5568;
+    background-color: #fff;
+}
+
+.input:hover,
+.input:focus {
+    border: 1px solid var(--border-clr-hover);
+}
+
+.input:first-of-type {
+    width: 70%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+.input:last-of-type {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    width: 30%;
+}
+
+.button {
+    padding: .375rem .75rem;
+    border: var(--border-radius-lg) solid var(--border-clr);
+    border-radius: 0;
+    border-right: none;
+}

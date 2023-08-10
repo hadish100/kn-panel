@@ -13,7 +13,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
         { label: "Username", type: "text", id: "username", name: "username" },
         { label: "Password", type: "text", id: "password", name: "password" },
         [
-            { label: "Volume", type: "number", id: "volume", name: "volume" },
+            { label: "Volume", type: "value-adjuster", id: "volume", name: "volume" },
             { label: "Minimum Volume", type: "number", id: "min_vol", name: "min_vol" },
         ],
         [
@@ -22,12 +22,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
         ],
         [
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
-            {
-                label: "Country",
-                type: "multi-select",
-                id: "country",
-                name: "country"
-            }
+            { label: "Country", type: "multi-select", id: "country", name: "country" }
         ]
     ]
 

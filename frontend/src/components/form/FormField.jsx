@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import Dropdown from "../Dropdown"
 import MultiSelect from "./inputs/MultiSelect"
 import MultiSelect2 from "./inputs/MultiSelect2"
+import ValueAdjuster from './inputs/ValueAdjuster'
 
 const FormField = ({
     label,
@@ -29,14 +30,21 @@ const FormField = ({
         )
     }
 
-    if(type === "multi-select2")
-    {
+    if (type === "multi-select2") {
         return (
             <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
                 <label className="modal__form__label" htmlFor={id}>{label}</label>
                 <MultiSelect2 editValue={editValue} />
             </motion.div>
-        )        
+        )
+    }
+
+    if (type === "value-adjuster") {
+        return (
+            <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+                <ValueAdjuster defaultValue={defaultValue} label={label} />
+            </motion.div>
+        )
     }
 
     return (

@@ -51,8 +51,8 @@ export default function MultipleSelectCheckmarks({ editValue }) {
           onChange={handleChange}
           input={<OutlinedInput label=""
             sx={{
-              height: 34
-              //border:'1px solid #e2e8f0'
+              height: 34,
+              // border: '1px solid #e2e8f0'
             }}
           />}
           renderValue={(selected) => selected.join(',')}
