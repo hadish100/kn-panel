@@ -12,6 +12,7 @@
     border: 1px solid var(--border-color);
     align-items: center;
     justify-content: center;
+    width: max-content;
 }
 
 .button:hover {
@@ -83,7 +84,6 @@
     height: 32px;
 }
 
-.wide_btn
-{
-    width:50%;
+.wide_btn {
+    width: 50%;
 }
