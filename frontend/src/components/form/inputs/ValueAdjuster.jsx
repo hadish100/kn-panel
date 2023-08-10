@@ -23,9 +23,9 @@ const ValueAdjuster = ({ defaultValue, label }) => {
     return (
         <>
             <label className={styles.label} htmlFor="value-adjuster">{label}</label>
-            <div className='flex'>
+            <div className='flex flex-row'>
                 <input className={styles.input} type="number" id="value-adjuster" name="value-adjuster" value={value} onChange={(e) => setValue(e.target.value)} />
-                <div className='flex'>
+                <div className='flex flex-row'>
                     <Button onClick={(e) => subtractFromValue(e)} className={`outlined ${styles.button}`}>-</Button>
                     <Button onClick={(e) => addToValue(e)} className={`outlined ${styles.button}`}>+</Button>
                 </div>
