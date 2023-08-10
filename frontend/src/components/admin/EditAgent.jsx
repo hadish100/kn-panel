@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as LoginAsAgentIcon } from '../../assets/svg/LoginAsAgent.svg'
-import Form from '../form/Form'
+import { AnimatePresence, motion } from 'framer-motion'
+import Modal from '../Modal';
+import LeadingIcon from '../LeadingIcon';
+import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg';
+import FormField from '../form/FormField';
+import Button from '../Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import IOSSwitch from '../form/inputs/IOSSwitch';
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem }) => {
+    const businessModeRef = useRef(null)
 
 
     const formFields = [
@@ -21,9 +29,10 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
             { label: "MaxDays", type: "number", id: "max_days", name: "maxDays" },
         ],
         [
+            { label: "Max non-active days", type: "number", id: "max_non_active_days", name: "max_non_active_days" },
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
-            { label: "Country", type: "multi-select", id: "country", name: "country" }
-        ]
+        ],
+        { label: "Country", type: "multi-select", id: "country", name: "country" },
     ]
 
 
@@ -40,10 +49,13 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                 document.getElementById("max_users").value,
                 document.getElementById("max_days").value,
                 document.getElementById("prefix").value,
-                document.querySelectorAll(".MuiSelect-nativeInput")[0].value
+                document.querySelectorAll(".MuiSelect-nativeInput")[0].value,
+                document.getElementById("max_non_active_days").value,
+                businessModeRef.current.checked,
             )
         },
     ]
+
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
@@ -52,19 +64,139 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
     ]
 
 
+    const b2gb = (bytes) => {
+        return (bytes / (2 ** 10) ** 3).toFixed(2);
+    }
+
+    const timeStampToDay = (timeStamp) => {
+        const time = timeStamp - Math.floor(Date.now() / 1000)
+        return Math.floor(time / 86400) + 1
+    }
+
+    const getDefaultValue = (item, field) => {
+        if (!item) {
+            return "";
+        }
+
+
+        if (field.id === "expire") {
+            return timeStampToDay(item[field.id]);
+        }
+
+        if (field.id === "data_limit") {
+            return b2gb(item[field.id]);
+        }
+
+        if (field.id === "volume") {
+            return b2gb(item[field.id]);
+        }
+
+
+
+        return item[field.id];
+    };
+
+    const formHeader = (
+        <header className="modal__header">
+            <LeadingIcon><EditIcon /></LeadingIcon>
+            <h1 className="modal__title">Edit agent</h1>
+            <div className="close-icon" onClick={onClose}>
+                <XMarkIcon />
+            </div>
+        </header>
+    )
+
+
+    const formFooter = (
+        <motion.footer className="edit-agent modal__footer" style={{ paddingTop: "1rem" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+                {secondaryButtons?.map((button, index) => (
+                    button.type === "button" ? (
+                        <Button
+                            key={index}
+                            className={button.className}
+                            onClick={button.onClick}
+                        >
+                            {button.icon}
+                        </Button>
+                    ) : button.type === "switch" ? (
+                        <FormControlLabel
+                            key={index}
+                            onClick={button.onClick}
+                            control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(!item.disable) : false} />}
+                        />
+                    ) : null
+                ))}
+            </div>
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                {primaryButtons.map((button, index) => (
+                    <Button
+                        key={index}
+                        className={button.className}
+                        onClick={button.onClick}
+                    >
+                        {button.label}
+                    </Button>
+                ))}
+            </div>
+        </motion.footer>
+    )
 
     return (
-        <Form
-            onClose={onClose}
-            showForm={showForm}
-            title="Edit agent"
-            iconComponent={<EditIcon />}
-            primaryButtons={primaryButtons}
-            secondaryButtons={secondaryButtons}
-            formFields={formFields}
-            item={item}
-            width={"40rem"}
-        />
+        <AnimatePresence>
+            {showForm && (
+                <Modal onClose={onClose} width={"40rem"}>
+                    {formHeader}
+                    <main className="modal__body" style={{ marginBottom: ".5rem" }}>
+                        <form className="modal__form">
+                            {formFields.map((group, rowIndex) => (
+                                <div key={rowIndex} className="flex gap-16">
+                                    {Array.isArray(group) ? group.map((field, index) => {
+                                        const defaultValue = getDefaultValue(item, field)
+                                        return (<FormField
+                                            key={index}
+                                            label={field.label}
+                                            type={field.type}
+                                            id={field.id}
+                                            name={field.name}
+                                            animateDelay={rowIndex * 0.1}
+                                            defaultValue={defaultValue}
+                                            disabled={field.disabled}
+                                            options={field.options}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            placeholder={field.placeholder}
+                                            editValue={item ? item.country ? item.country.split(",") : "" : ""}
+                                        />);
+                                    }) : (
+                                        <FormField
+                                            key={rowIndex}
+                                            label={group.label}
+                                            type={group.type}
+                                            id={group.id}
+                                            name={group.name}
+                                            animateDelay={rowIndex * 0.1}
+                                            defaultValue={getDefaultValue(item, group)}
+                                            disabled={group.disabled}
+                                            options={group.options}
+                                            value={group.value}
+                                            onChange={group.onChange}
+                                            placeholder={group.placeholder}
+                                            editValue={item ? item.country ? item.country.split(",") : "" : ""}
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </form>
+                    </main>
+                    <div className='flex gap-1.5' style={{ marginTop: "1rem" }}>
+                        <input ref={businessModeRef} type="checkbox" id="business-mode" name="business-mode" defaultChecked={false} value={false} />
+                        <label htmlFor="business-mode">Business Mode</label>
+                    </div>
+                    {formFooter}
+                </Modal>
+            )}
+        </AnimatePresence>
     )
 }
 

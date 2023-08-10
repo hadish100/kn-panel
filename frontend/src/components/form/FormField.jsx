@@ -42,7 +42,7 @@ const FormField = ({
     if (type === "value-adjuster") {
         return (
             <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
-                <ValueAdjuster defaultValue={defaultValue} label={label} />
+                <ValueAdjuster defaultValue={defaultValue} label={label} id={id} name={name} />
             </motion.div>
         )
     }
