@@ -174,6 +174,8 @@ app.post("/create_agent", async (req, res) => {
         max_days,
         prefix,
         country,
+        max_non_active_days,
+        business_mode,
         access_token } = req.body;
 
         var agents_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
@@ -200,11 +202,13 @@ app.post("/create_agent", async (req, res) => {
             min_vol: dnf(min_vol),
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
+            max_non_active_days:parseInt(max_non_active_days),
             prefix,
             country,
             used_traffic: 0.00,
             active_users: 0,
             total_users: 0,
+            business_mode:parseInt(business_mode),
             tokens: []
         });
 
@@ -450,6 +454,8 @@ app.post("/edit_agent", async (req, res) => {
         max_days,
         prefix,
         country,
+        max_non_active_days,
+        business_mode,
         access_token } = req.body;
 
         var agent = await get_account(agent_id);
@@ -478,13 +484,15 @@ app.post("/edit_agent", async (req, res) => {
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
             prefix,
+            max_non_active_days:parseInt(max_non_active_days),
+            business_mode:parseInt(business_mode),
             country
         });
         var account = await token_to_account(access_token);
         var log_msg = `edited agent ${name} `
         if(Math.floor(old_volume) != Math.floor(gb2b(volume))) 
         {
-            log_msg = `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
+            log_msg += `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
             insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`)
         }
         await insert_to_logs(account.id, "EDIT_AGENT", log_msg);

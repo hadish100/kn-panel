@@ -26,10 +26,10 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
         ],
         [
             { label: "Maximum Users", type: "number", id: "max_users", name: "max_users" },
-            { label: "MaxDays", type: "number", id: "max_days", name: "maxDays" },
+            { label: "Max Days", type: "number", id: "max_days", name: "maxDays" },
         ],
         [
-            { label: "Max non-active days", type: "number", id: "max_non_active_days", name: "max_non_active_days" },
+            { label: "Max Non-Active Days", type: "number", id: "max_non_active_days", name: "max_non_active_days" },
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
         ],
         { label: "Country", type: "multi-select", id: "country", name: "country" },

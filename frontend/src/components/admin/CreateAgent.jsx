@@ -26,9 +26,11 @@ const CreateAgent = ({ onClose, showForm }) => {
         max_users,
         max_days,
         prefix,
-        country
+        country,
+        max_non_active_days,
+        business_mode
     ) => {
-        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token });
+        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token,max_non_active_days,bussiness_mode:business_mode });
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create agent (BAD REQUEST)")
@@ -43,7 +45,7 @@ const CreateAgent = ({ onClose, showForm }) => {
     const handleSubmitForm = () => {
         // Gather form data
         const name = document.getElementById("name").value;
-        const username = document.getElementById("userName").value;
+        const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
         const volume = document.getElementById("volume").value;
         const min_vol = document.getElementById("min_vol").value;
@@ -54,7 +56,7 @@ const CreateAgent = ({ onClose, showForm }) => {
         const max_non_active_days = document.getElementById("max_non_active_days").value
         const businessModeValue = businessModeRef.current.checked
         // Send form data to backend
-        createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country)
+        createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country,max_non_active_days,businessModeValue)
     }
 
     const formFields = [
@@ -62,15 +64,15 @@ const CreateAgent = ({ onClose, showForm }) => {
         { label: "Username", type: "text", id: "username", name: "username" },
         { label: "Password", type: "text", id: "password", name: "password" },
         [
-            { label: "Volume", type: "value-adjuster", id: "volume", name: "volume" },
+            { label: "Volume", type: "number", id: "volume", name: "volume" },
             { label: "Minimum Volume", type: "number", id: "min_vol", name: "min_vol" },
         ],
         [
             { label: "Maximum Users", type: "number", id: "max_users", name: "max_users" },
-            { label: "MaxDays", type: "number", id: "max_days", name: "maxDays" },
+            { label: "Max Days", type: "number", id: "max_days", name: "maxDays" },
         ],
         [
-            { label: "Max non-active days", type: "number", id: "max_non_active_days", name: "max_non_active_days" },
+            { label: "Max Non-Active Days", type: "number", id: "max_non_active_days", name: "max_non_active_days" },
             { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
         ],
         { label: "Country", type: "multi-select", id: "country", name: "country" },
@@ -84,7 +86,7 @@ const CreateAgent = ({ onClose, showForm }) => {
     const formHeader = (
         <header className="modal__header">
             <LeadingIcon><AddUserIcon /></LeadingIcon>
-            <h1 className="modal__title">Edit agent</h1>
+            <h1 className="modal__title">Create agent</h1>
             <div className="close-icon" onClick={onClose}>
                 <XMarkIcon />
             </div>
