@@ -151,7 +151,7 @@ const CreateAgent = ({ onClose, showForm }) => {
                                 ))}
                             </form>
                         </main>
-                        <div className='flex gap-1.5' style={{ marginTop: "1rem" }}>
+                        <div className='flex gap-1.5 flex-row' style={{ marginTop: "1rem" }}>
                             <input ref={businessModeRef} type="checkbox" id="business-mode" name="business-mode" defaultChecked={false} value={false} />
                             <label htmlFor="business-mode">Business Mode</label>
                         </div>
