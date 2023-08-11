@@ -9,7 +9,7 @@ import Button from '../Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IOSSwitch from './inputs/IOSSwitch';
 
-const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item, width }) => {
+const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item, width, styles }) => {
 
     const b2gb = (bytes) => {
         return (bytes / (2 ** 10) ** 3).toFixed(2);
@@ -56,7 +56,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
     )
 
     const formFooter = (
-        <motion.footer className="modal__footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.footer className={`modal__footer ${styles?.footer}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
                 {secondaryButtons?.map((button, index) => (
                     button.type === "button" ? (
@@ -77,7 +77,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                     ) : null
                 ))}
             </div>
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <div className={styles?.primaryButtons} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                 {primaryButtons.map((button, index) => (
                     <Button
                         key={index}

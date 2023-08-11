@@ -3,7 +3,7 @@
     gap: 1rem;
 }
 
-@media (max-width: 470px) {
+@media (max-width: 410px) {
     .footer {
         align-items: flex-start;
         flex-direction: column;
