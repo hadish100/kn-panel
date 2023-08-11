@@ -1,0 +1,14 @@
+.footer {
+    padding-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+@media (max-width: 470px) {
+
+    .primaryButtons,
+    .primaryButtons>* {
+        width: 100%;
+    }
+}
