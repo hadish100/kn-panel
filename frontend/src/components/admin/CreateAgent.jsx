@@ -30,7 +30,7 @@ const CreateAgent = ({ onClose, showForm }) => {
         max_non_active_days,
         business_mode
     ) => {
-        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token,max_non_active_days,bussiness_mode:business_mode });
+        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token,max_non_active_days,business_mode });
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create agent (BAD REQUEST)")

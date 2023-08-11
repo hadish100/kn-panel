@@ -208,7 +208,7 @@ app.post("/create_agent", async (req, res) => {
             used_traffic: 0.00,
             active_users: 0,
             total_users: 0,
-            business_mode:parseInt(business_mode),
+            business_mode:business_mode?1:0,
             tokens: []
         });
 
@@ -485,7 +485,7 @@ app.post("/edit_agent", async (req, res) => {
             max_days: parseInt(max_days),
             prefix,
             max_non_active_days:parseInt(max_non_active_days),
-            business_mode:parseInt(business_mode),
+            business_mode:business_mode?1:0,
             country
         });
         var account = await token_to_account(access_token);
@@ -591,7 +591,7 @@ app.post("/edit_self", async (req, res) => {
         var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "EDIT_SELF", `was self edited`);
         res.send("DONE");
-    }
+    } 
 });
 
 app.post("/reset_user", async (req, res) => {
@@ -608,8 +608,7 @@ app.post("/reset_user", async (req, res) => {
         var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
 
         if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
-
-        else {
+        else {  
 
             await update_user(user_id, { used_traffic: 0 });
             await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
@@ -622,7 +621,6 @@ app.post("/reset_user", async (req, res) => {
     }
 
 });
-
 
 
 app.listen(5000, () => {

@@ -190,7 +190,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                         </form>
                     </main>
                     <div className='flex gap-1.5 flex-row' style={{ marginTop: "1rem" }}>
-                        <input ref={businessModeRef} type="checkbox" id="business-mode" name="business-mode" defaultChecked={false} value={false} />
+                        <input ref={businessModeRef} type="checkbox" id="business-mode" name="business-mode" defaultChecked={Boolean(item.business_mode)} value={Boolean(item.business_mode)} />
                         <label htmlFor="business-mode">Business Mode</label>
                     </div>
                     {formFooter}

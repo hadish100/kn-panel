@@ -63,6 +63,7 @@ connect_to_db().then(res => {
             else await update_panel(panel.id, info_obj);
 
             var marzban_users = await get_all_marzban_users(panel.panel_url, panel.panel_username, panel.panel_password);
+            console.log(marzban_users);
             if (marzban_users == "ERR") {
                 console.log(time + " ===> failed to fetch " + panel.panel_url);
                 continue;

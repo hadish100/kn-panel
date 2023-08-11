@@ -312,7 +312,7 @@ connect_to_db().then(res => {
     accounts_clct = res.accounts_clct;
     panels_clct = res.panels_clct;
     users_clct = res.users_clct;
-    logs_clct = res.logs_clct;
+    logs_clct = res.logs_clct; 
 });
 
 
