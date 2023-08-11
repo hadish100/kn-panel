@@ -150,7 +150,7 @@ connect_to_db().then(res => {
                 if(!user && marzban_user.username.split("_").length > 1)
                 {
                     var corresponding_agent = all_agents.find(agent => agent.prefix == marzban_user.username.split("_")[0]);
-                    if(corresponding_agent && corresponding_agent.country.split(",").includes(panel.panel_country))
+                    if(corresponding_agent && corresponding_agent.country.split(",").includes(panel.panel_country) && marzban_user.expire && marzban_user.data_limit)
                     {
                         await insert_to_users({
                             "id": uid(),
