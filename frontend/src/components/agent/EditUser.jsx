@@ -6,6 +6,7 @@ import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import Form from '../form/Form'
+import styles from "./EditUser.module.css"
 
 const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem }) => {
 
@@ -45,6 +46,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
             formFields={formFields}
             width={"40rem"}
             item={item}
+            styles={styles}
         />
     )
 }

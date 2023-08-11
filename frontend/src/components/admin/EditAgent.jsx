@@ -11,6 +11,7 @@ import FormField from '../form/FormField';
 import Button from '../Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IOSSwitch from '../form/inputs/IOSSwitch';
+import styles from "./EditAgent.module.css"
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem }) => {
     const businessModeRef = useRef(null)
@@ -108,7 +109,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
 
 
     const formFooter = (
-        <motion.footer className="edit-agent modal__footer" style={{ paddingTop: "1rem" }} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.footer className={`modal__footer ${styles.footer}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
                 {secondaryButtons?.map((button, index) => (
                     button.type === "button" ? (
@@ -128,7 +129,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                     ) : null
                 ))}
             </div>
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <div className={styles.primaryButtons} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                 {primaryButtons.map((button, index) => (
                     <Button
                         key={index}

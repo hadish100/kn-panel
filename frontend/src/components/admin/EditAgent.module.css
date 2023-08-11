@@ -1,0 +1,16 @@
+.footer {
+    padding-top: 1rem;
+    gap: 1rem;
+}
+
+@media (max-width: 470px) {
+    .footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .primaryButtons,
+    .primaryButtons>* {
+        width: 100%;
+    }
+}

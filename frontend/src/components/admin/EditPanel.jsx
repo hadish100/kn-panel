@@ -3,6 +3,7 @@ import React from 'react'
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import Form from '../form/Form'
+import styles from './EditPanel.module.css'
 
 const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditItem }) => {
 
@@ -48,6 +49,7 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditI
             formFields={formFields}
             item={item}
             width={"40rem"}
+            styles={styles}
         />
     )
 }

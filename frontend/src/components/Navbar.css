@@ -54,3 +54,9 @@
     transform: scaleX(1);
     color: var(--primary-clr-200);
 }
+
+@media (max-width: 420px) {
+    .navbar__links {
+        font-size: 12px;
+    }
+}
