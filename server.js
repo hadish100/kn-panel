@@ -314,7 +314,8 @@ app.post("/create_user", async (req, res) => {
                 corresponding_panel_id: selected_panel.id,
                 corresponding_panel: selected_panel.panel_url,
                 subscription_url: selected_panel.panel_url + mv.subscription_url,
-                links: mv.links
+                links: mv.links,
+                disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)}
             });
 
             await update_account(agent_id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit) });

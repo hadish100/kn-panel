@@ -5,6 +5,7 @@ const {
     sleep,
     get_account,
     update_account,
+    get_panel,
     get_panels,
     update_panel,
     get_all_users,
@@ -17,7 +18,8 @@ const {
     ping_panel,
     connect_to_db,
     auth_marzban,
-    insert_to_users
+    insert_to_users,
+    delete_vpn
 } = require("./utils");
 
 
@@ -63,7 +65,6 @@ connect_to_db().then(res => {
             else await update_panel(panel.id, info_obj);
 
             var marzban_users = await get_all_marzban_users(panel.panel_url, panel.panel_username, panel.panel_password);
-            console.log(marzban_users);
             if (marzban_users == "ERR") {
                 console.log(time + " ===> failed to fetch " + panel.panel_url);
                 continue;
@@ -72,6 +73,22 @@ connect_to_db().then(res => {
             marzban_users = marzban_users.users;
 
             for (db_user of db_users_arr) {
+
+                var cors_panel = await get_panel(db_user.corresponding_panel_id);
+                var cors_agent = await get_account(db_user.agent_id);
+        
+                if(!cors_panel)
+                {
+                    console.log("panel not found for user " + db_user.username + " deleting...");
+                    await users_clct.deleteOne({username: db_user.username});
+                }
+        
+                if(!cors_agent)
+                {
+                    console.log("agent not found for user " + db_user.username + " deleting...");
+                    await users_clct.deleteOne({username: db_user.username});
+                }
+
 
                 var user = marzban_users.find(user => user.username == db_user.username);
                 if (!user && db_user.corresponding_panel == panel.panel_url) {
@@ -99,6 +116,34 @@ connect_to_db().then(res => {
                         await update_account(agent.id, { volume: agent.volume });
                         await update_user(user.id, { used_traffic: marzban_user.used_traffic });
 
+                    }
+
+
+                    if(marzban_user.status == "expired" || marzban_user.status == "limited")
+                    {
+                        var agent = await get_account(user.agent_id);
+                        if(user.disable_counter.value > agent.max_non_active_days)
+                        { 
+                            var result = await delete_vpn(panel.panel_url, panel.panel_username, panel.panel_password,user.username);
+                            if (result != "ERR")  {
+                                if(agent.business_mode) await update_account(agent.id, { allocatable_data: dnf(agent.allocatable_data + b2gb(user.data_limit - user.used_traffic)) });
+                                await users_clct.deleteOne({ username:user.username });
+                                console.log("DELETING " + user.username + "...");
+                            }  
+                        }
+
+                        else if(Math.floor(Date.now() / 1000 ) > user.disable_counter.last_update + 86400)
+                        {
+                            await update_user(user.id, {disable_counter: {value:user.disable_counter.value+1,last_update: Math.floor(Date.now() / 1000 )}});
+                        }
+                    }
+
+                    else
+                    {
+                        if(user.disable_counter.value > 0)
+                        {
+                            await update_user(user.id, {disable_counter: {value:0,last_update: Math.floor(Date.now() / 1000 )}});
+                        }
                     }
                 }
 
