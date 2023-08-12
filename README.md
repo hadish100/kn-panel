@@ -15,10 +15,6 @@
 </p>
 
 <p align="center">
-<img src="readme/4.jpg">
-</p>
-
-<p align="center">
 <img src="readme/5.jpg">
 </p>
 
