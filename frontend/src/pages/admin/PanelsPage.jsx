@@ -14,7 +14,6 @@ import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard';
 import CircularProgress from '../../components/CircularProgress';
 import gbOrTb from "../../utils/gbOrTb"
-import { set } from 'express/lib/application'
 
 const PanelsPage = () => {
     const [showCreatePanel, setShowCreatePanel] = useState(false)
@@ -27,6 +26,7 @@ const PanelsPage = () => {
     const [refresh, setRefresh] = useState(false);
     const [searchedPanels, setSearchedPanels] = useState("")
     const [editMode, setEditMode] = useState(false)
+    const [deleteMode, setDeleteMode] = useState(false)
 
     useEffect(() => {
         setPanels((JSON.parse(sessionStorage.getItem("panels"))).filter((item) => {
@@ -57,6 +57,7 @@ const PanelsPage = () => {
 
     const handleVerifyDelete = async (e, panel_id) => {
         e.stopPropagation();
+        setDeleteMode(true)
         panel_id = selectedPanel.id;
         const access_token = sessionStorage.getItem("access_token");
         var req_res = await axios.post("/delete_panel", { access_token, panel_id });
@@ -75,6 +76,7 @@ const PanelsPage = () => {
         setPanels(panels)
         setShowEditPanel(false)
         setShowVerifyDelete(false)
+        setDeleteMode(false)
     }
 
     const handlePowerPanel = async (panel_id, disabled) => {
@@ -152,7 +154,6 @@ const PanelsPage = () => {
     var country_list = [...new Set(panels.map(panel => panel.panel_country))];
     sessionStorage.setItem("country_list", JSON.stringify(country_list));
 
-    console.log(editMode)
     return (
         <div className='admin_panels_body'>
             <PanelStats dataUsage={gbOrTb(total_data_usage)} activeUsers={total_active_panel_count} totalUsers={total_panel_count} />
@@ -176,7 +177,7 @@ const PanelsPage = () => {
                 onDeleteItem={handleDeletePanel}
                 onPowerItem={handlePowerPanel}
                 onEditItem={handleEditPanel}
-            // editMode={editMode}
+                editMode={editMode}
             />
 
             <ErrorCard
@@ -190,6 +191,7 @@ const PanelsPage = () => {
                 onClose={handleCloseVerifyDelete}
                 showForm={showVerifyDelete}
                 onDeleteItem={handleVerifyDelete}
+                deleteMode={deleteMode}
             />
 
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}

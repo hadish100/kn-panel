@@ -7,7 +7,7 @@ import LeadingIcon from '../LeadingIcon';
 import Modal from '../Modal';
 import Button from '../Button';
 
-const VerifyDelete = ({ onClose, showForm, onDeleteItem }) => {
+const VerifyDelete = ({ onClose, showForm, onDeleteItem, deleteMode }) => {
     return (
         <AnimatePresence>
             {showForm && (
@@ -23,7 +23,7 @@ const VerifyDelete = ({ onClose, showForm, onDeleteItem }) => {
                     </header>
                     <footer className="modal__footer">
                         <Button className="outlined wide_btn" onClick={onClose} > Cancel </Button>
-                        <Button className="primary wide_btn" onClick={onDeleteItem} > Delete </Button>
+                        <Button className="primary wide_btn" onClick={onDeleteItem} disabled={deleteMode}> {deleteMode ? "Deleting..." : "Delete"} </Button>
                     </footer>
                 </Modal>
             )}
