@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import Button from '../../components/Button'
 import "./AdminSettingsPage.css"
 import ErrorCard from '../../components/ErrorCard';
@@ -11,48 +11,41 @@ const AdminSettingsPage = () => {
     const [hasError, setHasError] = useState(false)
     const [ok_msg, setOk_msg] = useState("Credentials changed")
     const [hasOk, setHasOk] = useState(false)
+    const [saveMode, setSaveMode] = useState(false)
 
-    const changeCrendtials = async (e) =>
-    {
+    const changeCrendtials = async (e) => {
         e.preventDefault();
+        setSaveMode(true)
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
         const password2 = document.getElementById("password2").value;
 
 
-        if(!password || !password2 || !username)
-        {
+        if (!password || !password2 || !username) {
             setError_msg("Please fill all the fields")
             setHasError(true)
-            return
-        } 
-
-        if (password !== password2)
-        {
-            setError_msg("Passwords dont match")
+        } else if (password !== password2) {
+            setError_msg("Passwords don't match")
             setHasError(true)
-            return
         }
-
-        else
-        {
+        else {
             const access_token = sessionStorage.getItem("access_token")
-            var res = await axios.post("/edit_self", {username, password, access_token})
+            const res = await axios.post("/edit_self", { username, password, access_token })
 
-            if (res.data.status === "ERR") 
-            {
+            if (res.data.status === "ERR") {
                 setError_msg(res.data.msg || "BAD REQUEST")
                 setHasError(true)
-            } 
-            
-            else 
-            {
+            }
+
+            else {
                 setHasOk(true)
                 document.getElementById("username").value = "";
                 document.getElementById("password").value = "";
                 document.getElementById("password2").value = "";
             }
+            setSaveMode(false)
         }
+        setSaveMode(false)
     }
 
 
@@ -73,7 +66,7 @@ const AdminSettingsPage = () => {
                 </div>
             </div>
             <footer className="settings-page__footer">
-                <Button onClick={(e) => changeCrendtials(e)} className="primary">Save</Button>
+                <Button onClick={(e) => changeCrendtials(e)} className="primary" disabled={saveMode}>{saveMode ? "Saving..." : "Save"}</Button>
             </footer>
             <ErrorCard
                 hasError={hasError}

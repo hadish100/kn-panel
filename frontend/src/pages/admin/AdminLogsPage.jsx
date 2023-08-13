@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Search from '../../components/Search'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -29,17 +29,19 @@ const AdminLogsPage = () => {
     const [totalPages, setTotalPages] = useState(0)
     const [actions, setActions] = useState([])
     const [accounts, setAccounts] = useState([])
+    const [filterMode, setFilterMode] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token")
     const fetchLogs = async (resetCurrentPage) => {
+        setFilterMode(true)
         const res = await axios.post("/get_admin_logs", {
             access_token,
             number_of_rows: rowsPerPage,
             current_page: currentPage,
             actions,
             accounts,
-            start_date:Math.floor(new Date(Date.parse(startDate.$d)).setHours(0, 0, 0, 0)/1000),
-            end_date:Math.floor(new Date(Date.parse(endDate.$d)).setHours(23, 59, 59, 999)/1000)
+            start_date: Math.floor(new Date(Date.parse(startDate.$d)).setHours(0, 0, 0, 0) / 1000),
+            end_date: Math.floor(new Date(Date.parse(endDate.$d)).setHours(23, 59, 59, 999) / 1000)
         })
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
@@ -53,6 +55,7 @@ const AdminLogsPage = () => {
             setIsLogReady(true)
             if (resetCurrentPage) setCurrentPage(1)
         }
+        setFilterMode(false)
     }
 
     useEffect(() => {
@@ -75,7 +78,7 @@ const AdminLogsPage = () => {
         { label: 30, value: 30 },
     ]
 
-    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT","RECEIVE_DATA"]
+    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT", "RECEIVE_DATA"]
     const filter_accounts = (JSON.parse(sessionStorage.getItem("agents")).map(agent => agent.username)).concat(["admin"]).reverse()
 
     return (
@@ -105,7 +108,7 @@ const AdminLogsPage = () => {
                         />
                     </LocalizationProvider>
                 </div>
-                <Button onClick={() => fetchLogs(true)} style={{ alignSelf: "start" }} className='primary'>Filter</Button>
+                <Button onClick={() => fetchLogs(true)} style={{ alignSelf: "start" }} className='primary' disabled={filterMode}>{filterMode ? "Filtering..." : "Filter"}</Button>
             </div>
             {!IsLogReady && <div className='loading_gif_container'> <CircularProgress /> </div>}
             {IsLogReady && <LogsList logs={logs} />}
