@@ -10,6 +10,7 @@ import "../agent/CreateUser.css"
 const CreatePanel = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("Failed to create panel")
+    const [createMode, setCreateMode] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token");
 
@@ -22,6 +23,7 @@ const CreatePanel = ({ onClose, showForm }) => {
         panel_user_max_count,
         panel_traffic
     ) => {
+        setCreateMode(true)
         const res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_traffic, access_token });
 
         if (res.data.status === "ERR") {
@@ -32,6 +34,7 @@ const CreatePanel = ({ onClose, showForm }) => {
             sessionStorage.setItem("panels", JSON.stringify(panels));
             onClose()
         }
+        setCreateMode(false)
     }
 
     const handleSubmitForm = () => {
@@ -59,7 +62,7 @@ const CreatePanel = ({ onClose, showForm }) => {
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Create Panel", className: "primary", onClick: handleSubmitForm },
+        { label: "Create Panel", className: "primary", onClick: handleSubmitForm, disabled: createMode, pendingText: "Creating..." },
     ]
 
     return (
