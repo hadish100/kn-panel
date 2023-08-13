@@ -185,7 +185,7 @@ app.post("/create_agent", async (req, res) => {
 
     
 
-    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country || !max_non_active_days) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else if(prefix_arr.includes(prefix)) res.send({ status: "ERR", msg: "prefix already exists" });
     else if(name_arr.includes(name)) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username)) res.send({ status: "ERR", msg: "username already exists" });   
@@ -467,7 +467,7 @@ app.post("/edit_agent", async (req, res) => {
         var [old_prefix, old_name, old_username] = [agent.prefix, agent.name, agent.username];
 
 
-    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country || !max_non_active_days) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else if(prefix_arr.includes(prefix) && old_prefix != prefix) res.send({ status: "ERR", msg: "prefix already exists" });
     else if(name_arr.includes(name) && old_name != name) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username) && old_username != username) res.send({ status: "ERR", msg: "username already exists" }); 
