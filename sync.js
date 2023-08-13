@@ -95,7 +95,7 @@ connect_to_db().then(res => {
                     console.log("user " + db_user.username + " not found in " + panel.panel_url + " deleting...");
                     var user_obj = await get_user2(db_user.username);
                     var agent_obj = await get_account(user_obj.agent_id);
-                    await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
+                    if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
                     await users_clct.deleteOne({ username: db_user.username });
                 }
             }
@@ -126,7 +126,7 @@ connect_to_db().then(res => {
                         { 
                             var result = await delete_vpn(panel.panel_url, panel.panel_username, panel.panel_password,user.username);
                             if (result != "ERR")  {
-                                if(agent.business_mode) await update_account(agent.id, { allocatable_data: dnf(agent.allocatable_data + b2gb(user.data_limit - user.used_traffic)) });
+                                if( !(agent.business_mode == 1 && (user.used_traffic > user.data_limit/4 || (user.expire - user.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent.id, { allocatable_data: dnf(agent.allocatable_data + b2gb(user.data_limit - user.used_traffic)) });
                                 await users_clct.deleteOne({ username:user.username });
                                 console.log("DELETING " + user.username + "...");
                             }  
