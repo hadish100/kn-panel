@@ -93,16 +93,22 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
+            setResetMode(false)
+            return
         }
         let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
+            setResetMode(false)
+            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
+            setResetMode(false)
+            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -140,16 +146,22 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
+            setDeleteMode(false)
+            return
         }
         let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
+            setDeleteMode(false)
+            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
+            setDeleteMode(false)
+            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -202,12 +214,16 @@ const UsersPage = () => {
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
+            setEditMode(false)
+            return
         }
         let agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-        }
+            setEditMode(false)
+            return
+    }
 
         sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
         sessionStorage.setItem("agent", JSON.stringify(agent))
