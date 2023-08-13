@@ -86,26 +86,23 @@ const UsersPage = () => {
 
     const handleVerifyReset = async (e, username) => {
         e.stopPropagation()
-        resetMode(true)
+        setResetMode(true)
         username = selectedUser.username
         const access_token = sessionStorage.getItem("access_token")
         var req_res = await axios.post("/reset_user", { access_token, username })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return
         }
         let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -143,19 +140,16 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return
         }
         let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -176,19 +170,16 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return
         }
         var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -205,20 +196,17 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return
         }
 
         let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return
         }
         let agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return
         }
 
         sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
@@ -258,7 +246,6 @@ const UsersPage = () => {
     }
 
     const handleShowEditUser = (item) => {
-        console.log("ERERERERE")
         setSelectedUser(item)
         setShowEditUser(true)
     }

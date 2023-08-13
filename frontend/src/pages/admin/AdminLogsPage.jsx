@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import Search from '../../components/Search'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
-import LogsList from '../../components/admin/LogsList';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs'
+import LogsList from '../../components/admin/LogsList'
 import "./AdminLogsPage.css"
 import axios from 'axios'
-import ErrorCard from '../../components/ErrorCard';
-import CircularProgress from '../../components/CircularProgress';
-import Ms3 from '../../components/form/inputs/MultiSelect3';
-import Pagination from '../../components/Pagination';
-import Dropdown from '../../components/Dropdown';
-import Button from '../../components/Button';
+import ErrorCard from '../../components/ErrorCard'
+import CircularProgress from '../../components/CircularProgress'
+import Ms3 from '../../components/form/inputs/MultiSelect3'
+import Pagination from '../../components/Pagination'
+import Dropdown from '../../components/Dropdown'
+import Button from '../../components/Button'
 
 
 
 const AdminLogsPage = () => {
-    const [startDate, setStartDate] = useState(dayjs());
-    const [endDate, setEndDate] = useState(dayjs());
-    const [IsLogReady, setIsLogReady] = useState(false);
+    const [startDate, setStartDate] = useState(dayjs())
+    const [endDate, setEndDate] = useState(dayjs())
+    const [IsLogReady, setIsLogReady] = useState(false)
     const [logs, setLogs] = useState([])
     const [error_msg, setError_msg] = useState("")
     const [hasError, setHasError] = useState(false)
@@ -46,7 +46,8 @@ const AdminLogsPage = () => {
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
             setHasError(true)
-            return;
+            setFilterMode(false)
+            return
         }
 
         else {
@@ -54,6 +55,7 @@ const AdminLogsPage = () => {
             setTotalPages(res.data.total_pages)
             setIsLogReady(true)
             if (resetCurrentPage) setCurrentPage(1)
+            setFilterMode(false)
         }
         setFilterMode(false)
     }

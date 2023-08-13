@@ -44,9 +44,7 @@ const AgentLogsPage = () => {
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
             setHasError(true)
-            return
         }
-
         else {
             setLogs(res.data.obj)
             setTotalPages(res.data.total_pages)

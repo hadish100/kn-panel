@@ -1,41 +1,39 @@
 import React, { useState } from 'react'
-import axios from "axios";
+import axios from "axios"
 
-import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
-import ErrorCard from '../ErrorCard';
-import Form from '../form/Form';
+import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg"
+import ErrorCard from '../ErrorCard'
+import Form from '../form/Form'
 import "./CreateUser.css"
 
 const CreateUser = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
-    const [error_msg, setError_msg] = useState("failed to create user");
-    const access_token = sessionStorage.getItem("access_token");
+    const [error_msg, setError_msg] = useState("failed to create user")
+    const access_token = sessionStorage.getItem("access_token")
     const [createMode, setCreateMode] = useState(false)
 
     const createUserOnServer = async (
         username, data_limit, expire, country
     ) => {
         setCreateMode(true)
-        var res = await axios.post("/create_user", { username, expire, data_limit, country, access_token });
+        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
             setHasError(true)
         } else {
-            var users = (await axios.post("/get_users", { access_token })).data;
+            const users = (await axios.post("/get_users", { access_token })).data
             if (users.status === "ERR") {
                 setError_msg(users.msg)
                 setHasError(true)
-                return;
             }
-            var agent = (await axios.post("/get_agent", { access_token })).data;
+            const agent = (await axios.post("/get_agent", { access_token })).data
             if (agent.status === "ERR") {
                 setError_msg(agent.msg)
                 setHasError(true)
-                return;
             }
-            sessionStorage.setItem("users", JSON.stringify(users.obj_arr));
-            sessionStorage.setItem("agent", JSON.stringify(agent));
+            sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
+            sessionStorage.setItem("agent", JSON.stringify(agent))
             onClose()
         }
         setCreateMode(false)
@@ -43,10 +41,10 @@ const CreateUser = ({ onClose, showForm }) => {
 
     const handleSubmitForm = () => {
         // Gather form data
-        const username = document.getElementById("username").value;
-        const data_limit = document.getElementById("dataLimit").value;
-        const expire = document.getElementById("daysToExpire").value;
-        const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value;
+        const username = document.getElementById("username").value
+        const data_limit = document.getElementById("dataLimit").value
+        const expire = document.getElementById("daysToExpire").value
+        const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         // Send form data to backend
         createUserOnServer(username, data_limit, expire, country)
     }

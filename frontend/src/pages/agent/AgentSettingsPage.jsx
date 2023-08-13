@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import Button from '../../components/Button'
 import "../admin/AdminSettingsPage.css"
-import ErrorCard from '../../components/ErrorCard';
-import OkCard from '../../components/OkCard';
-import axios from 'axios';
+import ErrorCard from '../../components/ErrorCard'
+import OkCard from '../../components/OkCard'
+import axios from 'axios'
 
 const AdminSettingsPage = () => {
     const [error_msg, setError_msg] = useState("Passwords dont match")
@@ -13,19 +13,19 @@ const AdminSettingsPage = () => {
     const [saveMode, setSaveMode] = useState(false)
 
     const changeCrendtials = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
         setSaveMode(true)
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const password2 = document.getElementById("password2").value;
+        const username = document.getElementById("username").value
+        const password = document.getElementById("password").value
+        const password2 = document.getElementById("password2").value
 
 
         if (!password || !password2 || !username) {
+            setSaveMode(true)
             setError_msg("Please fill all the fields")
-            setHasError(true)
         } else if (password !== password2) {
+            setSaveMode(true)
             setError_msg("Passwords dont match")
-            setHasError(true)
         }
         else {
             const access_token = sessionStorage.getItem("access_token")
@@ -38,9 +38,9 @@ const AdminSettingsPage = () => {
 
             else {
                 setHasOk(true)
-                document.getElementById("username").value = "";
-                document.getElementById("password").value = "";
-                document.getElementById("password2").value = "";
+                document.getElementById("username").value = ""
+                document.getElementById("password").value = ""
+                document.getElementById("password2").value = ""
             }
             setSaveMode(false)
         }

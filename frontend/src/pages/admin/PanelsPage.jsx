@@ -11,8 +11,8 @@ import EditPanel from '../../components/admin/EditPanel'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import './PanelsPage.css'
 import "../../components/LoadingGif.css"
-import ErrorCard from '../../components/ErrorCard';
-import CircularProgress from '../../components/CircularProgress';
+import ErrorCard from '../../components/ErrorCard'
+import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
 
 const PanelsPage = () => {
@@ -23,7 +23,7 @@ const PanelsPage = () => {
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [panels, setPanels] = useState([])
     const [selectedPanel, setSelectedPanel] = useState(null)
-    const [refresh, setRefresh] = useState(false);
+    const [refresh, setRefresh] = useState(false)
     const [searchedPanels, setSearchedPanels] = useState("")
     const [editMode, setEditMode] = useState(false)
     const [deleteMode, setDeleteMode] = useState(false)
@@ -31,7 +31,7 @@ const PanelsPage = () => {
     useEffect(() => {
         setPanels((JSON.parse(sessionStorage.getItem("panels"))).filter((item) => {
             return item["panel_name"].toLowerCase().includes(searchedPanels.toLowerCase())
-        }));
+        }))
     }, [searchedPanels])
 
     const handleDeletePanel = async (e, panel_id) => {
@@ -39,38 +39,40 @@ const PanelsPage = () => {
     }
 
     const refreshItems = async () => {
-        setRefresh(true);
-        const access_token = sessionStorage.getItem("access_token");
+        setRefresh(true)
+        const access_token = sessionStorage.getItem("access_token")
         axios.post("/get_panels", { access_token }).then(res => {
 
             if (res.data.status === "ERR") {
                 setError_msg(res.data.msg)
                 setHasError(true)
-                return;
+                return
             }
 
-            sessionStorage.setItem("panels", JSON.stringify(res.data));
-            setPanels(res.data);
-            setRefresh(false);
-        });
+            sessionStorage.setItem("panels", JSON.stringify(res.data))
+            setPanels(res.data)
+            setRefresh(false)
+        })
     }
 
     const handleVerifyDelete = async (e, panel_id) => {
-        e.stopPropagation();
+        e.stopPropagation()
         setDeleteMode(true)
-        panel_id = selectedPanel.id;
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/delete_panel", { access_token, panel_id });
+        panel_id = selectedPanel.id
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/delete_panel", { access_token, panel_id })
         if (req_res.data.status == "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            setDeleteMode(false)
+            return
         }
-        let panels = (await axios.post("/get_panels", { access_token })).data;
+        let panels = (await axios.post("/get_panels", { access_token })).data
         if (panels.status == "ERR") {
             setError_msg(panels.msg)
             setHasError(true)
-            return;
+            setDeleteMode(false)
+            return
         }
         sessionStorage.setItem("panels", JSON.stringify(panels))
         setPanels(panels)
@@ -81,28 +83,28 @@ const PanelsPage = () => {
 
     const handlePowerPanel = async (panel_id, disabled) => {
 
-        const access_token = sessionStorage.getItem("access_token");
+        const access_token = sessionStorage.getItem("access_token")
         console.log(disabled)
-        var req_res;
-        if (disabled) req_res = await axios.post("/enable_panel", { access_token, panel_id });
-        else req_res = await axios.post("/disable_panel", { access_token, panel_id });
+        var req_res
+        if (disabled) req_res = await axios.post("/enable_panel", { access_token, panel_id })
+        else req_res = await axios.post("/disable_panel", { access_token, panel_id })
         if (req_res.data.status == "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            return
         }
-        var panels = (await axios.post("/get_panels", { access_token })).data;
+        var panels = (await axios.post("/get_panels", { access_token })).data
         if (panels.status == "ERR") {
             setError_msg(panels.msg)
             setHasError(true)
-            return;
+            return
         }
-        sessionStorage.setItem("panels", JSON.stringify(panels));
+        sessionStorage.setItem("panels", JSON.stringify(panels))
         setPanels(panels)
-        var slctd = panels.find(panel => panel.id === panel_id);
+        var slctd = panels.find(panel => panel.id === panel_id)
         setSelectedPanel(slctd)
         //setShowEditPanel(false)
-        console.log(panels);
+        console.log(panels)
 
     }
 
@@ -130,29 +132,31 @@ const PanelsPage = () => {
 
     const handleEditPanel = async (panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic) => {
         setEditMode(true)
-        const access_token = sessionStorage.getItem("access_token");
-        var res = await axios.post("/edit_panel", { panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic, access_token });
+        const access_token = sessionStorage.getItem("access_token")
+        var res = await axios.post("/edit_panel", { panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic, access_token })
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
             setHasError(true)
-            return;
+            setEditMode(false)
+            return
         }
-        var panels = (await axios.post("/get_panels", { access_token })).data;
+        var panels = (await axios.post("/get_panels", { access_token })).data
         if (panels.status === "ERR") {
             setError_msg(panels.msg)
             setHasError(true)
-            return;
+            setEditMode(false)
+            return
         }
-        sessionStorage.setItem("panels", JSON.stringify(panels));
+        sessionStorage.setItem("panels", JSON.stringify(panels))
         setPanels(panels)
         setShowEditPanel(false)
         setEditMode(false)
     }
-    var total_panel_count = panels.length;
-    var total_active_panel_count = panels.filter(panel => panel.disable == 0).length;
-    var total_data_usage = parseFloat(panels.reduce((acc, panel) => acc + panel.panel_data_usage, 0)).toFixed(2);
-    var country_list = [...new Set(panels.map(panel => panel.panel_country))];
-    sessionStorage.setItem("country_list", JSON.stringify(country_list));
+    var total_panel_count = panels.length
+    var total_active_panel_count = panels.filter(panel => panel.disable == 0).length
+    var total_data_usage = parseFloat(panels.reduce((acc, panel) => acc + panel.panel_data_usage, 0)).toFixed(2)
+    var country_list = [...new Set(panels.map(panel => panel.panel_country))]
+    sessionStorage.setItem("country_list", JSON.stringify(country_list))
 
     return (
         <div className='admin_panels_body'>

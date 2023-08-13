@@ -4,7 +4,7 @@ import axios from 'axios'
 import Search from '../../components/Search'
 import Button from '../../components/Button'
 import AgentsTable from '../../components/admin/AgentsTable'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 import AgentStats from '../../components/admin/AgentStats'
 import CreateAgent from '../../components/admin/CreateAgent'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
@@ -12,29 +12,29 @@ import EditAgent from '../../components/admin/EditAgent'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import './AgentsPage.css'
 import "../../components/LoadingGif.css"
-import ErrorCard from '../../components/ErrorCard';
-import CircularProgress from '../../components/CircularProgress';
+import ErrorCard from '../../components/ErrorCard'
+import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
 
 
 const AgentsPage = () => {
-    const [showCreateAgent, setShowCreateAgent] = useState(false);
-    const [showEditAgent, setShowEditAgent] = useState(false);
+    const [showCreateAgent, setShowCreateAgent] = useState(false)
+    const [showEditAgent, setShowEditAgent] = useState(false)
     const [error_msg, setError_msg] = useState("")
     const [hasError, setHasError] = useState(false)
-    const [refresh, setRefresh] = useState(false);
+    const [refresh, setRefresh] = useState(false)
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [agents, setAgents] = useState([])
     const [selectedAgent, setSelectedAgent] = useState(null)
     const [searchedAgents, setSearchedAgents] = useState("")
     const [editMode, setEditMode] = useState(false)
     const [deleteMode, setDeleteMode] = useState(false)
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     useEffect(() => {
         setAgents((JSON.parse(sessionStorage.getItem("agents"))).filter((item) => {
             return item["name"].toLowerCase().includes(searchedAgents.toLowerCase())
-        }));
+        }))
     }, [searchedAgents])
 
     const handleDeleteAgent = async (e, agent_id) => {
@@ -42,33 +42,33 @@ const AgentsPage = () => {
     }
 
     const refreshItems = async () => {
-        setRefresh(true);
-        const access_token = sessionStorage.getItem("access_token");
+        setRefresh(true)
+        const access_token = sessionStorage.getItem("access_token")
         axios.post("/get_agents", { access_token }).then(res => {
 
             if (res.data.status === "ERR") {
                 setError_msg(res.data.msg)
                 setHasError(true)
-                return;
+                return
             }
 
 
-            sessionStorage.setItem("agents", JSON.stringify(res.data));
+            sessionStorage.setItem("agents", JSON.stringify(res.data))
             setAgents(JSON.parse(sessionStorage.getItem("agents")))
-            setRefresh(false);
-        });
+            setRefresh(false)
+        })
     }
 
     const handleAdminAsAgent = async (e, username, password) => {
-        var res;
+        var res
 
-        try { res = await axios.post("/login", { username, password }, { timeout: 20000 }); }
+        try { res = await axios.post("/login", { username, password }, { timeout: 20000 }) }
 
         catch (err) {
-            if (err.response.status == 401) setError_msg("Please check your username and password");
-            else setError_msg("server is not responding");
-            res = {};
-            res.data = "ERR";
+            if (err.response.status == 401) setError_msg("Please check your username and password")
+            else setError_msg("server is not responding")
+            res = {}
+            res.data = "ERR"
             console.log(err)
         }
 
@@ -79,21 +79,21 @@ const AgentsPage = () => {
 
 
         else {
-            var access_token = res.data.access_token;
-            sessionStorage.setItem("isLoggedIn", "true");
+            var access_token = res.data.access_token
+            sessionStorage.setItem("isLoggedIn", "true")
             sessionStorage.setItem("access_token", res.data.access_token)
 
             try {
                 //var users = (await axios.post("/get_users", { access_token }, { timeout: 20000 })).data;
-                var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data;
+                var agent = (await axios.post("/get_agent", { access_token }, { timeout: 20000 })).data
                 //sessionStorage.setItem("users", JSON.stringify(users.data_obj));
-                sessionStorage.setItem("agent", JSON.stringify(agent));
-                window.location.href = "/agent/users";
+                sessionStorage.setItem("agent", JSON.stringify(agent))
+                window.location.href = "/agent/users"
             }
 
             catch (err) {
                 console.log(err)
-                setError_msg("server is not responding");
+                setError_msg("server is not responding")
                 setHasError(true)
             }
 
@@ -102,23 +102,25 @@ const AgentsPage = () => {
     }
 
     const handleVerifyDelete = async (e, agent_id) => {
-        e.stopPropagation();
+        e.stopPropagation()
         setDeleteMode(true)
-        agent_id = selectedAgent.id;
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/delete_agent", { access_token, agent_id });
+        agent_id = selectedAgent.id
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/delete_agent", { access_token, agent_id })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            setDeleteMode(false)
+            return
         }
-        let agents = (await axios.post("/get_agents", { access_token })).data;
+        let agents = (await axios.post("/get_agents", { access_token })).data
         if (agents.status === "ERR") {
             setError_msg(agents.msg)
             setHasError(true)
-            return;
+            setDeleteMode(false)
+            return
         }
-        console.log(agents);
+        console.log(agents)
         sessionStorage.setItem("agents", JSON.stringify(agents))
         setAgents(agents)
         setShowVerifyDelete(false)
@@ -127,44 +129,46 @@ const AgentsPage = () => {
     }
 
     const handlePowerAgent = async (agent_id, disabled) => {
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res;
-        if (disabled) req_res = await axios.post("/enable_agent", { access_token, agent_id });
-        else req_res = await axios.post("/disable_agent", { access_token, agent_id });
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res
+        if (disabled) req_res = await axios.post("/enable_agent", { access_token, agent_id })
+        else req_res = await axios.post("/disable_agent", { access_token, agent_id })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            return
         }
-        var agents = (await axios.post("/get_agents", { access_token })).data;
+        var agents = (await axios.post("/get_agents", { access_token })).data
         if (agents.status === "ERR") {
             setError_msg(agents.msg)
             setHasError(true)
-            return;
+            return
         }
-        sessionStorage.setItem("agents", JSON.stringify(agents));
+        sessionStorage.setItem("agents", JSON.stringify(agents))
         setAgents(agents)
-        var slctd = agents.find(agent => agent.id === agent_id);
+        var slctd = agents.find(agent => agent.id === agent_id)
         setSelectedAgent(slctd)
     }
 
 
     const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, business_mode) => {
         setEditMode(true)
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/edit_agent", { agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode });
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/edit_agent", { agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            setEditMode(false)
+            return
         }
-        var agents = (await axios.post("/get_agents", { access_token })).data;
+        var agents = (await axios.post("/get_agents", { access_token })).data
         if (agents.status === "ERR") {
             setError_msg(agents.msg)
             setHasError(true)
-            return;
+            setEditMode(false)
+            return
         }
-        sessionStorage.setItem("agents", JSON.stringify(agents));
+        sessionStorage.setItem("agents", JSON.stringify(agents))
         setAgents(agents)
         setShowEditAgent(false)
         setEditMode(false)
@@ -195,9 +199,9 @@ const AgentsPage = () => {
     }
 
 
-    var total_agent_count = agents.length;
-    var total_active_agent_count = agents.filter(agent => agent.disable === 0).length;
-    var total_data_usage = parseFloat(agents.reduce((acc, agent) => acc + agent.used_traffic, 0)).toFixed(2);
+    var total_agent_count = agents.length
+    var total_active_agent_count = agents.filter(agent => agent.disable === 0).length
+    var total_data_usage = parseFloat(agents.reduce((acc, agent) => acc + agent.used_traffic, 0)).toFixed(2)
 
 
 
