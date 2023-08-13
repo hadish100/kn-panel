@@ -8,7 +8,7 @@ import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import Form from '../form/Form'
 import styles from "./EditUser.module.css"
 
-const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem }) => {
+const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem, editMode }) => {
 
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username", disabled: true },
@@ -25,7 +25,9 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                 document.getElementById("data_limit").value,
                 document.getElementById("expire").value,
                 document.getElementById("country").value,
-            )
+            ),
+            disabled: editMode,
+            pendingText: "Editing..."
         },
     ]
 

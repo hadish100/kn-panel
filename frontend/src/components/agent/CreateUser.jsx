@@ -10,9 +10,12 @@ const CreateUser = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("failed to create user");
     const access_token = sessionStorage.getItem("access_token");
+    const [createMode, setCreateMode] = useState(false)
+
     const createUserOnServer = async (
         username, data_limit, expire, country
     ) => {
+        setCreateMode(true)
         var res = await axios.post("/create_user", { username, expire, data_limit, country, access_token });
 
         if (res.data.status === "ERR") {
@@ -35,6 +38,7 @@ const CreateUser = ({ onClose, showForm }) => {
             sessionStorage.setItem("agent", JSON.stringify(agent));
             onClose()
         }
+        setCreateMode(false)
     }
 
     const handleSubmitForm = () => {
@@ -56,7 +60,7 @@ const CreateUser = ({ onClose, showForm }) => {
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Create User", className: "primary", onClick: handleSubmitForm }
+        { label: "Create User", className: "primary", onClick: handleSubmitForm, disabled: createMode, pendingText: "Creating..." }
     ]
 
     return (

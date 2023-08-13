@@ -1,31 +1,32 @@
-import React from "react";
-import Button from "./Button";
-import { ReactComponent as ArrowLeftIcon } from "../assets/svg/arrow-left.svg";
-import { ReactComponent as ArrowRightIcon } from "../assets/svg/arrow-right.svg";
-import "./Pagination.css";
+import React from "react"
+
+import Button from "./Button"
+import { ReactComponent as ArrowLeftIcon } from "../assets/svg/arrow-left.svg"
+import { ReactComponent as ArrowRightIcon } from "../assets/svg/arrow-right.svg"
+import "./Pagination.css"
 
 const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
-    const maxVisiblePages = 3; // Maximum number of page numbers to display
-    const pageNumbers = [];
+    const maxVisiblePages = 3 // Maximum number of page numbers to display
+    const pageNumbers = []
 
-    let startPage = 1;
-    let endPage = totalPages;
+    let startPage = 1
+    let endPage = totalPages
 
     if (totalPages > maxVisiblePages) {
-        const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+        const halfVisiblePages = Math.floor(maxVisiblePages / 2)
 
         if (currentPage <= halfVisiblePages) {
-            endPage = maxVisiblePages;
+            endPage = maxVisiblePages
         } else if (currentPage >= totalPages - halfVisiblePages) {
-            startPage = totalPages - maxVisiblePages + 1;
+            startPage = totalPages - maxVisiblePages + 1
         } else {
-            startPage = currentPage - halfVisiblePages;
-            endPage = currentPage + halfVisiblePages;
+            startPage = currentPage - halfVisiblePages
+            endPage = currentPage + halfVisiblePages
         }
     }
 
     for (let i = startPage; i <= endPage; i++) {
-        pageNumbers.push(i);
+        pageNumbers.push(i)
     }
 
     return (
@@ -84,7 +85,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange }) => {
                 <ArrowRightIcon />
             </Button>
         </div>
-    );
-};
+    )
+}
 
-export default Pagination;
+export default Pagination

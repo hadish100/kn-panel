@@ -14,8 +14,8 @@ import EditUser from '../../components/agent/EditUser'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import VerifyReset from '../../components/admin/VerifyReset'
 import "../../components/LoadingGif.css"
-import ErrorCard from '../../components/ErrorCard';
-import CircularProgress from '../../components/CircularProgress';
+import ErrorCard from '../../components/ErrorCard'
+import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
 
 
@@ -31,29 +31,29 @@ const UsersPage = () => {
     const [showVerifyDelete, setShowVerifyDelete] = useState(false)
     const [showVerifyReset, setShowVerifyReset] = useState(false)
     const [users, setUsers] = useState([])
-    const [showQRCode, setShowQRCode] = useState(false);
-    const [refresh, setRefresh] = useState(true);
+    const [refresh, setRefresh] = useState(true)
     const [searchedUsers, setSearchedUsers] = useState("")
-    const [totalPages, setTotalPages] = useState(0)
+    const [totalPages, setTotalPages] = useState(1)
+    const [editMode, setEditMode] = useState(false)
+    const [deleteMode, setDeleteMode] = useState(false)
+    const [resetMode, setResetMode] = useState(false)
 
 
     const fetchUsers = async (resetCurrentPage) => {
-        const access_token = sessionStorage.getItem("access_token");
-        console.log("HI1")
-        const res = await axios.post("/get_users", {access_token,
+        const access_token = sessionStorage.getItem("access_token")
+        const res = await axios.post("/get_users", {
+            access_token,
             number_of_rows: rowsPerPage,
             current_page: currentPage,
-            search_filter:searchedUsers
+            search_filter: searchedUsers
         })
-        console.log(res.data)
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
             setHasError(true)
-            return;
+            return
         }
 
         else {
-            console.log(res.data)
             sessionStorage.setItem("users", JSON.stringify(res.data.obj_arr))
             setUsers(res.data.obj_arr)
             setTotalPages(res.data.total_pages)
@@ -63,16 +63,16 @@ const UsersPage = () => {
     }
 
 
- 
+
     useEffect(() => {
         setRefresh(true)
         fetchUsers()
     }, [rowsPerPage, currentPage, searchedUsers])
 
-    const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")));
+    const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")))
 
     const b2gb = (bytes) => {
-        return (bytes / (2 ** 10) ** 3).toFixed(2);
+        return (bytes / (2 ** 10) ** 3).toFixed(2)
     }
 
     const handleDeleteUser = async (e, username) => {
@@ -85,26 +85,27 @@ const UsersPage = () => {
 
 
     const handleVerifyReset = async (e, username) => {
-        e.stopPropagation();
-        username = selectedUser.username;
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/reset_user", { access_token, username });
+        e.stopPropagation()
+        resetMode(true)
+        username = selectedUser.username
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/reset_user", { access_token, username })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            return
         }
-        let users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return;
+            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return;
+            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -112,47 +113,49 @@ const UsersPage = () => {
         setUsers(users.obj_arr)
         setShowVerifyReset(false)
         setShowEditUser(false)
+        setResetMode(false)
     }
 
 
     const refreshItems = async () => {
-        setRefresh(true);
-        const access_token = sessionStorage.getItem("access_token");
+        setRefresh(true)
+        const access_token = sessionStorage.getItem("access_token")
 
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return;
+            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         console.log("HI2")
         setAgent(agent)
-        if(currentPage==1) fetchUsers(true)
+        if (currentPage == 1) fetchUsers(true)
         else setCurrentPage(1)
     }
 
     const handleVerifyDelete = async (e, username) => {
-        e.stopPropagation();
-        username = selectedUser.username;
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/delete_user", { access_token, username });
+        e.stopPropagation()
+        setDeleteMode(true)
+        username = selectedUser.username
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/delete_user", { access_token, username })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            return
         }
-        let users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return;
+            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return;
+            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -160,60 +163,62 @@ const UsersPage = () => {
         setUsers(users.obj_arr)
         setShowVerifyDelete(false)
         setShowEditUser(false)
+        setDeleteMode(false)
     }
 
     async function handlePowerUser(e, user_id, status) {
-        e.stopPropagation();
+        e.stopPropagation()
         console.log(status)
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res;
-        if (status === "active") req_res = await axios.post("/disable_user", { access_token, user_id });
-        else req_res = await axios.post("/enable_user", { access_token, user_id });
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res
+        if (status === "active") req_res = await axios.post("/disable_user", { access_token, user_id })
+        else req_res = await axios.post("/enable_user", { access_token, user_id })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            return
         }
-        var users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
+        var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return;
+            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return;
+            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
-        var slctd = users.find(user => user.id === user_id);
+        var slctd = users.find(user => user.id === user_id)
         setSelectedUser(slctd)
-        sessionStorage.setItem("users", JSON.stringify(users.obj_arr));
-        setUsers(users.obj_arr);
+        sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
+        setUsers(users.obj_arr)
     }
 
     const handleEditUser = async (user_id, data_limit, expire, country) => {
-        const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country });
+        setEditMode(true)
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            return
         }
 
-        let users = (await axios.post("/get_users", { access_token,number_of_rows: rowsPerPage,current_page: currentPage })).data;
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
-            return;
+            return
         }
-        let agent = (await axios.post("/get_agent", { access_token })).data;
+        let agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
             setHasError(true)
-            return;
+            return
         }
 
         sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
@@ -221,6 +226,7 @@ const UsersPage = () => {
         setUsers(users.obj_arr)
         setAgent(agent)
         setShowEditUser(false)
+        setEditMode(false)
     }
 
     const handleShowCreateUser = () => {
@@ -252,14 +258,10 @@ const UsersPage = () => {
     }
 
     const handleShowEditUser = (item) => {
-        console.log("ERERERERE");
+        console.log("ERERERERE")
         setSelectedUser(item)
         setShowEditUser(true)
     }
-
-
-
-    
 
     const handleSelect = (option) => {
         setSelection(option)
@@ -320,6 +322,7 @@ const UsersPage = () => {
                 onPowerItem={handlePowerUser}
                 onResetItem={handleResetUser}
                 onEditItem={handleEditUser}
+                editMode={editMode}
             />
 
             <ErrorCard
@@ -333,12 +336,14 @@ const UsersPage = () => {
                 onClose={handleCloseVerifyDelete}
                 showForm={showVerifyDelete}
                 onDeleteItem={handleVerifyDelete}
+                deleteMode={deleteMode}
             />
 
             <VerifyReset
                 onClose={handleCloseVerifyReset}
                 showForm={showVerifyReset}
                 onDeleteItem={handleVerifyReset}
+                resetMode={resetMode}
             />
         </div >
 
