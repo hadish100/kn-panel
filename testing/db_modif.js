@@ -12,8 +12,13 @@ connect_to_db().then(res => {
 
 async function modify_db()
 {
-    await users_clct.updateMany({},{$set: {disable_counter:{value:0,last_update:Math.floor(Date.now()/1000)}}});
-    await accounts_clct.updateMany({is_admin:0},{$set: {business_mode:0}});
-    await accounts_clct.updateMany({is_admin:0},{$set: {max_non_active_days:15}});
+    var users_arr = await users_clct.find({disable_counter:{$exists:false}}).toArray();
+    for(user of users_arr)
+    {
+        await users_clct.updateOne({username: user.username}, {$set: {disable_counter:{value:0,last_update:Math.floor(Date.now()/1000)}}});
+    }
+    // await users_clct.updateMany({},{$set: {disable_counter:{value:0,last_update:Math.floor(Date.now()/1000)}}});
+    // await accounts_clct.updateMany({is_admin:0},{$set: {business_mode:0}});
+    // await accounts_clct.updateMany({is_admin:0},{$set: {max_non_active_days:15}});
     console.log("DONE !!!");
 }

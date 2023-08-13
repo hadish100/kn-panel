@@ -234,7 +234,7 @@ const get_all_marzban_users = async (link, username, password) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
-        var res = await axios.get(link + "/api/users", { headers, timeout: 20000 });
+        var res = await axios.get(link + "/api/users", { headers, timeout: 30000 });
         return res.data;
     }
 

@@ -58,7 +58,7 @@ connect_to_db().then(res => {
 
             var info_obj = await get_panel_info(panel.panel_url, panel.panel_username, panel.panel_password);
             if (info_obj == "ERR") {
-                console.log(time + " ===> failed to fetch " + panel.panel_url);
+                console.log(time + " ===> failed to fetch ( INFO ) " + panel.panel_url);
                 await ping_panel(panel);
                 continue;
             }
@@ -66,7 +66,7 @@ connect_to_db().then(res => {
 
             var marzban_users = await get_all_marzban_users(panel.panel_url, panel.panel_username, panel.panel_password);
             if (marzban_users == "ERR") {
-                console.log(time + " ===> failed to fetch " + panel.panel_url);
+                console.log(time + " ===> failed to fetch ( USERS ) " + panel.panel_url);
                 continue;
             }
 
@@ -165,7 +165,9 @@ connect_to_db().then(res => {
                             "corresponding_panel_id": panel.id,
                             "corresponding_panel": panel.panel_url,
                             "subscription_url": panel.panel_url+marzban_user.subscription_url,
-                            "links": marzban_user.links
+                            "links": marzban_user.links,
+                            "created_at":Math.floor(Date.parse(marzban_user.created_at)/1000),
+                            "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)}
                           });
 
                         await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit });
