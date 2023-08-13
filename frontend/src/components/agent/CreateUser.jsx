@@ -26,11 +26,15 @@ const CreateUser = ({ onClose, showForm }) => {
             if (users.status === "ERR") {
                 setError_msg(users.msg)
                 setHasError(true)
+                setCreateMode(false)
+                return
             }
             const agent = (await axios.post("/get_agent", { access_token })).data
             if (agent.status === "ERR") {
                 setError_msg(agent.msg)
                 setHasError(true)
+                setCreateMode(false)
+                return
             }
             sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
             sessionStorage.setItem("agent", JSON.stringify(agent))
