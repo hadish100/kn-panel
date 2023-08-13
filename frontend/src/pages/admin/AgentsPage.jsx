@@ -27,6 +27,8 @@ const AgentsPage = () => {
     const [agents, setAgents] = useState([])
     const [selectedAgent, setSelectedAgent] = useState(null)
     const [searchedAgents, setSearchedAgents] = useState("")
+    const [editMode, setEditMode] = useState(false)
+    const [deleteMode, setDeleteMode] = useState(false)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -101,6 +103,7 @@ const AgentsPage = () => {
 
     const handleVerifyDelete = async (e, agent_id) => {
         e.stopPropagation();
+        setDeleteMode(true)
         agent_id = selectedAgent.id;
         const access_token = sessionStorage.getItem("access_token");
         var req_res = await axios.post("/delete_agent", { access_token, agent_id });
@@ -120,6 +123,7 @@ const AgentsPage = () => {
         setAgents(agents)
         setShowVerifyDelete(false)
         setShowEditAgent(false)
+        setDeleteMode(false)
     }
 
     const handlePowerAgent = async (agent_id, disabled) => {
@@ -145,10 +149,10 @@ const AgentsPage = () => {
     }
 
 
-    const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country,max_non_active_days,business_mode) => {
-
+    const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, business_mode) => {
+        setEditMode(true)
         const access_token = sessionStorage.getItem("access_token");
-        var req_res = await axios.post("/edit_agent", { agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token,max_non_active_days,business_mode });
+        var req_res = await axios.post("/edit_agent", { agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode });
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
@@ -163,8 +167,7 @@ const AgentsPage = () => {
         sessionStorage.setItem("agents", JSON.stringify(agents));
         setAgents(agents)
         setShowEditAgent(false)
-        console.log(agents);
-
+        setEditMode(false)
     }
 
 
@@ -226,6 +229,7 @@ const AgentsPage = () => {
                 onPowerItem={handlePowerAgent}
                 onEditItem={handleEditAgent}
                 onLoginItem={handleAdminAsAgent}
+                editMode={editMode}
             />
 
             <ErrorCard
@@ -239,6 +243,7 @@ const AgentsPage = () => {
                 onClose={handleCloseVerifyDelete}
                 showForm={showVerifyDelete}
                 onDeleteItem={handleVerifyDelete}
+                deleteMode={deleteMode}
             />
 
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
