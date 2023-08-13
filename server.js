@@ -279,7 +279,7 @@ app.post("/create_user", async (req, res) => {
     var agent_id = corresponding_agent.id;
     var all_usernames = [...(await get_all_users()).map(x => x.username)];
     var panels_arr = await get_panels();
-    var selected_panel = panels_arr.filter(x => x.panel_country == country && (x.active_users < x.panel_user_max_count) && (x.disable == 0))[0];
+    var selected_panel = panels_arr.filter(x => x.panel_country == country && (x.active_users < x.panel_user_max_count) && (x.disable == 0) && (panel_traffic > panel_data_usage) )[0];
     var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
