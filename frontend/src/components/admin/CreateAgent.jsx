@@ -13,6 +13,7 @@ import Button from '../Button';
 const CreateAgent = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("failed to create agent");
+    const [createMode, setCreateMode] = useState(false)
     const businessModeRef = useRef(null);
 
     const access_token = sessionStorage.getItem("access_token");
@@ -30,7 +31,8 @@ const CreateAgent = ({ onClose, showForm }) => {
         max_non_active_days,
         business_mode
     ) => {
-        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token,max_non_active_days,business_mode });
+        setCreateMode(true)
+        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode });
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create agent (BAD REQUEST)")
@@ -40,6 +42,7 @@ const CreateAgent = ({ onClose, showForm }) => {
             sessionStorage.setItem("agents", JSON.stringify(agents));
             onClose()
         }
+        setCreateMode(false)
     }
 
     const handleSubmitForm = () => {
@@ -56,7 +59,7 @@ const CreateAgent = ({ onClose, showForm }) => {
         const max_non_active_days = document.getElementById("max_non_active_days").value
         const businessModeValue = businessModeRef.current.checked
         // Send form data to backend
-        createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country,max_non_active_days,businessModeValue)
+        createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, businessModeValue)
     }
 
     const formFields = [
@@ -80,7 +83,7 @@ const CreateAgent = ({ onClose, showForm }) => {
 
     const primaryButtons = [
         { label: "Cancel", className: "outlined", onClick: onClose },
-        { label: "Create Agent", className: "primary", onClick: handleSubmitForm },
+        { label: "Create Agent", className: "primary", onClick: handleSubmitForm, disabled: createMode, pendingText: "Creating..." },
     ]
 
     const formHeader = (
@@ -102,8 +105,9 @@ const CreateAgent = ({ onClose, showForm }) => {
                         key={index}
                         className={button.className}
                         onClick={button.onClick}
+                        disabled={button.disabled}
                     >
-                        {button.label}
+                        {button.disabled ? button.pendingText : button.label}
                     </Button>
                 ))}
             </div>

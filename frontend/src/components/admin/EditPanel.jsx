@@ -3,9 +3,8 @@ import React from 'react'
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import Form from '../form/Form'
-import styles from './EditPanel.module.css'
 
-const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditItem }) => {
+const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditItem, editMode }) => {
 
     const formFields = [
         { label: "Name", type: "text", id: "panel_name", name: "name" },
@@ -29,7 +28,9 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditI
                 document.getElementById("panel_user_max_count").value,
                 document.getElementById("panel_traffic").value,
                 document.getElementById("panel_country").value
-            )
+            ),
+            disabled: editMode,
+            pendingText: "Editing..."
         },
     ]
 
@@ -42,15 +43,15 @@ const EditPanel = ({ onClose, showForm, onDeleteItem, item, onPowerItem, onEditI
         <Form
             onClose={onClose}
             showForm={showForm}
-            title="Edit panel"
+            title="Edit agent"
             iconComponent={<EditIcon />}
             primaryButtons={primaryButtons}
             secondaryButtons={secondaryButtons}
             formFields={formFields}
             item={item}
             width={"40rem"}
-            styles={styles}
         />
+
     )
 }
 

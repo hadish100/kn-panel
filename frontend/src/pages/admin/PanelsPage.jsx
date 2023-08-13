@@ -25,6 +25,8 @@ const PanelsPage = () => {
     const [selectedPanel, setSelectedPanel] = useState(null)
     const [refresh, setRefresh] = useState(false);
     const [searchedPanels, setSearchedPanels] = useState("")
+    const [editMode, setEditMode] = useState(false)
+    const [deleteMode, setDeleteMode] = useState(false)
 
     useEffect(() => {
         setPanels((JSON.parse(sessionStorage.getItem("panels"))).filter((item) => {
@@ -55,6 +57,7 @@ const PanelsPage = () => {
 
     const handleVerifyDelete = async (e, panel_id) => {
         e.stopPropagation();
+        setDeleteMode(true)
         panel_id = selectedPanel.id;
         const access_token = sessionStorage.getItem("access_token");
         var req_res = await axios.post("/delete_panel", { access_token, panel_id });
@@ -73,6 +76,7 @@ const PanelsPage = () => {
         setPanels(panels)
         setShowEditPanel(false)
         setShowVerifyDelete(false)
+        setDeleteMode(false)
     }
 
     const handlePowerPanel = async (panel_id, disabled) => {
@@ -125,7 +129,7 @@ const PanelsPage = () => {
     }
 
     const handleEditPanel = async (panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic) => {
-
+        setEditMode(true)
         const access_token = sessionStorage.getItem("access_token");
         var res = await axios.post("/edit_panel", { panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic, access_token });
         if (res.data.status === "ERR") {
@@ -142,7 +146,7 @@ const PanelsPage = () => {
         sessionStorage.setItem("panels", JSON.stringify(panels));
         setPanels(panels)
         setShowEditPanel(false)
-
+        setEditMode(false)
     }
     var total_panel_count = panels.length;
     var total_active_panel_count = panels.filter(panel => panel.disable == 0).length;
@@ -173,6 +177,7 @@ const PanelsPage = () => {
                 onDeleteItem={handleDeletePanel}
                 onPowerItem={handlePowerPanel}
                 onEditItem={handleEditPanel}
+                editMode={editMode}
             />
 
             <ErrorCard
@@ -186,6 +191,7 @@ const PanelsPage = () => {
                 onClose={handleCloseVerifyDelete}
                 showForm={showVerifyDelete}
                 onDeleteItem={handleVerifyDelete}
+                deleteMode={deleteMode}
             />
 
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}

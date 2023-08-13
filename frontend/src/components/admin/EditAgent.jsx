@@ -13,7 +13,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import IOSSwitch from '../form/inputs/IOSSwitch';
 import styles from "./EditAgent.module.css"
 
-const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem }) => {
+const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem, editMode }) => {
     const businessModeRef = useRef(null)
 
 
@@ -53,7 +53,9 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                 document.querySelectorAll(".MuiSelect-nativeInput")[0].value,
                 document.getElementById("max_non_active_days").value,
                 businessModeRef.current.checked,
-            )
+            ),
+            disabled: editMode,
+            pendingText: "Editing...",
         },
     ]
 
@@ -135,8 +137,9 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                         key={index}
                         className={button.className}
                         onClick={button.onClick}
+                        disabled={button.disabled}
                     >
-                        {button.label}
+                        {button.disabled ? button.pendingText : button.label}
                     </Button>
                 ))}
             </div>

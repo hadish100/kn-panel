@@ -83,8 +83,9 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                         key={index}
                         className={button.className}
                         onClick={button.onClick}
+                        disabled={button.disabled}
                     >
-                        {button.label}
+                        {button.disabled ? button.pendingText : button.label}
                     </Button>
                 ))}
             </div>
