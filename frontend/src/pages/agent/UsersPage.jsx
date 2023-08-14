@@ -208,6 +208,8 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
+            setEditMode(false)
+            return
         }
 
         let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
