@@ -1,4 +1,4 @@
-### this project will be open sourced soon
+### :small_blue_diamond: this project will be open sourced soon
 
 <p align="center">
 <img src="readme/1.jpg">
