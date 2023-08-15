@@ -65,7 +65,6 @@ async function auth_middleware(req, res, next) {
     // accounts.forEach(async (account) => 
     // {
     //     var tokens = account.tokens;
-    //     console.log(tokens);
     //     var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
     //     await update_account(account.id,{tokens:new_tokens});
     // });

@@ -69,7 +69,6 @@ const AgentsPage = () => {
             else setError_msg("server is not responding")
             res = {}
             res.data = "ERR"
-            console.log(err)
         }
 
 
@@ -92,7 +91,6 @@ const AgentsPage = () => {
             }
 
             catch (err) {
-                console.log(err)
                 setError_msg("server is not responding")
                 setHasError(true)
             }
@@ -120,7 +118,6 @@ const AgentsPage = () => {
             setDeleteMode(false)
             return
         }
-        console.log(agents)
         sessionStorage.setItem("agents", JSON.stringify(agents))
         setAgents(agents)
         setShowVerifyDelete(false)

@@ -131,7 +131,6 @@ const UsersPage = () => {
             return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
-        console.log("HI2")
         setAgent(agent)
         if (currentPage == 1) fetchUsers(true)
         else setCurrentPage(1)
@@ -174,7 +173,6 @@ const UsersPage = () => {
 
     async function handlePowerUser(e, user_id, status) {
         e.stopPropagation()
-        console.log(status)
         const access_token = sessionStorage.getItem("access_token")
         var req_res
         if (status === "active") req_res = await axios.post("/disable_user", { access_token, user_id })

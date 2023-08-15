@@ -12,7 +12,6 @@ const show_url = (str) =>
 }
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
-    console.log(items)
     return (
         <div className="wrapper" style={{ overflowX: "auto" }}>
             <table className="panels-table">

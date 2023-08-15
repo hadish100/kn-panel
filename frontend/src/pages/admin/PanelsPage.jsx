@@ -84,7 +84,6 @@ const PanelsPage = () => {
     const handlePowerPanel = async (panel_id, disabled) => {
 
         const access_token = sessionStorage.getItem("access_token")
-        console.log(disabled)
         var req_res
         if (disabled) req_res = await axios.post("/enable_panel", { access_token, panel_id })
         else req_res = await axios.post("/disable_panel", { access_token, panel_id })
@@ -104,7 +103,6 @@ const PanelsPage = () => {
         var slctd = panels.find(panel => panel.id === panel_id)
         setSelectedPanel(slctd)
         //setShowEditPanel(false)
-        console.log(panels)
 
     }
 

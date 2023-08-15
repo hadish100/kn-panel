@@ -2,7 +2,6 @@ import React from 'react';
 
 const parse_log = (log) =>
 {
-    console.log(log)
     var words = log.split(" ");
     words = words.map((word) => {
         if (word.startsWith("!")) {
