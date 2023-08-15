@@ -3,6 +3,7 @@ import React from "react"
 import "./AgentsTable.css"
 import EmptyTable from "../EmptyTable"
 import gbOrTb from "../../utils/gbOrTb"
+import businessModeIcon from "../../assets/bm.png"
 
 const b2gb = (bytes) => {
     return (bytes / (2 ** 10) ** 3).toFixed(2);
@@ -36,7 +37,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                         ? <EmptyTable tableType={"agent"} colSpan={8} onCreateButton={onCreateItem} />
                         : currentItems.map((item) => (
                             <tr onClick={() => onEditItem(item)} key={item.id} agent_id={item.id} >
-                                <td>{item.name}</td>
+                                <td className="agent_name_row" ><span>{item.name}</span> {item.business_mode && <img src={businessModeIcon} className="bm_icon" />} </td>
                                 <td>
                                     <span className={`status ${item.disable ? "limited" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}

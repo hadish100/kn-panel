@@ -7,7 +7,7 @@
     min-width: 100%;
     text-align: left;
     border-style: hidden;
-    border-collapse: collapse;
+    /* border-collapse: collapse; */
     border-spacing: 0;
 }
 
@@ -148,4 +148,20 @@
     justify-content:flex-start;
     width:300px;
 
+}
+
+.bm_icon
+{
+    background:transparent;
+    opacity:1;
+}
+
+.agent_name_row
+{
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    align-content:center;
+    flex-direction:row;
+    height:69px;
 }
