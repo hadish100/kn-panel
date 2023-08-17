@@ -3,49 +3,58 @@ const app = express();
 const sqlite3 = require('sqlite3').verbose();
 app.use(express.json());
 
-const db = new sqlite3.Database('db.sqlite3', sqlite3.OPEN_READWRITE, (err) => 
-{
-    if (err) 
-    {
-        console.error(err.message);
-    } 
-    
-    else 
-    {
-        console.log('Connected to the database !');
+const db_path = "/var/lib/marzban/db.sqlite3"
 
-        const selectQuery = `SELECT * FROM users`;
-        db.all(selectQuery, [], (err, rows) => 
+async function run_query(query)
+{ 
+    return new Promise((resolve, reject) => 
+    {
+        let db = new sqlite3.Database(db_path);
+        db.run(query, (err) => 
         {
-            if (err) 
-            {
-                console.error(err.message);
-            } 
-            
-            else 
-            {
-                rows.forEach(row => 
-                {
-                    console.log(row);
-                });
-            }
+            if (err) reject(err);
+            else resolve("OK");
         });
-    }
-});
+
+        db.close();
+    });
+}
 
 
-app.post("/edit_expire_times", async (req, res) => 
+
+app.use(async (req,res,next) =>
 {
+    var {api_key} = req.body;
+
+    if (api_key != "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr")
+    {
+        res.send("invalid api key");
+        return;
+    }
+
+    next();
+});
+
+app.post("/edit_expire_times", async (req,res) => 
+{
+    try
+    {
+        var result = await run_query(`UPDATE users SET expire = expire + ${req.body.added_time}`);
+        res.send("OK");
+    }
+
+    catch (err)
+    {
+        console.log(err);
+        res.send("ERR");
+    }
 
 });
 
-
-
-
-
-
-
-
+app.post("/dldb", async (req,res) =>
+{
+    res.sendFile(db_path);
+});
 
 
 
