@@ -37,7 +37,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                         ? <EmptyTable tableType={"agent"} colSpan={8} onCreateButton={onCreateItem} />
                         : currentItems.map((item) => (
                             <tr onClick={() => onEditItem(item)} key={item.id} agent_id={item.id} >
-                                <td className="agent_name_row" ><span>{item.name}</span> {item.business_mode && <img src={businessModeIcon} className="bm_icon" />} </td>
+                                <td className="agent_name_row" ><span>{item.name}</span> {item.business_mode?<img src={businessModeIcon} className="bm_icon" />:""} </td>
                                 <td>
                                     <span className={`status ${item.disable ? "limited" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}
