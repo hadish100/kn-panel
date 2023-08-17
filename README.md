@@ -1,5 +1,3 @@
-### :small_blue_diamond: this project will be open sourced soon
-
 <p align="center">
 <img src="readme/1.jpg">
 </p>
@@ -26,4 +24,20 @@
 
 <p align="center">
 <img src="readme/7.jpg">
+</p>
+
+<p align="center">
+<img src="readme/8.jpg">
+</p>
+
+<p align="center">
+<img src="readme/9.jpg">
+</p>
+
+<p align="center">
+<img src="readme/10.jpg">
+</p>
+
+<p align="center">
+<img src="readme/11.jpg">
 </p>
