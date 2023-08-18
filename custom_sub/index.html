@@ -1062,17 +1062,17 @@
 
                 <div class="main_container-2">
                     <span>اطلاعات بیشتر</span>
-                    <div class="container-2-selection-item">
+                    <div class="container-2-selection-item info_link1">
                         <i class="fa-brands fa-telegram fa-i-type-1 fa-lg"></i>
                         <span>کانال تلگرام</span>
                     </div>
 
-                    <div class="container-2-selection-item">
+                    <div class="container-2-selection-item info_link2">
                         <i class="fa-solid fa-server fa-i-type-1 fa-lg"></i>
                         <span>وضعیت سرور</span>
                     </div>
 
-                    <div class="container-2-selection-item">
+                    <div class="container-2-selection-item info_link3">
                         <i class="fa-solid fa-headset fa-i-type-1 fa-lg"></i> 
                         <span>پشتیبانی</span>
                     </div>
@@ -1089,7 +1089,7 @@
                                 <div class="protocol-row special-protocol-row">
                                     <span>ALL CONFIGS</span>
                                         <div class="icon_list">
-                                            <i class="copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg" onclick="copy_link(`{{ '\n'.join(user.links) }}`)" ></i>  
+                                            <i class="copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg" onclick='copy_link(`{{ "\n".join(user.links) }}`)' ></i>  
                                         </div> 
                                 </div>
 
@@ -1242,6 +1242,19 @@
                             }
 
 
+                            var info_links = 
+                            {
+                                "telegram_channel":"https://google1.com",
+                                "server_status":"https://google2.com",
+                                "backup":"https://google3.com"
+                            }
+
+
+                            $(".info_link1").click(function(){window.location.href = info_links.telegram_channel;});
+                            $(".info_link2").click(function(){window.location.href = info_links.server_status;});
+                            $(".info_link3").click(function(){window.location.href = info_links.backup;});
+
+
                             for(var i=2;i<document.querySelectorAll(".protocol-row").length;i++)
                             {
                                 var inner_html = document.querySelectorAll(".protocol-row")[i].querySelectorAll("span")[0].innerHTML;
@@ -1353,10 +1366,11 @@
             function copy_link(str)
             {
                 if(str == "PAGE") str = window.location.href;
-                //navigator.clipboard.writeText(str);
-                const tempInput = document.createElement('input');
-                tempInput.setAttribute('type', 'text');
-                tempInput.setAttribute('value', str);
+                // navigator.clipboard.writeText(str);
+                const tempInput = document.createElement('textarea');
+                // tempInput.setAttribute('type', 'text');
+                // tempInput.setAttribute('value', str);
+                tempInput.innerHTML = str;
                 document.body.appendChild(tempInput);
                 tempInput.select();
                 document.execCommand('copy');
