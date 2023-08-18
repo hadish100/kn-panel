@@ -3,11 +3,10 @@
         <title>{{ user.username }} - Sub Info</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-        <!-- <script src="/static/assets/moment.js"></script> -->
-        <!-- <script type="text/javascript" src="/static/assets/qrcode.js"></script> -->
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
         <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+        <script src="https://kit.fontawesome.com/462198e471.js" crossorigin="anonymous"></script>
         
 
         <style>
@@ -44,12 +43,6 @@
                 border:0;
                 background:#1a202c;
             }
-/* 
-            @font-face 
-            {
-                font-family:vaz;
-                src: url("/static/assets/Vazirmatn.ttf");
-            } */
 
             *
             {
@@ -126,11 +119,11 @@
                 transition:all 0.2s;
             }
 
-            .container-2-selection-item img 
+            .container-2-selection-item img , .fa-i-type-1
             {
                 margin-left:10px;
-                margin-right:20px;
-                width:30px;
+                margin-right:15px;
+                /* width:30px; */
             }
 
             .container-2-selection-item:hover
@@ -314,11 +307,13 @@
         
 
 
-            .protocol-row img
+            .protocol-row img , .fa-i-type-2
             {
-                width:25px;
+                /* width:25px; */
                 cursor: pointer;
+                margin-right:6px;
                 transition:all 0.2s;
+                
             }
 
             .dropdown_item
@@ -350,9 +345,9 @@
                 border-bottom-left-radius:0.75rem;
             }
 
-            .dropdown_item img
+            .dropdown_item img , .fa-i-type-4
             {
-                width:25px;
+                /* width:25px; */
                 transition:all 0.4s;
             }
 
@@ -367,7 +362,7 @@
                 font-size:20px;
             }
 
-            .dropdown_item_left > img
+            .dropdown_item_left > img , .fa-i-type-5
             {
                 width:35px;
             }
@@ -450,9 +445,9 @@
                 text-decoration: none;
             }
 
-            .dropdown_dl img 
+            .dropdown_dl img  , .fa-i-type-6
             {
-                width:20px;
+                /* width:10px; */
                 margin-right:20px;
             }
 
@@ -574,9 +569,9 @@
                 display:none;
             }
 
-            .close_popup img ,.close_qr img
+            .close_popup img ,.close_qr img , .fa-i-type-3
             {
-                width:20px;
+                /* width:20px; */
                 position:absolute;
                 top:10px;
                 right:10px;
@@ -967,18 +962,22 @@
                 margin-left: 10px;
             }
         }
+
+        i
+        {
+            color:white;
+        }
             
         </style>
 
     </head>
 
     <body>
-        <img src="/static/assets/accept.png" style="width:0px;height:0px" />
         <div class="popup_container">
             <div class="ovrly"></div>
             <div class="popup_box">
                 <div class="close_popup">
-                    <img src="/static/assets/cross.png">
+                    <i class="fa-solid fa-xmark fa-i-type-3 close_popup_i"></i>
                 </div>
                                     <div class="dropdown_title">FAIR VPN</div>
                     <div class="dropdown_vid">
@@ -988,7 +987,7 @@
                     </div>
                     <a class="dropdown_dl" href="https://google.com" >
                         <span style="text-decoration:none;color:white;" >دانلود</span>
-                        <img src="/static/assets/download.png" />
+                        <i class="fa-solid fa-download fa-i-type-6"></i>
                     </a>
                     <div class="dropdown_desc">
                         <span>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است</span>
@@ -1000,7 +999,7 @@
             <div class="qr_ovrly"></div>
             <div class="qr_box">
                 <div class="close_qr">
-                    <img src="/static/assets/cross.png">
+                    <i class="fa-solid fa-xmark fa-i-type-3"></i>
                 </div>
                     <div id="qrrr">
                         
@@ -1064,17 +1063,17 @@
                 <div class="main_container-2">
                     <span>اطلاعات بیشتر</span>
                     <div class="container-2-selection-item">
-                        <img src="/static/assets/telegram.png">
+                        <i class="fa-brands fa-telegram fa-i-type-1 fa-lg"></i>
                         <span>کانال تلگرام</span>
                     </div>
 
                     <div class="container-2-selection-item">
-                        <img src="/static/assets/server.png">
+                        <i class="fa-solid fa-server fa-i-type-1 fa-lg"></i>
                         <span>وضعیت سرور</span>
                     </div>
 
                     <div class="container-2-selection-item">
-                        <img src="/static/assets/support.png">
+                        <i class="fa-solid fa-headset fa-i-type-1 fa-lg"></i> 
                         <span>پشتیبانی</span>
                     </div>
 
@@ -1088,20 +1087,21 @@
                             <div class="slide1">
 
                                 <div class="protocol-row special-protocol-row">
-                                    <span>SUB LINK</span>
+                                    <span>ALL CONFIGS</span>
                                         <div class="icon_list">
-                                            <img class="copy_protocol" onclick="copy_link('PAGE')" src="/static/assets/copy.png">   
-                                            <img class="qrcode" onclick="show_qrcode('PAGE')" src="/static/assets/scan.png">  
+                                            <i class="copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg" onclick="copy_link(`{{ '\n'.join(user.links) }}`)" ></i>  
                                         </div> 
                                 </div>
 
                                 <div class="protocol-row special-protocol-row">
-                                    <span>ALL CONFIGS</span>
+                                    <span>SUB LINK</span>
                                         <div class="icon_list">
-                                            <img class="copy_protocol" onclick="copy_link(`{{ '\n'.join(user.links) }}`)" src="/static/assets/copy.png">   
-                                            <img class="qrcode" onclick="show_qrcode(`{{ '\n'.join(user.links) }}`)" src="/static/assets/scan.png">  
+                                            <i class="copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg" onclick="copy_link('PAGE')">   </i>
+                                            <i class="qrcode fa-solid fa-qrcode fa-i-type-2 fa-lg" onclick="show_qrcode('PAGE')" >  </i>
                                         </div> 
                                 </div>
+
+
 
                                 <div class="scrollable_view">
 
@@ -1112,8 +1112,8 @@
                                 <div class="protocol-row">
                                     <span>{{link}}</span>
                                         <div class="icon_list">
-                                              <img class="copy_protocol" onclick="copy_link('{{ link }}')" src="/static/assets/copy.png">   
-                                              <img class="qrcode" onclick="show_qrcode('{{ link }}')" src="/static/assets/scan.png">  
+                                            <i class="copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg" onclick="copy_link('{{ link }}')" >   </i>
+                                              <i class="qrcode fa-solid fa-qrcode fa-i-type-2 fa-lg" onclick="show_qrcode('{{ link }}')" >  </i>
                                         </div> 
                                 </div>
 
@@ -1126,22 +1126,22 @@
 
                             <div class="slide2">
                                 <div class="dropdown_item frst-chld" open-dd="1" >
-                                    <div class="dropdown_item_left"><img src="/static/assets/apple.png" > <span>IOS</span> </div>
-                                    <img class="drop_it" src="/static/assets/dd.png" >
+                                    <div class="dropdown_item_left"><i class="fa-brands fa-apple fa-i-type-5 fa-2x"></i>  <span>IOS</span> </div>
+                                    <i class="fa-solid fa-caret-down drop_it fa-i-type-4 fa-2x"></i>
                                 </div>
 
                                 <div class="dropdown_content" dropdown-id="1"></div>
 
                                 <div class="dropdown_item" open-dd="2" >
-                                    <div class="dropdown_item_left"><img src="/static/assets/android.png" > <span>ANDROID</span> </div>
-                                    <img class="drop_it" src="/static/assets/dd.png" >
+                                    <div class="dropdown_item_left"><i class="fa-brands fa-android fa-i-type-5 fa-2x"></i> <span>ANDROID</span> </div>
+                                    <i class="fa-solid fa-caret-down drop_it fa-i-type-4 fa-2x"></i>
                                 </div>
 
                                 <div class="dropdown_content" dropdown-id="2"></div>  
 
                                 <div class="dropdown_item last-chld" open-dd="3" >
-                                    <div class="dropdown_item_left"><img src="/static/assets/windows.png" > <span>WINDOWS</span> </div>
-                                    <img class="drop_it" src="/static/assets/dd.png" >
+                                    <div class="dropdown_item_left"><i class="fa-brands fa-windows fa-i-type-5 fa-2x"></i> <span>WINDOWS</span> </div>
+                                    <i class="fa-solid fa-caret-down drop_it fa-i-type-4 fa-2x"></i>
                                 </div>
 
                                 <div class="dropdown_content last_dropdown_content" dropdown-id="3"></div>  
@@ -1408,20 +1408,28 @@
                 $(my_this).css("opacity",0);
                 setTimeout(function()
                 {
-                    $(my_this).attr("src","/static/assets/accept.png");
-                    $(my_this).css("opacity",1);
+                    $(my_this).attr("class","copy_protocol fa-solid fa-check fa-i-type-2 fa-lg");
                 },300);
 
                 setTimeout(function()
                 {
-                    $(my_this).css("opacity",0);
-                },800);
+                    $(my_this).css("opacity",1);
+                },500);
 
                 setTimeout(function()
                 {
-                    $(my_this).attr("src","/static/assets/copy.png");
+                    $(my_this).css("opacity",0);
+                },1000);
+
+                setTimeout(function()
+                {
+                    $(my_this).attr("class","copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg");
+                },1300);
+
+                setTimeout(function()
+                {
                     $(my_this).css("opacity",1);
-                },1100);
+                },1500);
 
             });
 
@@ -1594,7 +1602,7 @@
                     },200);
             });
 
-            $(".close_popup img").click(function()
+            $(".close_popup_i").click(function()
             {
                 $(".ovrly").css("opacity","0"); 
                     $(".popup_box").css("opacity","0"); 
