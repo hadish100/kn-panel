@@ -525,8 +525,7 @@
                 backdrop-filter: blur(15px) saturate(180%);
                 background-color: rgba(224,224,224,0);
                 border: 1px solid rgba(224,224,224,0.25);
-                border-radius: 12px;
-                position:absolute;
+                position:fixed;
                 z-index: 99;
                 opacity:0;
                 transition:all 0.2s;
@@ -655,6 +654,17 @@
                 font-size: 23px;
             }
 
+            .container__long_txt
+            {
+                overflow: scroll;
+                align-items: flex-start;
+            }
+
+            .box__long_txt
+            {
+                margin:20px 0;
+            }
+
         @media only screen and (max-width: 2000px) 
         {
             .mainest_container
@@ -672,9 +682,19 @@
                 transform:scale(1.35)
             }
 
-            .popup_container  
+            .popup_box
             {
-                transform:scale(1.35)
+                width:800px;
+            }
+
+            .dropdown_title
+            {
+                font-size:30px;
+            }
+
+            .dropdown_desc
+            {
+                font-size:20px;
             }
         }
 
@@ -690,9 +710,19 @@
                 transform:scale(1.3)
             }
 
-            .popup_container  
+            .popup_box
             {
-                transform:scale(1.3)
+                width:800px;
+            }
+
+            .dropdown_title
+            {
+                font-size:30px;
+            }
+
+            .dropdown_desc
+            {
+                font-size:20px;
             }
         }
 
@@ -709,9 +739,19 @@
                 transform:scale(1.0)
             }
 
-            .popup_container  
+            .popup_box
             {
-                transform:scale(1.0)
+                width:700px;
+            }
+
+            .dropdown_title
+            {
+                font-size:25px;
+            }
+
+            .dropdown_desc
+            {
+                font-size:17px;
             }
         }
 
@@ -745,6 +785,11 @@
             .main_flexor 
             {
                 align-items: flex-start;
+            }
+
+            .popup_box
+            {
+                width:600px;
             }
 
         }
@@ -1118,7 +1163,7 @@
                                 {
                                     "id":1,
                                     "name":"fairvpn",
-                                    "description":"lorm ipson...",
+                                    "description":"lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...",
                                     "link":"http://google.com",
                                     "video":"http://google.com",
                                     "requirement":"android 5 or higher"
@@ -1126,7 +1171,7 @@
                                 {
                                     "id":2,
                                     "name":"fairvpn2",
-                                    "description":"lorm ipson...",
+                                    "description":"lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...",
                                     "link":"http://google.com",
                                     "video":"http://google.com",
                                     "requirement":"android 5 or higher"
@@ -1471,6 +1516,7 @@
                 $(".dropdown_vid video").attr("src",popup_obj.video);
                 $(".dropdown_desc span").html(popup_obj.description);
                 $(".dropdown_dl").attr("href",popup_obj.link);
+                
 
                 $(".popup_container").css("display","flex");
                 setTimeout(function()
@@ -1479,6 +1525,20 @@
                     $(".popup_box").css("opacity","1"); 
                     $(".popup_box").css("transform","scale(1)"); 
                 },50);
+
+
+                if(parseInt($(".popup_box").css("height")) > window.innerHeight - 50)
+                {
+                    $(".popup_box").addClass("box__long_txt");
+                    $(".popup_container").addClass("container__long_txt");
+                }
+
+                else
+                {
+                    $(".popup_box").removeClass("box__long_txt");
+                    $(".popup_container").removeClass("container__long_txt");
+                }
+
             });
 
             function show_qrcode(str)
