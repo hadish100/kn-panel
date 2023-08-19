@@ -180,20 +180,24 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
+            return;
         }
         var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
+        console.log(users)
         if (users.status === "ERR") {
             setError_msg(users.msg)
-            setHasError(true)
+            setHasError(true);
+            return;
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
-            setHasError(true)
+            setHasError(true);
+            return;
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
-        var slctd = users.find(user => user.id === user_id)
+        var slctd = users.obj_arr.find(user => user.id === user_id)
         setSelectedUser(slctd)
         sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
         setUsers(users.obj_arr)

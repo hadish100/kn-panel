@@ -23,16 +23,16 @@ async function dl_sqlite(url,destination)
 	});
 }
 
-// (async () => 
-// {
-//     const response = await axios({
-//         url:"http://159.223.18.18:7002/edit_expire_times",
-//         method: 'POST',
-//         responseType: 'stream',
-//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:300000}
-//       });
+(async () => 
+{
+    const response = await axios({
+        url:"http://159.223.18.18:7002/edit_expire_times",
+        method: 'POST',
+        responseType: 'stream',
+        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:1}
+      });
 
-//       console.log(response.data);
-// })();
+      console.log(response.data);
+})();
 
-dl_file("http://159.223.18.18:7002/dldb","db.sqlite3");
+// dl_file("http://159.223.18.18:7002/dldb","db.sqlite3");

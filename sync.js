@@ -105,8 +105,19 @@ connect_to_db().then(res => {
                 var all_agents = await accounts_clct.find({ is_admin: 0 }).toArray();
 
                 if (user) {
-                    if (user.status == "active" && marzban_user.status == "disabled") await update_user(user.id, { status: "disable", disable: 1 });
-                    else if (user.status == "disable" && marzban_user.status == "active") await update_user(user.id, { status: "active", disable: 0 });
+
+                    if( user.status != marzban_user.status && !(marzban_user.status == "disabled" && user.status == "disable") )
+                    {
+                        if (marzban_user.status == "disabled") 
+                        {
+                            await update_user(user.id, { status: "disable", disable: 1 });
+                        }
+                        
+                        else
+                        {
+                            await update_user(user.id, { status: marzban_user.status , disable: 0 });
+                        }
+                    }
 
                     if (user.expire != marzban_user.expire) await update_user(user.id, { expire: marzban_user.expire });
                     if (user.data_limit != marzban_user.data_limit) await update_user(user.id, { data_limit: marzban_user.data_limit });
@@ -155,8 +166,8 @@ connect_to_db().then(res => {
                         await insert_to_users({
                             "id": uid(),
                             "agent_id": corresponding_agent.id,
-                            "status": marzban_user.status=="active"?"active":"disable",
-                            "disable": marzban_user.status=="active"?0:1,
+                            "status": marzban_user.status=="disabled"?"disable":marzban_user.status,
+                            "disable": marzban_user.status=="disabled"?1:0,
                             "username": marzban_user.username,
                             "expire": marzban_user.expire,
                             "data_limit": marzban_user.data_limit,
