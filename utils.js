@@ -2,6 +2,7 @@ const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
 const fs = require('fs');
+const { get } = require('http');
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 
@@ -288,7 +289,7 @@ const ping_panel = async (panel_obj) => {
         }
 
         console.log("cannot connect to panel " + panel_obj.panel_url + " ===> disabling");
-        await update_panel(panel_obj.id, { disable: 1 });
+        await disable_panel(panel_obj.id);
 
     }
 
@@ -331,6 +332,40 @@ const delete_folder_content = async (dir_path) =>
     {
         await fs.promises.unlink(__dirname + "/" + dir_path + file);
     }
+}
+
+const disable_panel = async (panel_id) =>
+{
+    await update_panel(panel_id, { disable:1,last_online:Math.floor(Date.now()/1000) });
+    await users_clct.updateMany({corresponding_panel_id:panel_id},{$set:{status:"anonym",disable:0}})
+}
+
+const enable_panel = async (panel_id) =>
+{
+    var panel_obj = await get_panel(panel_id);
+    if(Math.floor(Date.now()/1000) - panel_obj.last_online > 1)
+    {
+        try
+        {
+            console.log("HI");
+            const response = await axios
+            ({
+                url: panel_obj.panel_url.split(":")[0] + ":" + panel_obj.panel_url.split(":")[1] + ":7002/edit_expire_times",
+                method: 'POST',
+                responseType: 'stream',
+                data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:Math.floor(Date.now()/1000) - panel_obj.last_online}
+            });  
+        }
+
+        catch(err)
+        {
+            console.log(err);
+        }
+
+    }
+
+    
+    await update_panel(panel_id, { disable:0,last_online:2000000000 });
 }
 
 async function connect_to_db() {
@@ -394,5 +429,7 @@ module.exports = {
     connect_to_db,
     dl_sqlite,
     show_url,
-    delete_folder_content
+    delete_folder_content,
+    disable_panel,
+    enable_panel
 }

@@ -42,7 +42,9 @@ const {
     connect_to_db,
     dl_sqlite,
     show_url,
-    delete_folder_content
+    delete_folder_content,
+    enable_panel,
+    disable_panel
 } = require("./utils");
 
 
@@ -386,7 +388,7 @@ app.post("/delete_user", async (req, res) => {
 
 app.post("/disable_panel", async (req, res) => {
     var { access_token, panel_id } = req.body;
-    await update_panel(panel_id, { disable: 1 });
+    await disable_panel(panel_id);
     var panel_obj = await get_panel(panel_id);
     var account_id = (await token_to_account(access_token)).id;
     await insert_to_logs(account_id, "DISABLE_PANEL", `disabled panel !${panel_obj.panel_name}`);
@@ -427,7 +429,7 @@ app.post("/enable_agent", async (req, res) => {
 
 app.post("/enable_panel", async (req, res) => {
     var { access_token, panel_id } = req.body;
-    await update_panel(panel_id, { disable: 0 });
+    await enable_panel(panel_id);
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(panel_id);
     await insert_to_logs(account.id, "ENABLE_PANEL", `enabled panel !${panel_obj.panel_name}`);

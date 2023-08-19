@@ -19,7 +19,8 @@ const {
     connect_to_db,
     auth_marzban,
     insert_to_users,
-    delete_vpn
+    delete_vpn,
+    enable_panel
 } = require("./utils");
 
 
@@ -48,7 +49,7 @@ connect_to_db().then(res => {
 
                 else
                 {
-                    await update_panel(panel.id, {disable: 0});
+                    await enable_panel(panel.id);
                     console.log("panel " + panel.panel_url + " is now enabled");
                 }
             }
