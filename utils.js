@@ -343,11 +343,10 @@ const disable_panel = async (panel_id) =>
 const enable_panel = async (panel_id) =>
 {
     var panel_obj = await get_panel(panel_id);
-    if(Math.floor(Date.now()/1000) - panel_obj.last_online > 1)
+    if(Math.floor(Date.now()/1000) - panel_obj.last_online > 600)
     {
         try
         {
-            console.log("HI");
             const response = await axios
             ({
                 url: panel_obj.panel_url.split(":")[0] + ":" + panel_obj.panel_url.split(":")[1] + ":7002/edit_expire_times",
