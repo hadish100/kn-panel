@@ -11,12 +11,10 @@
 
 .timer-bar__filler {
     animation-duration: --duration;
-
     height: 6px;
     border-radius: 50px;
     background-color: #396fe4;
-
-    animation: timer calc(var(--duration) * 1s) linear forwards;
+    animation: timer calc(var(--duration) * 1s) linear 0.2s forwards;
     transform-origin: left center;
 }
 

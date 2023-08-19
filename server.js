@@ -1,5 +1,7 @@
 const express = require('express'); const app = express();
 const axios = require('axios');
+const fs = require('fs');
+var AdmZip = require("adm-zip");
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
 
@@ -37,7 +39,10 @@ const {
     edit_vpn,
     reload_agents,
     reset_marzban_user,
-    connect_to_db
+    connect_to_db,
+    dl_sqlite,
+    show_url,
+    delete_folder_content
 } = require("./utils");
 
 
@@ -618,6 +623,55 @@ app.post("/reset_user", async (req, res) => {
         }
 
 
+    }
+
+});
+
+app.post("/dldb", async (req, res) => 
+{
+
+    const account = await token_to_account(req.body.access_token);
+
+    if(account.is_admin == 0) res.send({status:"ERR",msg:"you are not admin"});
+
+    else
+    {
+        var users = await get_all_users();
+        var accounts = await get_accounts();
+        var panels = await get_panels();
+        var logs = await get_logs();
+    
+        await fs.promises.writeFile("dbbu/main/users.json",JSON.stringify(users));
+        await fs.promises.writeFile("dbbu/main/accounts.json",JSON.stringify(accounts));
+        await fs.promises.writeFile("dbbu/main/panels.json",JSON.stringify(panels));
+        await fs.promises.writeFile("dbbu/main/logs.json",JSON.stringify(logs));
+    
+
+        for(panel of panels)
+        {
+            var sqlite_endpoint = panel.panel_url.split(":")[0] + ":" + panel.panel_url.split(":")[1] + ":7002/dldb";
+
+            try
+            {
+                await dl_sqlite(sqlite_endpoint,"dbbu/marzban/" + show_url(panel.panel_url) + ".sqlite3");
+            }
+
+            catch(err)
+            {
+                continue;
+            }
+            
+        }
+
+        var zip = new AdmZip();
+        var zip_id = Date.now();
+        zip.addLocalFolder("dbbu/main","main");
+        zip.addLocalFolder("dbbu/marzban","marzban");
+        zip.writeZip("frontend/public/dbdl/db"+zip_id+".zip");
+        await delete_folder_content("dbbu/main/");
+        await delete_folder_content("dbbu/marzban/");
+        var dl_url = "/dbdl/db"+zip_id+".zip";
+        res.send("DONE>"+dl_url);
     }
 
 });

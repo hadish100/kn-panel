@@ -15,7 +15,6 @@ import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard'
 import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
-import MessageCard from '../../components/MessageCard'
 
 
 const AgentsPage = () => {
@@ -247,6 +246,7 @@ const AgentsPage = () => {
                 onDeleteItem={handleVerifyDelete}
                 deleteMode={deleteMode}
             />
+
 
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
 

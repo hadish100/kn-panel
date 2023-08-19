@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
+const fs = require('fs');
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 
@@ -296,6 +297,42 @@ const ping_panel = async (panel_obj) => {
     }
 }
 
+const dl_sqlite = async (url,destination) =>
+{
+	const response = await axios
+	({
+	  url,
+	  method: 'POST',
+	  responseType: 'stream',
+      data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
+	});
+  
+		
+	const writer = fs.createWriteStream(destination);
+  
+	response.data.pipe(writer);
+  
+	return new Promise((resolve, reject) => 
+	{
+	  writer.on('finish', resolve);
+	  writer.on('error', reject);
+	});
+}
+
+const show_url = (str) => {
+    str = str.replace(/^https?:\/\//, '');
+    str = str.replace(/:\d+$/, '');
+    return str;
+}
+
+const delete_folder_content = async (dir_path) => 
+{
+    for (const file of await fs.promises.readdir(dir_path)) 
+    {
+        await fs.promises.unlink(__dirname + "/" + dir_path + file);
+    }
+}
+
 async function connect_to_db() {
     await client.connect();
     db = client.db('KN_PANEL');
@@ -354,5 +391,8 @@ module.exports = {
     reload_agents,
     reset_marzban_user,
     ping_panel,
-    connect_to_db
+    connect_to_db,
+    dl_sqlite,
+    show_url,
+    delete_folder_content
 }

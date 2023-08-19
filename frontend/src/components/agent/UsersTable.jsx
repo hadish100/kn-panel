@@ -12,8 +12,6 @@ import handleExpireTime from "../../utils/expire-time-util";
 import EmptyTable from "../EmptyTable";
 
 const show_url = (str) => {
-    //remove http or https from the beginning and port at the end
-    console.log(str);
     str = str.replace(/^https?:\/\//, '');
     str = str.replace(/:\d+$/, '');
     return "(" + str + ")";
