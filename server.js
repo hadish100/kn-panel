@@ -40,7 +40,7 @@ const {
     reload_agents,
     reset_marzban_user,
     connect_to_db,
-    dl_sqlite,
+    dl_file,
     show_url,
     delete_folder_content,
     enable_panel,
@@ -642,6 +642,10 @@ app.post("/dldb", async (req, res) =>
         var accounts = await get_accounts();
         var panels = await get_panels();
         var logs = await get_logs();
+
+        await fs.promises.mkdir("dbbu");
+        await fs.promises.mkdir("dbbu/main");
+        await fs.promises.mkdir("dbbu/marzban");
     
         await fs.promises.writeFile("dbbu/main/users.json",JSON.stringify(users));
         await fs.promises.writeFile("dbbu/main/accounts.json",JSON.stringify(accounts));
@@ -655,7 +659,10 @@ app.post("/dldb", async (req, res) =>
 
             try
             {
-                await dl_sqlite(sqlite_endpoint,"dbbu/marzban/" + show_url(panel.panel_url) + ".sqlite3");
+                await dl_file(sqlite_endpoint,"dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
+                var zip = new AdmZip("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
+                zip.extractAllTo("dbbu/marzban/" + show_url(panel.panel_url),true);
+                await fs.promises.unlink("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
             }
 
             catch(err)
@@ -670,8 +677,7 @@ app.post("/dldb", async (req, res) =>
         zip.addLocalFolder("dbbu/main","main");
         zip.addLocalFolder("dbbu/marzban","marzban");
         zip.writeZip("frontend/public/dbdl/db"+zip_id+".zip");
-        await delete_folder_content("dbbu/main/");
-        await delete_folder_content("dbbu/marzban/");
+        await delete_folder_content("dbbu");
         var dl_url = "/dbdl/db"+zip_id+".zip";
         res.send("DONE>"+dl_url);
     }

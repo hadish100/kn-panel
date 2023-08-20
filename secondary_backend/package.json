@@ -9,6 +9,7 @@
   "author": "hadish",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.5.10",
     "express": "^4.18.2",
     "sqlite3": "^5.1.6"
   }

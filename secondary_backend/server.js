@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+var AdmZip = require("adm-zip");
 const sqlite3 = require('sqlite3').verbose();
 app.use(express.json());
 
@@ -53,7 +54,13 @@ app.post("/edit_expire_times", async (req,res) =>
 
 app.post("/dldb", async (req,res) =>
 {
-    res.sendFile(db_path);
+    var zip = new AdmZip();
+    var zip_id = Date.now();
+    var final_file = "/var/lib/bu"+zip_id+".zip"
+    zip.addLocalFolder("/var/lib/marzban","lib");
+    zip.addLocalFolder("/opt/marzban","opt");
+    zip.writeZip(final_file);
+    res.sendFile(final_file);
 });
 
 

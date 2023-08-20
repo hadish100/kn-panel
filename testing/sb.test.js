@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 
-async function dl_sqlite(url,destination) 
+async function dl_file(url,destination) 
 {
 	const response = await axios
 	({
@@ -35,4 +35,4 @@ async function dl_sqlite(url,destination)
       console.log(response.data);
 })();
 
-// dl_file("http://159.223.18.18:7002/dldb","db.sqlite3");
+// dl_file("http://159.223.18.18:7002/dldb","db.zip");

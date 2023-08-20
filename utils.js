@@ -298,7 +298,7 @@ const ping_panel = async (panel_obj) => {
     }
 }
 
-const dl_sqlite = async (url,destination) =>
+const dl_file = async (url,destination) =>
 {
 	const response = await axios
 	({
@@ -328,10 +328,7 @@ const show_url = (str) => {
 
 const delete_folder_content = async (dir_path) => 
 {
-    for (const file of await fs.promises.readdir(dir_path)) 
-    {
-        await fs.promises.unlink(__dirname + "/" + dir_path + file);
-    }
+    await fs.promises.rm(dir_path, { recursive: true, force: true });
 }
 
 const disable_panel = async (panel_id) =>
@@ -426,7 +423,7 @@ module.exports = {
     reset_marzban_user,
     ping_panel,
     connect_to_db,
-    dl_sqlite,
+    dl_file,
     show_url,
     delete_folder_content,
     disable_panel,
