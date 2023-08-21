@@ -1,0 +1,23 @@
+{
+    "email":{
+        "disabled":false,
+        "sender":{
+            "service": "Gmail", 
+            "auth": 
+            {
+              "user": "knpanelbackup@gmail.com", 
+              "pass": "skbhqvchltrynjqq"
+            }
+        },
+
+        "receiver": ["hadishhamraz@gmail.com"]
+    },
+
+    "telegram":{
+        "disabled":true,
+        "bot_token": "6119055601:AAFikJxoJf1vnKinB-spVYzObvzIITBXen0",
+        "chat_id": "-1001937284647"
+    },
+
+    "interval":1800
+}
