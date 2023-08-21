@@ -7,6 +7,7 @@ COPY package*.json .
 RUN npm install
 
 VOLUME /var/lib/marzban
+VOLUME /opt/marzban
 
 COPY . .
 
