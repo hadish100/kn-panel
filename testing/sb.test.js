@@ -23,13 +23,24 @@ async function dl_file(url,destination)
 	});
 }
 
+// (async () => 
+// {
+//     const response = await axios({
+//         url:"http://159.223.18.18:7002/edit_expire_times",
+//         method: 'POST',
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:1}
+//       });
+
+//       console.log(response.data);
+// })();
+
+
 (async () => 
 {
     const response = await axios({
-        url:"http://159.223.18.18:7002/edit_expire_times",
+        url:"http://209.38.245.93:7002/get_marzban_users",
         method: 'POST',
-        responseType: 'stream',
-        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:1}
+        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
       });
 
       console.log(response.data);

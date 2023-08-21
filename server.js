@@ -44,7 +44,8 @@ const {
     show_url,
     delete_folder_content,
     enable_panel,
-    disable_panel
+    disable_panel,
+    secondary_backend_url_converter
 } = require("./utils");
 
 
@@ -655,7 +656,7 @@ app.post("/dldb", async (req, res) =>
 
         for(panel of panels)
         {
-            var sqlite_endpoint = panel.panel_url.split(":")[0] + ":" + panel.panel_url.split(":")[1] + ":7002/dldb";
+            var sqlite_endpoint = secondary_backend_url_converter(panel.panel_url,"dldb");
 
             try
             {

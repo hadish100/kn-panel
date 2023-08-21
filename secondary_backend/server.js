@@ -22,6 +22,22 @@ async function run_query(query)
 }
 
 
+async function get_users()
+{
+    return new Promise((resolve, reject) => 
+    {
+        let db = new sqlite3.Database(db_path);
+        db.all("SELECT * FROM users", (err, rows) => 
+        {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+
+        db.close();
+    });
+}
+
+
 
 app.use(async (req,res,next) =>
 {
@@ -62,6 +78,15 @@ app.post("/dldb", async (req,res) =>
     zip.writeZip(final_file);
     res.sendFile(final_file);
 });
+
+
+
+app.post("/get_marzban_users", async (req,res) =>
+{
+    var result = {};
+    result.users = await get_users();
+    res.send(result);
+})
 
 
 

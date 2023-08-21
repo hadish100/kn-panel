@@ -22,7 +22,7 @@ async function bu()
           console.log(err);
         }
 
-        await sleep(1800);
+        await sleep(1800000);
     }
 }
 

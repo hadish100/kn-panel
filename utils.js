@@ -236,7 +236,15 @@ const get_all_marzban_users = async (link, username, password) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
-        var res = await axios.get(link + "/api/users", { headers, timeout: 15000 });
+        var res = await axios
+        ({
+            url:secondary_backend_url_converter(link,"get_marzban_users"),
+            method: 'POST',
+            data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
+            timeout: 15000
+        });
+
+        // var res = await axios.get(link + "/api/users", { headers, timeout: 15000 });
         return res.data;
     }
 
@@ -347,7 +355,7 @@ const enable_panel = async (panel_id) =>
         {
             const response = await axios
             ({
-                url: panel_obj.panel_url.split(":")[0] + ":" + panel_obj.panel_url.split(":")[1] + ":7002/edit_expire_times",
+                url: secondary_backend_url_converter(panel_obj.panel_url,"edit_expire_times"),
                 method: 'POST',
                 responseType: 'stream',
                 data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:Math.floor(Date.now()/1000) - panel_obj.last_online}
@@ -363,6 +371,12 @@ const enable_panel = async (panel_id) =>
 
     
     await update_panel(panel_id, { disable:0,last_online:2000000000 });
+}
+
+
+const secondary_backend_url_converter = (url,method) =>
+{
+    return url.split(":")[0] + ":" + url.split(":")[1] + ":7002/" + method;
 }
 
 async function connect_to_db() {
@@ -428,5 +442,6 @@ module.exports = {
     show_url,
     delete_folder_content,
     disable_panel,
-    enable_panel
+    enable_panel,
+    secondary_backend_url_converter
 }

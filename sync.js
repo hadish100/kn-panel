@@ -14,6 +14,7 @@ const {
     b2gb,
     dnf,
     get_panel_info,
+    get_marzban_user,
     get_all_marzban_users,
     ping_panel,
     connect_to_db,
@@ -57,19 +58,29 @@ connect_to_db().then(res => {
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             console.log(time + " ---> fetching " + panel.panel_url);
 
+            console.time("             * fetched panel info from " + panel.panel_url);
             var info_obj = await get_panel_info(panel.panel_url, panel.panel_username, panel.panel_password);
             if (info_obj == "ERR") {
-                console.log(time + " ===> failed to fetch ( INFO ) " + panel.panel_url);
+                console.log(time + " ===> failed to fetch panel info from " + panel.panel_url);
                 await ping_panel(panel);
                 continue;
             }
-            else await update_panel(panel.id, info_obj);
+            else 
+            {
+                console.timeEnd("             * fetched panel info from " + panel.panel_url);
+                await update_panel(panel.id, info_obj);
+            }
 
+            
+            console.time("             * fetched users from " + panel.panel_url);
             var marzban_users = await get_all_marzban_users(panel.panel_url, panel.panel_username, panel.panel_password);
             if (marzban_users == "ERR") {
-                console.log(time + " ===> failed to fetch ( USERS ) " + panel.panel_url);
+                console.log(time + " ===> failed to fetch panel users from " + panel.panel_url);
                 continue;
             }
+            console.timeEnd("             * fetched users from " + panel.panel_url);
+
+           
 
             marzban_users = marzban_users.users;
 
@@ -164,6 +175,9 @@ connect_to_db().then(res => {
                     var corresponding_agent = all_agents.find(agent => agent.prefix == marzban_user.username.split("_")[0]);
                     if(corresponding_agent && corresponding_agent.country.split(",").includes(panel.panel_country) && marzban_user.expire && marzban_user.data_limit)
                     {
+                        var complete_user_info = await get_marzban_user(panel.panel_url, panel.panel_username, panel.panel_password, marzban_user.username);
+                        if(complete_user_info == "ERR") continue;
+
                         await insert_to_users({
                             "id": uid(),
                             "agent_id": corresponding_agent.id,
@@ -176,8 +190,8 @@ connect_to_db().then(res => {
                             "country": panel.panel_country,
                             "corresponding_panel_id": panel.id,
                             "corresponding_panel": panel.panel_url,
-                            "subscription_url": panel.panel_url+marzban_user.subscription_url,
-                            "links": marzban_user.links,
+                            "subscription_url": panel.panel_url+complete_user_info.subscription_url,
+                            "links": complete_user_info.links,
                             "created_at":Math.floor(Date.parse(marzban_user.created_at)/1000),
                             "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)}
                           });
