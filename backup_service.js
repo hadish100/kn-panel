@@ -1,10 +1,11 @@
 const { Telegraf } = require('telegraf');
+const nodemailer = require('nodemailer');
 const fs = require('fs');
 const axios = require('axios');
 const bot = new Telegraf('6598703756:AAHdCGAnBJYJ3-UKN76HKWFmF7XiqLfexas');bot.launch();
+const channelLink = "@asdar3refdsfdghyeffwwadf4fdgjkts";
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const channelLink = "@asdar3refdsfdghyeffwwadf4fdgjkts";
 
 async function bu() 
 {
@@ -14,7 +15,42 @@ async function bu()
         {
           var res = (await axios.post("http://localhost:5000/dldb", { service_access_api_key : "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" })).data;
           var filePath = "./frontend/public" + res.split(">")[1];
+
+          // SEND IN TELEGRAM
           await bot.telegram.sendDocument(channelLink, { source: filePath });
+          var today = new Date();
+          var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+          console.log(time + " ---> backup Sent to telegram");
+          // SEND IN EMAIL
+
+          const transporter = nodemailer.createTransport
+          ({
+            service: 'Gmail', 
+            auth: 
+            {
+              user: 'your_email@example.com', 
+              pass: 'your_email_password'
+            }
+          });
+
+          const mailOptions = 
+          {
+            from: 'your_email@example.com',
+            to: 'recipient@example.com',
+            subject: res.split("/dbdl/")[1],
+            text: '',
+            attachments: 
+            [
+              {
+                filename: 'db.zip',
+                path: "./frontend/public" + res.split(">")[1]
+              }
+            ]
+          };
+          
+          await transporter.sendMail(mailOptions);
+          console.log(time + " ---> backup Sent to email");
+
           await fs.promises.unlink(filePath);
         }
          catch (err) 
