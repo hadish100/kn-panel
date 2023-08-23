@@ -2,7 +2,6 @@ const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
 const fs = require('fs');
-const { get } = require('http');
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 

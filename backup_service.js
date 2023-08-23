@@ -10,7 +10,8 @@ async function init()
 {
     var config_obj = JSON.parse(await fs.promises.readFile("./backup_config.json", "utf8"));
 
-    const bot = new Telegraf(config_obj.telegram.bot_token);bot.launch();
+    const bot = new Telegraf(config_obj.telegram.bot_token);
+    if(!config_obj.telegram.disabled) bot.launch();
     const chat_id = config_obj.telegram.chat_id;
 
     const transporter = nodemailer.createTransport(config_obj.email.sender);           

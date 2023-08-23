@@ -14,7 +14,7 @@
     },
 
     "telegram":{
-        "disabled":true,
+        "disabled":false,
         "bot_token": "6119055601:AAFikJxoJf1vnKinB-spVYzObvzIITBXen0",
         "chat_id": "-1001937284647"
     },
