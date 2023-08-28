@@ -375,7 +375,7 @@ const enable_panel = async (panel_id) =>
 
 const secondary_backend_url_converter = (url,method) =>
 {
-    return url.split(":")[0] + ":" + url.split(":")[1] + ":7002/" + method;
+    return url.split(":")[0].replace("https","http") + ":" + url.split(":")[1] + ":7002/" + method;
 }
 
 async function connect_to_db() {

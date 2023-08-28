@@ -664,10 +664,12 @@ app.post("/dldb", async (req, res) =>
                 var zip = new AdmZip("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
                 zip.extractAllTo("dbbu/marzban/" + show_url(panel.panel_url),true);
                 await fs.promises.unlink("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
+                console.log("       # BACKUP COMPLETED FOR " + panel.panel_url);
             }
 
             catch(err)
             {
+                console.log(err);
                 continue;
             }
             

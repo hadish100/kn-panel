@@ -2,9 +2,8 @@ const { Telegraf } = require('telegraf');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const axios = require('axios');
+const {delete_folder_content} = require('./utils')
 const sleep = (s) => new Promise(resolve => setTimeout(resolve,s*1000));
-
-
 
 async function init() 
 {
@@ -16,13 +15,10 @@ async function init()
 
     const transporter = nodemailer.createTransport(config_obj.email.sender);           
 
-
-
-
-    while(true)
-    {
         try 
         {
+          console.log("*STARTING BACKUP SERVICE");
+          await delete_folder_content("dbbu");
           var res = (await axios.post("http://localhost:5000/dldb", { service_access_api_key : "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" })).data;
           var filePath = "./frontend/public" + res.split(">")[1];
           var today = new Date();
@@ -66,7 +62,8 @@ async function init()
         }
 
         await sleep(config_obj.interval);
-    }
+        process.exit(1);
+    
 }
 
 init();

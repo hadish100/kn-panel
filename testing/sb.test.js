@@ -23,16 +23,16 @@ async function dl_file(url,destination)
 	});
 }
 
-(async () => 
-{
-    const response = await axios({
-        url:"http://209.38.245.93:7002/edit_expire_times",
-        method: 'POST',
-        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:100000}
-      });
+// (async () => 
+// {
+//     const response = await axios({
+//         url:"http://209.38.245.93:7002/edit_expire_times",
+//         method: 'POST',
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:100000}
+//       });
 
-      console.log(response.data);
-})();
+//       console.log(response.data);
+// })();
 
 
 // (async () => 
@@ -46,4 +46,4 @@ async function dl_file(url,destination)
 //       console.log(response.data);
 // })();
 
-// dl_file("http://159.223.18.18:7002/dldb","db.zip");
+ dl_file("http://ir1.mf1vpn.xyz:7002/dldb","db.zip");
