@@ -643,7 +643,8 @@ app.post("/dldb", async (req, res) =>
         var accounts = await get_accounts();
         var panels = await get_panels();
         var logs = await get_logs();
-
+        
+        await delete_folder_content("dbbu");
         await fs.promises.mkdir("dbbu");
         await fs.promises.mkdir("dbbu/main");
         await fs.promises.mkdir("dbbu/marzban");

@@ -307,25 +307,35 @@ const ping_panel = async (panel_obj) => {
 
 const dl_file = async (url,destination) =>
 {
-	const response = await axios
-	({
-	  url,
-	  method: 'POST',
-	  responseType: 'stream',
-      data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
-      timeout:10000
-	});
-  
-		
-	const writer = fs.createWriteStream(destination);
-  
-	response.data.pipe(writer);
-  
-	return new Promise((resolve, reject) => 
-	{
-	  writer.on('finish', resolve);
-	  writer.on('error', reject);
-	});
+    try
+    {
+        const response = await axios
+        ({
+          url,
+          method: 'POST',
+          responseType: 'stream',
+          data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
+          timeout:60000
+        });
+      
+            
+        const writer = fs.createWriteStream(destination);
+      
+        response.data.pipe(writer);
+      
+        return new Promise((resolve, reject) => 
+        {
+          writer.on('finish', resolve);
+          writer.on('error', reject);
+          response.data.on('error', reject);
+        });
+    }
+
+    catch(err)
+    {
+        throw new Error(`DL ERROR : ${err.message}`);
+    }
+
 }
 
 const show_url = (str) => {
@@ -336,7 +346,15 @@ const show_url = (str) => {
 
 const delete_folder_content = async (dir_path) => 
 {
-    await fs.promises.rm(dir_path, { recursive: true, force: true });
+    try
+    {
+        await fs.promises.rm(dir_path, { recursive: true, force: true });
+    }
+    
+    catch(err)
+    {
+
+    }
 }
 
 const disable_panel = async (panel_id) =>

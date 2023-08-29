@@ -37,7 +37,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                         ? <EmptyTable tableType={"agent"} colSpan={8} onCreateButton={onCreateItem} />
                         : currentItems.map((item) => (
                             <tr onClick={() => onEditItem(item)} key={item.id} agent_id={item.id} >
-                                <td className="agent_name_row" ><span>{item.name}</span> {item.business_mode?<img src={businessModeIcon} className="bm_icon" />:""} </td>
+                                <td className="agent_name_row" > <div> <img src={businessModeIcon} className={item.business_mode?"bm_icon":"bm_icon bm_off"} /> <span> {item.name} </span>  </div> </td>
                                 <td>
                                     <span className={`status ${item.disable ? "limited" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}
@@ -48,7 +48,9 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                 <td>{gbOrTb(b2gb(item.volume))}</td>
                                 <td>{gbOrTb(item.allocatable_data)}</td>
                                 <td>{item.prefix}</td>
-                                <td className="country_td" >{showCountries(item.country)}</td>
+                                <td className="country_td" >
+                                    <div> {showCountries(item.country)} </div>
+                                </td>
                             </tr>
                         ))}
                 </tbody>

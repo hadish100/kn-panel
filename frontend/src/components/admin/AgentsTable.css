@@ -141,7 +141,7 @@
     border-radius:5px;
 }
 
-.country_td
+.country_td > div
 {
     display: flex;
     flex-wrap: wrap;
@@ -155,7 +155,7 @@
     opacity:1;
 }
 
-.agent_name_row
+.agent_name_row > div
 {
     display:flex;
     justify-content:flex-start;
@@ -163,4 +163,9 @@
     align-content:center;
     flex-direction:row;
     height:69px;
+}
+
+.bm_off
+{
+    filter:grayscale(100%);
 }

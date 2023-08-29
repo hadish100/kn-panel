@@ -12,10 +12,12 @@ connect_to_db().then(res => {
 
 async function modify_db()
 {
-    var users_arr = await users_clct.find({disable_counter:{$exists:false}}).toArray();
+    var users_arr = await users_clct.find({ subscription_url: { $regex: "https://de.keskinnetwork.comhttps://de.keskinnetwork.com" } }).toArray();
+    
     for(user of users_arr)
     {
-        await users_clct.updateOne({username: user.username}, {$set: {disable_counter:{value:0,last_update:Math.floor(Date.now()/1000)}}});
+        await users_clct.updateOne({username:user.username}, {$set: {subscription_url:user.subscription_url.replace("https://de.keskinnetwork.com","")}});
+        console.log("UPDATED USER => " + user.username);
     }
     // await users_clct.updateMany({},{$set: {disable_counter:{value:0,last_update:Math.floor(Date.now()/1000)}}});
     // await accounts_clct.updateMany({is_admin:0},{$set: {business_mode:0}});
