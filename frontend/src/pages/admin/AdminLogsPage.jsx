@@ -13,6 +13,7 @@ import Ms3 from '../../components/form/inputs/MultiSelect3'
 import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 import Button from '../../components/Button'
+import { ReactComponent as Syslog } from '../../assets/svg/document.svg';
 
 
 
@@ -74,6 +75,17 @@ const AdminLogsPage = () => {
         setRowsPerPage(option.value)
     }
 
+    const dl_system_log = async () => {
+        const downloadUrl = window.location.protocol + "//" + window.location.host + "/syslog/syslog.txt"; 
+        console.log(downloadUrl)
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = "syslog.txt";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     const itemsPerRowOptions = [
         { label: 10, value: 10 },
         { label: 20, value: 20 },
@@ -110,7 +122,10 @@ const AdminLogsPage = () => {
                         />
                     </LocalizationProvider>
                 </div>
+                <div className='log_buttons_div' >
+                <Button onClick={() => dl_system_log()} style={{ alignSelf: "end" }} className='outlined' > <Syslog /> System log</Button>
                 <Button onClick={() => fetchLogs(true)} style={{ alignSelf: "start" }} className='primary' disabled={filterMode}>{filterMode ? "Filtering..." : "Filter"}</Button>
+                </div>
             </div>
             {!IsLogReady && <div className='loading_gif_container'> <CircularProgress /> </div>}
             {IsLogReady && <LogsList logs={logs} />}

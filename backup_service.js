@@ -2,7 +2,6 @@ const { Telegraf } = require('telegraf');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const axios = require('axios');
-const {delete_folder_content} = require('./utils')
 const sleep = (s) => new Promise(resolve => setTimeout(resolve,s*1000));
 
 

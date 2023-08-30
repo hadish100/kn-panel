@@ -16,7 +16,7 @@ const parse_log = (log) =>
 const LogsList = ({ logs }) => {
     const timestamp_to_date = (timestamp) => {
         const date = new Date(timestamp * 1000);
-        return date.toLocaleString();
+        return date.toLocaleString("en-US",{ hourCycle: 'h23' }).replace(", "," - ");
     }
 
     return (

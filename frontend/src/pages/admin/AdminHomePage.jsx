@@ -39,7 +39,7 @@ const AdminHomePage = ({ setLocation }) => {
         <>
             <Button onClick={handleBC} className="outlined" >
                 <Dldb />
-                backup database
+                Backup database
             </Button>
  
             <MessageCard
