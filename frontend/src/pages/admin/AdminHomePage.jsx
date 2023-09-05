@@ -9,6 +9,7 @@ import axios from 'axios'
 import Modal from '../../components/Modal'
 import LeadingIcon from '../../components/LeadingIcon'
 import { AnimatePresence } from 'framer-motion'
+import '../../components/form/inputs/FileInput.css'
 
 const AdminHomePage = ({ setLocation }) => {
     const [showManageDatabases, setShowManageDatabases] = useState(false)
@@ -95,7 +96,7 @@ const AdminHomePage = ({ setLocation }) => {
                         </div>
                     </header>
                     <main className='modal__body flex gap-1.5' style={{ alignItems: "center" }}>
-                        <input type='file' onChange={handleFileChange} />
+                        <input type='file' onChange={handleFileChange} className='primary w-full' />
                         <Button className="outlined w-full" onClick={handleUploadFile}>Upload</Button>
                     </main>
                 </Modal>}

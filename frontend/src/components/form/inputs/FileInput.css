@@ -1,0 +1,25 @@
+input[type=file]::file-selector-button {
+    background-color: var(--background-color);
+    color: var(--color, #fff);
+    padding: 0.44rem 1.25rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+    font-family: InterMedium;
+    transition: background-color 0.1s ease-in-out;
+    border: 1px solid var(--border-color);
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    cursor: pointer;
+}
+
+input[type=file]::file-selector-button:hover {
+    background-color: var(--background-color-hover);
+}
+
+input[type=file]::file-selector-button:active {
+    background-color: var(--background-color-active);
+}
