@@ -119,3 +119,7 @@ input[type=number] {
 .gap-1\.5 {
     gap: .375rem;
 }
+
+.w-full {
+    width: 100%;
+}
