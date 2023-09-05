@@ -44,20 +44,23 @@ const AdminHomePage = ({ setLocation }) => {
         setSelectedFile(e.target.files[0])
     }
 
-    const handleUploadFile = () => {
-        const access_token = sessionStorage.getItem("access_token")
-        const formData = new FormData()
-        formData.append("access_token", access_token)
-        formData.append("file", selectedFile)
-        axios.post("restore_db", formData,
-        ).then(res => {
-            if (res.data.status === "ERR") {
-                setError_msg(res.data.msg)
-                setHasError(true)
-                return
-            }
-            setShowRestoreCard(false)
-        })
+    const handleUploadFile = async () => {
+        // const access_token = sessionStorage.getItem("access_token")
+        // const formData = new FormData()
+        // formData.append("access_token", access_token)
+        // formData.append("file", selectedFile)
+        // axios.post("restore_db", formData,
+        // ).then(res => {
+        //     if (res.data.status === "ERR") {
+        //         setError_msg(res.data.msg)
+        //         setHasError(true)
+        //         return
+        //     }
+        //     setShowRestoreCard(false)
+        // })
+        setShowRestoreCard(false)
+        await new Promise(r => setTimeout(r, 300));
+        setShowManageDatabases(false)
     }
 
     return (
@@ -90,7 +93,7 @@ const AdminHomePage = ({ setLocation }) => {
                         <LeadingIcon>
                             <DbUpIcon />
                         </LeadingIcon>
-                        <h1 className="modal__title">Restore</h1>
+                        <h1 className="modal__title">Restore Databases</h1>
                         <div className="close-icon" onClick={() => setShowRestoreCard(false)}>
                             <XMarkIcon />
                         </div>

@@ -197,7 +197,7 @@ connect_to_db().then(res => {
                             "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)}
                           });
 
-                        await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit });
+                        await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit , lifetime_volume: corresponding_agent.lifetime_volume + marzban_user.data_limit });
                         await syslog("user " + marzban_user.username + " was added for agent " + corresponding_agent.username + " from panel : " + panel.panel_url );
                     }
                 }

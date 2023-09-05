@@ -205,6 +205,7 @@ app.post("/create_agent", async (req, res) => {
             username,
             password,
             volume: gb2b(volume),
+            lifetime_volume: gb2b(volume),
             allocatable_data: dnf(volume),
             min_vol: dnf(min_vol),
             max_users: parseInt(max_users),
@@ -487,6 +488,7 @@ app.post("/edit_agent", async (req, res) => {
             username,
             password,
             volume: gb2b(volume),
+            lifetime_volume: agent.lifetime_volume + gb2b(volume) - old_volume,
             allocatable_data: dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),
             min_vol: dnf(min_vol),
             max_users: parseInt(max_users),
@@ -501,7 +503,7 @@ app.post("/edit_agent", async (req, res) => {
         if(Math.floor(old_volume) != Math.floor(gb2b(volume))) 
         {
             log_msg += `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
-            insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`)
+            await insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`)
         }
         await insert_to_logs(account.id, "EDIT_AGENT", log_msg);
         res.send("DONE");
