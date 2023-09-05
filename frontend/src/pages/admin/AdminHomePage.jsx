@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import Button from "../../components/Button"
 import MessageCard from "../../components/MessageCard"
 import ErrorCard from '../../components/ErrorCard'
-import { ReactComponent as Dldb } from '../../assets/svg/dldb.svg'
+import { ReactComponent as DbIcon } from '../../assets/svg/db.svg'
+import { ReactComponent as DbUpIcon } from '../../assets/svg/db-up.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
-import { ReactComponent as RestoreIcon } from '../../assets/svg/restore.svg'
 import axios from 'axios'
 import Modal from '../../components/Modal'
 import LeadingIcon from '../../components/LeadingIcon'
@@ -63,14 +63,14 @@ const AdminHomePage = ({ setLocation }) => {
     return (
         <>
             <Button onClick={() => setShowManageDatabases(true)} className="outlined" >
-                <Dldb /> Manage databases
+                <DbIcon /> Manage databases
             </Button>
 
             <AnimatePresence>
                 {showManageDatabases && <Modal onClose={() => setShowManageDatabases(false)} width={"30rem"}>
                     <header className="modal__header">
                         <LeadingIcon>
-                            <Dldb />
+                            <DbIcon />
                         </LeadingIcon>
                         <h1 className="modal__title">Manage databases</h1>
                         <div className="close-icon" onClick={() => setShowManageDatabases(false)}>
@@ -88,7 +88,7 @@ const AdminHomePage = ({ setLocation }) => {
                 {showRestoreCard && <Modal onClose={() => setShowRestoreCard(false)} width={"30rem"}>
                     <header className="modal__header">
                         <LeadingIcon>
-                            <RestoreIcon />
+                            <DbUpIcon />
                         </LeadingIcon>
                         <h1 className="modal__title">Restore</h1>
                         <div className="close-icon" onClick={() => setShowRestoreCard(false)}>
