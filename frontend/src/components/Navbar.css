@@ -59,4 +59,9 @@
     .navbar__links {
         font-size: 12px;
     }
+
+    .navbar__links li {
+        padding: 0.5rem 0.25rem;
+        position: relative;
+    }
 }
