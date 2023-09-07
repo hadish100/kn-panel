@@ -50,9 +50,11 @@ export default function MultipleSelectCheckmarks({ editValue, styles }) {
           value={personName}
           onChange={handleChange}
           input={<OutlinedInput label=""
-            className={styles.multiSelect}
             sx={{
               height: 34,
+              '@media (max-width: 470px)': {
+                fontSize: 10,
+              },
               // border: '1px solid #e2e8f0'
             }}
           />}
