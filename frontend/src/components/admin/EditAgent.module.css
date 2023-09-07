@@ -13,4 +13,8 @@
     .primaryButtons>* {
         width: 100%;
     }
+
+    .multiSelect {
+        font-size: 10px;
+    }
 }

@@ -1,14 +1,14 @@
-import * as React from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
+import * as React from 'react'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import ListItemText from '@mui/material/ListItemText'
+import Select from '@mui/material/Select'
+import Checkbox from '@mui/material/Checkbox'
 
-const ITEM_HEIGHT = 50;
-const ITEM_PADDING_TOP = 4;
+const ITEM_HEIGHT = 50
+const ITEM_PADDING_TOP = 4
 const MenuProps = {
   PaperProps: {
     style: {
@@ -16,28 +16,28 @@ const MenuProps = {
       width: 250,
     },
   },
-};
+}
 
 
 
-export default function MultipleSelectCheckmarks({ editValue }) {
+export default function MultipleSelectCheckmarks({ editValue, styles }) {
 
-  const [names, setNames] = React.useState(JSON.parse(sessionStorage.getItem("country_list")));
-  const [personName, setPersonName] = React.useState([]);
+  const [names, setNames] = React.useState(JSON.parse(sessionStorage.getItem("country_list")))
+  const [personName, setPersonName] = React.useState([])
 
   React.useEffect(() => {
-    if (editValue) setPersonName(editValue);
-  }, [editValue]);
+    if (editValue) setPersonName(editValue)
+  }, [editValue])
 
   const handleChange = (event) => {
     const {
       target: { value },
-    } = event;
+    } = event
     setPersonName(
       typeof value === 'string' ? value.split(',') : value,
 
-    );
-  };
+    )
+  }
 
   return (
     <div>
@@ -50,6 +50,7 @@ export default function MultipleSelectCheckmarks({ editValue }) {
           value={personName}
           onChange={handleChange}
           input={<OutlinedInput label=""
+            className={styles.multiSelect}
             sx={{
               height: 34,
               // border: '1px solid #e2e8f0'
@@ -67,5 +68,5 @@ export default function MultipleSelectCheckmarks({ editValue }) {
         </Select>
       </FormControl>
     </div>
-  );
+  )
 }

@@ -4,13 +4,13 @@ import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as LoginAsAgentIcon } from '../../assets/svg/LoginAsAgent.svg'
 import { AnimatePresence, motion } from 'framer-motion'
-import Modal from '../Modal';
-import LeadingIcon from '../LeadingIcon';
-import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg';
-import FormField from '../form/FormField';
-import Button from '../Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import IOSSwitch from '../form/inputs/IOSSwitch';
+import Modal from '../Modal'
+import LeadingIcon from '../LeadingIcon'
+import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
+import FormField from '../form/FormField'
+import Button from '../Button'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import IOSSwitch from '../form/inputs/IOSSwitch'
 import styles from "./EditAgent.module.css"
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem, editMode }) => {
@@ -68,7 +68,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
 
 
     const b2gb = (bytes) => {
-        return (bytes / (2 ** 10) ** 3).toFixed(2);
+        return (bytes / (2 ** 10) ** 3).toFixed(2)
     }
 
     const timeStampToDay = (timeStamp) => {
@@ -78,26 +78,26 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
 
     const getDefaultValue = (item, field) => {
         if (!item) {
-            return "";
+            return ""
         }
 
 
         if (field.id === "expire") {
-            return timeStampToDay(item[field.id]);
+            return timeStampToDay(item[field.id])
         }
 
         if (field.id === "data_limit") {
-            return b2gb(item[field.id]);
+            return b2gb(item[field.id])
         }
 
         if (field.id === "volume") {
-            return b2gb(item[field.id]);
+            return b2gb(item[field.id])
         }
 
 
 
-        return item[field.id];
-    };
+        return item[field.id]
+    }
 
     const formHeader = (
         <header className="modal__header">
@@ -171,7 +171,8 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                                             onChange={field.onChange}
                                             placeholder={field.placeholder}
                                             editValue={item ? item.country ? item.country.split(",") : "" : ""}
-                                        />);
+                                            styles={styles}
+                                        />)
                                     }) : (
                                         <FormField
                                             key={rowIndex}
@@ -187,6 +188,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                                             onChange={group.onChange}
                                             placeholder={group.placeholder}
                                             editValue={item ? item.country ? item.country.split(",") : "" : ""}
+                                            styles={styles}
                                         />
                                     )}
                                 </div>
