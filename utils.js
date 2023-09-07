@@ -258,7 +258,7 @@ const reload_agents = async () => {
     for (obj of obj_arr) {
         var agent_id = obj.id;
         var agent_users = await get_users(agent_id);
-        var active_users = agent_users.filter(x => x.status == "active" || x.status == "expired" || x.status == "limited").length;
+        var active_users = agent_users.filter(x => x.status == "active").length;
         var total_users = agent_users.length;
         var used_traffic = b2gb(agent_users.reduce((acc, curr) => acc + curr.used_traffic, 0));
         await update_account(agent_id, { active_users, total_users, used_traffic });
