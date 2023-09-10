@@ -112,6 +112,10 @@ input[type=number] {
     justify-content: flex-end;
 }
 
+.justify-between {
+    justify-content: space-between;
+}
+
 .gap-1 {
     gap: .25rem;
 }

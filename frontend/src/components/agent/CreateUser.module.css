@@ -42,6 +42,7 @@
     border-radius: var(--border-radius-md);
     width: 100%;
     cursor: pointer;
+    overflow: hidden;
 }
 
 .protocol.selected {
@@ -58,11 +59,12 @@
     opacity: .4;
 }
 
-.protocol>button {
+.protocol button {
     color: var(--primary-clr-100);
 }
 
 .protocol__name {
+    text-transform: capitalize;
     font-size: 0.875rem;
     color: #2d3748;
     font-weight: 400;

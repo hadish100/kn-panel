@@ -11,6 +11,7 @@ import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import { ReactComponent as ThreeDotsIcon } from '../../assets/svg/three-dots.svg'
 import FormField from '../form/FormField'
 import Button from '../Button'
+import Dropdown from '../Dropdown'
 
 const protocols = [
     { name: "vmess", disabled: false },
@@ -19,12 +20,19 @@ const protocols = [
     { name: "shadowsocks", disabled: true }
 ]
 
+const flowOptions = [
+    { label: "xtls", value: "xtls" },
+    { label: "none", value: "none" }
+]
+
 const CreateUser = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("failed to create user")
     const access_token = sessionStorage.getItem("access_token")
     const [createMode, setCreateMode] = useState(false)
     const [selectedProtocols, setSelectedProtocols] = useState(protocols)
+    const [isMoreOptionClicked, setIsMoreOptionClicked] = useState(false)
+    const [flowValue, setFlowValue] = useState({ label: "xtls", value: "xtls" })
 
     const createUserOnServer = async (
         username, data_limit, expire, country
@@ -75,6 +83,15 @@ const CreateUser = ({ onClose, showForm }) => {
         } else {
             setSelectedProtocols([...selectedProtocols, protocol.name])
         }
+    }
+
+    const handleClickMoreOption = (e) => {
+        e.stopPropagation()
+        setIsMoreOptionClicked(!isMoreOptionClicked)
+    }
+
+    const handleSelectFlow = (flow) => {
+        setFlowValue(flow)
     }
 
     const formFields = [
@@ -164,22 +181,41 @@ const CreateUser = ({ onClose, showForm }) => {
                                 <h4>Porotocols</h4>
                                 <div className={styles.protocols}>
                                     {protocols.map((protocol, index) => (
-                                        <div key={index}
+                                        <motion.div key={index}
                                             className={`${styles.protocol} ${selectedProtocols.includes(protocol.name) ? styles.selected : protocol.disabled ? styles.disabled : ''}`}
                                             onClick={() => handleSelectProtocol(protocol)}
                                         >
-                                            <div className="flex flex-col gap-1.5">
-                                                <h5 className={styles['protocol__name']}>{protocol.name}</h5>
-                                                <p className={styles['protocol__description']}>{
-                                                    protocol.name === "vmess" ? "Fast And Secure" :
-                                                        protocol.name === "vless" ? "Lightweight, fast and secure" :
-                                                            protocol.name === "trojan" ? "Lightweight, secure and lightening fast" :
-                                                                protocol.name === "shadowsocks" ? "Fast and secure, but not efficient as others" : ""
+                                            <div className="flex justify-between flex-col w-full">
+                                                <div className="flex justify-between">
+                                                    <div className="flex flex-col gap-1.5">
+                                                        <h5 className={styles['protocol__name']}>{protocol.name}</h5>
+                                                        <p className={styles['protocol__description']}>{
+                                                            protocol.name === "vmess" ? "Fast And Secure" :
+                                                                protocol.name === "vless" ? "Lightweight, fast and secure" :
+                                                                    protocol.name === "trojan" ? "Lightweight, secure and lightening fast" :
+                                                                        protocol.name === "shadowsocks" ? "Fast and secure, but not efficient as others" : ""
 
-                                                }</p>
+                                                        }</p>
+                                                    </div>
+                                                    {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && <Button className="gray-100" onClick={(e) => handleClickMoreOption(e)}><ThreeDotsIcon /></Button>}
+                                                </div>
+                                                <AnimatePresence>
+                                                    {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && isMoreOptionClicked && (
+                                                        <motion.div
+                                                            className={styles['more-options']}
+                                                            initial={{ height: 0 }}
+                                                            animate={{ height: "auto" }}
+                                                            exit={{ height: 0 }}
+                                                        >
+                                                            <div className='flex flex-col gap-1.5' style={{ paddingTop: "1rem" }}>
+                                                                <h6 style={{ fontWeight: 400 }}>Flow</h6>
+                                                                <Dropdown options={flowOptions} onChange={handleSelectFlow} value={flowValue} />
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
                                             </div>
-                                            {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && <Button className="gray-100"><ThreeDotsIcon /></Button>}
-                                        </div>
+                                        </motion.div>
                                     ))}
                                 </div>
                             </div>

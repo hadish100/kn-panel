@@ -23,11 +23,13 @@ const Dropdown = ({ options, value, onChange }) => {
         }
     }, [])
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+        e.stopPropagation()
         setIsOpen(!isOpen)
     }
 
-    const handleOptionClick = (option) => {
+    const handleOptionClick = (option, e) => {
+        e.stopPropagation()
         setIsOpen(false)
         onChange(option)
     }
@@ -35,7 +37,7 @@ const Dropdown = ({ options, value, onChange }) => {
     const renderedOptions = options.map((option, index) => {
         return <motion.div
             className='option'
-            onClick={() => handleOptionClick(option)}
+            onClick={(e) => handleOptionClick(option, e)}
             key={option.value}
             initial={{ x: -10, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -49,7 +51,7 @@ const Dropdown = ({ options, value, onChange }) => {
     return (
         <div className='dropdown-container'>
             <div ref={divEl} className={`dropdown ${isOpen ? "open" : "close"}`}>
-                <div className="dropdown__value" onClick={handleClick}>
+                <div className="dropdown__value" onClick={(e) => handleClick(e)}>
                     {value?.label || 10}
                     <ChevronDownIcon />
                 </div>
