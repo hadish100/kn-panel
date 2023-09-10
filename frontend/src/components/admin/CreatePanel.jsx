@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 
-import { ReactComponent as PanelIcon } from "../../assets/svg/panel.svg";
-import ErrorCard from '../ErrorCard';
+import { ReactComponent as PanelIcon } from "../../assets/svg/panel.svg"
+import ErrorCard from '../ErrorCard'
 import Form from "../form/Form"
-import "../agent/CreateUser.css"
+import "./CreatePanel.css"
 
 
 const CreatePanel = ({ onClose, showForm }) => {
@@ -12,7 +12,7 @@ const CreatePanel = ({ onClose, showForm }) => {
     const [error_msg, setError_msg] = useState("Failed to create panel")
     const [createMode, setCreateMode] = useState(false)
 
-    const access_token = sessionStorage.getItem("access_token");
+    const access_token = sessionStorage.getItem("access_token")
 
     const createPanelOnServer = async (
         panel_name,
@@ -24,14 +24,14 @@ const CreatePanel = ({ onClose, showForm }) => {
         panel_traffic
     ) => {
         setCreateMode(true)
-        const res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_traffic, access_token });
+        const res = await axios.post("/create_panel", { panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_traffic, access_token })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create panel (BAD REQUEST)")
             setHasError(true)
         } else {
-            const panels = (await axios.post("/get_panels", { access_token })).data;
-            sessionStorage.setItem("panels", JSON.stringify(panels));
+            const panels = (await axios.post("/get_panels", { access_token })).data
+            sessionStorage.setItem("panels", JSON.stringify(panels))
             onClose()
         }
         setCreateMode(false)
@@ -39,13 +39,13 @@ const CreatePanel = ({ onClose, showForm }) => {
 
     const handleSubmitForm = () => {
         // Gather form data
-        const panel_name = document.getElementById("panel_name").value;
-        const panel_url = document.getElementById("panel_url").value;
-        const panel_username = document.getElementById("panel_username").value;
-        const panel_password = document.getElementById("panel_password").value;
-        const panel_country = document.getElementById("country").value;
-        const panel_user_max_count = document.getElementById("panel_user_max_count").value;
-        const panel_traffic = document.getElementById("panel_traffic").value;
+        const panel_name = document.getElementById("panel_name").value
+        const panel_url = document.getElementById("panel_url").value
+        const panel_username = document.getElementById("panel_username").value
+        const panel_password = document.getElementById("panel_password").value
+        const panel_country = document.getElementById("country").value
+        const panel_user_max_count = document.getElementById("panel_user_max_count").value
+        const panel_traffic = document.getElementById("panel_traffic").value
         // Send form data to backend
         createPanelOnServer(panel_name, panel_url, panel_username, panel_password, panel_country, panel_user_max_count, panel_traffic)
     }

@@ -3,14 +3,28 @@ import axios from "axios"
 
 import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg"
 import ErrorCard from '../ErrorCard'
-import Form from '../form/Form'
-import "./CreateUser.css"
+import styles from "./CreateUser.module.css"
+import Modal from '../Modal'
+import { motion, AnimatePresence } from 'framer-motion'
+import LeadingIcon from '../LeadingIcon'
+import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
+import { ReactComponent as ThreeDotsIcon } from '../../assets/svg/three-dots.svg'
+import FormField from '../form/FormField'
+import Button from '../Button'
+
+const protocols = [
+    { name: "vmess", disabled: false },
+    { name: "vless", disabled: false },
+    { name: "trojan", disabled: false },
+    { name: "shadowsocks", disabled: true }
+]
 
 const CreateUser = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("failed to create user")
     const access_token = sessionStorage.getItem("access_token")
     const [createMode, setCreateMode] = useState(false)
+    const [selectedProtocols, setSelectedProtocols] = useState(protocols)
 
     const createUserOnServer = async (
         username, data_limit, expire, country
@@ -53,6 +67,16 @@ const CreateUser = ({ onClose, showForm }) => {
         createUserOnServer(username, data_limit, expire, country)
     }
 
+    const handleSelectProtocol = (protocol) => {
+        if (protocol.disabled) return
+        const isProtocolSelected = selectedProtocols.includes(protocol.name)
+        if (isProtocolSelected) {
+            setSelectedProtocols(selectedProtocols.filter((item) => item !== protocol.name))
+        } else {
+            setSelectedProtocols([...selectedProtocols, protocol.name])
+        }
+    }
+
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username" },
         { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit" },
@@ -65,17 +89,105 @@ const CreateUser = ({ onClose, showForm }) => {
         { label: "Create User", className: "primary", onClick: handleSubmitForm, disabled: createMode, pendingText: "Creating..." }
     ]
 
+    const formHeader = (
+        <header className="modal__header">
+            <LeadingIcon>
+                <AddUserIcon />
+            </LeadingIcon>
+            <h1 className="modal__title">Create new user</h1>
+            <div className="close-icon" onClick={onClose}>
+                <XMarkIcon />
+            </div>
+        </header>
+    )
+
+    const formFooter = (
+        <motion.footer className={`modal__footer`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                {primaryButtons.map((button, index) => (
+                    <Button
+                        key={index}
+                        className={button.className}
+                        onClick={button.onClick}
+                        disabled={button.disabled}
+                    >
+                        {button.disabled ? button.pendingText : button.label}
+                    </Button>
+                ))}
+            </div>
+        </motion.footer>
+    )
+
     return (
         <>
-            <Form
-                onClose={onClose}
-                title="Create new user"
-                iconComponent={<AddUserIcon />}
-                formFields={formFields}
-                primaryButtons={primaryButtons}
-                showForm={showForm}
-                width={"40rem"}
-            />
+            <AnimatePresence>
+                {showForm && (
+                    <Modal onClose={onClose} width="42rem">
+                        {formHeader}
+                        <main className={styles['modal__body']}>
+                            <form className={styles['modal__form']}>
+                                {formFields.map((group, rowIndex) => (
+                                    <div key={rowIndex} className="flex gap-16">
+                                        {Array.isArray(group) ? group.map((field, index) => {
+                                            return (<FormField
+                                                key={index}
+                                                label={field.label}
+                                                type={field.type}
+                                                id={field.id}
+                                                name={field.name}
+                                                animateDelay={rowIndex * 0.1}
+                                                disabled={field.disabled}
+                                                options={field.options}
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                placeholder={field.placeholder}
+                                            />)
+                                        }) : (
+                                            <FormField
+                                                key={rowIndex}
+                                                label={group.label}
+                                                type={group.type}
+                                                id={group.id}
+                                                name={group.name}
+                                                animateDelay={rowIndex * 0.1}
+                                                disabled={group.disabled}
+                                                options={group.options}
+                                                value={group.value}
+                                                onChange={group.onChange}
+                                                placeholder={group.placeholder}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </form>
+                            <div className={styles['protocols-section']}>
+                                <h4>Porotocols</h4>
+                                <div className={styles.protocols}>
+                                    {protocols.map((protocol, index) => (
+                                        <div key={index}
+                                            className={`${styles.protocol} ${selectedProtocols.includes(protocol.name) ? styles.selected : protocol.disabled ? styles.disabled : ''}`}
+                                            onClick={() => handleSelectProtocol(protocol)}
+                                        >
+                                            <div className="flex flex-col gap-1.5">
+                                                <h5 className={styles['protocol__name']}>{protocol.name}</h5>
+                                                <p className={styles['protocol__description']}>{
+                                                    protocol.name === "vmess" ? "Fast And Secure" :
+                                                        protocol.name === "vless" ? "Lightweight, fast and secure" :
+                                                            protocol.name === "trojan" ? "Lightweight, secure and lightening fast" :
+                                                                protocol.name === "shadowsocks" ? "Fast and secure, but not efficient as others" : ""
+
+                                                }</p>
+                                            </div>
+                                            {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && <Button className="gray-100"><ThreeDotsIcon /></Button>}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </main>
+                        {formFooter}
+                    </Modal>
+                )}
+            </AnimatePresence>
             <ErrorCard
                 hasError={hasError}
                 setHasError={setHasError}
