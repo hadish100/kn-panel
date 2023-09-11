@@ -42,10 +42,10 @@
     font-weight: 600;
 }
 
+
 @media (max-width: 750px) {
 
-    .usage-stats,
-    .flex {
+    .usage-stats .flex {
         flex-direction: column;
     }
 }

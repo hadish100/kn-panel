@@ -78,3 +78,10 @@
 .style_exception1 {
     color: black;
 }
+
+@media (max-width: 740px) {
+    .modal__body {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}
