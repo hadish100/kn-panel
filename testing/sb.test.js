@@ -38,7 +38,7 @@ async function dl_file(url,destination)
 // (async () => 
 // {
 //     const response = await axios({
-//         url:"http://209.38.245.93:7002/get_marzban_users",
+//         url:"http://ir1.mf1vpn.xyz:7002/get_marzban_users",
 //         method: 'POST',
 //         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
 //       });
@@ -46,4 +46,16 @@ async function dl_file(url,destination)
 //       console.log(response.data);
 // })();
 
- dl_file("http://ir1.mf1vpn.xyz:7002/dldb","db.zip");
+
+(async () => 
+{
+    const response = await axios({
+        url:"http://localhost:5000/get_panel_inbounds",
+        method: 'POST',
+        data: {service_access_api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",country:"DE1"}
+      });
+
+      console.log(response.data);
+})();
+
+//  dl_file("http://ir1.mf1vpn.xyz:7002/dldb","db.zip");

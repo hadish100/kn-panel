@@ -279,9 +279,14 @@ app.post("/create_user", async (req, res) => {
         expire,
         data_limit,
         country,
-        access_token } = req.body;
+        access_token,
+        protocols } = req.body;
 
-    if (!username || !expire || !data_limit || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!username || !expire || !data_limit || !country || protocols.length == 0) 
+    {
+        res.send({ status: "ERR", msg: "fill all of the inputs" })
+        return;
+    }
 
     var corresponding_agent = await token_to_account(access_token);
     var agent_id = corresponding_agent.id;
@@ -304,7 +309,9 @@ app.post("/create_user", async (req, res) => {
             selected_panel.panel_password,
             corresponding_agent.prefix + "_" + username,
             gb2b(data_limit),
-            Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60)
+            Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
+            protocols)
+
 
         if (mv == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
         else {
@@ -552,7 +559,11 @@ app.post("/edit_user", async (req, res) => {
         country,
         access_token } = req.body;
 
-    if (!user_id || !expire || !data_limit || !country) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!user_id || !expire || !data_limit || !country) 
+    {
+        res.send({ status: "ERR", msg: "fill all of the inputs" });
+        return;
+    }
 
     var user_obj = await get_user1(user_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
@@ -690,6 +701,15 @@ app.post("/dldb", async (req, res) =>
 
 });
 
+
+app.post("/get_panel_inbounds", async (req, res) => 
+{
+    var { country } = req.body;
+    var panels = await get_panels();
+    var panel = panels.filter(x => x.panel_country == country)[0];
+    var inbounds = Object.keys(panel.panel_inbounds);
+    res.send(inbounds);
+});
 
 app.listen(5000, () => {
     console.log("--------------");
