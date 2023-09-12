@@ -70,6 +70,8 @@ const CreateUser = ({ onClose, showForm }) => {
     }
 
     useEffect(() => {
+        setIsMoreOptionClicked(false)
+
         const getProtocols = async () => {
             setIsLoadingProtocols(true)
             const availableProtocolsName = (await axios.post("/get_panel_inbounds", { access_token, country })).data
