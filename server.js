@@ -280,7 +280,8 @@ app.post("/create_user", async (req, res) => {
         data_limit,
         country,
         access_token,
-        protocols } = req.body;
+        protocols,
+        flow_status } = req.body;
 
     if (!username || !expire || !data_limit || !country || protocols.length == 0) 
     {
@@ -310,11 +311,19 @@ app.post("/create_user", async (req, res) => {
             corresponding_agent.prefix + "_" + username,
             gb2b(data_limit),
             Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
-            protocols)
+            protocols,
+            flow_status)
 
 
         if (mv == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
         else {
+
+            var inbounds = {}
+            for (protocol of protocols) {
+                inbounds[protocol] = {}
+                if(protocol == "vless") inbounds[protocol].flow = flow_status;
+            }
+
             await insert_to_users({
                 id: uid(),
                 agent_id,
@@ -330,7 +339,8 @@ app.post("/create_user", async (req, res) => {
                 subscription_url: selected_panel.panel_url + mv.subscription_url,
                 links: mv.links,
                 created_at:Math.floor(Date.now()/1000),
-                disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)}
+                disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)},
+                inbounds
             });
 
             await update_account(agent_id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit) });
@@ -707,11 +717,17 @@ app.post("/get_panel_inbounds", async (req, res) =>
     var { country } = req.body;
     var panels = await get_panels();
     var panel = panels.filter(x => x.panel_country == country)[0];
-    var inbounds = Object.keys(panel.panel_inbounds);
-    res.send(inbounds);
+    if(!panel) res.send({ status: "ERR", msg: 'panel not found' })
+    else
+    {
+        var inbounds = Object.keys(panel.panel_inbounds);
+        res.send(inbounds);     
+    }
+
 });
 
-app.listen(5000, () => {
+app.listen(5000, () => 
+{
     console.log("--------------");
     console.log("SERVER STARTED !");
     console.log("--------------");

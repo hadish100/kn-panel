@@ -15,8 +15,8 @@ import Button from '../Button'
 import Dropdown from '../Dropdown'
 
 const flowOptions = [
-    { label: "xtls", value: "xtls" },
-    { label: "none", value: "none" }
+    { label: "none", value: "none" },
+    { label: "xtls-rprx-vision", value: "xtls-rprx-vision" }
 ]
 
 const CreateUser = ({ onClose, showForm }) => {
@@ -32,16 +32,15 @@ const CreateUser = ({ onClose, showForm }) => {
         { name: "shadowsocks", disabled: true }
     ])
     const [isMoreOptionClicked, setIsMoreOptionClicked] = useState(false)
-    const [flowValue, setFlowValue] = useState({ label: "xtls", value: "xtls" })
-    const [country, setCountry] = useState("")
-    const [isLoadingProtocols, setIsLoadingProtocols] = useState(false)
+    const [flowValue, setFlowValue] = useState({ label: "none", value: "none" })
 
     const createUserOnServer = async (
         username, data_limit, expire, country
     ) => {
         setCreateMode(true)
-        var protocols = selectedProtocols.filter(x => typeof x === "string")
-        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols })
+        var protocols = selectedProtocols.filter(x=> typeof x === "string")
+        var flow_status = flowValue.value;
+        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token , protocols , flow_status })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")

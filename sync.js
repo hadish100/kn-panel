@@ -178,6 +178,16 @@ connect_to_db().then(res => {
                     {
                         var complete_user_info = await get_marzban_user(panel.panel_url, panel.panel_username, panel.panel_password, marzban_user.username);
                         if(complete_user_info == "ERR") continue;
+                        
+                        var inbounds = {};
+                        for(proxy of Object.keys(complete_user_info.proxies))
+                        {
+                            inbounds[proxy] = {};
+                            if(proxy == "vless") 
+                            {
+                                inbounds[proxy].flow = complete_user_info.proxies[proxy]["flow"]=="xtls-rprx-vision"?"xtls-rprx-vision":"none";
+                            }
+                        }
 
                         await insert_to_users({
                             "id": uid(),
@@ -194,7 +204,8 @@ connect_to_db().then(res => {
                             "subscription_url": panel.panel_url+complete_user_info.subscription_url,
                             "links": complete_user_info.links,
                             "created_at":Math.floor(Date.parse(marzban_user.created_at)/1000),
-                            "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)}
+                            "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)},
+                            "inbounds":inbounds
                           });
 
                         await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit , lifetime_volume: corresponding_agent.lifetime_volume + marzban_user.data_limit });
