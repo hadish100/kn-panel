@@ -1,27 +1,35 @@
 const axios = require('axios');
 const fs = require('fs');
+const {get_marzban_user} = require("../utils");
 
-async function dl_file(url,destination) 
-{
-	const response = await axios
-	({
-	  url,
-	  method: 'POST',
-	  responseType: 'stream',
-      data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
-	});
+(async () => {
+  var complete_user_info = await get_marzban_user("http://209.38.245.93:8000", "admin", "admin", "EW_223232tggff");
+  console.log(Object.keys(complete_user_info.proxies));
+})();
+
+
+
+// async function dl_file(url,destination) 
+// {
+// 	const response = await axios
+// 	({
+// 	  url,
+// 	  method: 'POST',
+// 	  responseType: 'stream',
+//       data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
+// 	});
   
 		
-	const writer = fs.createWriteStream(destination);
+// 	const writer = fs.createWriteStream(destination);
   
-	response.data.pipe(writer);
+// 	response.data.pipe(writer);
   
-	return new Promise((resolve, reject) => 
-	{
-	  writer.on('finish', resolve);
-	  writer.on('error', reject);
-	});
-}
+// 	return new Promise((resolve, reject) => 
+// 	{
+// 	  writer.on('finish', resolve);
+// 	  writer.on('error', reject);
+// 	});
+// }
 
 // (async () => 
 // {
@@ -47,15 +55,6 @@ async function dl_file(url,destination)
 // })();
 
 
-(async () => 
-{
-    const response = await axios({
-        url:"http://localhost:5000/get_panel_inbounds",
-        method: 'POST',
-        data: {service_access_api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",country:"DE1"}
-      });
 
-      console.log(response.data);
-})();
 
 //  dl_file("http://ir1.mf1vpn.xyz:7002/dldb","db.zip");

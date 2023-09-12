@@ -138,7 +138,7 @@ const get_panel_info = async (link, username, password) => {
     }
 }
 
-const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols) => {
+const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
@@ -147,7 +147,11 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
 
         for (inbound in panel_inbounds) 
         {
-            if(protocols.includes(inbound)) proxy_obj[inbound] = {};
+            if(protocols.includes(inbound)) 
+            {
+                proxy_obj[inbound] = {};
+                if(inbound == "vless" && flow_status != "none") proxy_obj[inbound]['flow'] = flow_status;
+            }
         }
 
         var req_obj =
