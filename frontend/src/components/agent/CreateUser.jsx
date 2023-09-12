@@ -9,16 +9,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import LeadingIcon from '../LeadingIcon'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import { ReactComponent as ThreeDotsIcon } from '../../assets/svg/three-dots.svg'
+import { ReactComponent as SpinnerIcon } from '../../assets/svg/spinner.svg'
 import FormField from '../form/FormField'
 import Button from '../Button'
 import Dropdown from '../Dropdown'
-
-const protocols = [
-    { name: "vmess", disabled: false },
-    { name: "vless", disabled: false },
-    { name: "trojan", disabled: false },
-    { name: "shadowsocks", disabled: true }
-]
 
 const flowOptions = [
     { label: "xtls", value: "xtls" },
@@ -31,15 +25,23 @@ const CreateUser = ({ onClose, showForm }) => {
     const access_token = sessionStorage.getItem("access_token")
     const [createMode, setCreateMode] = useState(false)
     const [selectedProtocols, setSelectedProtocols] = useState([])
+    const [protocols, setProtocols] = useState([
+        { name: "vmess", disabled: true },
+        { name: "vless", disabled: true },
+        { name: "trojan", disabled: true },
+        { name: "shadowsocks", disabled: true }
+    ])
     const [isMoreOptionClicked, setIsMoreOptionClicked] = useState(false)
     const [flowValue, setFlowValue] = useState({ label: "xtls", value: "xtls" })
+    const [country, setCountry] = useState("")
+    const [isLoadingProtocols, setIsLoadingProtocols] = useState(false)
 
     const createUserOnServer = async (
         username, data_limit, expire, country
     ) => {
         setCreateMode(true)
-        var protocols = selectedProtocols.filter(x=> typeof x === "string")
-        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token , protocols })
+        var protocols = selectedProtocols.filter(x => typeof x === "string")
+        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
@@ -67,7 +69,37 @@ const CreateUser = ({ onClose, showForm }) => {
     }
 
     useEffect(() => {
+        const getProtocols = async () => {
+            setIsLoadingProtocols(true)
+            const availableProtocolsName = (await axios.post("/get_panel_inbounds", { access_token, country })).data
+            setSelectedProtocols(availableProtocolsName)
+            const updatedProtocols = protocols.map((protocol) => ({
+                name: protocol.name,
+                disabled: !availableProtocolsName.includes(protocol.name),
+            }))
+            setProtocols(updatedProtocols)
+            setIsLoadingProtocols(false)
+            if (availableProtocolsName.status === "ERR") {
+                setError_msg(availableProtocolsName.msg)
+                setHasError(true)
+                return
+            }
+        }
+
+        if (country) {
+            getProtocols()
+        }
+    }, [country])
+
+    useEffect(() => {
         setSelectedProtocols([])
+        setProtocols([
+            { name: "vmess", disabled: true },
+            { name: "vless", disabled: true },
+            { name: "trojan", disabled: true },
+            { name: "shadowsocks", disabled: true }
+        ])
+        setCountry("")
     }, [showForm])
 
     const handleSubmitForm = () => {
@@ -104,7 +136,7 @@ const CreateUser = ({ onClose, showForm }) => {
         { label: "Username", type: "text", id: "username", name: "username" },
         { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit" },
         { label: "Days To Expire", type: "number", id: "daysToExpire", name: "daysToExpire" },
-        { label: "Country", type: "multi-select2", id: "country", name: "country" }
+        { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry }
     ]
 
     const primaryButtons = [
@@ -183,9 +215,9 @@ const CreateUser = ({ onClose, showForm }) => {
                                     </div>
                                 ))}
                             </form>
-                            <div className={styles['protocols-section']}>
-                                <h4>Porotocols</h4>
-                                <div className={styles.protocols}>
+                            <div className={`${styles['protocols-section']} ${country ? "" : "blur-1"}`}>
+                                <h4 className='flex items-center gap-1'>Porotocols {isLoadingProtocols && <span className="flex items-center spinner"><SpinnerIcon /></span>}</h4>
+                                <div className={`${styles.protocols}`}>
                                     {protocols.map((protocol, index) => (
                                         <motion.div key={index}
                                             className={`${styles.protocol} ${selectedProtocols.includes(protocol.name) ? styles.selected : protocol.disabled ? styles.disabled : ''}`}

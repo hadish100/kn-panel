@@ -108,6 +108,10 @@ input[type=number] {
     justify-content: center;
 }
 
+.items-center {
+    align-items: center;
+}
+
 .justify-end {
     justify-content: flex-end;
 }
@@ -126,4 +130,24 @@ input[type=number] {
 
 .w-full {
     width: 100%;
+}
+
+.blur-1 {
+    filter: blur(1px)
+}
+
+/* animations */
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
 }
