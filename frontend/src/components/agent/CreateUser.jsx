@@ -73,6 +73,11 @@ const CreateUser = ({ onClose, showForm }) => {
         const getProtocols = async () => {
             setIsLoadingProtocols(true)
             const availableProtocolsName = (await axios.post("/get_panel_inbounds", { access_token, country })).data
+            if (availableProtocolsName.status === "ERR") {
+                setError_msg(availableProtocolsName.msg)
+                setHasError(true)
+                return
+            }
             setSelectedProtocols(availableProtocolsName)
             const updatedProtocols = protocols.map((protocol) => ({
                 name: protocol.name,
@@ -80,11 +85,7 @@ const CreateUser = ({ onClose, showForm }) => {
             }))
             setProtocols(updatedProtocols)
             setIsLoadingProtocols(false)
-            if (availableProtocolsName.status === "ERR") {
-                setError_msg(availableProtocolsName.msg)
-                setHasError(true)
-                return
-            }
+
         }
 
         if (country) {
