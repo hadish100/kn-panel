@@ -93,7 +93,7 @@ const AdminHomePage = ({ setLocation }) => {
                         <LeadingIcon>
                             <DbUpIcon />
                         </LeadingIcon>
-                        <h1 className="modal__title">Restore Databases</h1>
+                        <h1 className="modal__title">Restore databases</h1>
                         <div className="close-icon" onClick={() => setShowRestoreCard(false)}>
                             <XMarkIcon />
                         </div>
@@ -107,7 +107,7 @@ const AdminHomePage = ({ setLocation }) => {
 
             <MessageCard
                 title="fetching databases"
-                duration={JSON.parse(sessionStorage.getItem("panels")).length}
+                duration={JSON.parse(sessionStorage.getItem("panels")).length*4}
                 showCard={showBackupCard}
                 onClose={() => setShowBackupCard(false)}
             />
