@@ -73,12 +73,21 @@ const CreateUser = ({ onClose, showForm }) => {
         setIsMoreOptionClicked(false)
 
         const getProtocols = async () => {
+            setFlowValue({ label: "none", value: "none" })
             setIsLoadingProtocols(true)
             const availableProtocolsName = (await axios.post("/get_panel_inbounds", { access_token, country })).data
             if (availableProtocolsName.status === "ERR") {
                 setError_msg(availableProtocolsName.msg)
                 setHasError(true)
-                return
+                setIsLoadingProtocols(false)
+                setProtocols([
+                    { name: "vmess", disabled: true },
+                    { name: "vless", disabled: true },
+                    { name: "trojan", disabled: true },
+                    { name: "shadowsocks", disabled: true }
+                ])
+                setSelectedProtocols([])
+                return;
             }
             setSelectedProtocols(availableProtocolsName)
             const updatedProtocols = protocols.map((protocol) => ({
@@ -219,7 +228,7 @@ const CreateUser = ({ onClose, showForm }) => {
                                     </div>
                                 ))}
                             </form>
-                            <div className={`${styles['protocols-section']} ${country ? "" : "blur-1"}`}>
+                            <div className={`${styles['protocols-section']}`}>
                                 <h4 className='flex items-center gap-1'>Porotocols {isLoadingProtocols && <span className="flex items-center spinner"><SpinnerIcon /></span>}</h4>
                                 <div className={`${styles.protocols}`}>
                                     {protocols.map((protocol, index) => (

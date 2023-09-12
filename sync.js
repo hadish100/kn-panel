@@ -39,8 +39,8 @@ connect_to_db().then(res => {
 
     while (true) {
         var panels_arr = await get_panels();
-        var db_users_arr = await get_all_users();
         for (panel of panels_arr) {
+            var db_users_arr = await get_all_users();
             if (panel.disable)
             {
                 var panel_auth_res = await auth_marzban(panel.panel_url, panel.panel_username, panel.panel_password);

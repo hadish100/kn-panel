@@ -321,7 +321,7 @@ const dl_file = async (url,destination) =>
           method: 'POST',
           responseType: 'stream',
           data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
-          timeout:60000
+          timeout:15000
         });
       
             

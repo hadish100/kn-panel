@@ -70,7 +70,7 @@ const AdminHomePage = ({ setLocation }) => {
             </Button>
 
             <AnimatePresence>
-                {showManageDatabases && <Modal onClose={() => setShowManageDatabases(false)} width={"30rem"}>
+                {showManageDatabases && <Modal onClose={() => setShowManageDatabases(false)} width={"35rem"}>
                     <header className="modal__header">
                         <LeadingIcon>
                             <DbIcon />
