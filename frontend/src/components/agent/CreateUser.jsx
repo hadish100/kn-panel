@@ -38,7 +38,8 @@ const CreateUser = ({ onClose, showForm }) => {
         username, data_limit, expire, country
     ) => {
         setCreateMode(true)
-        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token })
+        var protocols = selectedProtocols.filter(x=> typeof x === "string")
+        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token , protocols })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
@@ -84,6 +85,7 @@ const CreateUser = ({ onClose, showForm }) => {
             setSelectedProtocols([...selectedProtocols, protocol.name])
         }
     }
+
 
     const handleClickMoreOption = (e) => {
         e.stopPropagation()

@@ -138,14 +138,17 @@ const get_panel_info = async (link, username, password) => {
     }
 }
 
-const make_vpn = async (link, username, password, vpn_name, data_limit, expire) => {
+const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
         var { panel_inbounds } = await get_panel_info(link, username, password);
         var proxy_obj = {};
 
-        for (inbound in panel_inbounds) proxy_obj[inbound] = {};
+        for (inbound in panel_inbounds) 
+        {
+            if(protocols.includes(inbound)) proxy_obj[inbound] = {};
+        }
 
         var req_obj =
         {
