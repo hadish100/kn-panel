@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from "axios"
 
 import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg"
@@ -30,7 +30,7 @@ const CreateUser = ({ onClose, showForm }) => {
     const [error_msg, setError_msg] = useState("failed to create user")
     const access_token = sessionStorage.getItem("access_token")
     const [createMode, setCreateMode] = useState(false)
-    const [selectedProtocols, setSelectedProtocols] = useState(protocols)
+    const [selectedProtocols, setSelectedProtocols] = useState([])
     const [isMoreOptionClicked, setIsMoreOptionClicked] = useState(false)
     const [flowValue, setFlowValue] = useState({ label: "none", value: "none" })
 
@@ -66,6 +66,10 @@ const CreateUser = ({ onClose, showForm }) => {
         }
         setCreateMode(false)
     }
+
+    useEffect(() => {
+        setSelectedProtocols([])
+    }, [showForm])
 
     const handleSubmitForm = () => {
         // Gather form data
