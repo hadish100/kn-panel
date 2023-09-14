@@ -5,7 +5,8 @@ const fs = require('fs');
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 
-var MAIN_PANEL_URL = "http://localhost:5000"
+var MAIN_PANEL_URL = "http://localhost:5000";
+var SB_API_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
 
 // --- UTILS --- //
 
@@ -249,7 +250,7 @@ const get_all_marzban_users = async (link, username, password) => {
         ({
             url:secondary_backend_url_converter(link,"get_marzban_users"),
             method: 'POST',
-            data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
+            data: {api_key:SB_API_KEY},
             timeout: 15000
         });
 
@@ -323,7 +324,7 @@ const dl_file = async (url,destination) =>
           url,
           method: 'POST',
           responseType: 'stream',
-          data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
+          data: {api_key: SB_API_KEY},
           timeout:15000
         });
       
@@ -384,7 +385,7 @@ const enable_panel = async (panel_id) =>
                 url: secondary_backend_url_converter(panel_obj.panel_url,"edit_expire_times"),
                 method: 'POST',
                 responseType: 'stream',
-                data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:Math.floor(Date.now()/1000) - panel_obj.last_online}
+                data: {api_key:SB_API_KEY,added_time:Math.floor(Date.now()/1000) - panel_obj.last_online}
             });
 
             await syslog("added " + Math.floor(Date.now()/1000) - panel_obj.last_online + " seconds to expire times of panel " + panel_obj.panel_url)
@@ -421,6 +422,77 @@ const syslog = async (str) =>
 
     catch(err)
     {
+        return "ERR";
+    }
+}
+
+
+const switch_countries = async (country_from,country_to,users_arr) =>
+{
+    try
+    {
+        var panel_from = (await panels_clct.find({panel_country:country_from}).toArray())[0];
+        var panel_to = (await panels_clct.find({panel_country:country_to}).toArray())[0];
+        var panel_from_url = panel_from.panel_url;
+        var panel_to_url = panel_to.panel_url;
+
+        await axios
+        ({
+            url:secondary_backend_url_converter(panel_from_url,"ping"),
+            method: 'POST',
+            data: {api_key:SB_API_KEY},
+            timeout: 5000
+        });
+
+        await axios
+        ({
+            url:secondary_backend_url_converter(panel_to_url,"ping"),
+            method: 'POST',
+            data: {api_key:SB_API_KEY},
+            timeout: 5000
+        });
+
+        var delete_users_req = await axios
+        ({
+            url:secondary_backend_url_converter(panel_from_url,"delete_users"),
+            method: 'POST',
+            data: {api_key:SB_API_KEY,users:users_arr},
+            timeout: 20000
+        });
+
+        if(delete_users_req.data == "ERR") return "ERR";
+
+        var deleted_users = delete_users_req.data.deleted_users;
+
+        var add_users_req = await axios
+        ({
+            url:secondary_backend_url_converter(panel_to_url,"add_users"),
+            method: 'POST',
+            data: {api_key:SB_API_KEY,deleted_users,available_protocols:Object.keys(panel_to.panel_inbounds)},
+            timeout: 20000
+        });
+
+
+        for(username of users_arr)
+        {
+            var user_id = await username_to_id(username);
+            await update_user(user_id,
+                                    {
+                                        corresponding_panel_id:panel_to.id,
+                                        corresponding_panel:panel_to.panel_url,
+                                        country:country_to,
+                                        real_subscription_url:panel_from.real_subscription_url.replace(panel_from_url,panel_to_url)
+                                    });
+        }
+
+        if(add_users_req.data == "ERR") return "ERR";
+        else return "DONE";
+
+    }
+
+    catch(err)
+    {
+        console.log(err);
         return "ERR";
     }
 }
@@ -491,5 +563,6 @@ module.exports = {
     enable_panel,
     secondary_backend_url_converter,
     syslog,
-    get_main_panel_url
+    get_main_panel_url,
+    switch_countries
 }

@@ -47,7 +47,8 @@ const {
     enable_panel,
     disable_panel,
     secondary_backend_url_converter,
-    get_main_panel_url
+    get_main_panel_url,
+    switch_countries
 } = require("./utils");
 
 
@@ -733,6 +734,21 @@ app.post("/get_panel_inbounds", async (req, res) =>
     }
 
 });
+
+
+app.post("/switch_countries", async(req,res) => 
+{
+    var { access_token , country_from , country_to } = req.body;
+    var account = await token_to_account(access_token);
+    var users_arr = await users_clct.find({country:country_from,agent_id:account.id}).toArray();
+    users_arr = users_arr.map(x => x.username);
+    var result = await switch_countries(country_from,country_to,users_arr);
+    if(result == "ERR") res.send({ status: "ERR", msg: 'failed to switch servers' })
+    else res.send("DONE");
+});
+
+
+
 
 
 app.get(/^\/sub\/.+/,async (req,res) =>
