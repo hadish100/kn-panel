@@ -475,13 +475,22 @@ const switch_countries = async (country_from,country_to,users_arr) =>
 
         for(username of users_arr)
         {
-            var user_id = await username_to_id(username);
-            await update_user(user_id,
+            var user_obj = await get_user2(username);
+            var inbounds = user_obj.inbounds
+            for(inbound in inbounds)
+            {
+                if(!Object.keys(panel_to.panel_inbounds).includes(inbound))
+                {
+                    delete inbounds[inbound];
+                }
+            }
+            await update_user(user_obj.id,
                                     {
                                         corresponding_panel_id:panel_to.id,
                                         corresponding_panel:panel_to.panel_url,
                                         country:country_to,
-                                        real_subscription_url:panel_from.real_subscription_url.replace(panel_from_url,panel_to_url)
+                                        real_subscription_url:panel_from.real_subscription_url.replace(panel_from_url,panel_to_url),
+                                        inbounds
                                     });
         }
 
