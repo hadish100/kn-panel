@@ -10,8 +10,6 @@ import styles from "./EditUser.module.css"
 
 const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem, editMode }) => {
 
-    console.log(item)
-
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username", disabled: true },
         { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit" },

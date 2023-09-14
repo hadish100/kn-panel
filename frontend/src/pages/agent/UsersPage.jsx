@@ -17,6 +17,7 @@ import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard'
 import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
+import SwitchCountries from './SwitchCountries'
 
 
 const UsersPage = () => {
@@ -37,6 +38,7 @@ const UsersPage = () => {
     const [editMode, setEditMode] = useState(false)
     const [deleteMode, setDeleteMode] = useState(false)
     const [resetMode, setResetMode] = useState(false)
+    const [showSwitchCountries, setShowSwitchCountries] = useState(false)
 
 
     const fetchUsers = async (resetCurrentPage) => {
@@ -180,20 +182,20 @@ const UsersPage = () => {
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
-            return;
+            return
         }
         var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
         console.log(users)
         if (users.status === "ERR") {
             setError_msg(users.msg)
-            setHasError(true);
-            return;
+            setHasError(true)
+            return
         }
         var agent = (await axios.post("/get_agent", { access_token })).data
         if (agent.status === "ERR") {
             setError_msg(agent.msg)
-            setHasError(true);
-            return;
+            setHasError(true)
+            return
         }
         sessionStorage.setItem("agent", JSON.stringify(agent))
         setAgent(agent)
@@ -227,7 +229,7 @@ const UsersPage = () => {
             setHasError(true)
             setEditMode(false)
             return
-    }
+        }
 
         sessionStorage.setItem("users", JSON.stringify(users.obj_arr))
         sessionStorage.setItem("agent", JSON.stringify(agent))
@@ -275,6 +277,14 @@ const UsersPage = () => {
         setRowsPerPage(option.value)
     }
 
+    const handleShowSwitchCountries = () => {
+        setShowSwitchCountries(true)
+    }
+
+    const handleCloseSwitchCountries = () => {
+        setShowSwitchCountries(false)
+    }
+
     const itemsPerRowOptions = [
         { label: 10, value: 10 },
         { label: 20, value: 20 },
@@ -288,6 +298,7 @@ const UsersPage = () => {
                 <Search value={searchedUsers} onChange={setSearchedUsers} />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh-icon"><RefreshIcon /></Button>
+                    <Button onClick={handleShowSwitchCountries} className="outlined">Switch Countries</Button>
                     <Button onClick={handleShowCreateUser} className="create-user-button primary">Create User</Button>
                 </span>
             </div>
@@ -300,6 +311,8 @@ const UsersPage = () => {
                 showForm={showCreateUser}
                 items={users}
             />
+
+            <SwitchCountries onClose={handleCloseSwitchCountries} showModal={showSwitchCountries} />
 
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
             {!refresh && <UsersTable
