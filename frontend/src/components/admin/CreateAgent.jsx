@@ -1,22 +1,23 @@
 import React, { useState, useRef } from 'react'
-import axios from 'axios';
+import axios from 'axios'
 
-import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg";
-import ErrorCard from '../ErrorCard';
+import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg"
+import ErrorCard from '../ErrorCard'
 import { AnimatePresence, motion } from 'framer-motion'
-import Modal from '../Modal';
-import LeadingIcon from '../LeadingIcon';
-import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg';
-import FormField from '../form/FormField';
-import Button from '../Button';
+import Modal from '../Modal'
+import LeadingIcon from '../LeadingIcon'
+import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
+import FormField from '../form/FormField'
+import Button from '../Button'
+import styles from "./CreateAgent.module.css"
 
 const CreateAgent = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
-    const [error_msg, setError_msg] = useState("failed to create agent");
+    const [error_msg, setError_msg] = useState("failed to create agent")
     const [createMode, setCreateMode] = useState(false)
-    const businessModeRef = useRef(null);
+    const businessModeRef = useRef(null)
 
-    const access_token = sessionStorage.getItem("access_token");
+    const access_token = sessionStorage.getItem("access_token")
 
     const createAgentOnServer = async (
         name,
@@ -32,14 +33,14 @@ const CreateAgent = ({ onClose, showForm }) => {
         business_mode
     ) => {
         setCreateMode(true)
-        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode });
+        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create agent (BAD REQUEST)")
             setHasError(true)
         } else {
-            var agents = (await axios.post("/get_agents", { access_token })).data;
-            sessionStorage.setItem("agents", JSON.stringify(agents));
+            var agents = (await axios.post("/get_agents", { access_token })).data
+            sessionStorage.setItem("agents", JSON.stringify(agents))
             onClose()
         }
         setCreateMode(false)
@@ -47,15 +48,15 @@ const CreateAgent = ({ onClose, showForm }) => {
 
     const handleSubmitForm = () => {
         // Gather form data
-        const name = document.getElementById("name").value;
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const volume = document.getElementById("volume").value;
-        const min_vol = document.getElementById("min_vol").value;
-        const max_users = document.getElementById("max_users").value;
-        const max_days = document.getElementById("max_days").value;
-        const prefix = document.getElementById("prefix").value;
-        const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value;
+        const name = document.getElementById("name").value
+        const username = document.getElementById("username").value
+        const password = document.getElementById("password").value
+        const volume = document.getElementById("volume").value
+        const min_vol = document.getElementById("min_vol").value
+        const max_users = document.getElementById("max_users").value
+        const max_days = document.getElementById("max_days").value
+        const prefix = document.getElementById("prefix").value
+        const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         const max_non_active_days = document.getElementById("max_non_active_days").value
         const businessModeValue = businessModeRef.current.checked
         // Send form data to backend
@@ -123,7 +124,7 @@ const CreateAgent = ({ onClose, showForm }) => {
                         <main className="modal__body" style={{ marginBottom: ".5rem" }}>
                             <form className="modal__form">
                                 {formFields.map((group, rowIndex) => (
-                                    <div key={rowIndex} className="flex gap-16">
+                                    <div key={rowIndex} className={`flex gap-16 ${styles['modal__form__row']}`}>
                                         {Array.isArray(group) ? group.map((field, index) => {
                                             return (<FormField
                                                 key={index}
@@ -137,7 +138,7 @@ const CreateAgent = ({ onClose, showForm }) => {
                                                 value={field.value}
                                                 onChange={field.onChange}
                                                 placeholder={field.placeholder}
-                                            />);
+                                            />)
                                         }) : (
                                             <FormField
                                                 key={rowIndex}

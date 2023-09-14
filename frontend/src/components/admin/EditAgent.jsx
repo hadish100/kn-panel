@@ -151,10 +151,10 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
             {showForm && (
                 <Modal onClose={onClose} width={"40rem"}>
                     {formHeader}
-                    <main className="modal__body" style={{ marginBottom: ".5rem" }}>
+                    <main className={styles['modal__body']} style={{ marginBottom: ".5rem" }}>
                         <form className="modal__form">
                             {formFields.map((group, rowIndex) => (
-                                <div key={rowIndex} className="flex gap-16">
+                                <div key={rowIndex} className={`flex gap-16 ${styles['modal__form__row']}`}>
                                     {Array.isArray(group) ? group.map((field, index) => {
                                         const defaultValue = getDefaultValue(item, field)
                                         return (<FormField

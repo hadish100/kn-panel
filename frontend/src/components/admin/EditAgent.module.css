@@ -18,3 +18,9 @@
         font-size: 10px;
     }
 }
+
+@media (max-width: 740px) {
+    .modal__form__row {
+        flex-direction: column;
+    }
+}
