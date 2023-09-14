@@ -1,18 +1,18 @@
-import React from 'react';
+import React from 'react'
 
-import Modal from '../Modal';
-import { motion, AnimatePresence } from 'framer-motion';
-import LeadingIcon from '../LeadingIcon';
-import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg';
-import FormField from '../form/FormField';
-import Button from '../Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import IOSSwitch from './inputs/IOSSwitch';
+import Modal from '../Modal'
+import { motion, AnimatePresence } from 'framer-motion'
+import LeadingIcon from '../LeadingIcon'
+import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
+import FormField from '../form/FormField'
+import Button from '../Button'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import IOSSwitch from './inputs/IOSSwitch'
 
 const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButtons, secondaryButtons, onSubmit, item, width, styles }) => {
 
     const b2gb = (bytes) => {
-        return (bytes / (2 ** 10) ** 3).toFixed(2);
+        return (bytes / (2 ** 10) ** 3).toFixed(2)
     }
 
     const timeStampToDay = (timeStamp) => {
@@ -22,26 +22,26 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
 
     const getDefaultValue = (item, field) => {
         if (!item) {
-            return "";
+            return ""
         }
 
 
         if (field.id === "expire") {
-            return timeStampToDay(item[field.id]);
+            return timeStampToDay(item[field.id])
         }
 
         if (field.id === "data_limit") {
-            return b2gb(item[field.id]);
+            return b2gb(item[field.id])
         }
 
         if (field.id === "volume") {
-            return b2gb(item[field.id]);
+            return b2gb(item[field.id])
         }
 
 
 
-        return item[field.id];
-    };
+        return item[field.id]
+    }
 
     const formHeader = (
         <header className="modal__header">
@@ -118,7 +118,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                                             onChange={field.onChange}
                                             placeholder={field.placeholder}
                                             editValue={item ? item.country ? item.country.split(",") : "" : ""}
-                                        />);
+                                        />)
                                     }) : (
                                         <FormField
                                             key={rowIndex}
@@ -144,7 +144,7 @@ const Form = ({ onClose, showForm, title, iconComponent, formFields, primaryButt
                 </Modal>
             )}
         </AnimatePresence>
-    );
-};
+    )
+}
 
-export default Form;
+export default Form

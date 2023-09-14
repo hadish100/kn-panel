@@ -5,12 +5,14 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 
-export default function BasicSelect({ onChange }) {
+export default function BasicSelect({ onChange, defaultValue }) {
   const [age, setAge] = React.useState('')
 
   const handleChange = (event) => {
     setAge(event.target.value)
-    onChange(event.target.value)
+    if (onChange) {
+      onChange(event.target.value)
+    }
   }
 
   const agent = JSON.parse(sessionStorage.getItem("agent"))
@@ -22,9 +24,10 @@ export default function BasicSelect({ onChange }) {
         <Select sx={{ height: 34 }}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={age}
+          value={defaultValue}
           label=""
           onChange={handleChange}
+          defaultValue={defaultValue}
         >
           {agent.country.split(",").map((item) => (
             <MenuItem key={item} value={item}>
