@@ -4,7 +4,8 @@ var AdmZip = require("adm-zip");
 const sqlite3 = require('sqlite3').verbose();
 app.use(express.json());
 
-const db_path = "/var/lib/marzban/db.sqlite3"
+// const db_path = "/var/lib/marzban/db.sqlite3"
+const db_path = "db.sqlite3"
 
 async function run_query(query)
 { 
@@ -37,6 +38,40 @@ async function get_users()
     });
 }
 
+async function get_users_and_proxies(users_arr)
+{
+    return new Promise((resolve, reject) => 
+    {
+        let db = new sqlite3.Database(db_path);
+        db.all(`SELECT * FROM users WHERE username IN (${users_arr.map((u) => `'${u}'`).join(",")})`, (err, rows) => 
+        {
+
+            db.all(`SELECT * FROM proxies WHERE user_id IN (${rows.map((v) => `'${v.id}'`).join(",")})`, (err, rows2) =>
+            {
+                if (err) reject(err);
+                var result = [];
+                for (var i = 0; i < rows.length; i++)
+                {
+                    result[i] = {};
+                    result[i].user = rows[i];
+                    result[i].proxies = [];
+                    for (var j = 0; j < rows2.length; j++)
+                    {
+                        if (rows2[j].user_id == rows[i].id)
+                        {
+                            result[i].proxies.push(rows2[j]);
+                        }
+                    }
+                }
+                resolve(result);
+            });
+
+        });
+
+        db.close();
+    });
+}
+
 
 
 app.use(async (req,res,next) =>
@@ -52,7 +87,7 @@ app.use(async (req,res,next) =>
     next();
 });
 
-app.post("/test", async (req,res) =>
+app.post("/ping", async (req,res) =>
 {
     res.send("OK");
 });
@@ -91,6 +126,26 @@ app.post("/get_marzban_users", async (req,res) =>
     var result = {};
     result.users = await get_users();
     res.send(result);
+});
+
+
+app.post("/delete_users", async (req,res) =>
+{
+    var { users } = req.body;
+
+    try
+    {
+        var deleted_users = await get_users_and_proxies(users);
+        await run_query(`DELETE FROM users WHERE username IN (${users.map((u) => `'${u}'`).join(",")})`);
+        await run_query(`DELETE FROM proxies WHERE user_id IN (${deleted_users.map((u) => `'${u.user.id}'`).join(",")})`);
+        res.send({status:"OK",deleted_users});
+    }
+
+    catch (err)
+    {
+        console.log(err);
+        res.send("ERR");
+    }
 });
 
 

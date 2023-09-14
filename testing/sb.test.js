@@ -8,11 +8,11 @@ const {get_marzban_user} = require("../utils");
 //   console.log(Object.keys(complete_user_info.proxies));
 // })();
 
-(async () => 
-{
-    var result = await axios.get("https://ir1.mf1vpn.xyz:8880/sub/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcGlfdGVzdCIsImFjY2VzcyI6InN1YnNjcmlwdGlvbiIsImlhdCI6MTY5NDY4MDk2MX0.muugIkPh3cOMtoaZlglIkZ1JTBxQY4oUzTUBJ5_55wE")
-    console.log(result);
-})();
+// (async () => 
+// {
+//     var result = await axios.get("https://ir1.mf1vpn.xyz:8880/sub/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcGlfdGVzdCIsImFjY2VzcyI6InN1YnNjcmlwdGlvbiIsImlhdCI6MTY5NDY4MDk2MX0.muugIkPh3cOMtoaZlglIkZ1JTBxQY4oUzTUBJ5_55wE")
+//     console.log(result);
+// })();
 
 // async function dl_file(url,destination) 
 // {
@@ -58,6 +58,18 @@ const {get_marzban_user} = require("../utils");
 
 //       console.log(response.data);
 // })();
+
+
+(async () => 
+{
+    const response = await axios({
+        url:"http://localhost:7002/delete_users",
+        method: 'POST',
+        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["GG_TEST820","TEST"]}
+      });
+
+      console.log(response.data);
+})();
 
 
 
