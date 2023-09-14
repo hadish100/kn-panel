@@ -402,6 +402,7 @@
 
             .dropdown_desc
             {
+                direction: rtl;
                 margin-top:10px;
                 width:90%;
                 display:flex;
@@ -660,6 +661,19 @@
                 margin:20px 0;
             }
 
+        @media only screen and (min-width: 1400px) 
+        {
+            .dropdown_title 
+            {
+                width:280px;
+            }
+
+            .dropdown_vid video
+            {
+                width:30%;
+            }
+        }
+
         @media only screen and (max-width: 2000px) 
         {
             .mainest_container
@@ -805,7 +819,7 @@
 
             .dropdown_vid video
             {
-                width:90%;
+                width:65%;
             }
                 
 
@@ -918,11 +932,11 @@
             {
                 align-content: flex-start;
             }
-
-            .protocol-row
+ 
+           /* .protocol-row
             {
                 font-size:14px;
-            }
+            } */
         }
 
         @media only screen and (max-width: 380px) 
@@ -981,7 +995,7 @@
                 </div>
                                     <div class="dropdown_title">FAIR VPN</div>
                     <div class="dropdown_vid">
-                        <video width="400" controls>
+                        <video class="main_dd_vid" width="400" controls>
                             <source src="" type="video/mp4">
                         </video>
                     </div>
@@ -1089,7 +1103,7 @@
                                 <div class="protocol-row special-protocol-row">
                                     <span>ALL CONFIGS</span>
                                         <div class="icon_list">
-                                            <i class="copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg" onclick='copy_link(`{{ "\n".join(user.links) }}`)' ></i>  
+                                            <i class="copy_protocol fa-regular fa-copy fa-i-type-2 fa-lg" onclick='copy_link(`{{ "\\n".join(user.links) }}`)' ></i>  
                                         </div> 
                                 </div>
 
@@ -1140,7 +1154,7 @@
                                 <div class="dropdown_content" dropdown-id="2"></div>  
 
                                 <div class="dropdown_item last-chld" open-dd="3" >
-                                    <div class="dropdown_item_left"><i class="fa-brands fa-windows fa-i-type-5 fa-2x"></i> <span>WINDOWS</span> </div>
+                                    <div class="dropdown_item_left"><i class="fa-solid fa-desktop fa-i-type-5 fa-2x"></i> <span>DESKTOP</span> </div>
                                     <i class="fa-solid fa-caret-down drop_it fa-i-type-4 fa-2x"></i>
                                 </div>
 
@@ -1160,82 +1174,78 @@
 
                 var config_obj = {
                             "ios":[
+
                                 {
                                     "id":1,
-                                    "name":"fairvpn",
-                                    "description":"lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
-                                    "requirement":"android 5 or higher"
+                                    "name":"foxray",
+                                    "description":"",
+                                    "link":"https://apps.apple.com/us/app/foxray/id6448898396",
+                                    "video":"https://cdn.discordapp.com/attachments/1143169413617557575/1146806348428890233/foxray.mp4",
+                                    "requirement":"iOS 16.0 or higher ( free ) "
                                 },
                                 {
                                     "id":2,
-                                    "name":"fairvpn2",
-                                    "description":"lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson.....lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
-                                    "requirement":"android 5 or higher"
+                                    "name":"v2box",
+                                    "description":"",
+                                    "link":"https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690",
+                                    "video":"https://cdn.discordapp.com/attachments/1143169413617557575/1146806160574386286/v2box.mp4",
+                                    "requirement":"iOS 14.0 or higher ( free ) "
                                 },
                                 {
-                                    "id":7,
-                                    "name":"fairvpn2",
-                                    "description":"lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
-                                    "requirement":"android 5 or higher"
+                                    "id":3,
+                                    "name":"shadow rocket",
+                                    "description":"",
+                                    "link":"https://apps.apple.com/ca/app/shadowrocket/id932747118",
+                                    "video":"https://cdn.discordapp.com/attachments/1143169413617557575/1146806574665453648/shadowrocket.mp4",
+                                    "requirement":"iOS 12.0 or higher ( $3.99 ) "
                                 },
 
                             ],
                             "android":[
-                                {
-                                    "id":3,
-                                    "name":"fairvpn",
-                                    "description":"lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
-                                    "requirement":"android 5 or higher"
-                                },
+
                                 {
                                     "id":4,
-                                    "name":"fairvpn2",
-                                    "description":"lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
+                                    "name":"v2rayng",
+                                    "description":"",
+                                    "link":"https://github.com/2dust/v2rayNG/releases/download/1.8.5/v2rayNG_1.8.5.apk",
+                                    "video":"https://cdn.discordapp.com/attachments/1143169413617557575/1144654217282334842/v2ng.mp4",
                                     "requirement":"android 5 or higher"
-                                }
-                            ],
-                            "windows":[
-                                {
-                                    "id":5,
-                                    "name":"fairvpn3",
-                                    "description":"lorm ipson3...",
-                                    "link":"http://google2.com",
-                                    "video":"https://hajifirouz18.cdn.asset.aparat.com/aparat-video/f6fb45e4f955361fa5141f029ad1742553977168-144p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImE2OWEwOWUyODI3ZTA4YTIwNDE2YTJiNzUzMzVkN2FlIiwiZXhwIjoxNjkyMjU1Mzg2LCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.YpnVF2xGf_p4uZlhY1lgWtqfyDjdqT7g00Py-X2uwkY",
-                                    "requirement":"android 7 or higher"
                                 },
                                 {
-                                    "id":6,
-                                    "name":"fairvpn2",
-                                    "description":"lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
+                                    "id":5,
+                                    "name":"clash",
+                                    "description":"",
+                                    "link":"",
+                                    "video":"",
                                     "requirement":"android 5 or higher"
+                                }
+
+                            ],
+                            "desktop":[
+
+                                {
+                                    "id":6,
+                                    "name":"nekoray",
+                                    "description":"",
+                                    "link":"https://github.com/MatsuriDayo/nekoray/releases/download/3.17/nekoray-3.17-2023-08-17-desktop64.zip",
+                                    "video":"https://cdn.discordapp.com/attachments/1143169413617557575/1146803993671123077/nekoray.mp4",
+                                    "requirement":"for desktop"
+                                },
+                                {
+                                    "id":7,
+                                    "name":"v2rayn",
+                                    "description":"",
+                                    "link":"https://github.com/2dust/v2rayN/releases/download/6.23/v2rayN-With-Core.zip",
+                                    "video":"https://cdn.discordapp.com/attachments/1143169413617557575/1143594260726296606/video_2023-08-22_20-36-41.mp4",
+                                    "requirement":"for desktop"
                                 },
                                 {
                                     "id":8,
-                                    "name":"fairvpn2",
-                                    "description":"lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
-                                    "requirement":"android 5 or higher"
-                                },
-                                {
-                                    "id":9,
-                                    "name":"fairvpn2",
-                                    "description":"lorm ipson...",
-                                    "link":"http://google.com",
-                                    "video":"http://google.com",
-                                    "requirement":"android 5 or higher"
+                                    "name":"clash",
+                                    "description":"",
+                                    "link":"",
+                                    "video":"",
+                                    "requirement":"for desktop"
                                 }
                             ]
 
@@ -1244,9 +1254,9 @@
 
                             var info_links = 
                             {
-                                "telegram_channel":"https://google1.com",
-                                "server_status":"https://google2.com",
-                                "backup":"https://google3.com"
+                                "telegram_channel":"https://t.me/keskinnetwork",
+                                "server_status":"https://t.me/keskinnetwork",
+                                "backup":"https://t.me/KNadmin2"
                             }
 
 
@@ -1284,7 +1294,7 @@
                             </span>
 
                             <span>
-                                (  ${config_obj.ios[i].requirement} )
+                                ${config_obj.ios[i].requirement} 
                             </span>
                         </div> 
                     `);
@@ -1299,22 +1309,22 @@
                             </span>
 
                             <span>
-                                (  ${config_obj.android[i].requirement} )
+                                ${config_obj.android[i].requirement}
                             </span>
                         </div> 
                     `);
                 }
 
-                for(let i=0;i<config_obj.windows.length;i++)
+                for(let i=0;i<config_obj.desktop.length;i++)
                 {
                     $(".dropdown_content[dropdown-id=3]").append(`
-                        <div class="popup_btn" popup_id="${config_obj.windows[i].id}">
+                        <div class="popup_btn" popup_id="${config_obj.desktop[i].id}">
                             <span>
-                                ${config_obj.windows[i].name}
+                                ${config_obj.desktop[i].name}
                             </span>
 
                             <span>
-                                (  ${config_obj.windows[i].requirement} )
+                                ${config_obj.desktop[i].requirement} 
                             </span>
                         </div> 
                     `);
@@ -1323,9 +1333,8 @@
 
                 window.addEventListener("contextmenu", e => e.preventDefault());
 
-                        $(".slider_container").css("height",205+54*(document.querySelectorAll(".protocol-row").length-2)+"px");
-                        $(".main_container-3").css("height",205+54*(document.querySelectorAll(".protocol-row").length-2)+"px");
-
+                        $(".slider_container").css("height",85+140+(47.5*(document.querySelectorAll(".protocol-row").length-2))+"px");
+                        $(".main_container-3").css("height",85+140+(47.5*(document.querySelectorAll(".protocol-row").length-2))+"px");
             var test_mode = 1;
             var win_size = window.innerWidth;
             height_arr = ["auto","auto","auto"];
@@ -1407,8 +1416,8 @@
                     $(".slide2").css("transform","translateX(0)");
                     if( test_mode == 0 )
                     {
-                        $(".slider_container").css("height",205+54*(document.querySelectorAll(".protocol-row").length-2)+"px");
-                        $(".main_container-3").css("height",205+54*(document.querySelectorAll(".protocol-row").length-2)+"px");
+                        $(".slider_container").css("height",85+140+(47.5*(document.querySelectorAll(".protocol-row").length-2))+"px");
+                        $(".main_container-3").css("height",85+140+(47.5*(document.querySelectorAll(".protocol-row").length-2))+"px");
                     }
                 }
 
@@ -1513,8 +1522,8 @@
                      
                         if( test_mode == 0 )
                         {
-                            $(".slider_container").css("height",220+80*config_obj.windows.length+"px");
-                            $(".main_container-3").css("height",340+80*config_obj.windows.length+"px");
+                            $(".slider_container").css("height",220+80*config_obj.desktop.length+"px");
+                            $(".main_container-3").css("height",340+80*config_obj.desktop.length+"px");
                         }
                     
                     }
@@ -1526,19 +1535,35 @@
                 }
                 
             });
+            document.querySelectorAll(".main_dd_vid")[0].addEventListener('loadeddata', function() {
+                if(parseInt($(".popup_box").css("height")) > window.innerHeight - 50)
+                {
+                    $(".popup_box").addClass("box__long_txt");
+                    $(".popup_container").addClass("container__long_txt");
+                }
 
+                else
+                {
+                    $(".popup_box").removeClass("box__long_txt");
+                    $(".popup_container").removeClass("container__long_txt");
+                }
+            }, false);
             $(".popup_btn").click(function()
             {
 
+                $("body").css("overflow","hidden");
+                $("body").css("height","100vh");
+                var popup_os ="";
                 var popup_id = $(this).attr("popup_id");
-                var popup_obj = config_obj.ios.find(x => x.id == popup_id);
-                if(!popup_obj) popup_obj = config_obj.android.find(x => x.id == popup_id);
-                if(!popup_obj) popup_obj = config_obj.windows.find(x => x.id == popup_id);
+                var popup_obj = config_obj.ios.find(x => x.id == popup_id);popup_os="ios";
+                if(!popup_obj) {popup_obj = config_obj.android.find(x => x.id == popup_id);popup_os="android"}
+                if(!popup_obj) {popup_obj = config_obj.desktop.find(x => x.id == popup_id);popup_os="desktop"}
                 $(".dropdown_title").html(popup_obj.name);
                 $(".dropdown_vid video").attr("src",popup_obj.video);
+                document.querySelectorAll(".main_dd_vid")[0].load()
+                document.querySelectorAll(".main_dd_vid")[0].play()
                 $(".dropdown_desc span").html(popup_obj.description);
                 $(".dropdown_dl").attr("href",popup_obj.link);
-                
 
                 $(".popup_container").css("display","flex");
                 setTimeout(function()
@@ -1547,6 +1572,16 @@
                     $(".popup_box").css("opacity","1"); 
                     $(".popup_box").css("transform","scale(1)"); 
                 },50);
+
+                if(window.innerWidth > 1400 && popup_os == "desktop")
+                {
+                    $(".dropdown_vid video").css("width","500px")
+                }
+
+                else if(window.innerWidth > 1400 && popup_os != "desktop")
+                {
+                    $(".dropdown_vid video").css("width","30%");
+                } 
 
 
                 if(parseInt($(".popup_box").css("height")) > window.innerHeight - 50)
@@ -1613,6 +1648,10 @@
                     setTimeout(function()
                     {
                         $(".popup_container").css("display","none"); 
+                        $(".popup_box").removeClass("box__long_txt");
+                        $(".popup_container").removeClass("container__long_txt");
+                        $("body").css("overflow","scroll");
+                        $("body").css("height","auto");
                     },200);
             });
 
@@ -1625,6 +1664,10 @@
                     setTimeout(function()
                     {
                         $(".popup_container").css("display","none"); 
+                        $(".popup_box").removeClass("box__long_txt");
+                        $(".popup_container").removeClass("container__long_txt");
+                        $("body").css("overflow","scroll");
+                        $("body").css("height","auto");
                     },200);
             });
 

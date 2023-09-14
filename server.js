@@ -9,6 +9,7 @@ var accounts_clct, panels_clct, users_clct, logs_clct;
 
 const { 
     uid,
+    uidv2,
     insert_to_accounts,
     get_accounts,
     get_account,
@@ -45,7 +46,8 @@ const {
     delete_folder_content,
     enable_panel,
     disable_panel,
-    secondary_backend_url_converter
+    secondary_backend_url_converter,
+    get_main_panel_url
 } = require("./utils");
 
 
@@ -67,7 +69,7 @@ connect_to_db().then(res => {
 
 async function auth_middleware(req, res, next) {
 
-    if (req.url == "/login" || req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
+    if (req.url == "/login" || req.url.startsWith("/sub") || req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
 
     // var accounts = await get_accounts();
     // accounts.forEach(async (account) => 
@@ -336,7 +338,8 @@ app.post("/create_user", async (req, res) => {
                 country,
                 corresponding_panel_id: selected_panel.id,
                 corresponding_panel: selected_panel.panel_url,
-                subscription_url: selected_panel.panel_url + mv.subscription_url,
+                real_subscription_url: selected_panel.panel_url + mv.subscription_url,
+                subscription_url: get_main_panel_url() + "/sub/" + uidv2(10),
                 links: mv.links,
                 created_at:Math.floor(Date.now()/1000),
                 disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)},
@@ -729,6 +732,18 @@ app.post("/get_panel_inbounds", async (req, res) =>
    
     }
 
+});
+
+
+app.get(/^\/sub\/.+/,async (req,res) =>
+{
+    var sub_id = req.url.split("/")[2];
+    var user_obj = await users_clct.find({subscription_url:{$regex:sub_id}}).toArray();
+    if(user_obj.length == 0) res.send("NOT FOUND");
+    else
+    {
+        res.redirect(user_obj[0].real_subscription_url);
+    }
 });
 
 app.listen(5000, () => 
