@@ -52,6 +52,11 @@ app.use(async (req,res,next) =>
     next();
 });
 
+app.post("/test", async (req,res) =>
+{
+    res.send("OK");
+});
+
 app.post("/edit_expire_times", async (req,res) => 
 {
     try
@@ -86,7 +91,8 @@ app.post("/get_marzban_users", async (req,res) =>
     var result = {};
     result.users = await get_users();
     res.send(result);
-})
+});
+
 
 
 

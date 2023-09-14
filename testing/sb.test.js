@@ -1,13 +1,18 @@
 const axios = require('axios');
 const fs = require('fs');
+const util = require('util');
 const {get_marzban_user} = require("../utils");
 
-(async () => {
-  var complete_user_info = await get_marzban_user("http://209.38.245.93:8000", "admin", "admin", "EW_223232tggff");
-  console.log(Object.keys(complete_user_info.proxies));
+// (async () => {
+//   var complete_user_info = await get_marzban_user("http://209.38.245.93:8000", "admin", "admin", "EW_223232tggff");
+//   console.log(Object.keys(complete_user_info.proxies));
+// })();
+
+(async () => 
+{
+    var result = await axios.get("https://ir1.mf1vpn.xyz:8880/sub/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcGlfdGVzdCIsImFjY2VzcyI6InN1YnNjcmlwdGlvbiIsImlhdCI6MTY5NDY4MDk2MX0.muugIkPh3cOMtoaZlglIkZ1JTBxQY4oUzTUBJ5_55wE")
+    console.log(result);
 })();
-
-
 
 // async function dl_file(url,destination) 
 // {

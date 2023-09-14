@@ -5,17 +5,18 @@ const fs = require('fs');
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 
+var MAIN_PANEL_URL = "http://localhost:5000"
 
 // --- UTILS --- //
 
 const uid = () => { return Math.floor(Math.random() * (999999999 - 100000000 + 1)) + 100000000; }
 
-const uidv2 = () => {
+const uidv2 = (x) => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     let counter = 0;
-    while (counter < 30) {
+    while (counter < x) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
         counter += 1;
     }
@@ -25,6 +26,8 @@ const uidv2 = () => {
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+const get_main_panel_url = () => { return MAIN_PANEL_URL; }
 
 const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj); return "DONE"; }
 const get_accounts = async () => { const result = await accounts_clct.find().toArray(); return result; }
@@ -77,7 +80,7 @@ const dnf = (x) => // Desired Number Format
 
 const add_token = async (id) => {
     var expire = Math.floor(Date.now() / 1000) + 86400;
-    var token = uidv2();
+    var token = uidv2(30);
     var obj = { token, expire };
     await accounts_clct.updateOne({ id }, { $push: { tokens: obj } }, function () { }); return token;
 }
@@ -487,5 +490,6 @@ module.exports = {
     disable_panel,
     enable_panel,
     secondary_backend_url_converter,
-    syslog
+    syslog,
+    get_main_panel_url
 }
