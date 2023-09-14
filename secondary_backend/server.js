@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 app.use(express.json());
 
 // const db_path = "/var/lib/marzban/db.sqlite3"
-const db_path = "db.sqlite3"
+const db_path = "db2.sqlite3"
 
 async function run_query(query)
 { 
@@ -22,7 +22,6 @@ async function run_query(query)
     });
 }
 
-
 async function get_users()
 {
     return new Promise((resolve, reject) => 
@@ -32,6 +31,21 @@ async function get_users()
         {
             if (err) reject(err);
             else resolve(rows);
+        });
+
+        db.close();
+    });
+}
+
+async function get_user_id(username)
+{
+    return new Promise((resolve, reject) => 
+    {
+        let db = new sqlite3.Database(db_path);
+        db.all(`SELECT id FROM users WHERE username = '${username}'`, (err, rows) => 
+        {
+            if (err) reject(err);
+            else resolve(rows[0].id);
         });
 
         db.close();
@@ -148,7 +162,30 @@ app.post("/delete_users", async (req,res) =>
     }
 });
 
+app.post("/add_users", async (req,res) =>
+{
+    var { deleted_users,available_protocols } = req.body;
+    try
+    {
+        for(obj of deleted_users)
+        {
+            var { user, proxies } = obj;
+            await run_query(`INSERT INTO users (username,status,used_traffic,data_limit,expire,created_at,admin_id,data_limit_reset_strategy) VALUES ('${user.username}', '${user.status}', '${user.used_traffic}', '${user.data_limit}', '${user.expire}', '${user.created_at}', '${user.admin_id}', '${user.data_limit_reset_strategy}')`);
+            var user_id = await get_user_id(user.username);
+            for (proxy of proxies)
+            {
+                if(available_protocols.includes(proxy.type.toLowerCase())) await run_query(`INSERT INTO proxies (user_id,type,settings) VALUES ('${user_id}', '${proxy.type}', '${proxy.settings}')`);
+            }
+        }
+    
+        res.send("OK")
+    }
 
+    catch(err)
+    {
+        res.send("ERR");
+    }
+});
 
 
 app.listen(7002);

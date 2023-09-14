@@ -60,15 +60,30 @@ const {get_marzban_user} = require("../utils");
 // })();
 
 
+// (async () => 
+// {
+//     const response = await axios({
+//         url:"http://localhost:7002/delete_users",
+//         method: 'POST',
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["89_amir","TT_test_7000"]}
+//       });
+
+//       await fs.promises.writeFile("temp.txt",JSON.stringify(response.data.deleted_users));
+
+//       console.log("DONE");
+// })();
+
 (async () => 
 {
-    const response = await axios({
-        url:"http://localhost:7002/delete_users",
-        method: 'POST',
-        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["GG_TEST820","TEST"]}
-      });
 
-      console.log(response.data);
+    var users = await fs.promises.readFile("temp.txt","utf8");
+
+    const response = await axios({
+        url:"http://localhost:7002/add_users",
+        method: 'POST',
+        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",deleted_users:JSON.parse(users),available_protocols:["vless","trojan"]}
+      });
+      console.log("DONE");
 })();
 
 
