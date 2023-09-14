@@ -138,8 +138,6 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
             return b2gb(item[field.id])
         }
 
-
-
         return item[field.id]
     }
 
