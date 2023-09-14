@@ -112,12 +112,24 @@ input[type=number] {
     align-items: center;
 }
 
+.itmes-end {
+    align-items: end;
+}
+
+.itmes-start {
+    align-items: start;
+}
+
 .justify-end {
     justify-content: flex-end;
 }
 
 .justify-between {
     justify-content: space-between;
+}
+
+.align-self-end {
+    align-self: flex-end;
 }
 
 .gap-1 {
