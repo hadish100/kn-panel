@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
@@ -9,6 +9,7 @@ import Form from '../form/Form'
 import styles from "./EditUser.module.css"
 
 const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem, editMode }) => {
+    const [country, setCountry] = useState("")
 
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username", disabled: true },
@@ -24,7 +25,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                 item.id,
                 document.getElementById("data_limit").value,
                 document.getElementById("expire").value,
-                document.getElementById("country").value,
+                document.getElementById("country").textContent,
             ),
             disabled: editMode,
             pendingText: "Editing..."
