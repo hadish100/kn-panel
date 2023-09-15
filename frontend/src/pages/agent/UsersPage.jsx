@@ -40,6 +40,7 @@ const UsersPage = () => {
     const [resetMode, setResetMode] = useState(false)
     const [showSwitchCountries, setShowSwitchCountries] = useState(false)
 
+    const agentInfo = JSON.parse(sessionStorage.getItem("agent"))
 
     const fetchUsers = async (resetCurrentPage) => {
         const access_token = sessionStorage.getItem("access_token")
@@ -298,7 +299,7 @@ const UsersPage = () => {
                 <Search value={searchedUsers} onChange={setSearchedUsers} />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh-icon"><RefreshIcon /></Button>
-                    <Button onClick={handleShowSwitchCountries} className="outlined">Switch Countries</Button>
+                    <Button onClick={handleShowSwitchCountries} className="outlined" disabled={agentInfo.country.split(",").length <= 1}>Switch Countries</Button>
                     <Button onClick={handleShowCreateUser} className="create-user-button primary">Create User</Button>
                 </span>
             </div>
