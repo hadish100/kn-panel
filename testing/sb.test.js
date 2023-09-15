@@ -3,10 +3,10 @@ const fs = require('fs');
 const util = require('util');
 const {get_marzban_user} = require("../utils");
 
-// (async () => {
-//   var complete_user_info = await get_marzban_user("http://209.38.245.93:8000", "admin", "admin", "EW_223232tggff");
-//   console.log(Object.keys(complete_user_info.proxies));
-// })();
+(async () => {
+  var complete_user_info = await get_marzban_user("https://vip.keskinnetwork.com:8443", "knadmin00", "keskinnetworkisass00", "arr_test");
+  console.log(complete_user_info);
+})();
 
 // (async () => 
 // {
@@ -73,18 +73,18 @@ const {get_marzban_user} = require("../utils");
 //       console.log("DONE");
 // })();
 
-(async () => 
-{
+// (async () => 
+// {
 
-    var users = await fs.promises.readFile("temp.txt","utf8");
+//     var users = await fs.promises.readFile("temp.txt","utf8");
 
-    const response = await axios({
-        url:"http://localhost:7002/add_users",
-        method: 'POST',
-        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",deleted_users:JSON.parse(users),available_protocols:["vless","trojan"]}
-      });
-      console.log("DONE");
-})();
+//     const response = await axios({
+//         url:"http://localhost:7002/add_users",
+//         method: 'POST',
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",deleted_users:JSON.parse(users),available_protocols:["vless","trojan"]}
+//       });
+//       console.log("DONE");
+// })();
 
 
 

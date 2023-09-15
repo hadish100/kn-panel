@@ -48,7 +48,8 @@ const {
     disable_panel,
     secondary_backend_url_converter,
     get_main_panel_url,
-    switch_countries
+    switch_countries,
+    proxy_obj_maker
 } = require("./utils");
 
 
@@ -322,11 +323,7 @@ app.post("/create_user", async (req, res) => {
         if (mv == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
         else {
 
-            var inbounds = {}
-            for (protocol of protocols) {
-                inbounds[protocol] = {}
-                if(protocol == "vless") inbounds[protocol].flow = flow_status;
-            }
+            var inbounds = proxy_obj_maker(protocols,flow_status,2)
 
             await insert_to_users({
                 id: uid(),
@@ -340,7 +337,7 @@ app.post("/create_user", async (req, res) => {
                 country,
                 corresponding_panel_id: selected_panel.id,
                 corresponding_panel: selected_panel.panel_url,
-                real_subscription_url: selected_panel.panel_url + mv.subscription_url,
+                real_subscription_url: (mv.subscription_url.startsWith("/")?selected_panel.panel_url:"") + mv.subscription_url,
                 subscription_url: get_main_panel_url() + "/sub/" + uidv2(10),
                 links: mv.links,
                 created_at:Math.floor(Date.now()/1000),
@@ -572,9 +569,11 @@ app.post("/edit_user", async (req, res) => {
         expire,
         data_limit,
         country,
-        access_token } = req.body;
+        access_token,
+        protocols,
+        flow_status } = req.body;
 
-    if (!user_id || !expire || !data_limit || !country) 
+    if (!user_id || !expire || !data_limit || !country || protocols.length == 0) 
     {
         res.send({ status: "ERR", msg: "fill all of the inputs" });
         return;
@@ -591,15 +590,20 @@ app.post("/edit_user", async (req, res) => {
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else {
-        var result = await edit_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username, data_limit * ((2 ** 10) ** 3), Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60);
+
+        var result = await edit_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username, data_limit * ((2 ** 10) ** 3), Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60, protocols, flow_status);
 
         if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
 
         else {
 
+            var inbounds = proxy_obj_maker(protocols,flow_status,2)
+
+
             await update_user(user_id, {
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                 data_limit: data_limit * ((2 ** 10) ** 3),
+                inbounds
             });
 
             if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
