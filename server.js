@@ -47,7 +47,8 @@ const {
     enable_panel,
     disable_panel,
     secondary_backend_url_converter,
-    get_main_panel_url
+    get_main_panel_url,
+    switch_countries
 } = require("./utils");
 
 
@@ -305,6 +306,7 @@ app.post("/create_user", async (req, res) => {
     else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
     else if (all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({ status: "ERR", msg: "username already exists" })
     else if (!selected_panel) res.send({ status: "ERR", msg: "no available server" });
+    else if (selected_panel.panel_traffic - selected_panel.panel_data_usage < data_limit) res.send({ status: "ERR", msg: "insufficient traffic on server" });
     else {
 
         var mv = await make_vpn(selected_panel.panel_url,
@@ -582,6 +584,7 @@ app.post("/edit_user", async (req, res) => {
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     var corresponding_agent = await token_to_account(access_token);
     var old_data_limit = b2gb(user_obj.data_limit);
+    var old_country = user_obj.country;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
     else if (data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
@@ -602,7 +605,19 @@ app.post("/edit_user", async (req, res) => {
             if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);
             await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`);
-            res.send("DONE");
+            if(old_country == country) res.send("DONE");
+            else
+            {
+                var switch_process = await switch_countries(old_country,country,[user_obj.username]);
+                if(switch_process == "ERR") res.send({ status: "ERR", msg: "edited user but didn't switched country" });
+                else
+                {
+                    await insert_to_logs(account.id, "SWITCH_COUNTRY", `switched country of user !${user_obj.username} from !${old_country} to !${country}`);
+                    res.send("DONE")
+                }
+            }
+            
+            
         }
 
 
@@ -733,6 +748,25 @@ app.post("/get_panel_inbounds", async (req, res) =>
     }
 
 });
+
+
+app.post("/switch_countries", async(req,res) => 
+{
+    var { access_token , country_from , country_to } = req.body;
+    var account = await token_to_account(access_token);
+    var users_arr = await users_clct.find({country:country_from,agent_id:account.id}).toArray();
+    users_arr = users_arr.map(x => x.username);
+    var result = await switch_countries(country_from,country_to,users_arr);
+    if(result == "ERR") res.send({ status: "ERR", msg: 'failed to switch countries' })
+    else 
+    {
+        await insert_to_logs(account.id, "SWITCH_COUNTRY", `switched country of !${users_arr.length} users from !${country_from} to !${country_to}`);
+        res.send("DONE");
+    }
+});
+
+
+
 
 
 app.get(/^\/sub\/.+/,async (req,res) =>

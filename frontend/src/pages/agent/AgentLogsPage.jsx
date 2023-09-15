@@ -74,7 +74,7 @@ const AgentLogsPage = () => {
         { label: 30, value: 30 },
     ]
 
-    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT", "RECEIVE_DATA"]
+    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT", "RECEIVE_DATA","SWITCH_COUNTRY"]
     //const filter_accounts = JSON.parse(sessionStorage.getItem("agents")).map(agent => agent.username)
 
     return (
