@@ -18,6 +18,7 @@ import FormField from '../form/FormField'
 import Dropdown from '../Dropdown'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import IOSSwitch from '../form/inputs/IOSSwitch'
+import ErrorCard from '../ErrorCard'
 
 const flowOptions = [
     { label: "none", value: "none" },
@@ -36,6 +37,8 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
     const [flowValue, setFlowValue] = useState({ label: "none", value: "none" })
     const [country, setCountry] = useState("")
     const [isLoadingProtocols, setIsLoadingProtocols] = useState(false)
+    const [hasError, setHasError] = useState(false)
+    const [error_msg, setError_msg] = useState("failed to switch countries")
     const [flag, setFlag] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token")
@@ -61,6 +64,8 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
             setIsLoadingProtocols(true)
             const availableProtocolsName = (await axios.post("/get_panel_inbounds", { access_token, country })).data
             if (availableProtocolsName.status === "ERR") {
+                setError_msg(availableProtocolsName.msg)
+                setHasError(true)
                 setIsLoadingProtocols(false)
                 setProtocols([
                     { name: "vmess", disabled: true },
@@ -315,6 +320,12 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                     </Modal>
                 )}
             </AnimatePresence>
+            <ErrorCard
+                hasError={hasError}
+                setHasError={setHasError}
+                errorTitle="ERROR"
+                errorMessage={error_msg}
+            />
         </>
     )
 }
