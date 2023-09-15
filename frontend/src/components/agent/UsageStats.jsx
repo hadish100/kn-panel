@@ -7,7 +7,7 @@ import { ReactComponent as DataCenterIcon } from "../../assets/svg/data-center.s
 import { ReactComponent as GraphBarIcon } from "../../assets/svg/graph-bar.svg"
 import { ReactComponent as UsersIcon } from "../../assets/svg/users.svg"
 
-const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData, remainingUsers, lifetime_volume }) => {
+const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData, remainingUsers, lifetime_volume, business_mode }) => {
     return (
         <div className="usage-stats">
             <div className="flex">
@@ -27,6 +27,7 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                 </div>
             </div>
             <div className="flex">
+                { business_mode == "0" &&
                 <div className="usage-stats__item">
                     <LeadingIcon>
                         <PieChartIcon />
@@ -34,11 +35,13 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                     <div className="usage-stats__item__label">Remaining Data</div>
                     <div className="usage-stats__item__value"><span>{remainingData}</span></div>
                 </div>
+                }
+
                 <div className="usage-stats__item">
                     <LeadingIcon>
                         <DataCenterIcon />
                     </LeadingIcon>
-                    <div className="usage-stats__item__label">Allocatable Data</div>
+                    <div className="usage-stats__item__label">{business_mode=="0"?"Allocatable Data":"Remaining Data"}</div>
                     <div className="usage-stats__item__value"><span>{allocableData}</span></div>
                 </div>
             </div>
