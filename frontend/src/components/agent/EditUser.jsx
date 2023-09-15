@@ -44,6 +44,12 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
     const access_token = sessionStorage.getItem("access_token")
 
     useEffect(() => {
+        if (!showForm) {
+            setIsMoreOptionClicked(false)
+        }
+    }, [showForm])
+
+    useEffect(() => {
         if (item) {
             const userProtocols = Object.keys(item.inbounds)
             setSelectedProtocols(userProtocols)
