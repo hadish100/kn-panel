@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
@@ -36,6 +36,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
     const [flowValue, setFlowValue] = useState({ label: "none", value: "none" })
     const [country, setCountry] = useState("")
     const [isLoadingProtocols, setIsLoadingProtocols] = useState(false)
+    const [flag, setFlag] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token")
 
@@ -44,7 +45,9 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
             const userProtocols = Object.keys(item.inbounds)
             setSelectedProtocols(userProtocols)
             setCountry(item.country)
-            setFlowValue({ label: item.inbounds.vless.flow, value: item.inbounds.vless.flow })
+            if (item.inbounds.vless) {
+                setFlowValue({ label: item.inbounds.vless.flow, value: item.inbounds.vless.flow })
+            }
 
         }
     }, [item])
@@ -68,14 +71,18 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                 setSelectedProtocols([])
                 return
             }
-            setSelectedProtocols(availableProtocolsName)
+            if ((item.country !== country) && !flag) {
+                setSelectedProtocols(availableProtocolsName)
+                setFlag(true)
+            }
+            setSelectedProtocols(selectedProtocols.filter((protocol) => availableProtocolsName.includes(protocol)))
+            setProtocols(availableProtocolsName)
             const updatedProtocols = protocols.map((protocol) => ({
                 name: protocol.name,
                 disabled: !availableProtocolsName.includes(protocol.name),
             }))
             setProtocols(updatedProtocols)
             setIsLoadingProtocols(false)
-
         }
 
         if (item) {
