@@ -306,6 +306,7 @@ app.post("/create_user", async (req, res) => {
     else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
     else if (all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({ status: "ERR", msg: "username already exists" })
     else if (!selected_panel) res.send({ status: "ERR", msg: "no available server" });
+    else if (selected_panel.panel_traffic - selected_panel.panel_data_usage < data_limit) res.send({ status: "ERR", msg: "insufficient traffic on server" });
     else {
 
         var mv = await make_vpn(selected_panel.panel_url,
