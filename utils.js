@@ -146,18 +146,8 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
-        var { panel_inbounds } = await get_panel_info(link, username, password);
-        var proxy_obj = {};
-
-        for (inbound in panel_inbounds) 
-        {
-            if(protocols.includes(inbound)) 
-            {
-                proxy_obj[inbound] = {};
-                if(inbound == "vless" && flow_status != "none") proxy_obj[inbound]['flow'] = flow_status;
-            }
-        }
-
+        //var { panel_inbounds } = await get_panel_info(link, username, password);
+        var proxy_obj = proxy_obj_maker(protocols,flow_status,1)
         var req_obj =
         {
             "username": vpn_name,
@@ -216,11 +206,14 @@ const enable_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
-const edit_vpn = async (link, username, password, vpn_name, data_limit, expire) => {
+const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
-        var res = await axios.put(link + "/api/user/" + vpn_name, { data_limit, expire }, { headers });
+
+        var proxy_obj = proxy_obj_maker(protocols,flow_status,1)
+
+        var res = await axios.put(link + "/api/user/" + vpn_name, { data_limit, expire, proxies:proxy_obj }, { headers });
         return "DONE";
     }
 
@@ -352,6 +345,32 @@ const show_url = (str) => {
     str = str.replace(/^https?:\/\//, '');
     str = str.replace(/:\d+$/, '');
     return str;
+}
+
+
+const proxy_obj_maker = (protocols,flow_status,mode) =>
+{
+    var proxy_obj = {}
+
+    if(mode==1)
+    {
+        for(protocol of protocols)
+        {
+            proxy_obj[protocol] = {};
+            if(protocol == "vless" && flow_status != "none") proxy_obj[protocol]['flow'] = flow_status;
+        }
+    }
+
+    else if(mode==2)
+    {
+        for (protocol of protocols) 
+        {
+            proxy_obj[protocol] = {}
+            if(protocol == "vless") proxy_obj[protocol].flow = flow_status;
+        }
+    }
+
+    return proxy_obj;
 }
 
 const delete_folder_content = async (dir_path) => 
@@ -573,5 +592,6 @@ module.exports = {
     secondary_backend_url_converter,
     syslog,
     get_main_panel_url,
-    switch_countries
+    switch_countries,
+    proxy_obj_maker
 }

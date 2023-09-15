@@ -99,6 +99,8 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                 document.getElementById("data_limit").value,
                 document.getElementById("expire").value,
                 document.getElementById("country").textContent,
+                selectedProtocols,
+                flowValue.value
             ),
             disabled: editMode,
             pendingText: "Editing..."
