@@ -29,7 +29,7 @@ const SwitchCountries = ({ onClose, showModal }) => {
 
     const handleClickSwitch = async () => {
         setIsSwitching(true)
-        const switchReq = (await axios.post("/switch_country", { access_token, country_from: originCountry, country_to: destinationCountry })).data
+        const switchReq = (await axios.post("/switch_countries", { access_token, country_from: originCountry, country_to: destinationCountry })).data
         if (switchReq.status === "ERR") {
             setError_msg(switchReq.msg)
             setHasError(true)
@@ -37,6 +37,7 @@ const SwitchCountries = ({ onClose, showModal }) => {
             return
         }
         setIsSwitching(false)
+        onClose()
     }
 
 

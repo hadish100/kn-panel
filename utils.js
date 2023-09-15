@@ -508,7 +508,7 @@ const switch_countries = async (country_from,country_to,users_arr) =>
                                         corresponding_panel_id:panel_to.id,
                                         corresponding_panel:panel_to.panel_url,
                                         country:country_to,
-                                        real_subscription_url:panel_from.real_subscription_url.replace(panel_from_url,panel_to_url),
+                                        real_subscription_url:user_obj.real_subscription_url.replace(panel_from_url,panel_to_url),
                                         inbounds
                                     });
         }

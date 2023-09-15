@@ -4,8 +4,8 @@ var AdmZip = require("adm-zip");
 const sqlite3 = require('sqlite3').verbose();
 app.use(express.json());
 
-// const db_path = "/var/lib/marzban/db.sqlite3"
-const db_path = "db2.sqlite3"
+const db_path = "/var/lib/marzban/db.sqlite3"
+// const db_path = "db2.sqlite3"
 
 async function run_query(query)
 { 
