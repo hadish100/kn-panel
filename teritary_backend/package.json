@@ -1,0 +1,16 @@
+{
+  "name": "secondary_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hadish",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "express": "^4.18.2",
+    "mysql2": "^3.6.1"
+  }
+}
