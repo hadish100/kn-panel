@@ -58,16 +58,16 @@ const {get_marzban_user} = require("../utils");
 // })();
 
 
-// (async () => 
-// {
-//     const response = await axios({
-//         url:"http://ir1.mf1vpn.xyz:7002/get_marzban_users",
-//         method: 'POST',
-//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
-//       });
+(async () => 
+{
+    const response = await axios({
+        url:"http://134.209.190.219:7002/ping",
+        method: 'POST',
+        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
+      });
 
-//       console.log(response.data);
-// })();
+      console.log(response.data);
+})();
 
 
 // (async () => 
