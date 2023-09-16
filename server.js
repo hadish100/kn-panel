@@ -49,7 +49,8 @@ const {
     secondary_backend_url_converter,
     get_main_panel_url,
     switch_countries,
-    proxy_obj_maker
+    proxy_obj_maker,
+    update_user_links_bg
 } = require("./utils");
 
 
@@ -591,7 +592,9 @@ app.post("/edit_user", async (req, res) => {
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else {
 
-        var result = await edit_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username, data_limit * ((2 ** 10) ** 3), Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60, protocols, flow_status);
+        var is_changing_country = old_country != country;
+
+        var result = await edit_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username, data_limit * ((2 ** 10) ** 3), Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60, protocols, flow_status,is_changing_country);
 
         if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
 
@@ -599,6 +602,13 @@ app.post("/edit_user", async (req, res) => {
 
             var inbounds = proxy_obj_maker(protocols,flow_status,2)
 
+            if(is_changing_country)
+            {
+                for(inbound in inbounds)
+                {
+                    if(!Object.keys(user_obj.inbounds).includes(inbound)) delete inbounds[inbound];
+                }
+            }
 
             await update_user(user_id, {
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
@@ -609,7 +619,12 @@ app.post("/edit_user", async (req, res) => {
             if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);
             await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`);
-            if(old_country == country) res.send("DONE");
+            if(old_country == country) 
+            {
+                if(user_obj.protocols != protocols || user_obj.flow_status != flow_status) update_user_links_bg(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username,user_obj.id)
+                res.send("DONE");
+            }
+
             else
             {
                 var switch_process = await switch_countries(old_country,country,[user_obj.username]);

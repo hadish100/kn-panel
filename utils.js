@@ -206,14 +206,17 @@ const enable_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
-const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status) => {
+const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status,is_changing_country) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
 
         var proxy_obj = proxy_obj_maker(protocols,flow_status,1)
+        var edit_obj;
+        if(is_changing_country) edit_obj = { data_limit, expire };
+        else edit_obj = { data_limit, expire, proxies:proxy_obj };
 
-        var res = await axios.put(link + "/api/user/" + vpn_name, { data_limit, expire, proxies:proxy_obj }, { headers });
+        var res = await axios.put(link + "/api/user/" + vpn_name,edit_obj, { headers });
         return "DONE";
     }
 
@@ -514,17 +517,7 @@ const switch_countries = async (country_from,country_to,users_arr) =>
                                         inbounds
                                     });
 
-            (function(user_id)
-            {
-                get_marzban_user(panel_to_url,panel_to.panel_username,panel_to.panel_password,username).then((complete_user_info) =>
-                {
-                    update_user(user_id,
-                                            {
-                                                "real_subscription_url": (complete_user_info.subscription_url.startsWith("/")?panel_to_url:"")+complete_user_info.subscription_url,
-                                                "links": complete_user_info.links
-                                            });
-                })
-            })(user_obj.id);
+            update_user_links_bg(panel_to_url,panel_to.panel_username,panel_to.panel_password,username,user_obj.id);
 
             
         }
@@ -538,6 +531,29 @@ const switch_countries = async (country_from,country_to,users_arr) =>
     {
         console.log(err);
         return "ERR";
+    }
+}
+
+
+const update_user_links_bg = (panel_url,panel_username,panel_password,username,id) =>
+{
+    try
+    {
+        get_marzban_user(panel_url,panel_username,panel_password,username).then((complete_user_info) =>
+        {
+            update_user(id,
+                        {
+                            "real_subscription_url": (complete_user_info.subscription_url.startsWith("/")?panel_url:"")+complete_user_info.subscription_url,
+                            "links": complete_user_info.links
+                        });
+                        
+            //console.log("updated links of user " + username);
+        })
+    }
+
+    catch(err)
+    {
+        syslog("ERROR : failed to update links of user " + username);
     }
 }
 
@@ -609,5 +625,6 @@ module.exports = {
     syslog,
     get_main_panel_url,
     switch_countries,
-    proxy_obj_maker
+    proxy_obj_maker,
+    update_user_links_bg
 }
