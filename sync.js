@@ -2,6 +2,7 @@ var accounts_clct, panels_clct, users_clct, logs_clct;
 
 const {
     uid,
+    uidv2,
     sleep,
     get_account,
     update_account,

@@ -450,6 +450,8 @@ const switch_countries = async (country_from,country_to,users_arr) =>
 {
     try
     {
+        if(users_arr.length == 0) return "ERR";
+
         var panel_from = (await panels_clct.find({panel_country:country_from}).toArray())[0];
         var panel_to = (await panels_clct.find({panel_country:country_to}).toArray())[0];
         var panel_from_url = panel_from.panel_url;
@@ -491,6 +493,7 @@ const switch_countries = async (country_from,country_to,users_arr) =>
             timeout: 20000
         });
 
+        if(add_users_req.data == "ERR") return "ERR";
 
         for(username of users_arr)
         {
@@ -508,13 +511,26 @@ const switch_countries = async (country_from,country_to,users_arr) =>
                                         corresponding_panel_id:panel_to.id,
                                         corresponding_panel:panel_to.panel_url,
                                         country:country_to,
-                                        real_subscription_url:user_obj.real_subscription_url.replace(panel_from_url,panel_to_url),
                                         inbounds
                                     });
+
+            (function(user_id)
+            {
+                get_marzban_user(panel_to_url,panel_to.panel_username,panel_to.panel_password,username).then((complete_user_info) =>
+                {
+                    update_user(user_id,
+                                            {
+                                                "real_subscription_url": (complete_user_info.subscription_url.startsWith("/")?panel_to_url:"")+complete_user_info.subscription_url,
+                                                "links": complete_user_info.links
+                                            });
+                })
+            })(user_obj.id);
+
+            
         }
 
-        if(add_users_req.data == "ERR") return "ERR";
-        else return "DONE";
+        
+        return "DONE";
 
     }
 

@@ -3,10 +3,20 @@ const fs = require('fs');
 const util = require('util');
 const {get_marzban_user} = require("../utils");
 
-(async () => {
-  var complete_user_info = await get_marzban_user("https://vip.keskinnetwork.com:8443", "knadmin00", "keskinnetworkisass00", "arr_test");
-  console.log(complete_user_info);
-})();
+// (async () => {
+//   var complete_user_info = get_marzban_user("http://206.189.58.110:8000", "admin", "admin", "Smart_baqer");
+//   console.log(complete_user_info);
+// })();
+
+
+// for(var i=0;i<50;i++)
+// {
+//   console.log(i);
+//   get_marzban_user("http://206.189.58.110:8000", "admin", "admin", "Smart_baqer").then((complete_user_info) => {
+//     console.log(complete_user_info.expire);
+//   });
+// }
+
 
 // (async () => 
 // {
