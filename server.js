@@ -288,7 +288,7 @@ app.post("/create_user", async (req, res) => {
         protocols,
         flow_status } = req.body;
 
-        flow_status = "xtls-rprx-vision";
+        //flow_status = "xtls-rprx-vision";
 
     if (!username || !expire || !data_limit || !country || protocols.length == 0) 
     {
@@ -576,7 +576,7 @@ app.post("/edit_user", async (req, res) => {
         protocols,
         flow_status } = req.body;
 
-        flow_status = "xtls-rprx-vision";
+        //flow_status = "xtls-rprx-vision";
 
     if (!user_id || !expire || !data_limit || !country || protocols.length == 0) 
     {
