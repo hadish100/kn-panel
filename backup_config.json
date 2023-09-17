@@ -1,22 +1,22 @@
 {
     "email":{
-        "disabled":false,
+        "disabled":true,
         "sender":{
             "service": "Gmail", 
             "auth": 
             {
-              "user": "knpanelbackup@gmail.com", 
-              "pass": "skbhqvchltrynjqq"
+              "user": "backup@gmail.com", 
+              "pass": "12345"
             }
         },
 
-        "receiver": ["hadishhamraz@gmail.com","knpanelbackup@gmail.com"]
+        "receiver": []
     },
 
     "telegram":{
-        "disabled":false,
-        "bot_token": "6119055601:AAFikJxoJf1vnKinB-spVYzObvzIITBXen0",
-        "chat_id": "-1001937284647"
+        "disabled":true,
+        "bot_token": "",
+        "chat_id": ""
     },
 
     "interval":1800
