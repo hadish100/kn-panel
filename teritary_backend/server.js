@@ -4,22 +4,32 @@ var AdmZip = require("adm-zip");
 const mysql = require('mysql2/promise');
 app.use(express.json());
 
-const db_config = {
-    host: 'your_mysql_host',
-    user: 'your_mysql_user',
-    password: 'your_mysql_password',
-    database: 'your_mysql_database'
-  };
+const db_config = 
+{
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'QAZwsx1383',
+    database: 'marzban'
+};
+
+
 
 async function run_query(query)
 { 
     const connection = await mysql.createConnection(db_config);
-    try {
+    try 
+    {
       const [rows, fields] = await connection.execute(query);
       return "OK";
-    } catch (err) {
+    } 
+
+    catch (err) 
+    {
       throw err;
-    } finally {
+    } 
+
+    finally 
+    {
       connection.end();
     }
 }
@@ -27,32 +37,52 @@ async function run_query(query)
 async function get_users()
 {
     const connection = await mysql.createConnection(db_config);
-    try {
+    try 
+    {
       const [rows, fields] = await connection.execute("SELECT * FROM users");
       return rows;
-    } catch (err) {
+    } 
+
+    catch (err) 
+    {
       throw err;
-    } finally {
+    } 
+
+    finally 
+    {
       connection.end();
     }
 }
 
+
 async function get_user_id(username)
 {
     const connection = await mysql.createConnection(db_config);
-    try {
+    try 
+    {
       const [rows, fields] = await connection.execute(
         `SELECT id FROM users WHERE username = ?`,
         [username]
       );
-      if (rows.length > 0) {
+
+      if (rows.length > 0) 
+      {
         return rows[0].id;
-      } else {
+      } 
+
+      else 
+      {
         throw new Error("User not found");
       }
-    } catch (err) {
+    } 
+    
+    catch (err) 
+    {
       throw err;
-    } finally {
+    } 
+    
+    finally
+    {
       connection.end();
     }
 }
@@ -62,15 +92,12 @@ async function get_users_and_proxies(users_arr)
     const connection = await mysql.createConnection(db_config);
     try {
       const [rows, fields] = await connection.execute(
-        `SELECT * FROM users WHERE username IN (?)`,
-        [users_arr]
+        `SELECT * FROM users WHERE username IN (${users_arr.map((u) => `'${u}'`).join(",")})`
       );
   
-      const userIds = rows.map((row) => row.id);
-  
+
       const [proxyRows, proxyFields] = await connection.execute(
-        `SELECT * FROM proxies WHERE user_id IN (?)`,
-        [userIds]
+        `SELECT * FROM proxies WHERE user_id IN (${rows.map((v) => `'${v.id}'`).join(",")})`
       );
   
       const result = rows.map((user) => {
@@ -82,13 +109,42 @@ async function get_users_and_proxies(users_arr)
       });
   
       return result;
-    } catch (err) {
+    } 
+
+    catch (err) 
+    {
       throw err;
-    } finally {
+    } 
+
+    finally
+    {
       connection.end();
     }
   
 }
+
+async function user_id__to__proxy_id(id_arr)
+{
+    const connection = await mysql.createConnection(db_config);
+    try 
+    {
+      const [rows, fields] = await connection.execute(
+        `SELECT id FROM proxies WHERE user_id IN (${id_arr.map((u) => `'${u}'`).join(",")})`
+      );
+      return rows.map((r) => r.id);
+    } 
+
+    catch (err) 
+    {
+      throw err;
+    } 
+
+    finally
+    {
+      connection.end();
+    }
+}
+
 
 
 
@@ -154,8 +210,12 @@ app.post("/delete_users", async (req,res) =>
     try
     {
         var deleted_users = await get_users_and_proxies(users);
-        await run_query(`DELETE FROM users WHERE username IN (${users.map((u) => `'${u}'`).join(",")})`);
+        await run_query(`DELETE FROM user_usage_logs WHERE user_id IN (${deleted_users.map((u) => `'${u.user.id}'`).join(",")})`);
+        await run_query(`DELETE FROM node_user_usages WHERE user_id IN (${deleted_users.map((u) => `'${u.user.id}'`).join(",")})`);
+        var proxy_ids = await user_id__to__proxy_id(deleted_users.map((u) => u.user.id));
+        await run_query(`DELETE FROM exclude_inbounds_association WHERE proxy_id IN (${proxy_ids.map((u) => `'${u}'`).join(",")})`);
         await run_query(`DELETE FROM proxies WHERE user_id IN (${deleted_users.map((u) => `'${u.user.id}'`).join(",")})`);
+        await run_query(`DELETE FROM users WHERE username IN (${users.map((u) => `'${u}'`).join(",")})`);
         res.send({status:"OK",deleted_users});
     }
 
@@ -174,11 +234,11 @@ app.post("/add_users", async (req,res) =>
         for(obj of deleted_users)
         {
             var { user, proxies } = obj;
-            await run_query(`INSERT INTO users (username,status,used_traffic,data_limit,expire,created_at,admin_id,data_limit_reset_strategy) VALUES ('${user.username}', '${user.status}', '${user.used_traffic}', '${user.data_limit}', '${user.expire}', '${user.created_at}', '${user.admin_id}', '${user.data_limit_reset_strategy}')`);
+            await run_query(`INSERT INTO users (username,status,used_traffic,data_limit,expire,created_at,admin_id,data_limit_reset_strategy) VALUES ('${user.username}', '${user.status}', '${user.used_traffic}', '${user.data_limit}', '${user.expire}', STR_TO_DATE('${user.created_at}', '%Y-%m-%dT%H:%i:%s.%fZ'), '${user.admin_id}', '${user.data_limit_reset_strategy}')`);
             var user_id = await get_user_id(user.username);
             for (proxy of proxies)
             {
-                if(available_protocols.includes(proxy.type.toLowerCase())) await run_query(`INSERT INTO proxies (user_id,type,settings) VALUES ('${user_id}', '${proxy.type}', '${proxy.settings}')`);
+                if(available_protocols.includes(proxy.type.toLowerCase())) await run_query(`INSERT INTO proxies (user_id,type,settings) VALUES ('${user_id}', '${proxy.type}', '${JSON.stringify(proxy.settings)}')`);
             }
         }
     
@@ -187,6 +247,7 @@ app.post("/add_users", async (req,res) =>
 
     catch(err)
     {
+        console.log(err);
         res.send("ERR");
     }
 });

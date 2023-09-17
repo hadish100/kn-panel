@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const util = require('util');
-const {get_marzban_user} = require("../utils");
+const {get_marzban_user,get_panel_info} = require("../utils");
 
 // (async () => {
 //   var complete_user_info = get_marzban_user("http://206.189.58.110:8000", "admin", "admin", "Smart_baqer");
@@ -49,35 +49,35 @@ const {get_marzban_user} = require("../utils");
 // (async () => 
 // {
 //     const response = await axios({
-//         url:"http://209.38.245.93:7002/edit_expire_times",
+//         url:"http://16.16.61.238:7002/edit_expire_times",
 //         method: 'POST',
-//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:100000}
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:100001}
 //       });
 
 //       console.log(response.data);
 // })();
 
 
-(async () => 
-{
-    const response = await axios({
-        url:"http://134.209.190.219:7002/ping",
-        method: 'POST',
-        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
-      });
+// (async () => 
+// {
+//     const response = await axios({
+//         url:"http://16.16.61.238:7002/get_marzban_users",
+//         method: 'POST',
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["Ramin_25"]}
+//       });
 
-      console.log(response.data);
-})();
+//       console.log(response.data);
+// })();
 
 
 // (async () => 
 // {
 //     const response = await axios({
-//         url:"http://localhost:7002/delete_users",
+//         url:"http://16.16.61.238:7002/delete_users",
 //         method: 'POST',
-//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["89_amir","TT_test_7000"]}
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["royal66","pasrgad5087"]}
 //       });
-
+//       console.log(response.data);
 //       await fs.promises.writeFile("temp.txt",JSON.stringify(response.data.deleted_users));
 
 //       console.log("DONE");
@@ -89,11 +89,16 @@ const {get_marzban_user} = require("../utils");
 //     var users = await fs.promises.readFile("temp.txt","utf8");
 
 //     const response = await axios({
-//         url:"http://localhost:7002/add_users",
+//         url:"http://16.16.61.238:7002/add_users",
 //         method: 'POST',
 //         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",deleted_users:JSON.parse(users),available_protocols:["vless","trojan"]}
 //       });
+
+//       console.log(response.data);
 //       console.log("DONE");
+
+//     // var inf = await get_panel_info("http://sv.limoovp1.sbs:8000","armanmprr","Shadow2014@");
+//     // console.log(inf);
 // })();
 
 

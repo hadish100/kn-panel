@@ -1,6 +1,6 @@
 FROM node:18
 
-WORKDIR /knsb
+WORKDIR /kntb
 
 COPY package*.json .
 
