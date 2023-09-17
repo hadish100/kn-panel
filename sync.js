@@ -175,7 +175,7 @@ connect_to_db().then(res => {
 
                 if(!user && marzban_user.username.split("_").length > 1)
                 {
-                    var corresponding_agent = all_agents.find(agent => agent.prefix == marzban_user.username.split("_")[0]);
+                    var corresponding_agent = all_agents.find(agent => marzban_user.username.startsWith(agent.prefix + "_"));
                     if(corresponding_agent && corresponding_agent.country.split(",").includes(panel.panel_country) && marzban_user.expire && marzban_user.data_limit)
                     {
                         var complete_user_info = await get_marzban_user(panel.panel_url, panel.panel_username, panel.panel_password, marzban_user.username);
