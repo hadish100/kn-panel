@@ -57,9 +57,10 @@
     width: 14px;
     height: 14px;
     margin-top: 0;
+    transform:scale(1.5);
 }
 
-.status.active {
+.status.active { 
     --background-clr: #c6f6d5;
     --color: #22543d;
 }

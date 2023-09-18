@@ -27,6 +27,12 @@
     background-color: #396fe4;
 }
 
+.progress-bar__filler--anonym {
+    height: 6px;
+    border-radius: 50px;
+    background-color: #ef93ff;
+}
+
 .progress-bar__text {
     margin-top: -5px;
     font-size: 0.75rem;
