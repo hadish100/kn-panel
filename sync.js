@@ -1,4 +1,5 @@
 var accounts_clct, panels_clct, users_clct, logs_clct;
+require('dotenv').config()
 
 const {
     uid,
@@ -219,6 +220,6 @@ connect_to_db().then(res => {
         }
 
 
-        await sleep(20000);
+        await sleep(process.env.RELEASE == 4?60000:20000);
     }
 })();

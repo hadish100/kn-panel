@@ -3,8 +3,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const axios = require('axios');
 const sleep = (s) => new Promise(resolve => setTimeout(resolve,s*1000));
-
-
+require('dotenv').config()
 
 async function init() 
 {
@@ -19,7 +18,7 @@ async function init()
         try 
         {
           console.log("*STARTING BACKUP SERVICE");
-          var res = (await axios.post("http://localhost:5000/dldb", { service_access_api_key : "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" })).data;
+          var res = (await axios.post("http://localhost:" + process.env.PORT + "/dldb", { service_access_api_key : "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" })).data;
           var filePath = "./frontend/public" + res.split(">")[1];
           var today = new Date();
           var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();

@@ -4,7 +4,7 @@ const fs = require('fs');
 var AdmZip = require("adm-zip");
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
-
+require('dotenv').config()
 var accounts_clct, panels_clct, users_clct, logs_clct;
 
 const { 
@@ -63,8 +63,6 @@ connect_to_db().then(res => {
     users_clct = res.users_clct;
     logs_clct = res.logs_clct;
 });
-
-
 
 
 
@@ -280,7 +278,7 @@ app.post("/create_panel", async (req, res) => {
 });
 
 app.post("/create_user", async (req, res) => {
-    const { username,
+    var { username,
         expire,
         data_limit,
         country,
@@ -288,7 +286,7 @@ app.post("/create_user", async (req, res) => {
         protocols,
         flow_status } = req.body;
 
-        //flow_status = "xtls-rprx-vision";
+        if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
 
     if (!username || !expire || !data_limit || !country || protocols.length == 0) 
     {
@@ -568,7 +566,7 @@ app.post("/edit_panel", async (req, res) => {
 });
 
 app.post("/edit_user", async (req, res) => {
-    const { user_id,
+    var { user_id,
         expire,
         data_limit,
         country,
@@ -576,7 +574,7 @@ app.post("/edit_user", async (req, res) => {
         protocols,
         flow_status } = req.body;
 
-        //flow_status = "xtls-rprx-vision";
+        if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
 
     if (!user_id || !expire || !data_limit || !country || protocols.length == 0) 
     {
@@ -683,7 +681,8 @@ app.post("/reset_user", async (req, res) => {
         else {  
 
             await update_user(user_id, { used_traffic: 0 });
-            if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.used_traffic)) });
+            //if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
             var account = await token_to_account(access_token);
             await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`);
             res.send("DONE");
@@ -803,7 +802,7 @@ app.get(/^\/sub\/.+/,async (req,res) =>
     }
 });
 
-app.listen(5000, () => 
+app.listen(parseInt(process.env.PORT), () => 
 {
     console.log("--------------");
     console.log("SERVER STARTED !");

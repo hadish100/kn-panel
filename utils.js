@@ -2,10 +2,11 @@ const axios = require('axios');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
 const fs = require('fs');
+require('dotenv').config()
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 
-var MAIN_PANEL_URL = "http://localhost:5000";
+var MAIN_PANEL_URL = process.env.PANEL_URL;
 var SB_API_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
 
 // --- UTILS --- //

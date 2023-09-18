@@ -25,19 +25,19 @@ async function modify_db()
     // console.log("DONE !!!");
 
     var users_arr = await get_all_users();
-    await accounts_clct.updateMany({is_admin:0},{$set: {lifetime_volume:0}})
+    // await accounts_clct.updateMany({is_admin:0},{$set: {lifetime_volume:0}})
     for(user of users_arr)
     {
-        await update_user(user.id, {real_subscription_url:user.subscription_url,subscription_url:get_main_panel_url() + "/sub/" + uidv2(10)});
-        console.log("UPDATED SUBLINK OF => " + user.username);
-        if(!user.inbounds)
-        {
-            var corresponding_panel = await get_panel(user.corresponding_panel_id);
-            var inbounds = proxy_obj_maker(Object.keys(corresponding_panel.panel_inbounds),"none",2);
-            await update_user(user.id, {inbounds});
-            console.log("UPDATED INBOUNDS OF => " + user.username);
-        }
-        // await update_user(user.id, {subscription_url:user.subscription_url.replace("https","http")});
+        // await update_user(user.id, {real_subscription_url:user.subscription_url,subscription_url:get_main_panel_url() + "/sub/" + uidv2(10)});
+        // console.log("UPDATED SUBLINK OF => " + user.username);
+        // if(!user.inbounds)
+        // {
+        //     var corresponding_panel = await get_panel(user.corresponding_panel_id);
+        //     var inbounds = proxy_obj_maker(Object.keys(corresponding_panel.panel_inbounds),"none",2);
+        //     await update_user(user.id, {inbounds});
+        //     console.log("UPDATED INBOUNDS OF => " + user.username);
+        // }
+        await update_user(user.id, {subscription_url:user.subscription_url.replace("http://ff.arman-k.cfd:5000","http://panel.arman-k.cfd:80")});
     }
 
     console.log("DONE !!!");
