@@ -206,10 +206,11 @@ const UsersPage = () => {
         setUsers(users.obj_arr)
     }
 
-    const handleEditUser = async (user_id, data_limit, expire, country,protocols,flow_status) => {
+    const handleEditUser = async (user_id, data_limit, expire, country,protocols,flow_status,desc) => {
         setEditMode(true)
+        console.log(desc)
         const access_token = sessionStorage.getItem("access_token")
-        var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country,protocols,flow_status })
+        var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country,protocols,flow_status,desc })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)

@@ -72,13 +72,7 @@ async function auth_middleware(req, res, next) {
 
     if (req.url == "/login" || req.url.startsWith("/sub") || req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
 
-    // var accounts = await get_accounts();
-    // accounts.forEach(async (account) => 
-    // {
-    //     var tokens = account.tokens;
-    //     var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
-    //     await update_account(account.id,{tokens:new_tokens});
-    // });
+
 
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
@@ -160,10 +154,20 @@ app.post("/login", async (req, res) => {
     const accounts = await get_accounts();
     const account = accounts.filter(x => x.username == username && x.password == password)[0];
 
+
     if (account) {
         var access_token = await add_token(account.id);
         await insert_to_logs(account.id, "LOGIN", "logged in");
         res.send({ is_admin: account.is_admin, access_token });
+
+        var all_accounts = await get_accounts();
+        all_accounts.forEach(async (account_obj) => 
+        {
+            var tokens = account_obj.tokens;
+            var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
+            await update_account(account_obj.id,{tokens:new_tokens});
+        });
+
     }
 
     else {
@@ -284,7 +288,8 @@ app.post("/create_user", async (req, res) => {
         country,
         access_token,
         protocols,
-        flow_status } = req.body;
+        flow_status,
+        desc } = req.body;
 
         if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
 
@@ -343,7 +348,8 @@ app.post("/create_user", async (req, res) => {
                 links: mv.links,
                 created_at:Math.floor(Date.now()/1000),
                 disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)},
-                inbounds
+                inbounds,
+                desc
             });
 
             await update_account(agent_id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit) });
@@ -572,7 +578,8 @@ app.post("/edit_user", async (req, res) => {
         country,
         access_token,
         protocols,
-        flow_status } = req.body;
+        flow_status,
+        desc } = req.body;
 
         if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
 
@@ -615,7 +622,8 @@ app.post("/edit_user", async (req, res) => {
             await update_user(user_id, {
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                 data_limit: data_limit * ((2 ** 10) ** 3),
-                inbounds
+                inbounds,
+                desc
             });
 
             if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });

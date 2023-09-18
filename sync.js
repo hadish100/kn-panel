@@ -209,7 +209,8 @@ connect_to_db().then(res => {
                             "links": complete_user_info.links,
                             "created_at":Math.floor(Date.parse(marzban_user.created_at)/1000),
                             "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)},
-                            "inbounds":inbounds
+                            "inbounds":inbounds,
+                            "desc":""
                           });
 
                         await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit , lifetime_volume: corresponding_agent.lifetime_volume + marzban_user.data_limit });

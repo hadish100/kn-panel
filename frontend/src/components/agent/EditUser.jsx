@@ -106,7 +106,8 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         { label: "Username", type: "text", id: "username", name: "username", disabled: true },
         { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit" },
         { label: "Days To Expire", type: "number", id: "expire", name: "expire" },
-        { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry }
+        { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry },
+        { label: "Description", type: "text", id: "desc", name: "desc" },
     ]
 
     const primaryButtons = [
@@ -118,7 +119,8 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                 document.getElementById("expire").value,
                 document.getElementById("country").textContent,
                 selectedProtocols,
-                flowValue.value
+                flowValue.value,
+                document.getElementById("desc").value
             ),
             disabled: editMode,
             pendingText: "Editing..."
