@@ -1,6 +1,8 @@
 var accounts_clct, panels_clct, users_clct, logs_clct;
 require('dotenv').config()
 
+var reset_counter = 0;
+
 const {
     uid,
     uidv2,
@@ -222,5 +224,6 @@ connect_to_db().then(res => {
 
 
         await sleep(process.env.RELEASE == 4?60000:20000);
+        if(reset_counter++ == 30) process.exit(1);
     }
 })();

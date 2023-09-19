@@ -735,6 +735,13 @@ app.post("/dldb", async (req, res) =>
                 await dl_file(sqlite_endpoint,"dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
                 var zip = new AdmZip("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
                 zip.extractAllTo("dbbu/marzban/" + show_url(panel.panel_url),true);
+
+                if(process.env.RELEASE == 3)
+                {
+                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/assets")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/assets");
+                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/xray-core")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/xray-core");
+                }
+
                 await fs.promises.unlink("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
                 console.log("       # BACKUP COMPLETED FOR " + panel.panel_url);
             }

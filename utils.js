@@ -386,7 +386,7 @@ const delete_folder_content = async (dir_path) =>
     
     catch(err)
     {
-
+        console.log(err);
     }
 }
 
