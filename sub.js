@@ -8,7 +8,7 @@ const { connect_to_db } = require("./utils");
 
 connect_to_db().then(res => { users_clct = res.users_clct;});
 
-var options = {key: fs.readFileSync(process.env.PVKEY),cert: fs.readFileSync(process.env.PVKEY)};
+var options = {key: fs.readFileSync(process.env.PVKEY),cert: fs.readFileSync(process.env.CRT)};
 
 
 var server = https.createServer(options,app).listen(parseInt(process.env.SUB_PORT),function()
@@ -18,11 +18,13 @@ var server = https.createServer(options,app).listen(parseInt(process.env.SUB_POR
 
 app.get(/^\/sub\/.+/,async (req,res) =>
 {
+    console.log("REQUESTED SUB URL => " + req.url);
     var sub_id = req.url.split("/")[2];
     var user_obj = await users_clct.find({subscription_url:{$regex:sub_id}}).toArray();
     if(user_obj.length == 0) res.send("NOT FOUND");
     else
     {
+        console.log("REDIRECTING TO => " + user_obj[0].real_subscription_url);
         res.redirect(user_obj[0].real_subscription_url);
     }
 });

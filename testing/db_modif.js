@@ -37,10 +37,11 @@ async function modify_db()
         //     await update_user(user.id, {inbounds});
         //     console.log("UPDATED INBOUNDS OF => " + user.username);
         // }
-        //await update_user(user.id, {subscription_url:user.subscription_url.replace("http://ff.arman-k.cfd:5000","http://panel.arman-k.cfd:80")});
-        await update_user(user.id, {desc:""});
+        await update_user(user.id, {subscription_url:user.subscription_url.replace("http://panel.arman-k.cfd:80","https://sub.arman-k.cfd:8000")});
+        //await update_user(user.id, {desc:""});
+        console.log("DONE 1");
     }
 
-    console.log("DONE !!!");
+    console.log("DONE 2");
 
 }

@@ -738,8 +738,8 @@ app.post("/dldb", async (req, res) =>
 
                 if(process.env.RELEASE == 3)
                 {
-                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/assets")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/assets");
-                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/xray-core")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/xray-core");
+                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets");
+                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core");
                 }
 
                 await fs.promises.unlink("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
