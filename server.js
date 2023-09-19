@@ -47,7 +47,7 @@ const {
     enable_panel,
     disable_panel,
     secondary_backend_url_converter,
-    get_main_panel_url,
+    get_sub_url,
     switch_countries,
     proxy_obj_maker,
     update_user_links_bg
@@ -344,7 +344,7 @@ app.post("/create_user", async (req, res) => {
                 corresponding_panel_id: selected_panel.id,
                 corresponding_panel: selected_panel.panel_url,
                 real_subscription_url: (mv.subscription_url.startsWith("/")?selected_panel.panel_url:"") + mv.subscription_url,
-                subscription_url: get_main_panel_url() + "/sub/" + uidv2(10),
+                subscription_url: get_sub_url() + "/sub/" + uidv2(10),
                 links: mv.links,
                 created_at:Math.floor(Date.now()/1000),
                 disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)},
@@ -810,7 +810,7 @@ app.get(/^\/sub\/.+/,async (req,res) =>
     }
 });
 
-app.listen(parseInt(process.env.PORT), () => 
+app.listen(parseInt(process.env.SERVER_PORT), () => 
 {
     console.log("--------------");
     console.log("SERVER STARTED !");

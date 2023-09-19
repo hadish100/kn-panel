@@ -25,7 +25,7 @@ const {
     delete_vpn,
     enable_panel,
     syslog,
-    get_main_panel_url
+    get_sub_url
 } = require("./utils");
 
 
@@ -205,7 +205,7 @@ connect_to_db().then(res => {
                             "corresponding_panel_id": panel.id,
                             "corresponding_panel": panel.panel_url,
                             "real_subscription_url": (complete_user_info.subscription_url.startsWith("/")?panel.panel_url:"")+complete_user_info.subscription_url,
-                            "subscription_url": get_main_panel_url() + "/sub/" + uidv2(10),
+                            "subscription_url": get_sub_url() + "/sub/" + uidv2(10),
                             "links": complete_user_info.links,
                             "created_at":Math.floor(Date.parse(marzban_user.created_at)/1000),
                             "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)},

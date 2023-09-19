@@ -1,4 +1,4 @@
-const {connect_to_db,get_all_users, update_user,get_main_panel_url,uidv2,proxy_obj_maker,get_panel} = require("../utils");
+const {connect_to_db,get_all_users, update_user,get_sub_url,uidv2,proxy_obj_maker,get_panel} = require("../utils");
 
 
 connect_to_db().then(res => {
@@ -28,7 +28,7 @@ async function modify_db()
     // await accounts_clct.updateMany({is_admin:0},{$set: {lifetime_volume:0}})
     for(user of users_arr)
     {
-        // await update_user(user.id, {real_subscription_url:user.subscription_url,subscription_url:get_main_panel_url() + "/sub/" + uidv2(10)});
+        // await update_user(user.id, {real_subscription_url:user.subscription_url,subscription_url:get_sub_url() + "/sub/" + uidv2(10)});
         // console.log("UPDATED SUBLINK OF => " + user.username);
         // if(!user.inbounds)
         // {

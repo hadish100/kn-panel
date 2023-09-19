@@ -6,7 +6,7 @@ require('dotenv').config()
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 
-var MAIN_PANEL_URL = process.env.PANEL_URL;
+var SUB_URL = process.env.SUB_URL + ":" + process.env.SUB_PORT;
 var SB_API_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
 
 // --- UTILS --- //
@@ -29,7 +29,7 @@ const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const get_main_panel_url = () => { return MAIN_PANEL_URL; }
+const get_sub_url = () => { return SUB_URL; }
 
 const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj); return "DONE"; }
 const get_accounts = async () => { const result = await accounts_clct.find().toArray(); return result; }
@@ -624,7 +624,7 @@ module.exports = {
     enable_panel,
     secondary_backend_url_converter,
     syslog,
-    get_main_panel_url,
+    get_sub_url,
     switch_countries,
     proxy_obj_maker,
     update_user_links_bg
