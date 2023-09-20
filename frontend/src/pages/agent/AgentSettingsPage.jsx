@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Button from '../../components/Button'
-import "../admin/AdminSettingsPage.css"
+import "./AgentSettingsPage.css"
 import ErrorCard from '../../components/ErrorCard'
 import OkCard from '../../components/OkCard'
 import axios from 'axios'
