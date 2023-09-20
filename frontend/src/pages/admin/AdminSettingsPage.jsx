@@ -102,7 +102,7 @@ const AdminSettingsPage = () => {
 
     return (
         <>
-            <section>
+            <section style={{ marginBottom: "1rem" }}>
                 <h2 style={{ marginBottom: "1rem" }}>Change Credentials</h2>
                 <form autoComplete='off' className="settings-page flex flex-col" style={{ padding: "0 1rem" }}>
                     <div className="modal__form__group">
