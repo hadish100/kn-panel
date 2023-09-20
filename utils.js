@@ -207,14 +207,14 @@ const enable_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
-const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status,is_changing_country) => {
+const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status,is_changing_country,is_changing_protocols) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
 
         var proxy_obj = proxy_obj_maker(protocols,flow_status,1)
         var edit_obj;
-        if(is_changing_country) edit_obj = { data_limit, expire };
+        if(is_changing_country || !is_changing_protocols) edit_obj = { data_limit, expire };
         else edit_obj = { data_limit, expire, proxies:proxy_obj };
 
         var res = await axios.put(link + "/api/user/" + vpn_name,edit_obj, { headers });
@@ -558,6 +558,36 @@ const update_user_links_bg = (panel_url,panel_username,panel_password,username,i
     }
 }
 
+
+function deep_equal(object1, object2) 
+{
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
+  
+    if (keys1.length !== keys2.length) 
+    {
+      return false;
+    }
+  
+    for (const key of keys1) 
+    {
+      const val1 = object1[key];
+      const val2 = object2[key];
+      const are_objects = is_object(val1) && is_object(val2);
+      if (are_objects && !deep_equal(val1, val2) || !are_objects && val1 !== val2) 
+      {
+        return false;
+      }
+    }
+  
+    return true;
+}
+
+function is_object(object) 
+{
+    return object != null && typeof object === 'object';
+}
+
 async function connect_to_db() {
     await client.connect();
     db = client.db('KN_PANEL');
@@ -627,5 +657,6 @@ module.exports = {
     get_sub_url,
     switch_countries,
     proxy_obj_maker,
-    update_user_links_bg
+    update_user_links_bg,
+    deep_equal
 }

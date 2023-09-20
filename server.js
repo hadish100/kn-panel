@@ -50,7 +50,8 @@ const {
     get_sub_url,
     switch_countries,
     proxy_obj_maker,
-    update_user_links_bg
+    update_user_links_bg,
+    deep_equal
 } = require("./utils");
 
 
@@ -602,8 +603,8 @@ app.post("/edit_user", async (req, res) => {
     else {
 
         var is_changing_country = old_country != country;
-
-        var result = await edit_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username, data_limit * ((2 ** 10) ** 3), Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60, protocols, flow_status,is_changing_country);
+        var is_changing_protocols = !deep_equal(proxy_obj_maker(protocols,flow_status,2),user_obj.inbounds)
+        var result = await edit_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username, data_limit * ((2 ** 10) ** 3), Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60, protocols, flow_status,is_changing_country,is_changing_protocols);
 
         if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
 
