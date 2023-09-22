@@ -1,13 +1,16 @@
 const axios = require('axios');
 const fs = require('fs');
 const util = require('util');
-const {get_marzban_user,get_panel_info} = require("../utils");
-
+const {get_marzban_user,get_panel_info,restart_marzban_xray} = require("../utils");
 // (async () => {
 //   var complete_user_info = get_marzban_user("http://206.189.58.110:8000", "admin", "admin", "Smart_baqer");
 //   console.log(complete_user_info);
 // })();
 
+// (async () => {
+//     var result = await restart_marzban_xray("https://sv.limoovp5.sbs:8000","armanmprr","Shadow2014@");
+//     console.log(result);
+// })();
 
 // for(var i=0;i<50;i++)
 // {

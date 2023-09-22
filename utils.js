@@ -427,6 +427,23 @@ const enable_panel = async (panel_id) =>
 }
 
 
+const restart_marzban_xray = async (link, username, password) => 
+{
+    try 
+    {
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+        var res = await axios.post(link + "/api/core/restart","", { headers });
+        return "DONE";
+    }
+
+    catch (err) 
+    {
+        return "ERR";
+    }
+}
+
+
 const secondary_backend_url_converter = (url,method) =>
 {
     return url.split(":")[0].replace("https","http") + ":" + url.split(":")[1] + ":7002/" + method;
@@ -498,6 +515,9 @@ const switch_countries = async (country_from,country_to,users_arr) =>
         });
 
         if(add_users_req.data == "ERR") return "ERR";
+
+        await restart_marzban_xray(panel_from.panel_url,panel_from.panel_username,panel_from.panel_password)
+        await restart_marzban_xray(panel_to.panel_url,panel_to.panel_username,panel_to.panel_password)
 
         for(username of users_arr)
         {
@@ -658,5 +678,6 @@ module.exports = {
     switch_countries,
     proxy_obj_maker,
     update_user_links_bg,
-    deep_equal
+    deep_equal,
+    restart_marzban_xray
 }
