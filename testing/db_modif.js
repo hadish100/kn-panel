@@ -37,7 +37,7 @@ async function modify_db()
         //     await update_user(user.id, {inbounds});
         //     console.log("UPDATED INBOUNDS OF => " + user.username);
         // }
-        // await update_user(user.id, {subscription_url:user.subscription_url.replace("5000","8443").replace("http","https")});
+        // await update_user(user.id, {subscription_url:user.subscription_url.replace("5000","8000").replace("http://","https://")});
         await update_user(user.id, {desc:""});
         console.log("DONE 1");
     }
