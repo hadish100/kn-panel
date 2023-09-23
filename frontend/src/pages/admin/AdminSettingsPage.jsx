@@ -12,6 +12,7 @@ import LeadingIcon from '../../components/LeadingIcon'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
+import { ReactComponent as SpinnerIcon } from '../../assets/svg/spinner.svg'
 
 const AdminSettingsPage = () => {
     const [error_msg, setError_msg] = useState("Passwords dont match")
@@ -27,6 +28,7 @@ const AdminSettingsPage = () => {
     const [selectedAdminToDelete, setSelectedAdminToDelete] = useState(null)
     const [selectedAdminToEdit, setSelectedAdminToEdit] = useState(null)
     const [admins, setAdmins] = useState([])
+    const [isLoadingAdmins, setIsLoadingAdmins] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token")
 
@@ -139,15 +141,18 @@ const AdminSettingsPage = () => {
     }
 
     const getAdmins = useCallback(async () => {
+        setIsLoadingAdmins(true)
         const res = (await axios.post("/get_sub_accounts", { access_token })).data
         if (res.status === "ERR") {
             setError_msg(res.msg || "BAD REQUEST")
             setHasError(true)
+            setIsLoadingAdmins(false)
             return
         } else {
             setHasError(false)
         }
 
+        setIsLoadingAdmins(false)
         setAdmins(res)
     }, [access_token])
 
@@ -202,7 +207,9 @@ const AdminSettingsPage = () => {
                     </div>
 
                     <div className={`flex flex-col w-full gap-1.5 ${styles['admin-section']}`}>
-                        <h3>Admins</h3>
+                        <h3 className='flex items-center gap-1'>
+                            Admins {isLoadingAdmins && <span className="flex items-center spinner"><SpinnerIcon /></span>}
+                        </h3>
                         <div className={`flex flex-col w-full gap-1.5 ${styles.admins}`}>
                             {admins.map((admin) => (
                                 <div className={`${styles.admin}`} key={admin.id}>
