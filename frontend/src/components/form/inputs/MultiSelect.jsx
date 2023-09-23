@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState, useEffect } from 'react'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
@@ -22,12 +22,18 @@ const MenuProps = {
 
 export default function MultipleSelectCheckmarks({ editValue, styles }) {
 
-  const [names, setNames] = React.useState(JSON.parse(sessionStorage.getItem("country_list")))
-  const [personName, setPersonName] = React.useState([])
+  const [names, setNames] = useState([])
+  const [personName, setPersonName] = useState([])
 
-  React.useEffect(() => {
-    if (editValue) setPersonName(editValue)
-  }, [editValue])
+  // useEffect(() => {
+  //   if (editValue) setPersonName(editValue)
+  //   console.log("here")
+  // }, [editValue])
+
+  useEffect(() => {
+    setNames(JSON.parse(sessionStorage.getItem("country_list")))
+    setPersonName(editValue)
+  }, [])
 
   const handleChange = (event) => {
     const {
