@@ -206,20 +206,21 @@ const AdminSettingsPage = () => {
                         </form>
                     </div>
 
-                    <div className={`flex flex-col w-full gap-1.5 ${styles['admin-section']}`}>
-                        <h3 className='flex items-center gap-1'>
-                            Admins {isLoadingAdmins && <span className="flex items-center spinner"><SpinnerIcon /></span>}
-                        </h3>
-                        <div className={`flex flex-col w-full gap-1.5 ${styles.admins}`}>
-                            {admins.map((admin) => (
-                                <div className={`${styles.admin}`} key={admin.id}>
-                                    <div style={{ marginRight: "auto" }}>{admin.username}</div>
-                                    <Button className='ghosted' onClick={() => handleShowEditModal(admin)}><EditIcon /></Button>
-                                    <Button className='ghosted' onClick={() => handleShowDeleteModal(admin.id)}><DeleteIcon /></Button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    {admins.length ?
+                        <div className={`flex flex-col w-full gap-1.5 ${styles['admin-section']}`}>
+                            <h3 className='flex items-center gap-1'>
+                                Admins {isLoadingAdmins && <span className="flex items-center spinner"><SpinnerIcon /></span>}
+                            </h3>
+                            <div className={`flex flex-col w-full gap-1.5 ${styles.admins}`}>
+                                {admins.map((admin) => (
+                                    <div className={`${styles.admin}`} key={admin.id}>
+                                        <div style={{ marginRight: "auto" }}>{admin.username}</div>
+                                        <Button className='ghosted' onClick={() => handleShowEditModal(admin)}><EditIcon /></Button>
+                                        <Button className='ghosted' onClick={() => handleShowDeleteModal(admin.id)}><DeleteIcon /></Button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div> : null}
                 </main>
             </section >
 
