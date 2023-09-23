@@ -160,6 +160,18 @@ input[type=number] {
     gap: .375rem;
 }
 
+.gap-2 {
+    gap: .75rem;
+}
+
+.gap-2\.5 {
+    gap: .875rem;
+}
+
+.gap-3 {
+    gap: 1rem;
+}
+
 .w-full {
     width: 100%;
 }

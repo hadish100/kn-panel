@@ -164,7 +164,7 @@ const AdminSettingsPage = () => {
         <>
             <section className={`${styles['change-credentials-section']}`} style={{ marginBottom: "1rem" }}>
                 <h2 style={{ marginBottom: "1rem" }}>Change Credentials</h2>
-                <form autoComplete='off' className="settings-page flex flex-col" style={{ padding: "0 1rem" }}>
+                <form autoComplete='off' className="settings-page flex flex-col gap-2" style={{ padding: "0 1rem" }}>
                     <div className="modal__form__group">
                         <label className="modal__form__label" htmlFor="username">Username</label>
                         <input autoComplete='new-username' className="modal__form__input" type="text" id="username" name="username" />
@@ -179,7 +179,7 @@ const AdminSettingsPage = () => {
                             <input autoComplete='new-password' className="modal__form__input" type="password" id="password2" name="password" />
                         </div>
                     </div>
-                    <footer className="settings-page__footer">
+                    <footer className="settings-page__footer flex justify-end">
                         <Button onClick={(e) => changeCrendtials(e)} className="primary" disabled={saveMode}>{saveMode ? "Saving..." : "Save"}</Button>
                     </footer>
                 </form>
@@ -189,7 +189,7 @@ const AdminSettingsPage = () => {
                 <h2 style={{ marginBottom: "1rem" }}>Create Admin</h2>
                 <main className={`flex gap-col-1 ${styles['flex-col']}`}>
                     <div className='w-full'>
-                        <form autoComplete='off' className="settings-page" style={{ padding: "0 1rem" }}>
+                        <form autoComplete='off' className="settings-page flex flex-col gap-2" style={{ padding: "0 1rem" }}>
                             <div className="modal__form__group">
                                 <label className="modal__form__label" htmlFor="username">Username</label>
                                 <input autoComplete='new-username' className="modal__form__input" type="text" id="create-username" name="username" />
@@ -200,7 +200,7 @@ const AdminSettingsPage = () => {
                                     <input autoComplete='new-password' className="modal__form__input" type="password" id="create-password" name="password" />
                                 </div>
                             </div>
-                            <footer className="settings-page__footer">
+                            <footer className="settings-page__footer flex justify-end">
                                 <Button onClick={(e) => createAdmin(e)} className="primary" disabled={createMode}>{createMode ? "Creating..." : "Create"}</Button>
                             </footer>
                         </form>
