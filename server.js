@@ -227,7 +227,8 @@ app.post("/create_agent", async (req, res) => {
             active_users: 0,
             total_users: 0,
             business_mode:business_mode?1:0,
-            tokens: []
+            tokens: [],
+            sub_accounts:[]
         });
 
         var account_id = (await token_to_account(access_token)).id;
