@@ -20,6 +20,7 @@
     border-radius: 6px;
     padding: 1rem;
     background-color: #f9fafb;
+    box-shadow: black 1px 1px 5px -3px;
 }
 
 .admins {
