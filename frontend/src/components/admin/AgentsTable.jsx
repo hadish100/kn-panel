@@ -39,7 +39,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                             <tr onClick={() => onEditItem(item)} key={item.id} agent_id={item.id} >
                                 <td className="agent_name_row" > <div> <img src={businessModeIcon} className={item.business_mode?"bm_icon":"bm_icon bm_off"} /> <span> {item.name} </span>  </div> </td>
                                 <td>
-                                    <span className={`status ${item.disable ? "limited" : "active"}`} >
+                                    <span className={`status ${item.disable ? "limited2" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}
                                     </span>
                                 </td>

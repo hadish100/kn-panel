@@ -154,26 +154,28 @@ app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     const accounts = await get_accounts();
     const account = accounts.filter(x => x.username == username && x.password == password)[0];
+    // username and password in account.sub_accounts
+    const sub_account = accounts.filter(x => x.sub_accounts && x.sub_accounts.filter(y => y.username == username && y.password == password).length)[0].sub_accounts.filter(y => y.username == username && y.password == password)[0];
 
-
-    if (account) {
+    if (account) 
+    {
         var access_token = await add_token(account.id);
         await insert_to_logs(account.id, "LOGIN", "logged in");
         res.send({ is_admin: account.is_admin, access_token });
-
-        var all_accounts = await get_accounts();
-        all_accounts.forEach(async (account_obj) => 
-        {
-            var tokens = account_obj.tokens;
-            var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
-            await update_account(account_obj.id,{tokens:new_tokens});
-        });
-
     }
 
-    else {
+    else 
+    {
         res.status(401).send({ message: 'NOT FOUND' });
     }
+
+    var all_accounts = await get_accounts();
+    all_accounts.forEach(async (account_obj) => 
+    {
+        var tokens = account_obj.tokens;
+        var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
+        await update_account(account_obj.id,{tokens:new_tokens});
+    });
 
 });
 
@@ -836,8 +838,6 @@ app.post("/edit_sub_account", async(req,res) =>
     await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
     res.send("DONE");
 });
-
-
 
 
 app.get(/^\/sub\/.+/,async (req,res) =>
