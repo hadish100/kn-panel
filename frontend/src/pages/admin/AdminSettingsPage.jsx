@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 
 import Button from '../../components/Button'
@@ -82,6 +82,7 @@ const AdminSettingsPage = () => {
                 setHasError(true)
                 setCreateMode(false)
             } else {
+                getAdmins()
                 document.getElementById("create-username").value = ""
                 document.getElementById("create-password").value = ""
                 setCreateMode(false)
@@ -103,6 +104,7 @@ const AdminSettingsPage = () => {
                 setHasError(true)
                 setEditMode(false)
             } else {
+                getAdmins()
                 setShowEditModal(false)
                 document.getElementById("edit-username").value = ""
                 document.getElementById("edit-password").value = ""
@@ -130,26 +132,28 @@ const AdminSettingsPage = () => {
             setHasError(true)
             setDeleteMode(false)
         } else {
+            getAdmins()
             setDeleteMode(false)
             setShowDeleteModal(false)
         }
     }
 
-    useEffect(() => {
-        const getAdmins = async () => {
-            const res = (await axios.post("/get_sub_accounts", { access_token })).data
-            if (res.status === "ERR") {
-                setError_msg(res.msg || "BAD REQUEST")
-                setHasError(true)
-            } else {
-                setHasError(false)
-            }
-
-            setAdmins(res)
+    const getAdmins = useCallback(async () => {
+        const res = (await axios.post("/get_sub_accounts", { access_token })).data
+        if (res.status === "ERR") {
+            setError_msg(res.msg || "BAD REQUEST")
+            setHasError(true)
+            return
+        } else {
+            setHasError(false)
         }
 
+        setAdmins(res)
+    }, [access_token])
+
+    useEffect(() => {
         getAdmins()
-    }, [access_token, admins])
+    }, [getAdmins])
 
     return (
         <>
