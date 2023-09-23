@@ -66,9 +66,10 @@ const SubscriptionActions = ({ item, subscriptionLink, config, onEditItem, shoul
     const handleCopyConfigLink = (e) => {
         //navigator.clipboard.writeText(config);
 
-        const tempInput = document.createElement('input');
-        tempInput.setAttribute('type', 'text');
-        tempInput.setAttribute('value', config);
+        const tempInput = document.createElement('textarea');
+        // tempInput.setAttribute('type', 'text');
+        // tempInput.setAttribute('value', config);
+        tempInput.innerHTML = config;
         document.body.appendChild(tempInput);
         tempInput.select();
         document.execCommand('copy');

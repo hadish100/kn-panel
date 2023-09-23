@@ -154,26 +154,35 @@ app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     const accounts = await get_accounts();
     const account = accounts.filter(x => x.username == username && x.password == password)[0];
+    const sub_account_parent = accounts.filter(x => x.sub_accounts.filter(y => y.username == username && y.password == password).length)[0]
 
-
-    if (account) {
-        var access_token = await add_token(account.id);
-        await insert_to_logs(account.id, "LOGIN", "logged in");
+    if (account) 
+    {
+        var access_token = await add_token(account.id,account.id);
+        await insert_to_logs(account.id, "LOGIN", "logged in",access_token);
         res.send({ is_admin: account.is_admin, access_token });
-
-        var all_accounts = await get_accounts();
-        all_accounts.forEach(async (account_obj) => 
-        {
-            var tokens = account_obj.tokens;
-            var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
-            await update_account(account_obj.id,{tokens:new_tokens});
-        });
-
     }
 
-    else {
+    else if(sub_account_parent)
+    {
+        var sub_account = sub_account_parent.sub_accounts.filter(y => y.username == username && y.password == password)[0];
+        var access_token = await add_token(sub_account_parent.id,sub_account.id);
+        await insert_to_logs(sub_account_parent.id, "LOGIN", "logged in",access_token);
+        res.send({ is_admin: sub_account_parent.is_admin, access_token }); 
+    }
+
+    else 
+    {
         res.status(401).send({ message: 'NOT FOUND' });
     }
+
+    var all_accounts = await get_accounts();
+    all_accounts.forEach(async (account_obj) => 
+    {
+        var tokens = account_obj.tokens;
+        var new_tokens = tokens.filter( x => x.expire > Math.floor(Date.now()/1000) );
+        await update_account(account_obj.id,{tokens:new_tokens});
+    });
 
 });
 
@@ -225,11 +234,12 @@ app.post("/create_agent", async (req, res) => {
             active_users: 0,
             total_users: 0,
             business_mode:business_mode?1:0,
-            tokens: []
+            tokens: [],
+            sub_accounts:[]
         });
 
         var account_id = (await token_to_account(access_token)).id;
-        await insert_to_logs(account_id, "CREATE_AGENT", `created agent !${name} with !${volume} GB data`)
+        await insert_to_logs(account_id, "CREATE_AGENT", `created agent !${name} with !${volume} GB data`,access_token)
 
         res.send("DONE");
     }
@@ -276,7 +286,7 @@ app.post("/create_panel", async (req, res) => {
         });
 
         var account_id = (await token_to_account(access_token)).id;
-        await insert_to_logs(account_id, "CREATE_PANEL", `created panel !${panel_name}`);
+        await insert_to_logs(account_id, "CREATE_PANEL", `created panel !${panel_name}`,access_token);
 
         res.send("DONE");
     }
@@ -355,7 +365,7 @@ app.post("/create_user", async (req, res) => {
 
             await update_account(agent_id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit) });
 
-            await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time`);
+            await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
 
             res.send("DONE");
         }
@@ -374,7 +384,7 @@ app.post("/delete_agent", async (req, res) => {
     var account_id = (await token_to_account(access_token)).id;
     var agent_obj = await get_account(agent_id);
     await accounts_clct.deleteOne({ id: agent_id });
-    await insert_to_logs(account_id, "DELETE_AGENT", `deleted agent !${agent_obj.username}`);
+    await insert_to_logs(account_id, "DELETE_AGENT", `deleted agent !${agent_obj.username}`,access_token);
     res.send("DONE");
 });
 
@@ -395,7 +405,7 @@ app.post("/delete_panel", async (req, res) => {
     }
 
     await panels_clct.deleteOne({ id: panel_id });
-    await insert_to_logs(account_id, "DELETE_PANEL", `deleted panel !${panel_obj.panel_name}`);
+    await insert_to_logs(account_id, "DELETE_PANEL", `deleted panel !${panel_obj.panel_name}`,access_token);
     res.send("DONE");
 });
 
@@ -409,7 +419,7 @@ app.post("/delete_user", async (req, res) => {
     else {
         if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
         await users_clct.deleteOne({ username });
-        await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user !${username}`);
+        await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user !${username}`,access_token);
         res.send("DONE");
     }
 
@@ -420,7 +430,7 @@ app.post("/disable_panel", async (req, res) => {
     await disable_panel(panel_id);
     var panel_obj = await get_panel(panel_id);
     var account_id = (await token_to_account(access_token)).id;
-    await insert_to_logs(account_id, "DISABLE_PANEL", `disabled panel !${panel_obj.panel_name}`);
+    await insert_to_logs(account_id, "DISABLE_PANEL", `disabled panel !${panel_obj.panel_name}`,access_token);
     res.send("DONE");
 });
 
@@ -429,7 +439,7 @@ app.post("/disable_agent", async (req, res) => {
     await update_account(agent_id, { disable: 1 });
     var agent_obj = await get_account(agent_id);
     var account_id = (await token_to_account(access_token)).id;
-    await insert_to_logs(account_id, "DISABLE_AGENT", `disabled agent !${agent_obj.username}`);
+    await insert_to_logs(account_id, "DISABLE_AGENT", `disabled agent !${agent_obj.username}`,access_token);
     res.send("DONE");
 });
 
@@ -442,7 +452,7 @@ app.post("/disable_user", async (req, res) => {
     else {
         await update_user(user_id, { status: "disable", disable: 1 });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "DISABLE_USER", `disabled user !${user_obj.username}`);
+        await insert_to_logs(account.id, "DISABLE_USER", `disabled user !${user_obj.username}`,access_token);
         res.send("DONE");
     }
 });
@@ -452,7 +462,7 @@ app.post("/enable_agent", async (req, res) => {
     await update_account(agent_id, { disable: 0 });
     var account = await token_to_account(access_token);
     var agent_obj = await get_account(agent_id);
-    await insert_to_logs(account.id, "ENABLE_AGENT", `enabled agent !${agent_obj.username}`);
+    await insert_to_logs(account.id, "ENABLE_AGENT", `enabled agent !${agent_obj.username}`,access_token);
     res.send("DONE");
 });
 
@@ -461,7 +471,7 @@ app.post("/enable_panel", async (req, res) => {
     await enable_panel(panel_id);
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(panel_id);
-    await insert_to_logs(account.id, "ENABLE_PANEL", `enabled panel !${panel_obj.panel_name}`);
+    await insert_to_logs(account.id, "ENABLE_PANEL", `enabled panel !${panel_obj.panel_name}`,access_token);
     res.send("DONE");
 });
 
@@ -474,7 +484,7 @@ app.post("/enable_user", async (req, res) => {
     else {
         await update_user(user_id, { status: "active", disable: 0 });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "ENABLE_USER", `enabled user !${user_obj.username}`);
+        await insert_to_logs(account.id, "ENABLE_USER", `enabled user !${user_obj.username}`,access_token);
         res.send("DONE");
     }
 });
@@ -530,9 +540,9 @@ app.post("/edit_agent", async (req, res) => {
         if(Math.floor(old_volume) != Math.floor(gb2b(volume))) 
         {
             log_msg += `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
-            await insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`)
+            await insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`,access_token)
         }
-        await insert_to_logs(account.id, "EDIT_AGENT", log_msg);
+        await insert_to_logs(account.id, "EDIT_AGENT", log_msg,access_token);
         res.send("DONE");
     }
 
@@ -566,7 +576,7 @@ app.post("/edit_panel", async (req, res) => {
             panel_traffic: dnf(panel_traffic),
         });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "EDIT_PANEL", `edited panel !${panel_name}`);
+        await insert_to_logs(account.id, "EDIT_PANEL", `edited panel !${panel_name}`,access_token);
         res.send("DONE");
     }
 
@@ -629,7 +639,7 @@ app.post("/edit_user", async (req, res) => {
 
             if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);
-            await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`);
+            await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
             if(old_country == country) 
             {
                 if(user_obj.protocols != protocols || user_obj.flow_status != flow_status) update_user_links_bg(panel_obj.panel_url,panel_obj.panel_username,panel_obj.panel_password,user_obj.username,user_obj.id)
@@ -642,7 +652,7 @@ app.post("/edit_user", async (req, res) => {
                 if(switch_process == "ERR") res.send({ status: "ERR", msg: "edited user but didn't switched country" });
                 else
                 {
-                    await insert_to_logs(account.id, "SWITCH_COUNTRY", `switched country of user !${user_obj.username} from !${old_country} to !${country}`);
+                    await insert_to_logs(account.id, "SWITCH_COUNTRY", `switched country of user !${user_obj.username} from !${old_country} to !${country}`,access_token);
                     res.send("DONE")
                 }
             }
@@ -668,7 +678,7 @@ app.post("/edit_self", async (req, res) => {
     {
         await update_account(account_id, { username, password });
         var account = await token_to_account(access_token);
-        await insert_to_logs(account.id, "EDIT_SELF", `was self edited`);
+        await insert_to_logs(account.id, "EDIT_SELF", `was self edited`,access_token);
         res.send("DONE");
     } 
 });
@@ -693,7 +703,7 @@ app.post("/reset_user", async (req, res) => {
             await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.used_traffic)) });
             //if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
             var account = await token_to_account(access_token);
-            await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`);
+            await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`,access_token);
             res.send("DONE");
         }
 
@@ -798,7 +808,7 @@ app.post("/switch_countries", async(req,res) =>
     if(result == "ERR") res.send({ status: "ERR", msg: 'failed to switch countries' })
     else 
     {
-        await insert_to_logs(account.id, "SWITCH_COUNTRY", `switched country of !${users_arr.length} users from !${country_from} to !${country_to}`);
+        await insert_to_logs(account.id, "SWITCH_COUNTRY", `switched country of !${users_arr.length} users from !${country_from} to !${country_to}`,access_token);
         res.send("DONE");
     }
 });
@@ -836,8 +846,6 @@ app.post("/edit_sub_account", async(req,res) =>
     await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
     res.send("DONE");
 });
-
-
 
 
 app.get(/^\/sub\/.+/,async (req,res) =>
