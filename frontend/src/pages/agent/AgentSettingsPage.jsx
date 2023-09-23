@@ -42,11 +42,14 @@ const AdminSettingsPage = () => {
 
 
         if (!password || !password2 || !username) {
+            console.log("here")
             setSaveMode(true)
+            setHasError(true)
             setError_msg("Please fill all the fields")
         } else if (password !== password2) {
-            setSaveMode(true)
+            setHasError(true)
             setError_msg("Passwords dont match")
+            setSaveMode(false)
         }
         else {
             const access_token = sessionStorage.getItem("access_token")
@@ -55,6 +58,7 @@ const AdminSettingsPage = () => {
             if (res.data.status === "ERR") {
                 setError_msg(res.data.msg || "BAD REQUEST")
                 setHasError(true)
+                setSaveMode(false)
             }
 
             else {
@@ -62,6 +66,7 @@ const AdminSettingsPage = () => {
                 document.getElementById("username").value = ""
                 document.getElementById("password").value = ""
                 document.getElementById("password2").value = ""
+                setSaveMode(false)
             }
             setSaveMode(false)
         }
