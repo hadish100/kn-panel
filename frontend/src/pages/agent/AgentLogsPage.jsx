@@ -26,7 +26,7 @@ const AgentLogsPage = () => {
     const [selection, setSelection] = useState(null)
     const [totalPages, setTotalPages] = useState(0)
     const [actions, setActions] = useState([])
-    //const [accounts, setAccounts] = useState([])
+    const [accounts, setAccounts] = useState([])
     const [filterMode, setFilterMode] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token")
@@ -37,7 +37,7 @@ const AgentLogsPage = () => {
             number_of_rows: rowsPerPage,
             current_page: currentPage,
             actions,
-            // accounts,
+            accounts,
             start_date: Math.floor(new Date(Date.parse(startDate.$d)).setHours(0, 0, 0, 0) / 1000),
             end_date: Math.floor(new Date(Date.parse(endDate.$d)).setHours(23, 59, 59, 999) / 1000)
         })
@@ -75,7 +75,8 @@ const AgentLogsPage = () => {
     ]
 
     const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT", "RECEIVE_DATA","SWITCH_COUNTRY"]
-    //const filter_accounts = JSON.parse(sessionStorage.getItem("agents")).map(agent => agent.username)
+    const agent_obj = JSON.parse(sessionStorage.getItem("agent"))
+    const filter_accounts = [agent_obj.username].concat(agent_obj.sub_accounts.map(sub_account => sub_account.username));
 
     return (
         <div className="admin-log-page">

@@ -51,7 +51,8 @@ const {
     switch_countries,
     proxy_obj_maker,
     update_user_links_bg,
-    deep_equal
+    deep_equal,
+    token_to_sub_account
 } = require("./utils");
 
 
@@ -78,10 +79,12 @@ async function auth_middleware(req, res, next) {
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
-    // else if(access_token.includes("@"))
-    // {
-    //     var forbidden_end_points = []
-    // }
+    else if(access_token.includes("@"))
+    {
+        var forbidden_end_points = ["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries","/add_sub_account","/edit_sub_account","/delete_sub_account"]
+        if(forbidden_end_points.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        else next();
+    }
     else return next();
 
 
@@ -122,12 +125,17 @@ app.post("/get_agent", async (req, res) => {
 });
 
 app.post("/get_agent_logs", async (req, res) => {
-    const { access_token, number_of_rows, current_page, actions,start_date,end_date } = req.body;
+    const { access_token, number_of_rows, current_page, actions,start_date,end_date,accounts } = req.body;
     var obj = await get_logs();
     var account_id = (await token_to_account(access_token)).id;
     obj.sort((a, b) => b.time - a.time);
     obj = obj.filter(x => x.account_id == account_id);
     if (actions.length) obj = obj.filter(x => actions.includes(x.action));
+    if (accounts.length) 
+    {
+        var id_arr = await Promise.all(accounts.map(async (x) => await username_to_id(x)));
+        obj = obj.filter(x => id_arr.includes(x.account_id));
+    }
     if (start_date) obj = obj.filter(x => x.time >= start_date);
     if (end_date) obj = obj.filter(x => x.time <= end_date);
     var total_pages = Math.ceil(obj.length / number_of_rows);
@@ -675,12 +683,18 @@ app.post("/edit_self", async (req, res) => {
     var corresponding_account = await token_to_account(access_token);
     var account_id = corresponding_account.id;
     var username_arr = await get_accounts();
-    var username_arr = username_arr.map(x => x.username);
+    username_arr = username_arr.map(x => x.username);
     var old_username = corresponding_account.username;
     if(username_arr.includes(username) && old_username != username) res.send({ status: "ERR", msg: "username already exists" });
     else
     {
-        await update_account(account_id, { username, password });
+        if(access_token.includes("@"))
+        {
+            var sub_account_id = (await token_to_sub_account(access_token)).id;
+            await accounts_clct.updateOne({id:account_id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
+        } 
+
+        else await update_account(account_id, { username, password });
         var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "EDIT_SELF", `was self edited`,access_token);
         res.send("DONE");
@@ -821,9 +835,14 @@ app.post("/switch_countries", async(req,res) =>
 app.post("/add_sub_account", async(req,res) => 
 {
     var {username,password,access_token} = req.body;
-    var account = await token_to_account(access_token);
-    await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password}}});
-    res.send("DONE");
+    if(!username || !password) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    else
+    {
+        var account = await token_to_account(access_token);
+        await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password}}});
+        res.send("DONE");    
+    }
+
 });
 
 app.post("/get_sub_accounts", async(req,res) => 
@@ -846,9 +865,14 @@ app.post("/delete_sub_account", async(req,res) =>
 app.post("/edit_sub_account", async(req,res) =>
 {
     var {access_token,sub_account_id,username,password} = req.body;
-    var account = await token_to_account(access_token);
-    await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
-    res.send("DONE");
+    if(!username || !password) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    else
+    {
+        var account = await token_to_account(access_token);
+        await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
+        res.send("DONE");     
+    }
+
 });
 
 

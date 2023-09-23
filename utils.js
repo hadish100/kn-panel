@@ -692,5 +692,6 @@ module.exports = {
     proxy_obj_maker,
     update_user_links_bg,
     deep_equal,
-    restart_marzban_xray
+    restart_marzban_xray,
+    token_to_sub_account
 }
