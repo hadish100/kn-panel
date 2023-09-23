@@ -29,14 +29,14 @@
 
 .admin {
     display: flex;
-    justify-content: space-between;
     padding: .15em .75em;
+    align-items: center;
     font-family: InterMedium;
     font-weight: 400;
     border: 1px solid var(--border-clr);
     border-radius: var(--border-radius-md);
     width: 100%;
-    cursor: pointer;
+    background-color: #fff;
 }
 
 @media (max-width: 630px) {
