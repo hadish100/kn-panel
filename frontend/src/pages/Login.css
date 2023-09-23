@@ -1,6 +1,7 @@
 .login {
     /* 1.5rem is the padding for the body padding*/
     min-height: calc(100vh - 2 * 1.5rem);
+    min-height: calc(100svh - 2 * 1.5rem);
     display: flex;
     justify-content: center;
     align-items: center;

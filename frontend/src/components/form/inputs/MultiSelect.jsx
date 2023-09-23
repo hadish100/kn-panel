@@ -32,7 +32,9 @@ export default function MultipleSelectCheckmarks({ editValue, styles }) {
 
   useEffect(() => {
     setNames(JSON.parse(sessionStorage.getItem("country_list")))
-    setPersonName(editValue)
+    if (editValue) {
+      setPersonName(editValue)
+    }
   }, [])
 
   const handleChange = (event) => {
