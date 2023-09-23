@@ -52,13 +52,7 @@ const update_user = async (id, value) => { await users_clct.updateOne({ id }, { 
 const insert_to_logs = async (account_id, action, msg,access_token) => {
 
     var username;
-    if(access_token.includes("@")) 
-    {
-        var parent_account = await token_to_account(access_token)
-        var sub_account_id = parent_account.tokens.filter(x => x.token == access_token)[0].corresponding_account_id;
-        username = parent_account.sub_accounts.filter(x => x.id == sub_account_id)[0].username;
-    }
-
+    if(access_token.includes("@")) username = (await token_to_sub_account(access_token)).username
     else username = (await get_account(account_id)).username;
 
     var obj = {
@@ -102,6 +96,14 @@ const token_to_account = async (token) => {
     var accounts = await get_accounts();
     var account = accounts.filter(x => x.tokens.filter(y => y.token == token)[0])[0];
     return account;
+}
+
+const token_to_sub_account = async (token) =>
+{
+    var parent_account = await token_to_account(token);
+    var sub_account_id = parent_account.tokens.filter(x => x.token == token)[0].corresponding_account_id;
+    var sub_account = parent_account.sub_accounts.filter(x => x.id == sub_account_id)[0];
+    return sub_account;
 }
 
 // --- MARZBAN UTILS --- //

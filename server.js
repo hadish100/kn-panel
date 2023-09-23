@@ -78,6 +78,10 @@ async function auth_middleware(req, res, next) {
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
+    // else if(access_token.includes("@"))
+    // {
+    //     var forbidden_end_points = []
+    // }
     else return next();
 
 
