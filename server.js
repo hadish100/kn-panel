@@ -804,6 +804,39 @@ app.post("/switch_countries", async(req,res) =>
 });
 
 
+app.post("/add_sub_account", async(req,res) => 
+{
+    var {username,password,access_token} = req.body;
+    var account = await token_to_account(access_token);
+    await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password}}});
+    res.send("DONE");
+});
+
+app.post("/get_sub_accounts", async(req,res) => 
+{
+    var {access_token} = req.body;
+    var account = await token_to_account(access_token);
+    res.send(account.sub_accounts);
+});
+
+
+app.post("/delete_sub_account", async(req,res) => 
+{
+    var {access_token,sub_account_id} = req.body;
+    var account = await token_to_account(access_token);
+    await accounts_clct.updateOne({id:account.id},{$pull:{"sub_accounts":{id:sub_account_id}}});
+    res.send("DONE");
+});
+
+
+app.post("/edit_sub_account", async(req,res) =>
+{
+    var {access_token,sub_account_id,username,password} = req.body;
+    var account = await token_to_account(access_token);
+    await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
+    res.send("DONE");
+});
+
 
 
 

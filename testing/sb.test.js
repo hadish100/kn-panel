@@ -105,6 +105,13 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray} = require("../utils
 // })();
 
 
+(async () => 
+{
+    // await axios.post("http://localhost:5000/add_sub_account",{access_token:"r6kXzmufeie1FnzD6Vrmt7nclX42kM",username:'admin12',password:'123'});
+    var res = await axios.post("http://localhost:5000/delete_sub_account",{access_token:"r6kXzmufeie1FnzD6Vrmt7nclX42kM",sub_account_id:253320913});
+    console.log(res);
+})();
+
 
 
 //  dl_file("http://ir1.mf1vpn.xyz:7002/dldb","db.zip");
