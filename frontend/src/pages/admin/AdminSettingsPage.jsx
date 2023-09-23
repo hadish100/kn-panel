@@ -102,7 +102,7 @@ const AdminSettingsPage = () => {
 
     return (
         <>
-            <section style={{ marginBottom: "1rem" }}>
+            <section className={`${styles['change-credentials-section']}`} style={{ marginBottom: "1rem" }}>
                 <h2 style={{ marginBottom: "1rem" }}>Change Credentials</h2>
                 <form autoComplete='off' className="settings-page flex flex-col" style={{ padding: "0 1rem" }}>
                     <div className="modal__form__group">
@@ -125,7 +125,7 @@ const AdminSettingsPage = () => {
                 </form>
             </section>
 
-            <section>
+            <section className={`${styles['create-admin-section']}`}>
                 <h2 style={{ marginBottom: "1rem" }}>Create Admin</h2>
                 <main className={`flex gap-col-1 ${styles['flex-col']}`}>
                     <div className='w-full'>

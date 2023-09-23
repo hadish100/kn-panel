@@ -14,6 +14,14 @@
     gap: 1rem;
 } */
 
+.change-credentials-section,
+.create-admin-section {
+    border: .8px solid var(--border-clr);
+    border-radius: 6px;
+    padding: 1rem;
+    background-color: #fafcff;
+}
+
 .admins {
     max-height: 150px;
     overflow-y: scroll;
