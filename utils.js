@@ -49,8 +49,18 @@ const username_to_id = async (username) => { const result = await accounts_clct.
 const get_user2 = async (username) => { const result = await users_clct.find({ username }).toArray(); return result[0]; }
 const update_user = async (id, value) => { await users_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
 
-const insert_to_logs = async (account_id, action, msg) => {
-    var username = (await get_account(account_id)).username;
+const insert_to_logs = async (account_id, action, msg,access_token) => {
+
+    var username;
+    if(access_token.includes("@")) 
+    {
+        var parent_account = await token_to_account(access_token)
+        var sub_account_id = parent_account.tokens.filter(x => x.token == access_token)[0].corresponding_account_id;
+        username = parent_account.sub_accounts.filter(x => x.id == sub_account_id)[0].username;
+    }
+
+    else username = (await get_account(account_id)).username;
+
     var obj = {
         id: uid(),
         account_id,
@@ -80,10 +90,11 @@ const dnf = (x) => // Desired Number Format
     return Math.round(x * 100) / 100;
 }
 
-const add_token = async (id) => {
+const add_token = async (id,self_id) => {
+    // @ ===> secondary_access 
     var expire = Math.floor(Date.now() / 1000) + 86400;
-    var token = uidv2(30);
-    var obj = { token, expire };
+    var token = uidv2(30) + (id!=self_id?"@":"");
+    var obj = { corresponding_account_id:self_id,token,expire };
     await accounts_clct.updateOne({ id }, { $push: { tokens: obj } }, function () { }); return token;
 }
 
