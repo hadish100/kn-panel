@@ -21,8 +21,11 @@ const AdminSettingsPage = () => {
     const [saveMode, setSaveMode] = useState(false)
     const [createMode, setCreateMode] = useState(false)
     const [deleteMode, setDeleteMode] = useState(false)
+    const [editMode, setEditMode] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false)
     const [selectedAdminToDelete, setSelectedAdminToDelete] = useState(null)
+    const [selectedAdminToEdit, setSelectedAdminToEdit] = useState(null)
     const [admins, setAdmins] = useState([])
 
     const access_token = sessionStorage.getItem("access_token")
@@ -87,9 +90,36 @@ const AdminSettingsPage = () => {
         createAdmin()
     }
 
+    const editAdmin = (e) => {
+        e.preventDefault()
+
+        const username = document.getElementById("edit-username").value
+        const password = document.getElementById("edit-password").value
+        const editAdmin = async () => {
+            setEditMode(true)
+            const res = (await axios.post("/edit_sub_account", { access_token, sub_account_id: selectedAdminToEdit.id, username, password })).data
+            if (res.status === "ERR") {
+                setError_msg(res.msg || "BAD REQUEST")
+                setHasError(true)
+                setEditMode(false)
+            } else {
+                setShowEditModal(false)
+                document.getElementById("edit-username").value = ""
+                document.getElementById("edit-password").value = ""
+                setEditMode(false)
+            }
+        }
+        editAdmin()
+    }
+
     const handleShowDeleteModal = (id) => {
         setShowDeleteModal(true)
         setSelectedAdminToDelete(id)
+    }
+
+    const handleShowEditModal = (admin) => {
+        setShowEditModal(true)
+        setSelectedAdminToEdit(admin)
     }
 
     const handleDeleteAdmin = async (id) => {
@@ -173,7 +203,7 @@ const AdminSettingsPage = () => {
                             {admins.map((admin) => (
                                 <div className={`${styles.admin}`} key={admin.id}>
                                     <div style={{ marginRight: "auto" }}>{admin.username}</div>
-                                    <Button className='ghosted' ><EditIcon /></Button>
+                                    <Button className='ghosted' onClick={() => handleShowEditModal(admin)}><EditIcon /></Button>
                                     <Button className='ghosted' onClick={() => handleShowDeleteModal(admin.id)}><DeleteIcon /></Button>
                                 </div>
                             ))}
@@ -200,6 +230,43 @@ const AdminSettingsPage = () => {
                         <footer className='flex gap-1.5'>
                             <Button className="outlined w-full" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
                             <Button className="primary w-full" onClick={() => handleDeleteAdmin(selectedAdminToDelete)} disabled={deleteMode}>{deleteMode ? "Deleting..." : "Delete"}</Button>
+                        </footer>
+                    </Modal>
+                }
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showEditModal &&
+                    <Modal
+                        onClose={() => setShowEditModal(false)}
+                        width={"30rem"}
+                    >
+                        <header className="modal__header">
+                            <LeadingIcon>
+                                <EditIcon />
+                            </LeadingIcon>
+                            <h1 className="modal__title">Edit admin</h1>
+                            <div className="close-icon" onClick={() => setShowEditModal(false)}>
+                                <XMarkIcon />
+                            </div>
+                        </header>
+                        <main style={{ marginBottom: "1rem" }}>
+                            <form autoComplete='off' className="settings-page">
+                                <div className="modal__form__group">
+                                    <label className="modal__form__label" htmlFor="username">Username</label>
+                                    <input autoComplete='new-username' className="modal__form__input" type="text" id="edit-username" name="username" defaultValue={selectedAdminToEdit.username} />
+                                </div>
+                                <div className="flex gap-16">
+                                    <div className="modal__form__group">
+                                        <label className="modal__form__label" htmlFor="password">Password</label>
+                                        <input autoComplete='new-password' className="modal__form__input" type="text" id="edit-password" name="password" defaultValue={selectedAdminToEdit.password} />
+                                    </div>
+                                </div>
+                            </form>
+                        </main>
+                        <footer className="flex gap-1 justify-end">
+                            <Button className="outlined" onClick={() => setShowEditModal(false)}>Cancel</Button>
+                            <Button onClick={(e) => editAdmin(e)} className="primary" disabled={editMode}>{editMode ? "Editing..." : "Edit"}</Button>
                         </footer>
                     </Modal>
                 }
