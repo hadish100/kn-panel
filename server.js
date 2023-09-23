@@ -840,6 +840,7 @@ app.post("/add_sub_account", async(req,res) =>
     {
         var account = await token_to_account(access_token);
         await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password}}});
+        await insert_to_logs(account.id, "ADD_SUB_ACCOUNT", `added sub account !${username}`,access_token)
         res.send("DONE");    
     }
 
@@ -857,7 +858,9 @@ app.post("/delete_sub_account", async(req,res) =>
 {
     var {access_token,sub_account_id} = req.body;
     var account = await token_to_account(access_token);
+    var sub_account_username = account.sub_accounts.filter(x=>x.id == sub_account_id)[0].username;
     await accounts_clct.updateOne({id:account.id},{$pull:{"sub_accounts":{id:sub_account_id}}});
+    await insert_to_logs(account.id, "DELETE_SUB_ACCOUNT", `deleted sub account !${sub_account_username}`,access_token)
     res.send("DONE");
 });
 
@@ -870,6 +873,7 @@ app.post("/edit_sub_account", async(req,res) =>
     {
         var account = await token_to_account(access_token);
         await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
+        await insert_to_logs(account.id, "EDIT_SUB_ACCOUNT", `edited sub account !${username}`,access_token)
         res.send("DONE");     
     }
 

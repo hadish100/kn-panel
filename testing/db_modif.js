@@ -24,23 +24,23 @@ async function modify_db()
     // // await accounts_clct.updateMany({is_admin:0},{$set: {max_non_active_days:15}});
     // console.log("DONE !!!");
 
-    // var users_arr = await get_all_users();
-    // // await accounts_clct.updateMany({is_admin:0},{$set: {lifetime_volume:0}})
-    // for(user of users_arr)
-    // {
-    //     // await update_user(user.id, {real_subscription_url:user.subscription_url,subscription_url:get_sub_url() + "/sub/" + uidv2(10)});
-    //     // console.log("UPDATED SUBLINK OF => " + user.username);
-    //     // if(!user.inbounds)
-    //     // {
-    //     //     var corresponding_panel = await get_panel(user.corresponding_panel_id);
-    //     //     var inbounds = proxy_obj_maker(Object.keys(corresponding_panel.panel_inbounds),"none",2);
-    //     //     await update_user(user.id, {inbounds});
-    //     //     console.log("UPDATED INBOUNDS OF => " + user.username);
-    //     // }
-    //     await update_user(user.id, {subscription_url:user.subscription_url.replace("5000","8443").replace("http","https")});
-    //     //await update_user(user.id, {desc:""});
-    //     console.log("DONE 1");
-    // }
+    var users_arr = await get_all_users();
+    // await accounts_clct.updateMany({is_admin:0},{$set: {lifetime_volume:0}})
+    for(user of users_arr)
+    {
+        // await update_user(user.id, {real_subscription_url:user.subscription_url,subscription_url:get_sub_url() + "/sub/" + uidv2(10)});
+        // console.log("UPDATED SUBLINK OF => " + user.username);
+        // if(!user.inbounds)
+        // {
+        //     var corresponding_panel = await get_panel(user.corresponding_panel_id);
+        //     var inbounds = proxy_obj_maker(Object.keys(corresponding_panel.panel_inbounds),"none",2);
+        //     await update_user(user.id, {inbounds});
+        //     console.log("UPDATED INBOUNDS OF => " + user.username);
+        // }
+        // await update_user(user.id, {subscription_url:user.subscription_url.replace("5000","8443").replace("http","https")});
+        await update_user(user.id, {desc:""});
+        console.log("DONE 1");
+    }
 
     var accounts = await get_accounts()
     for(account of accounts)
@@ -49,6 +49,6 @@ async function modify_db()
         console.log("DONE 2");
     }
 
-    console.log("DONE 2");
+    console.log("DONE 3");
 
 }
