@@ -1,4 +1,5 @@
 var accounts_clct, panels_clct, users_clct, logs_clct;
+const moment = require('moment');
 require('dotenv').config()
 
 var reset_counter = 0;
@@ -176,10 +177,13 @@ connect_to_db().then(res => {
                     }
                 }
 
+
                 if(!user && marzban_user.username.split("_").length > 1)
                 {
+                    var marzban_user_created_at = Math.floor(moment.utc(marzban_user.created_at).valueOf()/1000)
+                    var current_time = Math.floor(moment.utc().valueOf()/1000)
                     var corresponding_agent = all_agents.find(agent => marzban_user.username.startsWith(agent.prefix + "_"));
-                    if(corresponding_agent && corresponding_agent.country.split(",").includes(panel.panel_country) && marzban_user.expire && marzban_user.data_limit)
+                    if(corresponding_agent && corresponding_agent.country.split(",").includes(panel.panel_country) && marzban_user.expire && marzban_user.data_limit && current_time - marzban_user_created_at > 60)
                     {
                         var complete_user_info = await get_marzban_user(panel.panel_url, panel.panel_username, panel.panel_password, marzban_user.username);
                         if(complete_user_info == "ERR") continue;
