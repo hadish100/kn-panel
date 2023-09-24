@@ -8,7 +8,13 @@ const { connect_to_db } = require("./utils");
 
 connect_to_db().then(res => { users_clct = res.users_clct;});
 
-var options = {key: fs.readFileSync(process.env.PVKEY),cert: fs.readFileSync(process.env.CRT)};
+var options = 
+{
+  key: fs.readFileSync(process.env.PVKEY),
+  cert: fs.readFileSync(process.env.CRT)
+};
+
+if(process.env.CA) options.ca = fs.readFileSync(process.env.CA);
 
 
 var server = https.createServer(options,app).listen(parseInt(process.env.SUB_PORT),function()

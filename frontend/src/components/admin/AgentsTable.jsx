@@ -10,6 +10,7 @@ const b2gb = (bytes) => {
 }
 
 const showCountries = (str) => {
+    if(!str) return <span className="country_span_off" >NO ACCESS</span>;
     var country_arr = str.split(",");
     return country_arr.map((country) => (
         <span className="country_span" key={country}>{country}</span>
