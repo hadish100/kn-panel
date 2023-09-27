@@ -121,6 +121,14 @@ app.post("/get_users", async (req, res) => {
 app.post("/get_agent", async (req, res) => {
     var { access_token } = req.body;
     var agent = await token_to_account(access_token);
+    var filteredCountries = await Promise.all(agent.country.split(",").map(async (x) => 
+    {
+        var panel_obj = (await panels_clct.find({ panel_country: x }).toArray())[0];
+        if (panel_obj.disable) return null;
+        else return x;
+    }));
+    agent.country = filteredCountries.filter(Boolean).join(",");
+
     res.send(agent);
 });
 
@@ -549,7 +557,7 @@ app.post("/edit_agent", async (req, res) => {
         });
         var account = await token_to_account(access_token);
         var log_msg = `edited agent ${name} `
-        if(Math.floor(old_volume) != Math.floor(gb2b(volume))) 
+        if(Math.abs(Math.floor(old_volume) - Math.floor(gb2b(volume)))>gb2b(0.1)) 
         {
             log_msg += `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
             await insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`,access_token)
@@ -715,11 +723,15 @@ app.post("/reset_user", async (req, res) => {
         var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
 
         if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
-        else {  
+        else 
+        {  
 
             await update_user(user_id, { used_traffic: 0 });
-            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.used_traffic)) });
-            //if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
+            if(user_obj.status=="limited") await update_user(user_id, { status: "active" });
+
+            if( ( corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
+            else await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.used_traffic)) });
+            
             var account = await token_to_account(access_token);
             await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`,access_token);
             res.send("DONE");
