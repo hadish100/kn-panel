@@ -73,19 +73,27 @@ connect_to_db().then(res => {
 async function auth_middleware(req, res, next) {
 
     if (req.url == "/login" || req.url.startsWith("/sub") || req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
-
-
-
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
-    else if(access_token.includes("@"))
+    else
     {
-        var forbidden_end_points = ["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries","/add_sub_account","/edit_sub_account","/delete_sub_account"]
-        if(forbidden_end_points.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        var endpoints =
+        {
+            sub_accounts_perms:["/add_sub_account","/edit_sub_account","/delete_sub_account"],
+            users_perms:["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries"],
+            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent"],
+            panels_perms:["/create_panel","/delete_panel","/disable_panel","/enable_panel","/edit_panel"]
+        };
+
+        if(access_token.includes("#") && [...endpoints.agents_perms,...endpoints.panels_perms,"/dldb"].includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        else if(access_token.includes("@") && endpoints.sub_accounts_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });   
+        else if(access_token.includes("@") && !access_token.includes("$") && endpoints.panels_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        else if(access_token.includes("@") && !access_token.includes("%") && endpoints.agents_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        else if(access_token.includes("@") && !access_token.includes("^") && endpoints.users_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
         else next();
+
     }
-    else return next();
 
 
 }
@@ -178,7 +186,7 @@ app.post("/login", async (req, res) => {
 
     if (account) 
     {
-        var access_token = await add_token(account.id,account.id);
+        var access_token = await add_token(account.id,account.id,account.is_admin);
         await insert_to_logs(account.id, "LOGIN", "logged in",access_token);
         res.send({ is_admin: account.is_admin, access_token });
     }
@@ -186,7 +194,7 @@ app.post("/login", async (req, res) => {
     else if(sub_account_parent)
     {
         var sub_account = sub_account_parent.sub_accounts.filter(y => y.username == username && y.password == password)[0];
-        var access_token = await add_token(sub_account_parent.id,sub_account.id);
+        var access_token = await add_token(sub_account_parent.id,sub_account.id,sub_account_parent.is_admin,sub_account.perms);
         await insert_to_logs(sub_account_parent.id, "LOGIN", "logged in",access_token);
         res.send({ is_admin: sub_account_parent.is_admin, access_token }); 
     }
@@ -467,12 +475,13 @@ app.post("/disable_agent", async (req, res) => {
 app.post("/disable_user", async (req, res) => {
     var { access_token, user_id } = req.body;
     var user_obj = await get_user1(user_id);
+    var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     var result = await disable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
         await update_user(user_id, { status: "disable", disable: 1 });
-        var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "DISABLE_USER", `disabled user !${user_obj.username}`,access_token);
         res.send("DONE");
     }
@@ -499,12 +508,13 @@ app.post("/enable_panel", async (req, res) => {
 app.post("/enable_user", async (req, res) => {
     var { access_token, user_id } = req.body;
     var user_obj = await get_user1(user_id);
+    var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     var result = await enable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
         await update_user(user_id, { status: "active", disable: 0 });
-        var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "ENABLE_USER", `enabled user !${user_obj.username}`,access_token);
         res.send("DONE");
     }
@@ -859,7 +869,10 @@ app.post("/add_sub_account", async(req,res) =>
     else
     {
         var account = await token_to_account(access_token);
-        await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password}}});
+        var perms = {};
+        if(account.is_admin) perms = {panels:1,agents:1};
+        else perms = {users:1};
+        await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password,perms}}});
         await insert_to_logs(account.id, "ADD_SUB_ACCOUNT", `added sub account !${username}`,access_token)
         res.send("DONE");    
     }
@@ -887,12 +900,12 @@ app.post("/delete_sub_account", async(req,res) =>
 
 app.post("/edit_sub_account", async(req,res) =>
 {
-    var {access_token,sub_account_id,username,password} = req.body;
+    var {access_token,sub_account_id,username,password,perms} = req.body;
     if(!username || !password) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else
     {
         var account = await token_to_account(access_token);
-        await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
+        await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password,"sub_accounts.$.perms":perms}});
         await insert_to_logs(account.id, "EDIT_SUB_ACCOUNT", `edited sub account !${username}`,access_token)
         res.send("DONE");     
     }

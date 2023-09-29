@@ -84,10 +84,23 @@ const dnf = (x) => // Desired Number Format
     return Math.round(x * 100) / 100;
 }
 
-const add_token = async (id,self_id) => {
+const add_token = async (id,self_id,is_admin,perms) => {
     // @ ===> secondary_access 
     var expire = Math.floor(Date.now() / 1000) + 86400;
-    var token = uidv2(30) + (id!=self_id?"@":"");
+
+
+    var token = uidv2(30);
+    if(is_admin) token += "*";
+    else token += "#";
+    if(id!=self_id) 
+    {
+        token += "@";
+        if(perms.panels) token += "$";
+        if(perms.agents) token += "%";
+        if(perms.users) token += "^";
+    }
+
+
     var obj = { corresponding_account_id:self_id,token,expire };
     await accounts_clct.updateOne({ id }, { $push: { tokens: obj } }, function () { }); return token;
 }
