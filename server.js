@@ -434,6 +434,7 @@ app.post("/delete_user", async (req, res) => {
     var user_obj = await get_user2(username);
     var agent_obj = await get_account(user_obj.agent_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    if (agent_obj.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
@@ -715,30 +716,37 @@ app.post("/reset_user", async (req, res) => {
     var user_id = user_obj.id;
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     var corresponding_agent = await token_to_account(access_token);
-    var old_data_limit = b2gb(user_obj.data_limit);
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
-    else if (b2gb(user_obj.used_traffic) > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
-    else {
-        var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+    else 
+    {  
 
-        if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
-        else 
-        {  
-
-            await update_user(user_id, { used_traffic: 0 });
-            if(user_obj.status=="limited") await update_user(user_id, { status: "active" });
-
-            if( ( corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
-            else await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.used_traffic)) });
-            
-            var account = await token_to_account(access_token);
-            await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`,access_token);
-            res.send("DONE");
+        if( ( corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) 
+        {
+            if(corresponding_agent.allocatable_data < b2gb(user_obj.data_limit)) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
+            var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+            if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
         }
 
+        else 
+        {
+            if(corresponding_agent.allocatable_data < b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
+            var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+            if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) });
+        }
 
+        await update_user(user_id, { used_traffic: 0 });
+        if(user_obj.status=="limited") await update_user(user_id, { status: "active" });
+
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`,access_token);
+        res.send("DONE");
     }
+
+
+    
 
 });
 
