@@ -50,3 +50,45 @@
         padding-left: 1rem;
     }
 }
+
+.perms_checkboxes
+{
+    display:flex;
+    justify-content:flex-start;
+    flex-direction:column;
+}
+
+.perm_box
+{
+    padding:5px 10px;
+    font-weight:1000;
+    border-radius:100%;
+    font-size:13px;
+    margin-left:5px;
+    background:#E2E2E2
+}
+
+.perm_title
+{
+    margin-right:10px;
+}
+
+.perm_box_color_blue
+{
+    background:#AEE3FF;
+}
+
+.perm_box_color_yellow
+{
+    background:#FFEEAE;
+}
+
+.perm_box_color_red
+{
+    background:#FFB3AE;
+}
+
+.perm_box_color_green
+{
+    background:#AEFFC5;
+}

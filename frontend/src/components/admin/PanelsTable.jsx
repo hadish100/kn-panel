@@ -37,9 +37,9 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                                         {item.disable ? "Disabled" : "Active"}
                                     </span>
                                 </td>
-                                <td>{gbOrTb(item.panel_data_usage)}</td>
+                                <td className={item.panel_data_usage>item.panel_traffic?"panel_table_alarm_text":""}>{gbOrTb(item.panel_data_usage)}</td>
                                 <td>{gbOrTb(item.panel_traffic)}</td>
-                                <td >{item.active_users + " / " + item.total_users}</td>
+                                <td className={item.active_users>item.panel_user_max_count?"panel_table_alarm_text":""} >{item.active_users + " / " + item.total_users}</td>
                                 <td >{item.panel_user_max_count}</td>
                                 <td>{item.panel_country}</td>
                             </tr>

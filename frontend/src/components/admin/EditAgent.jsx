@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React,{useEffect, useState} from 'react'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
@@ -12,10 +12,11 @@ import Button from '../Button'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import IOSSwitch from '../form/inputs/IOSSwitch'
 import styles from "./EditAgent.module.css"
+import { pink } from '@mui/material/colors';
+import Checkbox from '@mui/material/Checkbox';
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem, editMode }) => {
-    const businessModeRef = useRef(null)
-
+    const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null);
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -52,7 +53,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                 document.getElementById("prefix").value,
                 document.querySelectorAll(".MuiSelect-nativeInput")[0].value,
                 document.getElementById("max_non_active_days").value,
-                businessModeRef.current.checked,
+                Number(bmchecked==null?item.business_mode:bmchecked),
             ),
             disabled: editMode,
             pendingText: "Editing...",
@@ -75,6 +76,10 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
         const time = timeStamp - Math.floor(Date.now() / 1000)
         return Math.floor(time / 86400) + 1
     }
+
+    const handleBmChange = (event) => {
+        setBmChecked(event.target.checked);
+      };
 
     const getDefaultValue = (item, field) => {
         if (!item) {
@@ -195,9 +200,20 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                             ))}
                         </form>
                     </main>
-                    <div className='flex gap-1.5 flex-row' style={{ marginTop: "1rem" }}>
-                        <input ref={businessModeRef} type="checkbox" id="business-mode" name="business-mode" defaultChecked={Boolean(item.business_mode)} value={Boolean(item.business_mode)} />
-                        <label htmlFor="business-mode">Business Mode</label>
+                    <div className='flex gap-1.5 flex-row'>
+
+                    <FormControlLabel
+                    control={<Checkbox id="business-mode" name="business-mode"
+                    sx={{
+                        color: pink[800],
+                        marginLeft: "-9px",
+                        '&.Mui-checked': {
+                          color: pink[600],
+                        },
+                    }}
+                    defaultChecked={Boolean(item.business_mode)} onChange={handleBmChange} />}
+                    label="Business Mode"   />
+
                     </div>
                     {formFooter}
                 </Modal>

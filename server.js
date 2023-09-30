@@ -73,19 +73,27 @@ connect_to_db().then(res => {
 async function auth_middleware(req, res, next) {
 
     if (req.url == "/login" || req.url.startsWith("/sub") || req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
-
-
-
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
-    else if(access_token.includes("@"))
+    else
     {
-        var forbidden_end_points = ["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries","/add_sub_account","/edit_sub_account","/delete_sub_account"]
-        if(forbidden_end_points.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        var endpoints =
+        {
+            sub_accounts_perms:["/add_sub_account","/edit_sub_account","/delete_sub_account"],
+            users_perms:["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries"],
+            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent"],
+            panels_perms:["/create_panel","/delete_panel","/disable_panel","/enable_panel","/edit_panel"]
+        };
+
+        if(access_token.includes("#") && [...endpoints.agents_perms,...endpoints.panels_perms,"/dldb"].includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        else if(access_token.includes("@") && endpoints.sub_accounts_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });   
+        else if(access_token.includes("@") && !access_token.includes("$") && endpoints.panels_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        else if(access_token.includes("@") && !access_token.includes("%") && endpoints.agents_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        else if(access_token.includes("@") && !access_token.includes("^") && endpoints.users_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
         else next();
+
     }
-    else return next();
 
 
 }
@@ -121,6 +129,14 @@ app.post("/get_users", async (req, res) => {
 app.post("/get_agent", async (req, res) => {
     var { access_token } = req.body;
     var agent = await token_to_account(access_token);
+    var filteredCountries = await Promise.all(agent.country.split(",").map(async (x) => 
+    {
+        var panel_obj = (await panels_clct.find({ panel_country: x }).toArray())[0];
+        if (panel_obj.disable) return null;
+        else return x;
+    }));
+    agent.country = filteredCountries.filter(Boolean).join(",");
+
     res.send(agent);
 });
 
@@ -170,7 +186,7 @@ app.post("/login", async (req, res) => {
 
     if (account) 
     {
-        var access_token = await add_token(account.id,account.id);
+        var access_token = await add_token(account.id,account.id,account.is_admin);
         await insert_to_logs(account.id, "LOGIN", "logged in",access_token);
         res.send({ is_admin: account.is_admin, access_token });
     }
@@ -178,7 +194,7 @@ app.post("/login", async (req, res) => {
     else if(sub_account_parent)
     {
         var sub_account = sub_account_parent.sub_accounts.filter(y => y.username == username && y.password == password)[0];
-        var access_token = await add_token(sub_account_parent.id,sub_account.id);
+        var access_token = await add_token(sub_account_parent.id,sub_account.id,sub_account_parent.is_admin,sub_account.perms);
         await insert_to_logs(sub_account_parent.id, "LOGIN", "logged in",access_token);
         res.send({ is_admin: sub_account_parent.is_admin, access_token }); 
     }
@@ -426,6 +442,7 @@ app.post("/delete_user", async (req, res) => {
     var user_obj = await get_user2(username);
     var agent_obj = await get_account(user_obj.agent_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    if (agent_obj.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
@@ -458,12 +475,13 @@ app.post("/disable_agent", async (req, res) => {
 app.post("/disable_user", async (req, res) => {
     var { access_token, user_id } = req.body;
     var user_obj = await get_user1(user_id);
+    var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     var result = await disable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
         await update_user(user_id, { status: "disable", disable: 1 });
-        var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "DISABLE_USER", `disabled user !${user_obj.username}`,access_token);
         res.send("DONE");
     }
@@ -490,12 +508,13 @@ app.post("/enable_panel", async (req, res) => {
 app.post("/enable_user", async (req, res) => {
     var { access_token, user_id } = req.body;
     var user_obj = await get_user1(user_id);
+    var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     var result = await enable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
         await update_user(user_id, { status: "active", disable: 0 });
-        var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "ENABLE_USER", `enabled user !${user_obj.username}`,access_token);
         res.send("DONE");
     }
@@ -549,7 +568,7 @@ app.post("/edit_agent", async (req, res) => {
         });
         var account = await token_to_account(access_token);
         var log_msg = `edited agent ${name} `
-        if(Math.floor(old_volume) != Math.floor(gb2b(volume))) 
+        if(Math.abs(Math.floor(old_volume) - Math.floor(gb2b(volume)))>gb2b(0.1)) 
         {
             log_msg += `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
             await insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`,access_token)
@@ -707,26 +726,37 @@ app.post("/reset_user", async (req, res) => {
     var user_id = user_obj.id;
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     var corresponding_agent = await token_to_account(access_token);
-    var old_data_limit = b2gb(user_obj.data_limit);
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
-    else if (b2gb(user_obj.used_traffic) > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
-    else {
-        var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+    else 
+    {  
 
-        if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
-        else {  
-
-            await update_user(user_id, { used_traffic: 0 });
-            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.used_traffic)) });
-            //if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data + old_data_limit) });
-            var account = await token_to_account(access_token);
-            await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`,access_token);
-            res.send("DONE");
+        if( ( corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) 
+        {
+            if(corresponding_agent.allocatable_data < b2gb(user_obj.data_limit)) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
+            var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+            if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
         }
 
+        else 
+        {
+            if(corresponding_agent.allocatable_data < b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
+            var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+            if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) });
+        }
 
+        await update_user(user_id, { used_traffic: 0 });
+        if(user_obj.status=="limited") await update_user(user_id, { status: "active" });
+
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`,access_token);
+        res.send("DONE");
     }
+
+
+    
 
 });
 
@@ -839,7 +869,10 @@ app.post("/add_sub_account", async(req,res) =>
     else
     {
         var account = await token_to_account(access_token);
-        await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password}}});
+        var perms = {};
+        if(account.is_admin) perms = {panels:1,agents:1};
+        else perms = {users:1};
+        await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password,perms}}});
         await insert_to_logs(account.id, "ADD_SUB_ACCOUNT", `added sub account !${username}`,access_token)
         res.send("DONE");    
     }
@@ -867,12 +900,12 @@ app.post("/delete_sub_account", async(req,res) =>
 
 app.post("/edit_sub_account", async(req,res) =>
 {
-    var {access_token,sub_account_id,username,password} = req.body;
+    var {access_token,sub_account_id,username,password,perms} = req.body;
     if(!username || !password) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else
     {
         var account = await token_to_account(access_token);
-        await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
+        await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password,"sub_accounts.$.perms":perms}});
         await insert_to_logs(account.id, "EDIT_SUB_ACCOUNT", `edited sub account !${username}`,access_token)
         res.send("DONE");     
     }

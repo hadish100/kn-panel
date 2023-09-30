@@ -8,6 +8,8 @@ import OkCard from '../../components/OkCard'
 import Modal from '../../components/Modal'
 import { AnimatePresence } from 'framer-motion'
 import LeadingIcon from '../../components/LeadingIcon'
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
@@ -29,7 +31,11 @@ const AdminSettingsPage = () => {
     const [selectedAdminToEdit, setSelectedAdminToEdit] = useState(null)
     const [admins, setAdmins] = useState([])
     const [isLoadingAdmins, setIsLoadingAdmins] = useState(false)
+    const [users_perm, setUsers_perm] = useState((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.users)) || null)
 
+    useEffect(() => {
+        setUsers_perm((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.users)) || null)
+    }, [showEditModal])
 
     const access_token = sessionStorage.getItem("access_token")
 
@@ -100,9 +106,10 @@ const AdminSettingsPage = () => {
 
         const username = document.getElementById("edit-username").value
         const password = document.getElementById("edit-password").value
+        const perms = {users: Number(users_perm==null?selectedAdminToEdit.perms.users:users_perm) }
         const editAdmin = async () => {
             setEditMode(true)
-            const res = (await axios.post("/edit_sub_account", { access_token, sub_account_id: selectedAdminToEdit.id, username, password })).data
+            const res = (await axios.post("/edit_sub_account", { access_token, sub_account_id: selectedAdminToEdit.id, username, password,perms })).data
             if (res.status === "ERR") {
                 setError_msg(res.msg || "BAD REQUEST")
                 setHasError(true)
@@ -126,6 +133,10 @@ const AdminSettingsPage = () => {
     const handleShowEditModal = (admin) => {
         setShowEditModal(true)
         setSelectedAdminToEdit(admin)
+    }
+
+    const handle_user_perm_change = (e) => {
+        setUsers_perm(e.target.checked)
     }
 
     const handleDeleteAdmin = async (id) => {
@@ -188,7 +199,7 @@ const AdminSettingsPage = () => {
                 </form>
             </section>
 
-            <section className={`${styles['create-admin-section']}`}>
+            {!access_token.includes("@") && <section className={`${styles['create-admin-section']}`}>
                 <h2 style={{ marginBottom: "1rem" }}>Create Admin</h2>
                 <main className={`flex gap-col-1 ${styles['flex-col']}`}>
                     <div className='w-full'>
@@ -225,7 +236,7 @@ const AdminSettingsPage = () => {
                             </div>
                         </div> : null}
                 </main>
-            </section >
+            </section >}
 
             <AnimatePresence>
                 {showDeleteModal &&
@@ -269,15 +280,28 @@ const AdminSettingsPage = () => {
                             <form autoComplete='off' className="settings-page flex flex-col gap-2">
                                 <div className="modal__form__group">
                                     <label className="modal__form__label" htmlFor="username">Username</label>
-                                    <input autoComplete='new-username' className="modal__form__input" type="text" id="edit-username" name="username" defaultValue={selectedAdminToEdit.username} />
+                                    <input style={{ marginBottom: "0.7rem" }} autoComplete='new-username' className="modal__form__input" type="text" id="edit-username" name="username" defaultValue={selectedAdminToEdit.username} />
                                 </div>
                                 <div className="flex gap-16">
                                     <div className="modal__form__group">
                                         <label className="modal__form__label" htmlFor="password">Password</label>
-                                        <input autoComplete='new-password' className="modal__form__input" type="text" id="edit-password" name="password" defaultValue={selectedAdminToEdit.password} />
+                                        <input style={{ marginBottom: "0.7rem" }} autoComplete='new-password' className="modal__form__input" type="text" id="edit-password" name="password" defaultValue={selectedAdminToEdit.password} />
                                     </div>
                                 </div>
                             </form>
+
+                            <div className={styles['perms_checkboxes']}>
+                                <span className="modal__form__label">Permissions</span>
+                                <FormControlLabel control={<Checkbox defaultChecked={Boolean(selectedAdminToEdit.perms.users)} onChange={handle_user_perm_change} />} 
+                                    label={<>
+                                    <span className={styles["perm_title"]} >Users</span>  
+                                    <span className={`${styles['perm_box']} ${(users_perm==null?selectedAdminToEdit.perms.users:users_perm) && styles['perm_box_color_green']}`} >R</span>
+                                    <span className={`${styles['perm_box']} ${(users_perm==null?selectedAdminToEdit.perms.users:users_perm) && styles['perm_box_color_blue']}`} >C</span>
+                                    <span className={`${styles['perm_box']} ${(users_perm==null?selectedAdminToEdit.perms.users:users_perm) && styles['perm_box_color_yellow']}`} >E</span>
+                                    <span className={`${styles['perm_box']} ${(users_perm==null?selectedAdminToEdit.perms.users:users_perm) && styles['perm_box_color_red']}`} >D</span>
+                                    </>} />
+                            </div>
+
                         </main>
                         <footer className="flex gap-1 justify-end">
                             <Button className="outlined" onClick={() => setShowEditModal(false)}>Cancel</Button>

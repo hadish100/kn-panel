@@ -10,12 +10,16 @@ import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import FormField from '../form/FormField'
 import Button from '../Button'
 import styles from "./CreateAgent.module.css"
+import { pink } from '@mui/material/colors';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel'
 
 const CreateAgent = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("failed to create agent")
     const [createMode, setCreateMode] = useState(false)
-    const businessModeRef = useRef(null)
+    const [ibmchecked, setIbmChecked] = useState(false);
+    
 
     const access_token = sessionStorage.getItem("access_token")
 
@@ -46,6 +50,10 @@ const CreateAgent = ({ onClose, showForm }) => {
         setCreateMode(false)
     }
 
+    const handleIbmChange = (event) => {
+        setIbmChecked(event.target.checked);
+      };
+
     const handleSubmitForm = () => {
         // Gather form data
         const name = document.getElementById("name").value
@@ -58,7 +66,7 @@ const CreateAgent = ({ onClose, showForm }) => {
         const prefix = document.getElementById("prefix").value
         const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         const max_non_active_days = document.getElementById("max_non_active_days").value
-        const businessModeValue = businessModeRef.current.checked
+        const businessModeValue = Number(ibmchecked)
         // Send form data to backend
         createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, businessModeValue)
     }
@@ -158,9 +166,18 @@ const CreateAgent = ({ onClose, showForm }) => {
                                 ))}
                             </form>
                         </main>
-                        <div className='flex gap-1.5 flex-row' style={{ marginTop: "1rem" }}>
-                            <input ref={businessModeRef} type="checkbox" id="business-mode" name="business-mode" defaultChecked={false} value={false} />
-                            <label htmlFor="business-mode">Business Mode</label>
+                        <div className='flex gap-1.5 flex-row'>
+                        <FormControlLabel
+                        control={<Checkbox id="business-mode" name="business-mode"
+                        sx={{
+                            color: pink[800],
+                            marginLeft: "-9px",
+                            '&.Mui-checked': {
+                            color: pink[600],
+                            },
+                        }}
+                        defaultChecked={false} onChange={handleIbmChange} />}
+                        label="Business Mode"   />
                         </div>
                         {formFooter}
                     </Modal>

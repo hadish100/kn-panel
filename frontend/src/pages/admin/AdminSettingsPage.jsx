@@ -8,6 +8,8 @@ import OkCard from '../../components/OkCard'
 import Modal from '../../components/Modal'
 import { AnimatePresence } from 'framer-motion'
 import LeadingIcon from '../../components/LeadingIcon'
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
@@ -29,6 +31,13 @@ const AdminSettingsPage = () => {
     const [selectedAdminToEdit, setSelectedAdminToEdit] = useState(null)
     const [admins, setAdmins] = useState([])
     const [isLoadingAdmins, setIsLoadingAdmins] = useState(false)
+    const [panels_perm, setPanels_perm] = useState((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.panels)) || null)
+    const [agents_perm, setAgents_perm] = useState((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.agents)) || null)
+
+    useEffect(() => {
+        setPanels_perm((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.panels)) || null)
+        setAgents_perm((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.agents)) || null)
+    }, [showEditModal])
 
     const access_token = sessionStorage.getItem("access_token")
 
@@ -98,9 +107,10 @@ const AdminSettingsPage = () => {
 
         const username = document.getElementById("edit-username").value
         const password = document.getElementById("edit-password").value
+        const perms = {agents: Number(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm), panels: Number(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) }
         const editAdmin = async () => {
             setEditMode(true)
-            const res = (await axios.post("/edit_sub_account", { access_token, sub_account_id: selectedAdminToEdit.id, username, password })).data
+            const res = (await axios.post("/edit_sub_account", { access_token, sub_account_id: selectedAdminToEdit.id, username, password,perms })).data
             if (res.status === "ERR") {
                 setError_msg(res.msg || "BAD REQUEST")
                 setHasError(true)
@@ -125,6 +135,15 @@ const AdminSettingsPage = () => {
         setShowEditModal(true)
         setSelectedAdminToEdit(admin)
     }
+
+    const handle_panel_perm_change = (e) => {
+        setPanels_perm(e.target.checked)
+    }
+
+    const handle_agent_perm_change = (e) => {
+        setAgents_perm(e.target.checked)
+    }
+
 
     const handleDeleteAdmin = async (id) => {
         setDeleteMode(true)
@@ -185,7 +204,7 @@ const AdminSettingsPage = () => {
                 </form>
             </section>
 
-            <section className={`${styles['create-admin-section']}`}>
+            {!access_token.includes("@") &&  <section className={`${styles['create-admin-section']}`}>
                 <h2 style={{ marginBottom: "1rem" }}>Create Admin</h2>
                 <main className={`flex gap-col-1 ${styles['flex-col']}`}>
                     <div className='w-full'>
@@ -222,7 +241,7 @@ const AdminSettingsPage = () => {
                             </div>
                         </div> : null}
                 </main>
-            </section >
+            </section >}
 
             <AnimatePresence>
                 {showDeleteModal &&
@@ -266,15 +285,34 @@ const AdminSettingsPage = () => {
                             <form autoComplete='off' className="settings-page">
                                 <div className="modal__form__group">
                                     <label className="modal__form__label" htmlFor="username">Username</label>
-                                    <input autoComplete='new-username' className="modal__form__input" type="text" id="edit-username" name="username" defaultValue={selectedAdminToEdit.username} />
+                                    <input style={{ marginBottom: "0.7rem" }} autoComplete='new-username' className="modal__form__input" type="text" id="edit-username" name="username" defaultValue={selectedAdminToEdit.username} />
                                 </div>
                                 <div className="flex gap-16">
                                     <div className="modal__form__group">
                                         <label className="modal__form__label" htmlFor="password">Password</label>
-                                        <input autoComplete='new-password' className="modal__form__input" type="text" id="edit-password" name="password" defaultValue={selectedAdminToEdit.password} />
+                                        <input style={{ marginBottom: "0.7rem" }} autoComplete='new-password' className="modal__form__input" type="text" id="edit-password" name="password" defaultValue={selectedAdminToEdit.password} />
                                     </div>
                                 </div>
                             </form>
+
+                            <div className={styles['perms_checkboxes']}>
+                                <span className="modal__form__label">Permissions</span>
+                                <FormControlLabel control={<Checkbox defaultChecked={Boolean(selectedAdminToEdit.perms.panels)} onChange={handle_panel_perm_change} />} 
+                                    label={<>
+                                    <span className={styles["perm_title"]} >Panels</span>  
+                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_green']}`} >R</span>
+                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_blue']}`} >C</span>
+                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_yellow']}`} >E</span>
+                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_red']}`} >D</span>
+                                    </>} />
+                                <FormControlLabel control={<Checkbox defaultChecked={Boolean(selectedAdminToEdit.perms.agents)} onChange={handle_agent_perm_change} />} label={<>
+                                    <span className={styles["perm_title"]} >Agents</span>  
+                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_green']}`} >R</span>
+                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_blue']}`} >C</span>
+                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_yellow']}`} >E</span>
+                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_red']}`} >D</span>
+                                    </>} />
+                            </div>
                         </main>
                         <footer className="flex gap-1 justify-end">
                             <Button className="outlined" onClick={() => setShowEditModal(false)}>Cancel</Button>
