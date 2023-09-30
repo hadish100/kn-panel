@@ -46,6 +46,12 @@
     background-color: var(--gray-clr-300);
 }
 
+@supports (scrollbar-color: red blue) {
+    * {
+        scrollbar-color: var(--gray-clr-200) transparent;
+    }
+}
+
 @font-face {
     font-family: Inter;
     src: url('../src/assets/fonts/Inter-Regular.ttf');
