@@ -33,6 +33,12 @@
     background-color: #571e7b;
 }
 
+.progress-bar__filler--disable {
+    height: 6px;
+    border-radius: 50px;
+    background-color: #1a202c;
+}
+
 .progress-bar__text {
     margin-top: -5px;
     font-size: 0.75rem;
