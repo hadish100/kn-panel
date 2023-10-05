@@ -82,3 +82,8 @@
 .overflow-hidden {
     overflow: hidden;
 }
+
+#desc
+{
+    font-family:Vazir;
+}
