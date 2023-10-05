@@ -118,7 +118,7 @@ app.post("/get_users", async (req, res) => {
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
     obj_arr = obj_arr.reverse();
-    if(search_filter) obj_arr = obj_arr.filter(x => x.username.includes(search_filter));
+    if(search_filter) obj_arr = obj_arr.filter(x => x.username.toLowerCase().includes(search_filter.toLowerCase()));
     if(!number_of_rows && !current_page) {current_page = 1;number_of_rows = 10;}
     var total_pages = Math.ceil(obj_arr.length / number_of_rows);
     obj_arr = obj_arr.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
@@ -132,7 +132,7 @@ app.post("/get_agent", async (req, res) => {
     var filteredCountries = await Promise.all(agent.country.split(",").map(async (x) => 
     {
         var panel_obj = (await panels_clct.find({ panel_country: x }).toArray())[0];
-        if (panel_obj.disable) return null;
+        if (panel_obj.disable || panel_obj.active_users >= panel_obj.panel_user_max_count ||  panel_obj.panel_traffic <= panel_obj.panel_data_usage ) return null;
         else return x;
     }));
     agent.country = filteredCountries.filter(Boolean).join(",");

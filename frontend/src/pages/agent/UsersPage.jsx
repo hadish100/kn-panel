@@ -99,7 +99,7 @@ const UsersPage = () => {
             setResetMode(false)
             return
         }
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -151,7 +151,7 @@ const UsersPage = () => {
             setDeleteMode(false)
             return
         }
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -185,7 +185,7 @@ const UsersPage = () => {
             setHasError(true)
             return
         }
-        var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
+        var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers })).data
         console.log(users)
         if (users.status === "ERR") {
             setError_msg(users.msg)
@@ -208,7 +208,6 @@ const UsersPage = () => {
 
     const handleEditUser = async (user_id, data_limit, expire, country,protocols,flow_status,desc) => {
         setEditMode(true)
-        console.log(desc)
         const access_token = sessionStorage.getItem("access_token")
         var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country,protocols,flow_status,desc })
         if (req_res.data.status === "ERR") {
@@ -218,7 +217,7 @@ const UsersPage = () => {
             return
         }
 
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
