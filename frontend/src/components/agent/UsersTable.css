@@ -179,9 +179,18 @@
         margin: 0;
     }
 
+    .users-table__body td:first-of-type {
+        padding-right: 0;
+        width: 0;
+    }
+
     .users-table__body td:last-of-type {
         padding-left: 0;
         width: 0;
+    }
+
+    .users-table__header th {
+        padding-right: 0;
     }
 
     .users-table__subscription-actions .table-actions {
