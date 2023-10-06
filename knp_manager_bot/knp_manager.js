@@ -67,7 +67,7 @@ bot.hears(kb1[0][1] ,reset_mw, async (ctx) =>
 (`
 ✏️ Enter panel name & url
 
-👉🏻 example: knp5,http://209.38.245.93:8000
+👉🏻 Example: knp5,http://209.38.245.93:5000
 `,Markup.keyboard([["⛔️ Back"]]).resize());
 
     temp_data[ctx.from.id].is_waiting_for_panel_url = 1;
