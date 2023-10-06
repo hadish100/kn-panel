@@ -100,6 +100,11 @@ async function auth_middleware(req, res, next) {
 
 // --- ENDPOINTS --- //
 
+app.post("/ping", async (req, res) => 
+{
+    res.send("OK");
+});
+
 app.post("/get_agents", async (req, res) => {
     await reload_agents();
     var obj_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
@@ -911,6 +916,23 @@ app.post("/edit_sub_account", async(req,res) =>
         res.send("DONE");     
     }
 
+});
+
+
+app.post("/get_knp_info", async(req,res) =>
+{
+
+    var panels = await get_panels();
+
+    var response_obj = 
+    {
+        active_panels_count : [panels.filter(x=>x.disable==0).length,panels.length],
+        agents_count : (await get_accounts()).length-1,
+        users_count : (await get_all_users()).length,
+        today_logins : (await logs_clct.find({action:"LOGIN",time:{$gt:Math.floor(Date.now()/1000) - 24*60*60}}).toArray()).length,
+    };
+
+    res.send(response_obj);
 });
 
 
