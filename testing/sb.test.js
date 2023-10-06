@@ -108,7 +108,7 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray} = require("../utils
 (async () => 
 {
     // await axios.post("http://localhost:5000/add_sub_account",{access_token:"r6kXzmufeie1FnzD6Vrmt7nclX42kM",username:'admin12',password:'123'});
-    var res = await axios.post("http://localhost:5000/delete_sub_account",{access_token:"r6kXzmufeie1FnzD6Vrmt7nclX42kM",sub_account_id:253320913});
+    var res = await axios.post("http://localhost:5000/switch_countries",{access_token:"IJvnnLNjs2SNi4qM3krKOnNt3iFnAu#",country_from:"DE1",country_to:"FIN1"});
     console.log(res);
 })();
 
