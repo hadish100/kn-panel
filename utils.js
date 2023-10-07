@@ -207,6 +207,21 @@ const delete_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
+
+const delete_vpn_group = async (link, username, password, vpn_names) => 
+{
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+
+        for(let [index,vpn_name] of vpn_names.entries())
+        {
+            axios.delete(link + "/api/user/" + vpn_name, { headers }).catch((err)=>{});
+            await sleep(50)    
+        }
+
+        return "DONE";
+}
+
 const disable_vpn = async (link, username, password, vpn_name) => {
     try {
         var headers = await auth_marzban(link, username, password);
@@ -220,6 +235,20 @@ const disable_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
+const disable_vpn_group = async (link, username, password, vpn_names) => 
+{
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+
+        for(let [index,vpn_name] of vpn_names.entries())
+        {
+            axios.put(link + "/api/user/" + vpn_name, { status: "disabled" }, { headers }).catch((err)=>{});
+            await sleep(50)    
+        }
+
+        return "DONE";
+}
+
 const enable_vpn = async (link, username, password, vpn_name) => {
     try {
         var headers = await auth_marzban(link, username, password);
@@ -231,6 +260,21 @@ const enable_vpn = async (link, username, password, vpn_name) => {
     catch (err) {
         return "ERR";
     }
+}
+
+
+const enable_vpn_group = async (link, username, password, vpn_names) => 
+{
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+
+        for(let [index,vpn_name] of vpn_names.entries())
+        {
+            axios.put(link + "/api/user/" + vpn_name, { status: "active" }, { headers }).catch((err)=>{});
+            await sleep(50)    
+        }
+
+        return "DONE";
 }
 
 const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status,is_changing_country,is_changing_protocols) => {
@@ -294,7 +338,7 @@ const reload_agents = async () => {
         var agent_users = await get_users(agent_id);
         var active_users = agent_users.filter(x => x.status == "active").length;
         var total_users = agent_users.length;
-        var used_traffic = b2gb(agent_users.reduce((acc, curr) => acc + curr.used_traffic, 0));
+        var used_traffic = b2gb(agent_users.reduce((acc, curr) => acc + curr.lifetime_used_traffic, 0));
         await update_account(agent_id, { active_users, total_users, used_traffic });
     }
 }
@@ -684,8 +728,11 @@ module.exports = {
     get_panel_info,
     make_vpn,
     delete_vpn,
+    delete_vpn_group,
     disable_vpn,
+    disable_vpn_group,
     enable_vpn,
+    enable_vpn_group,
     edit_vpn,
     get_marzban_user,
     get_all_marzban_users,

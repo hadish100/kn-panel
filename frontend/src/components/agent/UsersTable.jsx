@@ -50,6 +50,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                 const userStatus = item.status
                 const dataUsage = convertData(item.used_traffic)
                 const totalData = convertData(item.data_limit)
+                const lifetime_used_traffic = convertData(item.lifetime_used_traffic)
                 const expireTime = handleExpireTime(item.expire)
                 const subscriptionLink = item.subscription_url
                 const config = item.links.join("\n");
@@ -69,7 +70,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                                     <ProgressBar dataUsage={item.used_traffic} totalData={item.data_limit} status={userStatus} />
                                     <div className="progress-bar__text">
                                         <span className="progress-bar__text__data-usage">{dataUsage} / {totalData}</span>
-                                        <span className="progress-bar__text__total-data">Total: {totalData}</span>
+                                        <span className="progress-bar__text__total-data">Total: {lifetime_used_traffic}</span>
                                     </div>
                                 </div>
                             </td>

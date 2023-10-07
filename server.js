@@ -4,6 +4,7 @@ const fs = require('fs');
 var AdmZip = require("adm-zip");
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
+var SD_VARIABLE = 0;
 require('dotenv').config()
 var accounts_clct, panels_clct, users_clct, logs_clct;
 
@@ -52,7 +53,10 @@ const {
     proxy_obj_maker,
     update_user_links_bg,
     deep_equal,
-    token_to_sub_account
+    token_to_sub_account,
+    delete_vpn_group,
+    enable_vpn_group,
+    disable_vpn_group
 } = require("./utils");
 
 
@@ -72,7 +76,9 @@ connect_to_db().then(res => {
 
 async function auth_middleware(req, res, next) {
 
-    if (req.url == "/login" || req.url.startsWith("/sub") || req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
+    if( req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
+    if (SD_VARIABLE == 1) return res.status(500).send({ message: 'Service unavailable' });
+    if (req.url == "/login" || req.url.startsWith("/sub") ) return next();
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
@@ -82,7 +88,7 @@ async function auth_middleware(req, res, next) {
         {
             sub_accounts_perms:["/add_sub_account","/edit_sub_account","/delete_sub_account"],
             users_perms:["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries"],
-            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent"],
+            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent","/enable_edit_access","/enable_create_access","/enable_delete_access","/disable_edit_access","/disable_create_access","/disable_delete_access","/disable_all_agent_users","/enable_all_agent_users","/delete_all_agent_users"],
             panels_perms:["/create_panel","/delete_panel","/disable_panel","/enable_panel","/edit_panel"]
         };
 
@@ -100,6 +106,11 @@ async function auth_middleware(req, res, next) {
 
 // --- ENDPOINTS --- //
 
+app.post("/ping", async (req, res) => 
+{
+    res.send("OK");
+});
+
 app.post("/get_agents", async (req, res) => {
     await reload_agents();
     var obj_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
@@ -113,12 +124,13 @@ app.post("/get_panels", async (req, res) => {
 });
 
 app.post("/get_users", async (req, res) => {
-    var { access_token,number_of_rows,current_page,search_filter } = req.body;
+    var { access_token,number_of_rows,current_page,search_filter,status_filter } = req.body;
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
     obj_arr = obj_arr.reverse();
-    if(search_filter) obj_arr = obj_arr.filter(x => x.username.includes(search_filter));
+    if(search_filter) obj_arr = obj_arr.filter(x => x.username.toLowerCase().includes(search_filter.toLowerCase()));
+    if(status_filter) obj_arr = obj_arr.filter(x => x.status == status_filter.toLowerCase());
     if(!number_of_rows && !current_page) {current_page = 1;number_of_rows = 10;}
     var total_pages = Math.ceil(obj_arr.length / number_of_rows);
     obj_arr = obj_arr.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
@@ -132,7 +144,7 @@ app.post("/get_agent", async (req, res) => {
     var filteredCountries = await Promise.all(agent.country.split(",").map(async (x) => 
     {
         var panel_obj = (await panels_clct.find({ panel_country: x }).toArray())[0];
-        if (panel_obj.disable) return null;
+        if (panel_obj.disable || panel_obj.active_users >= panel_obj.panel_user_max_count ||  panel_obj.panel_traffic <= panel_obj.panel_data_usage ) return null;
         else return x;
     }));
     agent.country = filteredCountries.filter(Boolean).join(",");
@@ -246,6 +258,9 @@ app.post("/create_agent", async (req, res) => {
             id: uid(),
             is_admin: 0,
             disable: 0,
+            create_access:1,
+            edit_access:1,
+            delete_access:1,
             name,
             username,
             password,
@@ -346,6 +361,7 @@ app.post("/create_user", async (req, res) => {
     var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if(!corresponding_agent.create_access) res.send({ status: "ERR", msg: "access denied" })
     else if (data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
@@ -379,6 +395,7 @@ app.post("/create_user", async (req, res) => {
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                 data_limit: gb2b(data_limit),
                 used_traffic: 0.00,
+                lifetime_used_traffic: 0.00,
                 country,
                 corresponding_panel_id: selected_panel.id,
                 corresponding_panel: selected_panel.panel_url,
@@ -443,6 +460,7 @@ app.post("/delete_user", async (req, res) => {
     var agent_obj = await get_account(user_obj.agent_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (agent_obj.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
+    else if(!agent_obj.delete_access) {res.send({ status: "ERR", msg: "access denied" });return;}
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
@@ -478,6 +496,7 @@ app.post("/disable_user", async (req, res) => {
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
+    else if(!account.edit_access) {res.send({ status: "ERR", msg: "access denied" });return;}
     var result = await disable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
@@ -511,6 +530,7 @@ app.post("/enable_user", async (req, res) => {
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
+    else if(!account.edit_access) {res.send({ status: "ERR", msg: "access denied" });return;}
     var result = await enable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
@@ -593,9 +613,9 @@ app.post("/edit_panel", async (req, res) => {
 
 
     var panel_info = await get_panel_info(panel_url, panel_username, panel_password);
+    var old_panel_obj = await get_panel(panel_id);
 
-
-    if (!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_traffic) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_traffic || !panel_url) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else if (panel_info == "ERR") res.send({ status: "ERR", msg: "Failed to connect to panel" });
 
     else {
@@ -603,9 +623,21 @@ app.post("/edit_panel", async (req, res) => {
             panel_name,
             panel_username,
             panel_password,
+            panel_url,
             panel_user_max_count: parseInt(panel_user_max_count),
             panel_traffic: dnf(panel_traffic),
         });
+
+        if(old_panel_obj.panel_url != panel_url)
+        {
+            await users_clct.updateMany({corresponding_panel_id:panel_id},{$set:{corresponding_panel:panel_url}});
+            var all_users = await get_all_users();
+            for(user of all_users)
+            {
+                if(user.corresponding_panel_id == panel_id) await update_user(user.id,{real_subscription_url:panel_url + user.real_subscription_url.split(old_panel_obj.panel_url)[1]});
+            }
+        }
+
         var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "EDIT_PANEL", `edited panel !${panel_name}`,access_token);
         res.send("DONE");
@@ -638,6 +670,7 @@ app.post("/edit_user", async (req, res) => {
     var old_country = user_obj.country;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
     else if (data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
@@ -728,6 +761,7 @@ app.post("/reset_user", async (req, res) => {
     var corresponding_agent = await token_to_account(access_token);
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
     else 
     {  
 
@@ -850,7 +884,9 @@ app.post("/switch_countries", async(req,res) =>
 {
     var { access_token , country_from , country_to } = req.body;
     var account = await token_to_account(access_token);
-    var users_arr = await users_clct.find({country:country_from,agent_id:account.id}).toArray();
+    var search_obj = {country:country_from};
+    if(!account.is_admin) search_obj.agent_id = account.id;
+    var users_arr = await users_clct.find(search_obj).toArray();
     users_arr = users_arr.map(x => x.username);
     var result = await switch_countries(country_from,country_to,users_arr);
     if(result == "ERR") res.send({ status: "ERR", msg: 'failed to switch countries' })
@@ -911,6 +947,172 @@ app.post("/edit_sub_account", async(req,res) =>
     }
 
 });
+
+
+app.post("/get_knp_info", async(req,res) =>
+{
+
+    var panels = await get_panels();
+
+    var response_obj = 
+    {
+        active_panels_count : [panels.filter(x=>x.disable==0).length,panels.length],
+        agents_count : (await get_accounts()).length-1,
+        users_count : (await get_all_users()).length,
+        today_logins : (await logs_clct.find({action:"LOGIN",time:{$gt:Math.floor(Date.now()/1000) - 24*60*60}}).toArray()).length,
+        sd_status : SD_VARIABLE,
+    };
+
+    res.send(response_obj);
+});
+
+app.post("/enable_sd", async(req,res) =>
+{
+    SD_VARIABLE = 1;
+    res.send("DONE");
+});
+
+app.post("/disable_sd", async(req,res) =>
+{
+    SD_VARIABLE = 0;
+    res.send("DONE");
+})
+
+
+app.post(/\/(enable|disable)_agent_create_access$/, async (req, res) => 
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    if(req.url.startsWith("/enable")) 
+    {
+        await update_account(agent_id, { create_access: 1 });
+        await insert_to_logs(account.id, "ENABLE_AGENT_CREATE_ACCESS", `enabled create access for agent !${agent_obj.username}`,access_token);
+    }
+
+    else 
+    {
+        await update_account(agent_id, { create_access: 0 });
+        await insert_to_logs(account.id, "DISABLE_AGENT_CREATE_ACCESS", `disabled create access for agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+
+});
+
+app.post(/\/(enable|disable)_agent_edit_access$/, async (req, res) => 
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    if(req.url.startsWith("/enable")) 
+    {
+        await update_account(agent_id, { edit_access: 1 });
+        await insert_to_logs(account.id, "ENABLE_AGENT_EDIT_ACCESS", `enabled edit access for agent !${agent_obj.username}`,access_token);
+    }
+
+    else 
+    {
+        await update_account(agent_id, { edit_access: 0 });
+        await insert_to_logs(account.id, "DISABLE_AGENT_EDIT_ACCESS", `disabled edit access for agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+});
+
+app.post(/\/(enable|disable)_agent_delete_access$/, async (req, res) =>
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    if(req.url.startsWith("/enable")) 
+    {
+        await update_account(agent_id, { delete_access: 1 });
+        await insert_to_logs(account.id, "ENABLE_AGENT_DELETE_ACCESS", `enabled delete access for agent !${agent_obj.username}`,access_token);
+    }
+
+    else 
+    {
+        await update_account(agent_id, { delete_access: 0 });
+        await insert_to_logs(account.id, "DISABLE_AGENT_DELETE_ACCESS", `disabled delete access for agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+});
+
+
+app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    var panels_arr = await get_panels();
+    var agent_users = await users_clct.find({agent_id}).toArray();
+    var agent_users_panels_id_arr = [...new Set(agent_users.map(x => x.corresponding_panel_id))];
+    panels_arr = panels_arr.filter(x => agent_users_panels_id_arr.includes(x.id));
+    var action_groups = []
+    for(panel of panels_arr)
+    {
+        action_groups.push({
+            panel_url:panel.panel_url,
+            panel_username:panel.panel_username,
+            panel_password:panel.panel_password,
+            users:agent_users.filter(x => x.corresponding_panel_id == panel.id).map(x => x.username)
+        });
+    }
+
+
+    if(req.url.startsWith("/enable")) 
+    {
+        for(group of action_groups)
+        {
+            var result = await enable_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
+            if(result == "ERR") 
+            {                     
+                res.send({ status: "ERR", msg: "failed to connect to marzban" });
+                return;
+            }
+        }
+
+        await insert_to_logs(account.id, "ENABLE_ALL_AGENT_USERS", `enabled all users of agent !${agent_obj.username}`,access_token);
+    }
+
+    else if(req.url.startsWith("/disable"))
+    {
+        for(group of action_groups)
+        {
+            var result = await disable_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
+            if(result == "ERR") 
+            {                     
+                res.send({ status: "ERR", msg: "failed to connect to marzban" });
+                return;
+            }
+        }
+
+        await insert_to_logs(account.id, "DISABLE_ALL_AGENT_USERS", `disabled all users of agent !${agent_obj.username}`,access_token);
+    }
+
+    else
+    {
+        for(group of action_groups)
+        {
+            var result = await delete_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
+            if(result == "ERR") 
+            {
+                res.send({ status: "ERR", msg: "failed to connect to marzban" });
+                return;
+            }
+        }
+
+        await insert_to_logs(account.id, "DELETE_ALL_AGENT_USERS", `deleted all users of agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+});
+
+
+
+
 
 
 app.get(/^\/sub\/.+/,async (req,res) =>

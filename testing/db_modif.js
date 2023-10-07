@@ -38,14 +38,14 @@ async function modify_db()
         //     console.log("UPDATED INBOUNDS OF => " + user.username);
         // }
         // await update_user(user.id, {subscription_url:user.subscription_url.replace("5000","8000").replace("http://","https://")});
-        await update_user(user.id, {desc:""});
+        await update_user(user.id, {lifetime_used_traffic:user.used_traffic});
         console.log("DONE 1");
     }
 
     var accounts = await get_accounts()
     for(account of accounts)
     {
-        await accounts_clct.updateOne({id:account.id}, {$set: {sub_accounts:[]}});
+        if(!account.is_admin) await accounts_clct.updateOne({id:account.id}, {$set: {create_access:1,edit_access:1,delete_access:1}});
         console.log("DONE 2");
     }
 
