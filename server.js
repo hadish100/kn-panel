@@ -599,9 +599,9 @@ app.post("/edit_panel", async (req, res) => {
 
 
     var panel_info = await get_panel_info(panel_url, panel_username, panel_password);
+    var old_panel_obj = await get_panel(panel_id);
 
-
-    if (!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_traffic) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!panel_name || !panel_username || !panel_password || !panel_user_max_count || !panel_traffic || !panel_url) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else if (panel_info == "ERR") res.send({ status: "ERR", msg: "Failed to connect to panel" });
 
     else {
@@ -609,9 +609,21 @@ app.post("/edit_panel", async (req, res) => {
             panel_name,
             panel_username,
             panel_password,
+            panel_url,
             panel_user_max_count: parseInt(panel_user_max_count),
             panel_traffic: dnf(panel_traffic),
         });
+
+        if(old_panel_obj.panel_url != panel_url)
+        {
+            await users_clct.updateMany({corresponding_panel_id:panel_id},{$set:{corresponding_panel:panel_url}});
+            var all_users = await get_all_users();
+            for(user of all_users)
+            {
+                if(user.corresponding_panel_id == panel_id) await update_user(user.id,{real_subscription_url:panel_url + user.real_subscription_url.split(old_panel_obj.panel_url)[1]});
+            }
+        }
+
         var account = await token_to_account(access_token);
         await insert_to_logs(account.id, "EDIT_PANEL", `edited panel !${panel_name}`,access_token);
         res.send("DONE");
