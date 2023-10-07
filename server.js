@@ -860,7 +860,6 @@ app.post("/switch_countries", async(req,res) =>
     if(!account.is_admin) search_obj.agent_id = account.id;
     var users_arr = await users_clct.find(search_obj).toArray();
     users_arr = users_arr.map(x => x.username);
-    console.log(users_arr);
     var result = await switch_countries(country_from,country_to,users_arr);
     if(result == "ERR") res.send({ status: "ERR", msg: 'failed to switch countries' })
     else 
