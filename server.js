@@ -85,7 +85,7 @@ async function auth_middleware(req, res, next) {
         {
             sub_accounts_perms:["/add_sub_account","/edit_sub_account","/delete_sub_account"],
             users_perms:["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries"],
-            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent"],
+            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent","/enable_edit_access","/enable_create_access","/enable_delete_access","/disable_edit_access","/disable_create_access","/disable_delete_access"],
             panels_perms:["/create_panel","/delete_panel","/disable_panel","/enable_panel","/edit_panel"]
         };
 
@@ -255,6 +255,9 @@ app.post("/create_agent", async (req, res) => {
             id: uid(),
             is_admin: 0,
             disable: 0,
+            create_access:1,
+            edit_access:1,
+            delete_access:1,
             name,
             username,
             password,
@@ -355,6 +358,7 @@ app.post("/create_user", async (req, res) => {
     var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if(!corresponding_agent.create_access) res.send({ status: "ERR", msg: "access denied" })
     else if (data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
@@ -453,6 +457,7 @@ app.post("/delete_user", async (req, res) => {
     var agent_obj = await get_account(user_obj.agent_id);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (agent_obj.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
+    else if(!agent_obj.delete_access) {res.send({ status: "ERR", msg: "access denied" });return;}
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
@@ -488,6 +493,7 @@ app.post("/disable_user", async (req, res) => {
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
+    else if(!account.edit_access) {res.send({ status: "ERR", msg: "access denied" });return;}
     var result = await disable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
@@ -521,6 +527,7 @@ app.post("/enable_user", async (req, res) => {
     var account = await token_to_account(access_token);
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
+    else if(!account.edit_access) {res.send({ status: "ERR", msg: "access denied" });return;}
     var result = await enable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
@@ -660,6 +667,7 @@ app.post("/edit_user", async (req, res) => {
     var old_country = user_obj.country;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
     else if (data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
@@ -750,6 +758,7 @@ app.post("/reset_user", async (req, res) => {
     var corresponding_agent = await token_to_account(access_token);
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
     else 
     {  
 
@@ -965,6 +974,71 @@ app.post("/disable_sd", async(req,res) =>
     SD_VARIABLE = 0;
     res.send("DONE");
 })
+
+
+app.post(/\/(enable|disable)_agent_create_access$/, async (req, res) => 
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    if(req.url.startsWith("/enable")) 
+    {
+        await update_account(agent_id, { create_access: 1 });
+        await insert_to_logs(account.id, "ENABLE_AGENT_CREATE_ACCESS", `enabled create access for agent !${agent_obj.username}`,access_token);
+    }
+
+    else 
+    {
+        await update_account(agent_id, { create_access: 0 });
+        await insert_to_logs(account.id, "DISABLE_AGENT_CREATE_ACCESS", `disabled create access for agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+
+});
+
+app.post(/\/(enable|disable)_agent_edit_access$/, async (req, res) => 
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    if(req.url.startsWith("/enable")) 
+    {
+        await update_account(agent_id, { edit_access: 1 });
+        await insert_to_logs(account.id, "ENABLE_AGENT_EDIT_ACCESS", `enabled edit access for agent !${agent_obj.username}`,access_token);
+    }
+
+    else 
+    {
+        await update_account(agent_id, { edit_access: 0 });
+        await insert_to_logs(account.id, "DISABLE_AGENT_EDIT_ACCESS", `disabled edit access for agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+});
+
+app.post(/\/(enable|disable)_agent_delete_access$/, async (req, res) =>
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    if(req.url.startsWith("/enable")) 
+    {
+        await update_account(agent_id, { delete_access: 1 });
+        await insert_to_logs(account.id, "ENABLE_AGENT_DELETE_ACCESS", `enabled delete access for agent !${agent_obj.username}`,access_token);
+    }
+
+    else 
+    {
+        await update_account(agent_id, { delete_access: 0 });
+        await insert_to_logs(account.id, "DISABLE_AGENT_DELETE_ACCESS", `disabled delete access for agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+});
+
+
+
 
 
 
