@@ -45,7 +45,7 @@ const get_knp_info = async (name) =>
     var knp_info = (await axios.post(panel_url+"/get_knp_info",{service_access_api_key:api_key},{timeout:15000})).data;
     var result_arr = [];
     result_arr[0] = `
-STATUS: ${knp_info.sd_status?"🔴 OFFLINE":"🟢 ONLINE"}
+📶 STATUS: ${knp_info.sd_status?"🔴 OFFLINE":"🟢 ONLINE"}
 
 👉🏻 KNP name: <b>${name}</b>
 👉🏻 KNP url: <b><a href="${panel_url}">${panel_url.replace(/^https?:\/\//, '')}</a></b>
@@ -232,7 +232,8 @@ bot.action(/shut_down-.*/,reset_mw, async (ctx) =>
         var panel_url = await get_panel_url(panel_name);
         var sd_req = await axios.post(panel_url+"/enable_sd",{service_access_api_key:api_key},{timeout:15000});
         var knp_info = await get_knp_info(panel_name);
-        ctx.editMessageText(knp_info[0],knp_info[1]);
+        await ctx.editMessageText(knp_info[0],knp_info[1]);
+        await ctx.answerCbQuery(panel_name + " IS OFFLINE NOW");
     }
 
     catch(err)
@@ -251,7 +252,8 @@ bot.action(/start-.*/,reset_mw, async (ctx) =>
         var panel_url = await get_panel_url(panel_name);
         var sd_req = await axios.post(panel_url+"/disable_sd",{service_access_api_key:api_key},{timeout:15000});
         var knp_info = await get_knp_info(panel_name);
-        ctx.editMessageText(knp_info[0],knp_info[1]);
+        await ctx.editMessageText(knp_info[0],knp_info[1]);
+        await ctx.answerCbQuery(panel_name + " IS ONLINE NOW");
     }
 
     catch(err)
