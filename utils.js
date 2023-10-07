@@ -213,17 +213,10 @@ const delete_vpn_group = async (link, username, password, vpn_names) =>
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
 
-        for(vpn_name of vpn_names)
+        for(let [index,vpn_name] of vpn_names.entries())
         {
-            try
-            {
-                axios.delete(link + "/api/user/" + vpn_name, { headers });   
-            }
-            catch(err)
-            {
-                continue;
-            }
-
+            axios.delete(link + "/api/user/" + vpn_name, { headers }).catch((err)=>{});
+            await sleep(50)    
         }
 
         return "DONE";
@@ -247,17 +240,10 @@ const disable_vpn_group = async (link, username, password, vpn_names) =>
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
 
-        for(vpn_name of vpn_names)
+        for(let [index,vpn_name] of vpn_names.entries())
         {
-            try
-            {
-                axios.put(link + "/api/user/" + vpn_name, { status: "disabled" }, { headers });      
-            }
-            catch(err)
-            {
-                continue;
-            }
-
+            axios.put(link + "/api/user/" + vpn_name, { status: "disabled" }, { headers }).catch((err)=>{});
+            await sleep(50)    
         }
 
         return "DONE";
@@ -282,17 +268,10 @@ const enable_vpn_group = async (link, username, password, vpn_names) =>
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
 
-        for(vpn_name of vpn_names)
+        for(let [index,vpn_name] of vpn_names.entries())
         {
-            try
-            {
-                axios.put(link + "/api/user/" + vpn_name, { status: "active" }, { headers });      
-            }
-            catch(err)
-            {
-                continue;
-            }
-
+            axios.put(link + "/api/user/" + vpn_name, { status: "active" }, { headers }).catch((err)=>{});
+            await sleep(50)    
         }
 
         return "DONE";
