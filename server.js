@@ -53,7 +53,10 @@ const {
     proxy_obj_maker,
     update_user_links_bg,
     deep_equal,
-    token_to_sub_account
+    token_to_sub_account,
+    delete_vpn_group,
+    enable_vpn_group,
+    disable_vpn_group
 } = require("./utils");
 
 
@@ -85,7 +88,7 @@ async function auth_middleware(req, res, next) {
         {
             sub_accounts_perms:["/add_sub_account","/edit_sub_account","/delete_sub_account"],
             users_perms:["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries"],
-            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent","/enable_edit_access","/enable_create_access","/enable_delete_access","/disable_edit_access","/disable_create_access","/disable_delete_access"],
+            agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent","/enable_edit_access","/enable_create_access","/enable_delete_access","/disable_edit_access","/disable_create_access","/disable_delete_access","/disable_all_agent_users","/enable_all_agent_users","/delete_all_agent_users"],
             panels_perms:["/create_panel","/delete_panel","/disable_panel","/enable_panel","/edit_panel"]
         };
 
@@ -1032,6 +1035,76 @@ app.post(/\/(enable|disable)_agent_delete_access$/, async (req, res) =>
     {
         await update_account(agent_id, { delete_access: 0 });
         await insert_to_logs(account.id, "DISABLE_AGENT_DELETE_ACCESS", `disabled delete access for agent !${agent_obj.username}`,access_token);
+    }
+
+    res.send("DONE");
+});
+
+
+app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
+{
+    var { access_token, agent_id } = req.body;
+    var account = await token_to_account(access_token);
+    var agent_obj = await get_account(agent_id);
+    var panels_arr = await get_panels();
+    var agent_users = await users_clct.find({agent_id}).toArray();
+    var agent_users_panels_id_arr = [...new Set(agent_users.map(x => x.corresponding_panel_id))];
+    panels_arr = panels_arr.filter(x => agent_users_panels_id_arr.includes(x.id));
+    var action_groups = []
+    for(panel of panels_arr)
+    {
+        action_groups.push({
+            panel_url:panel.panel_url,
+            panel_username:panel.panel_username,
+            panel_password:panel.panel_password,
+            users:agent_users.filter(x => x.corresponding_panel_id == panel.id).map(x => x.username)
+        });
+    }
+
+
+    if(req.url.startsWith("/enable")) 
+    {
+        for(group of action_groups)
+        {
+            var result = await enable_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
+            if(result == "ERR") 
+            {                     
+                res.send({ status: "ERR", msg: "failed to connect to marzban" });
+                return;
+            }
+        }
+
+        await insert_to_logs(account.id, "ENABLE_ALL_AGENT_USERS", `enabled all users of agent !${agent_obj.username}`,access_token);
+    }
+
+    else if(req.url.startsWith("/disable"))
+    {
+        for(group of action_groups)
+        {
+            var result = await disable_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
+            if(result == "ERR") 
+            {                     
+                res.send({ status: "ERR", msg: "failed to connect to marzban" });
+                return;
+            }
+        }
+
+        await insert_to_logs(account.id, "DISABLE_ALL_AGENT_USERS", `disabled all users of agent !${agent_obj.username}`,access_token);
+    }
+
+    else
+    {
+        for(group of action_groups)
+        {
+            var result = await delete_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
+            if(result == "ERR") 
+            {
+                res.send({ status: "ERR", msg: "failed to connect to marzban" });
+                return;
+            }
+        }
+
+        await insert_to_logs(account.id, "DELETE_ALL_AGENT_USERS", `deleted all users of agent !${agent_obj.username}`,access_token);
     }
 
     res.send("DONE");

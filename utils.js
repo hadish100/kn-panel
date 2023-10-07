@@ -207,6 +207,28 @@ const delete_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
+
+const delete_vpn_group = async (link, username, password, vpn_names) => 
+{
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+
+        for(vpn_name of vpn_names)
+        {
+            try
+            {
+                axios.delete(link + "/api/user/" + vpn_name, { headers });   
+            }
+            catch(err)
+            {
+                continue;
+            }
+
+        }
+
+        return "DONE";
+}
+
 const disable_vpn = async (link, username, password, vpn_name) => {
     try {
         var headers = await auth_marzban(link, username, password);
@@ -220,6 +242,27 @@ const disable_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
+const disable_vpn_group = async (link, username, password, vpn_names) => 
+{
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+
+        for(vpn_name of vpn_names)
+        {
+            try
+            {
+                axios.put(link + "/api/user/" + vpn_name, { status: "disabled" }, { headers });      
+            }
+            catch(err)
+            {
+                continue;
+            }
+
+        }
+
+        return "DONE";
+}
+
 const enable_vpn = async (link, username, password, vpn_name) => {
     try {
         var headers = await auth_marzban(link, username, password);
@@ -231,6 +274,28 @@ const enable_vpn = async (link, username, password, vpn_name) => {
     catch (err) {
         return "ERR";
     }
+}
+
+
+const enable_vpn_group = async (link, username, password, vpn_names) => 
+{
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+
+        for(vpn_name of vpn_names)
+        {
+            try
+            {
+                axios.put(link + "/api/user/" + vpn_name, { status: "active" }, { headers });      
+            }
+            catch(err)
+            {
+                continue;
+            }
+
+        }
+
+        return "DONE";
 }
 
 const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status,is_changing_country,is_changing_protocols) => {
@@ -684,8 +749,11 @@ module.exports = {
     get_panel_info,
     make_vpn,
     delete_vpn,
+    delete_vpn_group,
     disable_vpn,
+    disable_vpn_group,
     enable_vpn,
+    enable_vpn_group,
     edit_vpn,
     get_marzban_user,
     get_all_marzban_users,
