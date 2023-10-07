@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import "./Dropdown.css"
 import { ReactComponent as ChevronDownIcon } from '../assets/svg/chevron-down.svg'
 
-const Dropdown = ({ options, value, onChange }) => {
+const Dropdown = ({ options, value, onChange, overlap, showChevron = true }) => {
     const [isOpen, setIsOpen] = useState(false)
     const divEl = useRef(null)
 
@@ -36,7 +36,7 @@ const Dropdown = ({ options, value, onChange }) => {
 
     const renderedOptions = options.map((option, index) => {
         return <motion.div
-            className='option'
+            className={`option ${option.value} ${!showChevron ? "flex justify-center" : ""}`}
             onClick={(e) => handleOptionClick(option, e)}
             key={option.value}
             initial={{ x: -10, opacity: 0 }}
@@ -49,16 +49,20 @@ const Dropdown = ({ options, value, onChange }) => {
     })
 
     return (
-        <div className='dropdown-container'>
+        <div className={`dropdown-container ${overlap ? "relative" : null}`}>
             <div ref={divEl} className={`dropdown ${isOpen ? "open" : "close"}`}>
-                <div className="dropdown__value" onClick={(e) => handleClick(e)}>
+                <div className={`dropdown__value ${value?.value}`} onClick={(e) => handleClick(e)}>
                     {value?.label || 10}
-                    <ChevronDownIcon />
+                    {showChevron &&
+                        <span className='dropdown__value--chevron'>
+                            <ChevronDownIcon />
+                        </span>
+                    }
                 </div>
                 <AnimatePresence>
                     {isOpen &&
                         <motion.div
-                            className='options'
+                            className={`options ${overlap ? "absolute top-full z-999 bg-white" : null}`}
                             initial={{ height: 0, opacity: 0, y: -10 }} // Initial opacity and position
                             animate={{ height: "auto", opacity: 1, y: 0 }} // Animation to fully visible and original position
                             exit={{ height: 0, opacity: 0, y: -10 }}

@@ -51,7 +51,7 @@
     --background-color-active: var(--gray-clr-300);
 }
 
-.disabled {
+.button.disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }

@@ -18,6 +18,12 @@ import ErrorCard from '../../components/ErrorCard'
 import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
 import SwitchCountries from './SwitchCountries'
+import { ReactComponent as ActiveIcon } from '../../assets/svg/active.svg'
+import { ReactComponent as LimitedIcon } from '../../assets/svg/limited.svg'
+import { ReactComponent as ExpiredIcon } from '../../assets/svg/expired.svg'
+import { ReactComponent as DisabledIcon } from '../../assets/svg/disabled.svg'
+import { ReactComponent as AnonymIcon } from '../../assets/svg/anonym.svg'
+import { ReactComponent as FilterIcon } from '../../assets/svg/filter.svg'
 
 
 const UsersPage = () => {
@@ -39,6 +45,7 @@ const UsersPage = () => {
     const [deleteMode, setDeleteMode] = useState(false)
     const [resetMode, setResetMode] = useState(false)
     const [showSwitchCountries, setShowSwitchCountries] = useState(false)
+    const [selectedStatus, setSelectedStatus] = useState({ label: <FilterIcon />, value: "filter" })
 
     const agentInfo = JSON.parse(sessionStorage.getItem("agent"))
 
@@ -206,11 +213,11 @@ const UsersPage = () => {
         setUsers(users.obj_arr)
     }
 
-    const handleEditUser = async (user_id, data_limit, expire, country,protocols,flow_status,desc) => {
+    const handleEditUser = async (user_id, data_limit, expire, country, protocols, flow_status, desc) => {
         setEditMode(true)
         console.log(desc)
         const access_token = sessionStorage.getItem("access_token")
-        var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country,protocols,flow_status,desc })
+        var req_res = await axios.post("/edit_user", { access_token, user_id, data_limit, expire, country, protocols, flow_status, desc })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)
@@ -287,10 +294,22 @@ const UsersPage = () => {
         setShowSwitchCountries(false)
     }
 
+    const handleSelectStatus = (option) => {
+        setSelectedStatus(option)
+    }
+
     const itemsPerRowOptions = [
         { label: 10, value: 10 },
         { label: 20, value: 20 },
         { label: 30, value: 30 },
+    ]
+
+    const statusOptions = [
+        { label: <ActiveIcon />, value: "active" },
+        { label: <LimitedIcon />, value: "limited" },
+        { label: <DisabledIcon />, value: "disabled" },
+        { label: <ExpiredIcon />, value: "expired" },
+        { label: <AnonymIcon />, value: "anonym" }
     ]
 
     return (
@@ -300,6 +319,7 @@ const UsersPage = () => {
                 <Search value={searchedUsers} onChange={setSearchedUsers} />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh-icon"><RefreshIcon /></Button>
+                    <Dropdown options={statusOptions} value={selectedStatus} onChange={handleSelectStatus} overlap={true} showChevron={false} />
                     <Button onClick={handleShowSwitchCountries} className="outlined" disabled={agentInfo.country.split(",").length <= 1}>Switch Countries</Button>
                     <Button onClick={handleShowCreateUser} className="create-user-button primary">Create User</Button>
                 </span>
@@ -313,6 +333,7 @@ const UsersPage = () => {
                 showForm={showCreateUser}
                 items={users}
             />
+
 
             <SwitchCountries onClose={handleCloseSwitchCountries} showModal={showSwitchCountries} />
 

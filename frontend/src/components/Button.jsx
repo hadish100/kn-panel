@@ -1,6 +1,6 @@
-import React from "react";
+import React from "react"
 
-import "./Button.css";
+import "./Button.css"
 import { motion } from "framer-motion"
 
 const Button = ({ children, onClick, className, disabled, onMouseEnter, onMouseLeave }) => {
@@ -15,7 +15,7 @@ const Button = ({ children, onClick, className, disabled, onMouseEnter, onMouseL
         >
             {children}
         </motion.button>
-    );
+    )
 }
 
-export default Button;
+export default Button

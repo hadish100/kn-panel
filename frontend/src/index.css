@@ -186,6 +186,26 @@ input[type=number] {
     filter: blur(1px)
 }
 
+.top-full {
+    top: 100%;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.z-999 {
+    z-index: 999;
+}
+
+.bg-white {
+    background-color: #fff;
+}
+
 /* animations */
 
 @keyframes spin {
