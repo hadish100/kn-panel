@@ -4,6 +4,7 @@ const fs = require('fs');
 var AdmZip = require("adm-zip");
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
+var SD_VARIABLE = 0;
 require('dotenv').config()
 var accounts_clct, panels_clct, users_clct, logs_clct;
 
@@ -72,7 +73,9 @@ connect_to_db().then(res => {
 
 async function auth_middleware(req, res, next) {
 
-    if (req.url == "/login" || req.url.startsWith("/sub") || req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
+    if( req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
+    if (SD_VARIABLE == 1) return res.status(500).send({ message: 'Service unavailable' });
+    if (req.url == "/login" || req.url.startsWith("/sub") ) return next();
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
@@ -945,10 +948,24 @@ app.post("/get_knp_info", async(req,res) =>
         agents_count : (await get_accounts()).length-1,
         users_count : (await get_all_users()).length,
         today_logins : (await logs_clct.find({action:"LOGIN",time:{$gt:Math.floor(Date.now()/1000) - 24*60*60}}).toArray()).length,
+        sd_status : SD_VARIABLE,
     };
 
     res.send(response_obj);
 });
+
+app.post("/enable_sd", async(req,res) =>
+{
+    SD_VARIABLE = 1;
+    res.send("DONE");
+});
+
+app.post("/disable_sd", async(req,res) =>
+{
+    SD_VARIABLE = 0;
+    res.send("DONE");
+})
+
 
 
 app.get(/^\/sub\/.+/,async (req,res) =>
