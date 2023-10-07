@@ -385,6 +385,7 @@ app.post("/create_user", async (req, res) => {
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                 data_limit: gb2b(data_limit),
                 used_traffic: 0.00,
+                lifetime_used_traffic: 0.00,
                 country,
                 corresponding_panel_id: selected_panel.id,
                 corresponding_panel: selected_panel.panel_url,

@@ -144,8 +144,11 @@ connect_to_db().then(res => {
                         var agent = await get_account(user.agent_id);
                         agent.volume -= marzban_user.used_traffic - user.used_traffic;
                         await update_account(agent.id, { volume: agent.volume });
-                        await update_user(user.id, { used_traffic: marzban_user.used_traffic });
-
+                        await update_user(user.id, 
+                            { 
+                                used_traffic: marzban_user.used_traffic,
+                                lifetime_used_traffic: user.lifetime_used_traffic + marzban_user.used_traffic - user.used_traffic
+                            });
                     }
 
 
@@ -207,6 +210,7 @@ connect_to_db().then(res => {
                             "expire": marzban_user.expire,
                             "data_limit": marzban_user.data_limit,
                             "used_traffic": 0,
+                            "lifetime_used_traffic":complete_user_info.lifetime_used_traffic,
                             "country": panel.panel_country,
                             "corresponding_panel_id": panel.id,
                             "corresponding_panel": panel.panel_url,
