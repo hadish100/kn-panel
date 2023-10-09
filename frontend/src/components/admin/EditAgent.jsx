@@ -20,6 +20,7 @@ import Checkbox from '@mui/material/Checkbox'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem, editMode }) => {
     const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
+    const [showDeleteAllUsers, setShowDeleteAllUsers] = useState(false)
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -155,97 +156,117 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
     )
 
     return (
-        <AnimatePresence>
-            {showForm && (
-                <Modal onClose={onClose} width={"40rem"}>
-                    {formHeader}
-                    <main className="modal__body" style={{ marginBottom: ".5rem" }}>
-                        <form className="modal__form">
-                            {formFields.map((group, rowIndex) => (
-                                <div key={rowIndex} className={`flex gap-16 ${styles['modal__form__row']}`}>
-                                    {Array.isArray(group) ? group.map((field, index) => {
-                                        const defaultValue = getDefaultValue(item, field)
-                                        return (<FormField
-                                            key={index}
-                                            label={field.label}
-                                            type={field.type}
-                                            id={field.id}
-                                            name={field.name}
-                                            animateDelay={rowIndex * 0.1}
-                                            defaultValue={defaultValue}
-                                            disabled={field.disabled}
-                                            options={field.options}
-                                            value={field.value}
-                                            onChange={field.onChange}
-                                            placeholder={field.placeholder}
-                                            editValue={item ? item.country ? item.country.split(",") : "" : ""}
-                                            styles={styles}
-                                        />)
-                                    }) : (
-                                        <FormField
-                                            key={rowIndex}
-                                            label={group.label}
-                                            type={group.type}
-                                            id={group.id}
-                                            name={group.name}
-                                            animateDelay={rowIndex * 0.1}
-                                            defaultValue={getDefaultValue(item, group)}
-                                            disabled={group.disabled}
-                                            options={group.options}
-                                            value={group.value}
-                                            onChange={group.onChange}
-                                            placeholder={group.placeholder}
-                                            editValue={item ? item.country ? item.country.split(",") : "" : ""}
-                                            styles={styles}
-                                        />
-                                    )}
-                                </div>
-                            ))}
-                        </form>
+        <>
+            <AnimatePresence>
+                {showForm && (
+                    <Modal onClose={onClose} width={"40rem"}>
+                        {formHeader}
+                        <main className="modal__body" style={{ marginBottom: ".5rem" }}>
+                            <form className="modal__form">
+                                {formFields.map((group, rowIndex) => (
+                                    <div key={rowIndex} className={`flex gap-16 ${styles['modal__form__row']}`}>
+                                        {Array.isArray(group) ? group.map((field, index) => {
+                                            const defaultValue = getDefaultValue(item, field)
+                                            return (<FormField
+                                                key={index}
+                                                label={field.label}
+                                                type={field.type}
+                                                id={field.id}
+                                                name={field.name}
+                                                animateDelay={rowIndex * 0.1}
+                                                defaultValue={defaultValue}
+                                                disabled={field.disabled}
+                                                options={field.options}
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                placeholder={field.placeholder}
+                                                editValue={item ? item.country ? item.country.split(",") : "" : ""}
+                                                styles={styles}
+                                            />)
+                                        }) : (
+                                            <FormField
+                                                key={rowIndex}
+                                                label={group.label}
+                                                type={group.type}
+                                                id={group.id}
+                                                name={group.name}
+                                                animateDelay={rowIndex * 0.1}
+                                                defaultValue={getDefaultValue(item, group)}
+                                                disabled={group.disabled}
+                                                options={group.options}
+                                                value={group.value}
+                                                onChange={group.onChange}
+                                                placeholder={group.placeholder}
+                                                editValue={item ? item.country ? item.country.split(",") : "" : ""}
+                                                styles={styles}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </form>
+                        </main>
+
+                        <div className='flex flex-col gap-2.5' style={{ marginTop: "1rem" }}>
+                            <div className='flex justify-between flex-col gap-1'>
+                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                    Agent status : <IOSSwitch />
+                                </span>
+                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Create access : <IOSSwitch /></div>
+                                </span>
+                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Edit access : <IOSSwitch /></div>
+                                </span>
+                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Delete access : <IOSSwitch /></div>
+                                </span>
+                            </div>
+                            <div className={`flex gap-2.5 ${styles['buttons-row']}`}>
+                                <Button className='outlined w-full'><DisabledIcon />Disable all users</Button>
+                                <Button className='outlined w-full'><ActiveIcon />Enable all users</Button>
+                            </div>
+                            <div className="flex">
+                                <Button className="outlined w-full" onClick={() => setShowDeleteAllUsers(true)}><DeathIcon />Delete all users</Button>
+                            </div>
+                        </div>
+
+                        <div className='flex gap-1.5 flex-row'>
+                            <FormControlLabel
+                                control={<Checkbox id="business-mode" name="business-mode"
+                                    sx={{
+                                        color: pink[800],
+                                        marginLeft: "-9px",
+                                        '&.Mui-checked': {
+                                            color: pink[600],
+                                        },
+                                    }}
+                                    defaultChecked={Boolean(item.business_mode)} onChange={handleBmChange} />}
+                                label="Business Mode" />
+
+                        </div>
+                        {formFooter}
+                    </Modal>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showDeleteAllUsers && <Modal onClose={() => setShowDeleteAllUsers(false)} width={"35rem"}>
+                    <header className="modal__header">
+                        <LeadingIcon>
+                            <DeathIcon />
+                        </LeadingIcon>
+                        <h1 className="modal__title">Delete all users</h1>
+                        <div className="close-icon" onClick={() => setShowDeleteAllUsers(false)}>
+                            <XMarkIcon />
+                        </div>
+                    </header>
+                    <main className='modal__body flex gap-1.5'>
+                        <Button onClick={() => setShowDeleteAllUsers(false)} className="outlined w-full" >Cancel</Button>
+                        <Button onClick={null} className="primary w-full" >Delete</Button>
                     </main>
-
-                    <div className='flex flex-col gap-2.5' style={{ marginTop: "1rem" }}>
-                        <div className='flex justify-between flex-col gap-1'>
-                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                Agent status : <IOSSwitch />
-                            </span>
-                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Create access : <IOSSwitch /></div>
-                            </span>
-                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Edit access : <IOSSwitch /></div>
-                            </span>
-                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Delete access : <IOSSwitch /></div>
-                            </span>
-                        </div>
-                        <div className={`flex gap-2.5 ${styles['buttons-row']}`}>
-                            <Button className='outlined w-full'><DisabledIcon />Disable all users</Button>
-                            <Button className='outlined w-full'><ActiveIcon />Enable all users</Button>
-                        </div>
-                        <div className="flex">
-                            <Button className="outlined w-full"><DeathIcon />Delete all users</Button>
-                        </div>
-                    </div>
-
-                    <div className='flex gap-1.5 flex-row'>
-                        <FormControlLabel
-                            control={<Checkbox id="business-mode" name="business-mode"
-                                sx={{
-                                    color: pink[800],
-                                    marginLeft: "-9px",
-                                    '&.Mui-checked': {
-                                        color: pink[600],
-                                    },
-                                }}
-                                defaultChecked={Boolean(item.business_mode)} onChange={handleBmChange} />}
-                            label="Business Mode" />
-
-                    </div>
-                    {formFooter}
-                </Modal>
-            )}
-        </AnimatePresence>
+                </Modal>}
+            </AnimatePresence>
+        </>
     )
 }
 
