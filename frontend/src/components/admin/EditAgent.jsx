@@ -23,6 +23,9 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
     const [showDeleteAllUsers, setShowDeleteAllUsers] = useState(false)
     const [showDisableAllUsers, setShowDisableAllUsers] = useState(false)
     const [showEnableAllUsers, setShowEnableAllUsers] = useState(false)
+    const [isEnablingAllUsers, setIsEnablingAllUsers] = useState(false)
+    const [isDisablingAllUsers, setIsDisablingAllUsers] = useState(false)
+    const [isDeleingAllUsers, setIsDeletingAllUsers] = useState(false)
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
