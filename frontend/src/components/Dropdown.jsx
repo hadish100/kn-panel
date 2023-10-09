@@ -42,7 +42,7 @@ const Dropdown = ({ options, value, onChange, overlap, showChevron = true }) => 
             initial={{ x: -10, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 0, opacity: 0 }}
-            transition={{ delay: index * 0.15 }}
+            transition={{ delay: index * 0.07 }}
         >
             {option.label}
         </motion.div>
@@ -66,7 +66,7 @@ const Dropdown = ({ options, value, onChange, overlap, showChevron = true }) => 
                             initial={{ height: 0, opacity: 0, y: -10 }} // Initial opacity and position
                             animate={{ height: "auto", opacity: 1, y: 0 }} // Animation to fully visible and original position
                             exit={{ height: 0, opacity: 0, y: -10 }}
-                            transition={{ duration: .3 }}
+                            transition={{ duration: .1 }}
                         >
                             {renderedOptions}
                         </motion.div>

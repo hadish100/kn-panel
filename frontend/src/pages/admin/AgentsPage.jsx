@@ -147,6 +147,72 @@ const AgentsPage = () => {
         setSelectedAgent(slctd)
     }
 
+    const handlePowerAgent2 = async (agent_id, disabled) => {
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res
+        if (disabled) req_res = await axios.post("/enable_agent_create_access", { access_token, agent_id })
+        else req_res = await axios.post("/disable_agent_create_access", { access_token, agent_id })
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return
+        }
+        var agents = (await axios.post("/get_agents", { access_token })).data
+        if (agents.status === "ERR") {
+            setError_msg(agents.msg)
+            setHasError(true)
+            return
+        }
+        sessionStorage.setItem("agents", JSON.stringify(agents))
+        setAgents(agents)
+        var slctd = agents.find(agent => agent.id === agent_id)
+        setSelectedAgent(slctd)
+    }
+
+    const handlePowerAgent3 = async (agent_id, disabled) => {
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res
+        if (disabled) req_res = await axios.post("/enable_agent_edit_access", { access_token, agent_id })
+        else req_res = await axios.post("/disable_agent_edit_access", { access_token, agent_id })
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return
+        }
+        var agents = (await axios.post("/get_agents", { access_token })).data
+        if (agents.status === "ERR") {
+            setError_msg(agents.msg)
+            setHasError(true)
+            return
+        }
+        sessionStorage.setItem("agents", JSON.stringify(agents))
+        setAgents(agents)
+        var slctd = agents.find(agent => agent.id === agent_id)
+        setSelectedAgent(slctd)
+    }
+
+    const handlePowerAgent4 = async (agent_id, disabled) => {
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res
+        if (disabled) req_res = await axios.post("/enable_agent_delete_access", { access_token, agent_id })
+        else req_res = await axios.post("/disable_agent_delete_access", { access_token, agent_id })
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            return
+        }
+        var agents = (await axios.post("/get_agents", { access_token })).data
+        if (agents.status === "ERR") {
+            setError_msg(agents.msg)
+            setHasError(true)
+            return
+        }
+        sessionStorage.setItem("agents", JSON.stringify(agents))
+        setAgents(agents)
+        var slctd = agents.find(agent => agent.id === agent_id)
+        setSelectedAgent(slctd)
+    }
+
 
     const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, business_mode) => {
         setEditMode(true)
@@ -228,6 +294,9 @@ const AgentsPage = () => {
                 showForm={showEditAgent}
                 onDeleteItem={handleDeleteAgent}
                 onPowerItem={handlePowerAgent}
+                onPowerItem2={handlePowerAgent2}
+                onPowerItem3={handlePowerAgent3}
+                onPowerItem4={handlePowerAgent4}
                 onEditItem={handleEditAgent}
                 onLoginItem={handleAdminAsAgent}
                 editMode={editMode}

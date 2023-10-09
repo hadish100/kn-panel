@@ -18,7 +18,7 @@ import styles from "./EditAgent.module.css"
 import { pink } from '@mui/material/colors'
 import Checkbox from '@mui/material/Checkbox'
 
-const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem, editMode }) => {
+const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerItem2,onPowerItem3,onPowerItem4, onEditItem, onLoginItem, editMode }) => {
     const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
     const [showDeleteAllUsers, setShowDeleteAllUsers] = useState(false)
     const [showDisableAllUsers, setShowDisableAllUsers] = useState(false)
@@ -220,13 +220,28 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                                     />
                                 </span>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Create access : <IOSSwitch /></div>
+                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Create access : 
+                                        <FormControlLabel
+                                        onClick={() => onPowerItem2(item.id, !item.create_access)}
+                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.create_access) : false} />}
+                                    />
+                                    </div>
                                 </span>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Edit access : <IOSSwitch /></div>
+                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Edit access : 
+                                        <FormControlLabel
+                                        onClick={() => onPowerItem3(item.id, !item.edit_access)}
+                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.edit_access) : false} />}
+                                    />
+                                    </div>
                                 </span>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Delete access : <IOSSwitch /></div>
+                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Delete access : 
+                                        <FormControlLabel
+                                        onClick={() => onPowerItem4(item.id, !item.delete_access)}
+                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.delete_access) : false} />}
+                                    />
+                                    </div>
                                 </span>
                             </div>
                             <div className={`flex gap-2.5 ${styles['buttons-row']}`}>
@@ -281,7 +296,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                         <LeadingIcon>
                             <DisabledIcon />
                         </LeadingIcon>
-                        <h1 className="modal__title">Delete all users</h1>
+                        <h1 className="modal__title">Disable all users</h1>
                         <div className="close-icon" onClick={() => setShowDisableAllUsers(false)}>
                             <XMarkIcon />
                         </div>
@@ -299,7 +314,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                         <LeadingIcon>
                             <ActiveIcon />
                         </LeadingIcon>
-                        <h1 className="modal__title">Delete all users</h1>
+                        <h1 className="modal__title">Enable all users</h1>
                         <div className="close-icon" onClick={() => setShowEnableAllUsers(false)}>
                             <XMarkIcon />
                         </div>
