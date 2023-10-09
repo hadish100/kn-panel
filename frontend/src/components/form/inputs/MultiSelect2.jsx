@@ -15,13 +15,12 @@ export default function BasicSelect({ onChange, defaultValue, id }) {
     }
   }
 
-  console.log(defaultValue)
-
   useEffect(() => {
     setAge(defaultValue)
   }, [defaultValue])
 
   const agent = JSON.parse(sessionStorage.getItem("agent"))
+  console.log(agent)
 
   return (
     <Box sx={{ width: '100%' }}>

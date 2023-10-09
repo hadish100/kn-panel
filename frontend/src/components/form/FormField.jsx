@@ -5,6 +5,7 @@ import Dropdown from "../Dropdown"
 import MultiSelect from "./inputs/MultiSelect"
 import MultiSelect2 from "./inputs/MultiSelect2"
 import ValueAdjuster from './inputs/ValueAdjuster'
+import MultiSelect5 from "./inputs/MultiSelect5"
 
 const FormField = ({
     label,
@@ -36,6 +37,16 @@ const FormField = ({
             <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
                 <label className="modal__form__label" htmlFor={id}>{label}</label>
                 <MultiSelect2 editValue={editValue} onChange={onChange} value={value} defaultValue={defaultValue} id={id} />
+            </motion.div>
+        )
+    }
+
+    if (type === "multi-select5") {
+        console.log(onChange)
+        return (
+            <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+                <label className="modal__form__label" htmlFor={id}>{label}</label>
+                <MultiSelect5 editValue={editValue} onChange={onChange} value={value} defaultValue={defaultValue} id={id} />
             </motion.div>
         )
     }

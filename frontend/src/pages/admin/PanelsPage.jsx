@@ -14,6 +14,7 @@ import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard'
 import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
+import SwitchCountries2 from '../admin/SwitchCountries2'
 
 const PanelsPage = () => {
     const [showCreatePanel, setShowCreatePanel] = useState(false)
@@ -27,6 +28,9 @@ const PanelsPage = () => {
     const [searchedPanels, setSearchedPanels] = useState("")
     const [editMode, setEditMode] = useState(false)
     const [deleteMode, setDeleteMode] = useState(false)
+    const [showSwitchCountries, setShowSwitchCountries] = useState(false)
+
+    const panelsInfo = JSON.parse(sessionStorage.getItem("panels"))
 
     useEffect(() => {
         setPanels((JSON.parse(sessionStorage.getItem("panels"))).filter((item) => {
@@ -128,6 +132,14 @@ const PanelsPage = () => {
         setShowEditPanel(true)
     }
 
+    const handleShowSwitchCountries = () => {
+        setShowSwitchCountries(true)
+    }
+
+    const handleCloseSwitchCountries = () => {
+        setShowSwitchCountries(false)
+    }
+
     const handleEditPanel = async (panel_id, panel_name, panel_username, panel_password, panel_url, panel_user_max_count, panel_traffic) => {
         setEditMode(true)
         const access_token = sessionStorage.getItem("access_token")
@@ -163,9 +175,12 @@ const PanelsPage = () => {
                 <Search value={searchedPanels} onChange={setSearchedPanels} />
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh"><RefreshIcon /></Button>
+                    <Button onClick={handleShowSwitchCountries} className="outlined" disabled={panelsInfo.lenght <= 1}>Switch Countries</Button>
                     <Button onClick={handleShowCreatePanel} className="create-user-button primary">Create Panel</Button>
                 </span>
             </div>
+
+            <SwitchCountries2 onClose={handleCloseSwitchCountries} showModal={showSwitchCountries} />
 
             <CreatePanel
                 onClose={handleCloseCreatePanel}
