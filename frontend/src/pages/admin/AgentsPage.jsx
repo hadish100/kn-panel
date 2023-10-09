@@ -29,6 +29,12 @@ const AgentsPage = () => {
     const [searchedAgents, setSearchedAgents] = useState("")
     const [editMode, setEditMode] = useState(false)
     const [deleteMode, setDeleteMode] = useState(false)
+    const [isEnablingAllUsers, setIsEnablingAllUsers] = useState(false)
+    const [isDisablingAllUsers, setIsDisablingAllUsers] = useState(false)
+    const [isDeletingAllUsers, setIsDeletingAllUsers] = useState(false)
+    const [showDeleteAllUsers, setShowDeleteAllUsers] = useState(false)
+    const [showDisableAllUsers, setShowDisableAllUsers] = useState(false)
+    const [showEnableAllUsers, setShowEnableAllUsers] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -214,6 +220,52 @@ const AgentsPage = () => {
     }
 
 
+    const DeleteAllUsers = async (agent_id) =>
+    {
+        setIsDeletingAllUsers(true)
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/delete_all_agent_users", { access_token, agent_id })
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            setIsDeletingAllUsers(false)
+            return
+        }
+        setIsDeletingAllUsers(false)
+        setShowDeleteAllUsers(false)
+    }
+
+    const EnableAllUsers = async (agent_id) =>
+    {
+        setIsEnablingAllUsers(true)
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/enable_all_agent_users", { access_token, agent_id })
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            setIsEnablingAllUsers(false)
+            return
+        }
+        setIsEnablingAllUsers(false)
+        setShowEnableAllUsers(false)
+    }
+
+    const DisableAllUsers = async (agent_id) =>
+    {
+        setIsDisablingAllUsers(true)
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/disable_all_agent_users", { access_token, agent_id })
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            setIsDisablingAllUsers(false)
+            return
+        }
+        setIsDisablingAllUsers(false)
+        setShowDisableAllUsers(false)
+    }
+
+
     const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, business_mode) => {
         setEditMode(true)
         const access_token = sessionStorage.getItem("access_token")
@@ -297,8 +349,20 @@ const AgentsPage = () => {
                 onPowerItem2={handlePowerAgent2}
                 onPowerItem3={handlePowerAgent3}
                 onPowerItem4={handlePowerAgent4}
+                DeleteAllUsers={DeleteAllUsers}
+                DisableAllUsers={DisableAllUsers}
+                EnableAllUsers={EnableAllUsers}
                 onEditItem={handleEditAgent}
                 onLoginItem={handleAdminAsAgent}
+                isEnablingAllUsers={isEnablingAllUsers}
+                isDisablingAllUsers={isDisablingAllUsers}
+                isDeletingAllUsers={isDeletingAllUsers}
+                showDeleteAllUsers={showDeleteAllUsers}
+                showEnableAllUsers={showEnableAllUsers}
+                showDisableAllUsers={showDisableAllUsers}
+                setShowDeleteAllUsers={setShowDeleteAllUsers}
+                setShowEnableAllUsers={setShowEnableAllUsers}
+                setShowDisableAllUsers={setShowDisableAllUsers}
                 editMode={editMode}
             />
 
