@@ -18,14 +18,9 @@ import styles from "./EditAgent.module.css"
 import { pink } from '@mui/material/colors'
 import Checkbox from '@mui/material/Checkbox'
 
-const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerItem2,onPowerItem3,onPowerItem4, onEditItem, onLoginItem, editMode }) => {
+const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerItem2,onPowerItem3,onPowerItem4, onEditItem, onLoginItem, editMode,DeleteAllUsers,EnableAllUsers,DisableAllUsers,isEnablingAllUsers,isDeletingAllUsers,isDisablingAllUsers,showDeleteAllUsers,showEnableAllUsers,showDisableAllUsers,setShowDeleteAllUsers,setShowEnableAllUsers,setShowDisableAllUsers }) => {
     const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
-    const [showDeleteAllUsers, setShowDeleteAllUsers] = useState(false)
-    const [showDisableAllUsers, setShowDisableAllUsers] = useState(false)
-    const [showEnableAllUsers, setShowEnableAllUsers] = useState(false)
-    const [isEnablingAllUsers, setIsEnablingAllUsers] = useState(false)
-    const [isDisablingAllUsers, setIsDisablingAllUsers] = useState(false)
-    const [isDeleingAllUsers, setIsDeletingAllUsers] = useState(false)
+
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -220,7 +215,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                                     />
                                 </span>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Create access : 
+                                    <div>Create access : 
                                         <FormControlLabel
                                         onClick={() => onPowerItem2(item.id, !item.create_access)}
                                         control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.create_access) : false} />}
@@ -228,7 +223,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                                     </div>
                                 </span>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Edit access : 
+                                    <div>Edit access : 
                                         <FormControlLabel
                                         onClick={() => onPowerItem3(item.id, !item.edit_access)}
                                         control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.edit_access) : false} />}
@@ -236,7 +231,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                                     </div>
                                 </span>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Delete access : 
+                                    <div>Delete access : 
                                         <FormControlLabel
                                         onClick={() => onPowerItem4(item.id, !item.delete_access)}
                                         control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.delete_access) : false} />}
@@ -285,7 +280,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                     </header>
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={() => setShowDeleteAllUsers(false)} className="outlined w-full" >Cancel</Button>
-                        <Button onClick={null} className="primary w-full" disabled={isDeleingAllUsers}>{isDeleingAllUsers ? "Deleting..." : "Delete"}</Button>
+                        <Button onClick={() => DeleteAllUsers(item.id)} className="primary w-full" disabled={isDeletingAllUsers}>{isDeletingAllUsers ? "Deleting..." : "Delete"}</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
@@ -303,7 +298,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                     </header>
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={() => setShowDisableAllUsers(false)} className="outlined w-full" >Cancel</Button>
-                        <Button onClick={null} className="primary w-full" disabled={isDisablingAllUsers}>{isDisablingAllUsers ? "Disabling..." : "Disable"}</Button>
+                        <Button onClick={() => DisableAllUsers(item.id)} className="primary w-full" disabled={isDisablingAllUsers}>{isDisablingAllUsers ? "Disabling..." : "Disable"}</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
@@ -321,7 +316,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                     </header>
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={() => setShowEnableAllUsers(false)} className="outlined w-full" >Cancel</Button>
-                        <Button onClick={null} className="primary w-full" disabled={isEnablingAllUsers}>{isEnablingAllUsers ? "Enabling..." : "Enable"}</Button>
+                        <Button onClick={() => EnableAllUsers(item.id)} className="primary w-full" disabled={isEnablingAllUsers}>{isEnablingAllUsers ? "Enabling..." : "Enable"}</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
