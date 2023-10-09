@@ -21,6 +21,8 @@ import Checkbox from '@mui/material/Checkbox'
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem, editMode }) => {
     const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
     const [showDeleteAllUsers, setShowDeleteAllUsers] = useState(false)
+    const [showDisableAllUsers, setShowDisableAllUsers] = useState(false)
+    const [showEnableAllUsers, setShowEnableAllUsers] = useState(false)
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -225,8 +227,8 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                                 </span>
                             </div>
                             <div className={`flex gap-2.5 ${styles['buttons-row']}`}>
-                                <Button className='outlined w-full'><DisabledIcon />Disable all users</Button>
-                                <Button className='outlined w-full'><ActiveIcon />Enable all users</Button>
+                                <Button className='outlined w-full' onClick={() => setShowDisableAllUsers(true)}><DisabledIcon />Disable all users</Button>
+                                <Button className='outlined w-full' onClick={() => setShowEnableAllUsers(true)}><ActiveIcon />Enable all users</Button>
                             </div>
                             <div className="flex">
                                 <Button className="outlined w-full" onClick={() => setShowDeleteAllUsers(true)}><DeathIcon />Delete all users</Button>
@@ -266,6 +268,42 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={() => setShowDeleteAllUsers(false)} className="outlined w-full" >Cancel</Button>
                         <Button onClick={null} className="primary w-full" >Delete</Button>
+                    </main>
+                </Modal>}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showDisableAllUsers && <Modal onClose={() => setShowDisableAllUsers(false)} width={"35rem"}>
+                    <header className="modal__header">
+                        <LeadingIcon>
+                            <DisabledIcon />
+                        </LeadingIcon>
+                        <h1 className="modal__title">Delete all users</h1>
+                        <div className="close-icon" onClick={() => setShowDisableAllUsers(false)}>
+                            <XMarkIcon />
+                        </div>
+                    </header>
+                    <main className='modal__body flex gap-1.5'>
+                        <Button onClick={() => setShowDisableAllUsers(false)} className="outlined w-full" >Cancel</Button>
+                        <Button onClick={null} className="primary w-full" >Disbale</Button>
+                    </main>
+                </Modal>}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showEnableAllUsers && <Modal onClose={() => setShowEnableAllUsers(false)} width={"35rem"}>
+                    <header className="modal__header">
+                        <LeadingIcon>
+                            <ActiveIcon />
+                        </LeadingIcon>
+                        <h1 className="modal__title">Delete all users</h1>
+                        <div className="close-icon" onClick={() => setShowEnableAllUsers(false)}>
+                            <XMarkIcon />
+                        </div>
+                    </header>
+                    <main className='modal__body flex gap-1.5'>
+                        <Button onClick={() => setShowEnableAllUsers(false)} className="outlined w-full" >Cancel</Button>
+                        <Button onClick={null} className="primary w-full" >Enable</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
