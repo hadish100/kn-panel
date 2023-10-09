@@ -270,7 +270,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                     </header>
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={() => setShowDeleteAllUsers(false)} className="outlined w-full" >Cancel</Button>
-                        <Button onClick={null} className="primary w-full" >Delete</Button>
+                        <Button onClick={null} className="primary w-full" disabled={isDeleingAllUsers}>{isDeleingAllUsers ? "Deleting..." : "Delete"}</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
@@ -288,7 +288,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                     </header>
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={() => setShowDisableAllUsers(false)} className="outlined w-full" >Cancel</Button>
-                        <Button onClick={null} className="primary w-full" >Disbale</Button>
+                        <Button onClick={null} className="primary w-full" disabled={isDisablingAllUsers}>{isDisablingAllUsers ? "Disabling..." : "Disable"}</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
@@ -306,7 +306,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                     </header>
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={() => setShowEnableAllUsers(false)} className="outlined w-full" >Cancel</Button>
-                        <Button onClick={null} className="primary w-full" >Enable</Button>
+                        <Button onClick={null} className="primary w-full" disabled={isEnablingAllUsers}>{isEnablingAllUsers ? "Enabling..." : "Enable"}</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
