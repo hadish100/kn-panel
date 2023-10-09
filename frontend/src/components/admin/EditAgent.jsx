@@ -1,8 +1,11 @@
-import React,{useEffect, useState} from 'react'
+import React, { useState } from 'react'
 
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as LoginAsAgentIcon } from '../../assets/svg/LoginAsAgent.svg'
+import { ReactComponent as DeathIcon } from '../../assets/svg/death.svg'
+import { ReactComponent as ActiveIcon } from '../../assets/svg/active.svg'
+import { ReactComponent as DisabledIcon } from '../../assets/svg/disabled.svg'
 import { AnimatePresence, motion } from 'framer-motion'
 import Modal from '../Modal'
 import LeadingIcon from '../LeadingIcon'
@@ -12,11 +15,11 @@ import Button from '../Button'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import IOSSwitch from '../form/inputs/IOSSwitch'
 import styles from "./EditAgent.module.css"
-import { pink } from '@mui/material/colors';
-import Checkbox from '@mui/material/Checkbox';
+import { pink } from '@mui/material/colors'
+import Checkbox from '@mui/material/Checkbox'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditItem, onLoginItem, editMode }) => {
-    const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null);
+    const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -53,7 +56,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                 document.getElementById("prefix").value,
                 document.querySelectorAll(".MuiSelect-nativeInput")[0].value,
                 document.getElementById("max_non_active_days").value,
-                Number(bmchecked==null?item.business_mode:bmchecked),
+                Number(bmchecked == null ? item.business_mode : bmchecked),
             ),
             disabled: editMode,
             pendingText: "Editing...",
@@ -78,8 +81,8 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
     }
 
     const handleBmChange = (event) => {
-        setBmChecked(event.target.checked);
-      };
+        setBmChecked(event.target.checked)
+    }
 
     const getDefaultValue = (item, field) => {
         if (!item) {
@@ -200,19 +203,43 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                             ))}
                         </form>
                     </main>
-                    <div className='flex gap-1.5 flex-row'>
 
-                    <FormControlLabel
-                    control={<Checkbox id="business-mode" name="business-mode"
-                    sx={{
-                        color: pink[800],
-                        marginLeft: "-9px",
-                        '&.Mui-checked': {
-                          color: pink[600],
-                        },
-                    }}
-                    defaultChecked={Boolean(item.business_mode)} onChange={handleBmChange} />}
-                    label="Business Mode"   />
+                    <div className='flex flex-col gap-2.5' style={{ marginTop: "1rem" }}>
+                        <div className='flex justify-between flex-col gap-1'>
+                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                Agent status : <IOSSwitch />
+                            </span>
+                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Create access : <IOSSwitch /></div>
+                            </span>
+                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Edit access : <IOSSwitch /></div>
+                            </span>
+                            <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Delete access : <IOSSwitch /></div>
+                            </span>
+                        </div>
+                        <div className={`flex gap-2.5 ${styles['buttons-row']}`}>
+                            <Button className='outlined w-full'><DisabledIcon />Disable all users</Button>
+                            <Button className='outlined w-full'><ActiveIcon />Enable all users</Button>
+                        </div>
+                        <div className="flex">
+                            <Button className="outlined w-full"><DeathIcon />Delete all users</Button>
+                        </div>
+                    </div>
+
+                    <div className='flex gap-1.5 flex-row'>
+                        <FormControlLabel
+                            control={<Checkbox id="business-mode" name="business-mode"
+                                sx={{
+                                    color: pink[800],
+                                    marginLeft: "-9px",
+                                    '&.Mui-checked': {
+                                        color: pink[600],
+                                    },
+                                }}
+                                defaultChecked={Boolean(item.business_mode)} onChange={handleBmChange} />}
+                            label="Business Mode" />
 
                     </div>
                     {formFooter}

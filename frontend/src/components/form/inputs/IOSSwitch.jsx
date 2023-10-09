@@ -1,6 +1,6 @@
-import React from 'react';
-import Switch from '@mui/material/Switch';
-import { styled } from '@mui/material/styles';
+import React from 'react'
+import Switch from '@mui/material/Switch'
+import { styled } from '@mui/material/styles'
 
 const IOSSwitch = styled((props) => (
     <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -53,8 +53,8 @@ const IOSSwitch = styled((props) => (
         }),
     },
     '& .MuiSwitch-root': {
-        marginLeft:50,
+        marginLeft: 50,
     },
-}));
+}))
 
-export default IOSSwitch;
+export default IOSSwitch

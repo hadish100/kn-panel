@@ -17,6 +17,10 @@
     .multiSelect {
         font-size: 10px;
     }
+
+    .buttons-row {
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 740px) {
