@@ -56,7 +56,7 @@ const UsersPage = () => {
             number_of_rows: rowsPerPage,
             current_page: currentPage,
             search_filter: searchedUsers,
-            status_filter:selectedStatus.value
+            status_filter: selectedStatus.value
         })
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
@@ -78,7 +78,7 @@ const UsersPage = () => {
     useEffect(() => {
         setRefresh(true)
         fetchUsers()
-    }, [rowsPerPage, currentPage, searchedUsers,selectedStatus])
+    }, [rowsPerPage, currentPage, searchedUsers, selectedStatus])
 
     const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")))
 
@@ -107,7 +107,7 @@ const UsersPage = () => {
             setResetMode(false)
             return
         }
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers,status_filter:selectedStatus.value })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -159,7 +159,7 @@ const UsersPage = () => {
             setDeleteMode(false)
             return
         }
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers,status_filter:selectedStatus.value })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -193,7 +193,7 @@ const UsersPage = () => {
             setHasError(true)
             return
         }
-        var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers,status_filter:selectedStatus.value })).data
+        var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
         console.log(users)
         if (users.status === "ERR") {
             setError_msg(users.msg)
@@ -225,7 +225,7 @@ const UsersPage = () => {
             return
         }
 
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage,search_filter: searchedUsers,status_filter:selectedStatus.value })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -309,17 +309,20 @@ const UsersPage = () => {
         { label: <LimitedIcon />, value: "limited" },
         { label: <DisabledIcon />, value: "disabled" },
         { label: <ExpiredIcon />, value: "expired" },
-        { label: <AnonymIcon />, value: "anonym" }
+        { label: <AnonymIcon />, value: "anonym" },
+        { label: <FilterIcon />, value: "" }
     ]
 
     return (
         <div className='panel_body'>
             <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} remainingUsers={agent.max_users - agent.total_users} dataUsage={gbOrTb(agent.used_traffic)} remainingData={gbOrTb(b2gb(agent.volume))} allocableData={gbOrTb(agent.allocatable_data)} lifetime_volume={gbOrTb(b2gb(agent.lifetime_volume))} business_mode={agent.business_mode} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
-                <Search value={searchedUsers} onChange={setSearchedUsers} />
+                <div className="flex gap-2 items-center">
+                    <Search value={searchedUsers} onChange={setSearchedUsers} />
+                    <Dropdown options={statusOptions} value={selectedStatus} onChange={handleSelectStatus} overlap={true} showChevron={false} />
+                </div>
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>
                     <Button onClick={refreshItems} className="outlined refresh-icon"><RefreshIcon /></Button>
-                    <Dropdown options={statusOptions} value={selectedStatus} onChange={handleSelectStatus} overlap={true} showChevron={false} />
                     <Button onClick={handleShowSwitchCountries} className="outlined" disabled={agentInfo.country.split(",").length <= 1}>Switch Countries</Button>
                     <Button onClick={handleShowCreateUser} className="create-user-button primary">Create User</Button>
                 </span>

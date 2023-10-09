@@ -35,6 +35,8 @@ const Dropdown = ({ options, value, onChange, overlap, showChevron = true }) => 
     }
 
     const renderedOptions = options.map((option, index) => {
+        if (option.value === value?.value) return null
+
         return <motion.div
             className={`option ${option.value} ${!showChevron ? "flex justify-center" : ""}`}
             onClick={(e) => handleOptionClick(option, e)}

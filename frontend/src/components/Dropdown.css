@@ -72,13 +72,12 @@
 }
 
 .option svg {
-    background-color: red;
     stroke: black;
     border-radius: 999px;
     transform: rotate(0deg) !important;
-    width: 30px;
-    height: 17px;
-    padding: 1px;
+    width: 35px;
+    height: 20px;
+    padding: 2px;
 }
 
 .option.active svg,
