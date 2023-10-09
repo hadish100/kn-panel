@@ -25,7 +25,7 @@ const FormField = ({
 
     if (type === "multi-select") {
         return (
-            <motion.div className={`modal__form__group`} animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+            <motion.div className={`modal__form__group`}>
                 <label className="modal__form__label" htmlFor={id}>{label}</label>
                 <MultiSelect editValue={editValue} styles={styles} />
             </motion.div>
@@ -34,7 +34,7 @@ const FormField = ({
 
     if (type === "multi-select2") {
         return (
-            <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+            <motion.div className="modal__form__group" >
                 <label className="modal__form__label" htmlFor={id}>{label}</label>
                 <MultiSelect2 editValue={editValue} onChange={onChange} value={value} defaultValue={defaultValue} id={id} />
             </motion.div>
@@ -44,7 +44,7 @@ const FormField = ({
     if (type === "multi-select5") {
         console.log(onChange)
         return (
-            <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+            <motion.div className="modal__form__group">
                 <label className="modal__form__label" htmlFor={id}>{label}</label>
                 <MultiSelect5 editValue={editValue} onChange={onChange} value={value} defaultValue={defaultValue} id={id} />
             </motion.div>
@@ -53,14 +53,14 @@ const FormField = ({
 
     if (type === "value-adjuster") {
         return (
-            <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+            <motion.div className="modal__form__group" >
                 <ValueAdjuster defaultValue={defaultValue} label={label} id={id} name={name} />
             </motion.div>
         )
     }
 
     return (
-        <motion.div className="modal__form__group" animate={{ x: 0, opacity: 1 }} initial={{ x: -40, opacity: 0 }} transition={{ delay: animateDelay }}>
+        <motion.div className="modal__form__group">
             <label className="modal__form__label" htmlFor={id}>{label}</label>
             <input className="modal__form__input" type={type} id={id} name={name} defaultValue={defaultValue} disabled={disabled} />
         </motion.div>
