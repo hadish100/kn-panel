@@ -68,7 +68,6 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.id) },
         { icon: <LoginAsAgentIcon />, type: "button", label: "Login", className: "ghosted", onClick: (e) => onLoginItem(e, item.username, item.password) },
-        { type: "switch", label: "Power", className: "ghosted", onClick: () => onPowerItem(item.id, item.disable) },
     ]
 
 
@@ -209,7 +208,11 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem, onEditI
                         <div className='flex flex-col gap-2.5' style={{ marginTop: "1rem" }}>
                             <div className='flex justify-between flex-col gap-1'>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    Agent status : <IOSSwitch />
+                                    Agent status :
+                                    <FormControlLabel
+                                        onClick={() => onPowerItem(item.id, item.disable)}
+                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(!item.disable) : false} />}
+                                    />
                                 </span>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
                                     <div style={{ transform: "scale(.75)", transformOrigin: "left" }}>Create access : <IOSSwitch /></div>
