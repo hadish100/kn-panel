@@ -56,7 +56,8 @@ const {
     token_to_sub_account,
     delete_vpn_group,
     enable_vpn_group,
-    disable_vpn_group
+    disable_vpn_group,
+    notify_tgb,
 } = require("./utils");
 
 
@@ -320,7 +321,7 @@ app.post("/create_panel", async (req, res) => {
             panel_username,
             panel_password,
             panel_url,
-            panel_country: panel_country + (panel_countries_arr.filter(x => x == panel_country).length + 1),
+            panel_country: panel_country + (panel_countries_arr.filter(x => x.replace(/\d+$/, '') == panel_country).length + 1),
             panel_user_max_count: parseInt(panel_user_max_count),
             panel_traffic: dnf(panel_traffic),
             panel_data_usage: dnf(panel_info.panel_data_usage),
@@ -587,8 +588,8 @@ app.post("/edit_agent", async (req, res) => {
             country
         });
         var account = await token_to_account(access_token);
-        var log_msg = `edited agent ${name} `
-        if(Math.abs(Math.floor(old_volume) - Math.floor(gb2b(volume)))>gb2b(0.1)) 
+        var log_msg = `edited agent !${name} `
+        if(Math.abs(Math.floor(old_volume) - Math.floor(gb2b(volume)))>gb2b(0.3)) 
         {
             log_msg += `and added !${b2gb(gb2b(volume) - old_volume)} GB data`
             await insert_to_logs(agent_id,"RECEIVE_DATA",`received !${b2gb(gb2b(volume) - old_volume)} GB data`,access_token)
@@ -1131,6 +1132,7 @@ app.listen(parseInt(process.env.SERVER_PORT), () =>
     console.log("--------------");
     console.log("SERVER STARTED !");
     console.log("--------------");
+    notify_tgb();
 });
 
 

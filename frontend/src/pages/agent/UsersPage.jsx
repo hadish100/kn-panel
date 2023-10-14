@@ -305,12 +305,12 @@ const UsersPage = () => {
     ]
 
     const statusOptions = [
+        { label: <FilterIcon />, value: "" },
         { label: <ActiveIcon />, value: "active" },
         { label: <LimitedIcon />, value: "limited" },
-        { label: <DisabledIcon />, value: "disabled" },
         { label: <ExpiredIcon />, value: "expired" },
-        { label: <AnonymIcon />, value: "anonym" },
-        { label: <FilterIcon />, value: "" }
+        { label: <DisabledIcon />, value: "disabled" },
+        { label: <AnonymIcon />, value: "anonym" }
     ]
 
     return (
