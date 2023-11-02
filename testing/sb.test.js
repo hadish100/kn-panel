@@ -1,21 +1,26 @@
 const axios = require('axios');
 const fs = require('fs');
 const util = require('util');
-const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban} = require("../utils");
+const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph} = require("../utils");
 
 
+
+// (async () => 
+// {
+//     var link = "https://panel.gostar.tech:8880";
+//     var username = "admin";
+//     var password = "mahdi2020";
+
+//     var test = await get_panel_info(link, username, password);
+//     console.log(test);
+// })();
 
 (async () => 
 {
-    var link = "https://panel.gostar.tech:8880";
-    var username = "admin";
-    var password = "mahdi2020";
-
-    var test = await get_panel_info(link, username, password);
-    console.log(test);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    var result = await get_agent_data_graph(1673636041,1698919269,1);
+    console.log(result.total_allocated_data.filter(x=>x.count>0));
 })();
-
-
 
 
 // (async () => {
