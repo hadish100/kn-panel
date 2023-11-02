@@ -6,10 +6,22 @@ import { ReactComponent as PieChartIcon } from "../../assets/svg/pie-chart.svg";
 import { ReactComponent as DataCenterIcon } from "../../assets/svg/data-center.svg"
 import { ReactComponent as GraphBarIcon } from "../../assets/svg/graph-bar.svg"
 import { ReactComponent as UsersIcon } from "../../assets/svg/users.svg"
+import { ReactComponent as PersonIcon } from "../../assets/svg/person.svg"
 
-const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData, remainingUsers, lifetime_volume, business_mode }) => {
+const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData, remainingUsers, lifetime_volume, business_mode,agent_name }) => {
     return (
         <div className="usage-stats">
+
+            <div className="flex">
+                <div className="usage-stats__item">
+                    <LeadingIcon>
+                        <PersonIcon />
+                    </LeadingIcon>
+                    <div className="usage-stats__item__label">Agent Name</div>
+                    <div className="usage-stats__item__value agent_name_box">{agent_name}</div>
+                </div>
+            </div>
+
             <div className="flex">
                 <div className="usage-stats__item">
                     <LeadingIcon>

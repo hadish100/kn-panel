@@ -165,6 +165,7 @@ const get_panel_info = async (link, username, password) => {
     }
 
     catch (err) {
+        console.log(err);
         return "ERR"
     }
 }
@@ -675,7 +676,8 @@ const notify_tgb = async () =>
         await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
         {
             chat_id:111273509,
-            text: "🔹 Server instance started" + " ( PORT " + process.env.SERVER_PORT + " )" +  "\n\n" + JSON.stringify(results,null,4),
+            text: "🔹 Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" +  "\n\n" + "```json\n" + JSON.stringify(results,null,4) + "\n```",
+            parse_mode: "MarkdownV2",
         });
 
 

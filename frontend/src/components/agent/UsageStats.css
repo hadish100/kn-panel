@@ -49,3 +49,9 @@
         flex-direction: column;
     }
 }
+
+.agent_name_box
+{
+    font-size: 1.875rem;
+    font-weight: 600;
+}

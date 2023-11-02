@@ -37,7 +37,8 @@ async function modify_db()
         //     await update_user(user.id, {inbounds});
         //     console.log("UPDATED INBOUNDS OF => " + user.username);
         // }
-        // await update_user(user.id, {subscription_url:user.subscription_url.replace("5000","8000").replace("http://","https://")});
+        await update_user(user.id, {subscription_url:user.subscription_url.replace(":8000","")});
+        
         //await update_user(user.id, {lifetime_used_traffic:user.used_traffic});
         // if(user.country=="server61")
         // {
@@ -45,11 +46,11 @@ async function modify_db()
         //     console.log("DONE 1");
         // }
 
-        if(user.country=="jet1")
-        {
-            await update_user(user.id,{country:"server8"});
-            console.log("DONE 1");
-        }
+        // if(user.country=="jet1")
+        // {
+        //     await update_user(user.id,{country:"server8"});
+        //     console.log("DONE 1");
+        // }
 
     }
 

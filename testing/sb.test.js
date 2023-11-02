@@ -1,7 +1,23 @@
 const axios = require('axios');
 const fs = require('fs');
 const util = require('util');
-const {get_marzban_user,get_panel_info,restart_marzban_xray} = require("../utils");
+const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban} = require("../utils");
+
+
+
+(async () => 
+{
+    var link = "https://panel.gostar.tech:8880";
+    var username = "admin";
+    var password = "mahdi2020";
+
+    var test = await get_panel_info(link, username, password);
+    console.log(test);
+})();
+
+
+
+
 // (async () => {
 //   var complete_user_info = get_marzban_user("http://206.189.58.110:8000", "admin", "admin", "Smart_baqer");
 //   console.log(complete_user_info);
@@ -105,12 +121,12 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray} = require("../utils
 // })();
 
 
-(async () => 
-{
-    // await axios.post("http://localhost:5000/add_sub_account",{access_token:"r6kXzmufeie1FnzD6Vrmt7nclX42kM",username:'admin12',password:'123'});
-    var res = await axios.post("http://localhost:5000/disable_all_agent_users",{access_token:"w1kh4mODGcc32EblLyO5roOQ3fOFiT*",agent_id:890053885});
-    console.log(res.data);
-})();
+// (async () => 
+// {
+//     // await axios.post("http://localhost:5000/add_sub_account",{access_token:"r6kXzmufeie1FnzD6Vrmt7nclX42kM",username:'admin12',password:'123'});
+//     var res = await axios.post("http://localhost:5000/disable_all_agent_users",{access_token:"w1kh4mODGcc32EblLyO5roOQ3fOFiT*",agent_id:890053885});
+//     console.log(res.data);
+// })();
 
 
 
