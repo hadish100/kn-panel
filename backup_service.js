@@ -18,6 +18,19 @@ async function init()
         try 
         {
           console.log("*STARTING BACKUP SERVICE");
+
+          var dbdl_files = await fs.promises.readdir("./frontend/public/dbdl");
+
+          for(var i=0;i<dbdl_files.length;i++)
+          {
+            if(!dbdl_files[i].endsWith(".zip")) continue;
+            var file_path = "./frontend/public/dbdl/" + dbdl_files[i];
+            var file_stat = await fs.promises.stat(file_path);
+            var diff = new Date() - new Date(file_stat.mtime);
+            if(diff > 2*60*60*24*1000) await fs.promises.unlink(file_path);
+          }
+
+
           var res = (await axios.post("http://localhost:" + process.env.SERVER_PORT + "/dldb", { service_access_api_key : "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" })).data;
           var filePath = "./frontend/public" + res.split(">")[1];
           var today = new Date();
@@ -43,7 +56,6 @@ async function init()
           {
             var res1 = await bot.telegram.sendDocument(chat_id, { source: filePath });
             console.log(time + " ---> Backup Sent to telegram");
-            // console.log(res1);
           }
 
           // SEND IN EMAIL

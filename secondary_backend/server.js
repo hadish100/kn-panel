@@ -3,6 +3,7 @@ const app = express();
 var AdmZip = require("adm-zip");
 const sqlite3 = require('sqlite3').verbose();
 app.use(express.json());
+const fs = require('fs').promises;
 
 const db_path = "/var/lib/marzban/db.sqlite3"
 // const db_path = "db2.sqlite3"
@@ -124,13 +125,34 @@ app.post("/edit_expire_times", async (req,res) =>
 
 app.post("/dldb", async (req,res) =>
 {
-    var zip = new AdmZip();
-    var zip_id = Date.now();
-    var final_file = "/var/lib/bu"+zip_id+".zip"
-    zip.addLocalFolder("/var/lib/marzban","lib");
-    zip.addLocalFolder("/opt/marzban","opt");
-    zip.writeZip(final_file);
-    res.sendFile(final_file);
+    try
+    {
+
+        var dbdl_files = await fs.readdir("/var/lib");
+
+        for(var i=0;i<dbdl_files.length;i++)
+        {
+          if(!dbdl_files[i].endsWith(".zip")) continue;
+          var file_path = "/var/lib/" + dbdl_files[i];
+          var file_stat = await fs.stat(file_path);
+          var diff = new Date() - new Date(file_stat.mtime);
+          if(diff > 60*60*24*1000) await fs.unlink(file_path);
+        }
+
+        var zip = new AdmZip();
+        var zip_id = Date.now();
+        var final_file = "/var/lib/bu"+zip_id+".zip"
+        zip.addLocalFolder("/var/lib/marzban","lib");
+        zip.addLocalFolder("/opt/marzban","opt");
+        zip.writeZip(final_file);
+        res.sendFile(final_file);
+    }
+
+    catch(err)
+    {
+        res.send("ERR");
+    }
+
 });
 
 

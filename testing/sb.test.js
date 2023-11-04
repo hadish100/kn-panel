@@ -15,12 +15,12 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_use
 //     console.log(test);
 // })();
 
-(async () => 
-{
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    var result = await get_agent_data_graph(1673636041,1698919269,1);
-    console.log(result.total_allocated_data.filter(x=>x.count>0));
-})();
+// (async () => 
+// {
+//     await new Promise(resolve => setTimeout(resolve, 1000));
+//     var result = await get_agent_data_graph(1673636041,1698919269,1);
+//     console.log(result.total_allocated_data.filter(x=>x.count>0));
+// })();
 
 
 // (async () => {
@@ -48,27 +48,27 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_use
 //     console.log(result);
 // })();
 
-// async function dl_file(url,destination) 
-// {
-// 	const response = await axios
-// 	({
-// 	  url,
-// 	  method: 'POST',
-// 	  responseType: 'stream',
-//       data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
-// 	});
-  
+async function dl_file(url,destination) 
+{
+	const response = await axios
+	({
+	  url,
+	  method: 'POST',
+	  responseType: 'stream',
+      data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
+	});
+
 		
-// 	const writer = fs.createWriteStream(destination);
+	const writer = fs.createWriteStream(destination);
   
-// 	response.data.pipe(writer);
+	response.data.pipe(writer);
   
-// 	return new Promise((resolve, reject) => 
-// 	{
-// 	  writer.on('finish', resolve);
-// 	  writer.on('error', reject);
-// 	});
-// }
+	return new Promise((resolve, reject) => 
+	{
+	  writer.on('finish', resolve);
+	  writer.on('error', reject);
+	});
+}
 
 // (async () => 
 // {
@@ -135,4 +135,4 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_use
 
 
 
-//  dl_file("http://ir1.mf1vpn.xyz:7002/dldb","db.zip");
+dl_file("http://65.109.186.13:7002/dldb","db.zip");
