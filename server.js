@@ -891,15 +891,21 @@ app.post("/uldb", async (req, res) =>
         await logs_clct.insertMany(logs_clct_rs);
 
 
-        await delete_folder_content("dbrs");
         await insert_to_logs(account.id,"RESTORE_DB",`restored database`,access_token);
         res.send("DONE");
     }
 
     catch(err)
     {
+        console.log(err);
         res.send({ status: "ERR", msg: 'unsupported file structure' })
     }
+
+    finally
+    {
+        await delete_folder_content("dbrs");
+    }
+    
 });
 
 app.post("/get_panel_inbounds", async (req, res) => 

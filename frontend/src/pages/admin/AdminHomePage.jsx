@@ -16,7 +16,9 @@ const AdminHomePage = ({ setLocation }) => {
     const [showBackupCard, setShowBackupCard] = useState(false)
     const [showRestoreCard, setShowRestoreCard] = useState(false)
     const [error_msg, setError_msg] = useState("")
+    const [fileName, setFileName] = useState("Choose File");
     const [hasError, setHasError] = useState(false)
+    const [isUploadBtnDisabled, setIsUploadBtnDisabled] = useState(false)
     const [selectedFile, setSelectedFile] = useState(null)
 
     const handleBC = async () => {
@@ -42,10 +44,16 @@ const AdminHomePage = ({ setLocation }) => {
 
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0])
+        setFileName(e.target.files[0].name)
+    }
+
+    const fakeUlBtnClick = () => {
+        document.getElementById("uldb").click()
     }
 
     const handleUploadFile = async () => {
 
+        setIsUploadBtnDisabled(true)
         const access_token = sessionStorage.getItem("access_token")
         const formData = new FormData()
         formData.append("access_token", access_token)
@@ -54,8 +62,10 @@ const AdminHomePage = ({ setLocation }) => {
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
             setHasError(true)
+            setIsUploadBtnDisabled(false)
             return
         }
+        setIsUploadBtnDisabled(false)
         setShowRestoreCard(false)
         await new Promise(r => setTimeout(r, 300));
         setShowManageDatabases(false)
@@ -83,7 +93,7 @@ const AdminHomePage = ({ setLocation }) => {
                     </header>
                     <main className='modal__body flex gap-1.5'>
                         <Button onClick={handleBC} className="primary w-full" >Backup</Button>
-                        <Button onClick={() => setShowRestoreCard(true)} className="primary w-full" >Restore</Button>
+                        <Button onClick={() => {setShowRestoreCard(true);setFileName("Choose File")}} className="primary w-full" >Restore</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
@@ -100,14 +110,15 @@ const AdminHomePage = ({ setLocation }) => {
                         </div>
                     </header>
                     <main className='modal__body flex gap-1.5' style={{ alignItems: "center",flexDirection:"column" }}>
-                        <input type='file' onChange={handleFileChange} name="uldb" className='primary w-full' />
-                        <Button className="outlined w-full" onClick={handleUploadFile}>Upload</Button>
+                        <Button className='primary w-full' onClick={fakeUlBtnClick} >{fileName}</Button>
+                        <input type='file' style={{display:"none"}} onChange={handleFileChange} name="uldb" id="uldb" className='primary w-full' />
+                        <Button className="outlined w-full" disabled={isUploadBtnDisabled} onClick={handleUploadFile}>Upload</Button>
                     </main>
                 </Modal>}
             </AnimatePresence>
 
             <MessageCard
-                title="fetching databases"
+                title="Fetching databases"
                 duration={JSON.parse(sessionStorage.getItem("panels")).length*4}
                 showCard={showBackupCard}
                 onClose={() => setShowBackupCard(false)}
