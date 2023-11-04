@@ -45,22 +45,23 @@ const AdminHomePage = ({ setLocation }) => {
     }
 
     const handleUploadFile = async () => {
-        // const access_token = sessionStorage.getItem("access_token")
-        // const formData = new FormData()
-        // formData.append("access_token", access_token)
-        // formData.append("file", selectedFile)
-        // axios.post("restore_db", formData,
-        // ).then(res => {
-        //     if (res.data.status === "ERR") {
-        //         setError_msg(res.data.msg)
-        //         setHasError(true)
-        //         return
-        //     }
-        //     setShowRestoreCard(false)
-        // })
+
+        const access_token = sessionStorage.getItem("access_token")
+        const formData = new FormData()
+        formData.append("access_token", access_token)
+        formData.append("file", selectedFile)
+        var res = await axios.post("/uldb", formData);
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg)
+            setHasError(true)
+            return
+        }
         setShowRestoreCard(false)
         await new Promise(r => setTimeout(r, 300));
         setShowManageDatabases(false)
+        await new Promise(r => setTimeout(r, 300));
+        window.location.href = "/login";
+        sessionStorage.clear();
     }
 
     return (
@@ -98,8 +99,8 @@ const AdminHomePage = ({ setLocation }) => {
                             <XMarkIcon />
                         </div>
                     </header>
-                    <main className='modal__body flex gap-1.5' style={{ alignItems: "center" }}>
-                        <input type='file' onChange={handleFileChange} className='primary w-full' />
+                    <main className='modal__body flex gap-1.5' style={{ alignItems: "center",flexDirection:"column" }}>
+                        <input type='file' onChange={handleFileChange} name="uldb" className='primary w-full' />
                         <Button className="outlined w-full" onClick={handleUploadFile}>Upload</Button>
                     </main>
                 </Modal>}

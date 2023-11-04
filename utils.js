@@ -723,7 +723,7 @@ const get_agent_data_graph = async (date_from,date_to,business_mode) =>
 
     var res_obj = {};
     res_obj["total_allocated_data"] = [];
-    // res_obj["total_data_usage"] = [];
+    res_obj["total_data_usage"] = [];
 
     var agents_bm_status = (await get_accounts()).filter(x=>!x.is_admin).map(x=>{ return {name:x.name,business_mode:x.business_mode}; });
     var logs_arr = (await get_logs()).filter(x => x.time >= date_from && x.time <= date_to);
@@ -748,6 +748,7 @@ const get_agent_data_graph = async (date_from,date_to,business_mode) =>
         var current_day_data_allocation_logs = logs_arr.filter(x => x.time >= i && x.time <= i+86400);
         var current_day_allocated_data = current_day_data_allocation_logs.filter(log=>log.bm_status==business_mode).reduce((acc,curr)=>acc+curr.allocated_data,0);
         res_obj["total_allocated_data"].push({date:i,count:current_day_allocated_data});
+        res_obj["total_data_usage"].push({date:i,count:0});
     }
 
     return res_obj;

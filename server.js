@@ -1,9 +1,7 @@
 const express = require('express'); const app = express();
-const axios = require('axios');
+const fileUpload = require('express-fileupload');
 const fs = require('fs');
 var AdmZip = require("adm-zip");
-const { MongoClient } = require('mongodb');
-const client = new MongoClient('mongodb://127.0.0.1:27017');
 var SD_VARIABLE = 0;
 require('dotenv').config()
 var accounts_clct, panels_clct, users_clct, logs_clct;
@@ -64,6 +62,7 @@ const {
 
 
 app.use(express.json());
+app.use(fileUpload());
 app.use(auth_middleware);
 
 connect_to_db().then(res => {
@@ -95,7 +94,7 @@ async function auth_middleware(req, res, next) {
             panels_perms:["/create_panel","/delete_panel","/disable_panel","/enable_panel","/edit_panel"]
         };
 
-        if(access_token.includes("#") && [...endpoints.agents_perms,...endpoints.panels_perms,"/dldb"].includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
+        if(access_token.includes("#") && [...endpoints.agents_perms,...endpoints.panels_perms,"/dldb","/uldb"].includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
         else if(access_token.includes("@") && endpoints.sub_accounts_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });   
         else if(access_token.includes("@") && !access_token.includes("$") && endpoints.panels_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
         else if(access_token.includes("@") && !access_token.includes("%") && endpoints.agents_perms.includes(req.url)) res.send({ status: "ERR", msg: 'access denied' });
@@ -862,6 +861,46 @@ app.post("/dldb", async (req, res) =>
 
 });
 
+
+app.post("/uldb", async (req, res) => 
+{
+    try
+    {
+        var { access_token } = req.body;
+        var account = await token_to_account(access_token);
+        await delete_folder_content("dbrs");
+        await fs.promises.mkdir("dbrs");
+        var db_file = req.files.file;
+        await db_file.mv("dbrs/db.zip");
+        var zip = new AdmZip("dbrs/db.zip");
+        zip.extractAllTo("dbrs",true);
+
+        var panels_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/panels.json"));
+        var accounts_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/accounts.json"));
+        var users_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/users.json"));
+        var logs_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/logs.json"));
+        
+        await panels_clct.deleteMany({});
+        await accounts_clct.deleteMany({});
+        await users_clct.deleteMany({});
+        await logs_clct.deleteMany({});
+
+        await panels_clct.insertMany(panels_clct_rs);
+        await accounts_clct.insertMany(accounts_clct_rs);
+        await users_clct.insertMany(users_clct_rs);
+        await logs_clct.insertMany(logs_clct_rs);
+
+
+        await delete_folder_content("dbrs");
+        await insert_to_logs(account.id,"RESTORE_DB",`restored database`,access_token);
+        res.send("DONE");
+    }
+
+    catch(err)
+    {
+        res.send({ status: "ERR", msg: 'unsupported file structure' })
+    }
+});
 
 app.post("/get_panel_inbounds", async (req, res) => 
 {
