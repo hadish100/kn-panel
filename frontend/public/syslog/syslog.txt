@@ -358,3 +358,9 @@
 10/7/2023 - 20:13:40 ===> user Ava_Home57 not found in http://209.38.245.93:8000 deleting...
 10/7/2023 - 20:13:40 ===> user Ava_23 not found in http://209.38.245.93:8000 deleting...
 10/7/2023 - 20:13:40 ===> user Ava_Mohammedi not found in http://209.38.245.93:8000 deleting...
+11/4/2023 - 15:23:53 ===> ERROR : failed to fetch panel info from http://209.38.245.93:8000
+11/4/2023 - 15:23:53 ===> cannot connect to panel http://209.38.245.93:8000 ---> retrying (1/3)
+11/4/2023 - 15:23:58 ===> cannot connect to panel http://209.38.245.93:8000 ---> retrying (2/3)
+11/4/2023 - 15:24:03 ===> cannot connect to panel http://209.38.245.93:8000 ---> retrying (3/3)
+11/4/2023 - 15:24:08 ===> cannot connect to panel http://209.38.245.93:8000 ---> disabling
+11/4/2023 - 15:28:29 ===> ERROR : failed to fetch panel users from https://panel.gostar.tech:8880
