@@ -905,7 +905,7 @@ app.post("/uldb", async (req, res) =>
     {
         await delete_folder_content("dbrs");
     }
-    
+
 });
 
 app.post("/get_panel_inbounds", async (req, res) => 
@@ -1172,7 +1172,6 @@ app.post("/graph/get_agent_data", async(req,res) =>
     var data_obj = await get_agent_data_graph(date_from,date_to,business_mode);
     res.send(data_obj);
 });
-
 
 
 

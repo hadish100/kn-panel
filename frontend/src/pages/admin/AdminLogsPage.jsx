@@ -76,14 +76,16 @@ const AdminLogsPage = () => {
     }
 
     const dl_system_log = async () => {
-        const downloadUrl = window.location.protocol + "//" + window.location.host + "/syslog/syslog.txt"; 
-        console.log(downloadUrl)
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = "syslog.txt";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // const downloadUrl = window.location.protocol + "//" + window.location.host + "/syslog/syslog.txt"; 
+        // console.log(downloadUrl)
+        // const link = document.createElement("a");
+        // link.href = downloadUrl;
+        // link.download = "syslog.txt";
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+        var access_token = sessionStorage.getItem("access_token")
+        await axios.post("/get_syslog", { access_token });
     }
 
     const itemsPerRowOptions = [
