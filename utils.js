@@ -364,7 +364,7 @@ const ping_panel = async (panel_obj) => {
         for (var i = 0; i < 3; i++) {
             var headers = await auth_marzban(link, username, password);
             if (headers == "ERR") {
-                await syslog("cannot connect to panel " + panel_obj.panel_url + " ---> retrying (" + (i + 1) + "/3)");
+                await syslog("cannot connect to panel !" + panel_obj.panel_url + " ---> retrying (" + (i + 1) + "/3)");
                 await sleep(5000);
             }
 
@@ -373,7 +373,7 @@ const ping_panel = async (panel_obj) => {
             }
         }
 
-        await syslog("cannot connect to panel " + panel_obj.panel_url + " ---> disabling");
+        await syslog("cannot connect to panel !" + panel_obj.panel_url + " ---> disabling");
         await disable_panel(panel_obj.id);
 
     }
@@ -482,13 +482,13 @@ const enable_panel = async (panel_id) =>
                 data: {api_key:SB_API_KEY,added_time:Math.floor(Date.now()/1000) - panel_obj.last_online}
             });
 
-            await syslog("added " + Math.floor(Date.now()/1000) - panel_obj.last_online + " seconds to expire times of panel " + panel_obj.panel_url)
+            await syslog("added !" + Math.floor(Date.now()/1000) - panel_obj.last_online + " seconds to expire times of panel !" + panel_obj.panel_url,1)
         }
 
         catch(err)
         {
             console.log(err);
-            await syslog("ERROR : failed to update expire times of panel " + panel_obj.panel_url);
+            await syslog("!ERROR : failed to update expire times of panel !" + panel_obj.panel_url);
         }
 
     }
@@ -520,19 +520,28 @@ const secondary_backend_url_converter = (url,method) =>
     return url.split(":")[0].replace("https","http") + ":" + url.split(":")[1] + ":7002/" + method;
 }
 
-const syslog = async (str) =>
+const syslog = async (str,is_positive) =>
 {
     try 
     {
-        var date = new Date();
-        str = date.toLocaleString("en-US",{ hourCycle: 'h23' }).replace(", "," - ") + " ===> " + str;
+        var time = Math.floor(Date.now() / 1000);
+
+        await logs_clct.insertOne
+        ({
+            msg:str,
+            time,
+            is_syslog:1,
+            is_positive:is_positive?1:0
+        });
+
         console.log(str);
-        await fs.promises.appendFile("frontend/public/syslog/syslog.txt",str + "\n");
+
         return "DONE";
     }
 
     catch(err)
     {
+        console.log(err);
         return "ERR";
     }
 }
@@ -645,7 +654,7 @@ const update_user_links_bg = (panel_url,panel_username,panel_password,username,i
 
     catch(err)
     {
-        syslog("ERROR : failed to update links of user " + username);
+        syslog("!ERROR : failed to update links of user !" + username);
     }
 }
 

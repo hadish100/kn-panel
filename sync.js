@@ -58,7 +58,7 @@ connect_to_db().then(res => {
                 else
                 {
                     await enable_panel(panel.id);
-                    await syslog("panel " + panel.panel_url + " is now enabled");
+                    await syslog("panel !" + panel.panel_url + " is now enabled",1);
                 }
             }
             var today = new Date();
@@ -68,7 +68,7 @@ connect_to_db().then(res => {
             console.time("             * fetched panel info from " + panel.panel_url);
             var info_obj = await get_panel_info(panel.panel_url, panel.panel_username, panel.panel_password);
             if (info_obj == "ERR") {
-                await syslog("ERROR : failed to fetch panel info from " + panel.panel_url);
+                await syslog("!ERROR : failed to fetch panel info from !" + panel.panel_url);
                 await ping_panel(panel);
                 continue;
             }
@@ -82,7 +82,7 @@ connect_to_db().then(res => {
             console.time("             * fetched users from " + panel.panel_url);
             var marzban_users = await get_all_marzban_users(panel.panel_url, panel.panel_username, panel.panel_password);
             if (marzban_users == "ERR") {
-                await syslog("ERROR : failed to fetch panel users from " + panel.panel_url);
+                await syslog("!ERROR : failed to fetch panel users from !" + panel.panel_url);
                 continue;
             }
             console.timeEnd("             * fetched users from " + panel.panel_url);
@@ -98,20 +98,20 @@ connect_to_db().then(res => {
         
                 if(!cors_panel)
                 {
-                    await syslog("panel not found for user " + db_user.username + " deleting...");
+                    await syslog("panel not found for user !" + db_user.username + " deleting...");
                     await users_clct.deleteOne({username: db_user.username});
                 }
         
                 if(!cors_agent)
                 {
-                    await syslog("agent not found for user " + db_user.username + " deleting...");
+                    await syslog("agent not found for user !" + db_user.username + " deleting...");
                     await users_clct.deleteOne({username: db_user.username});
                 }
 
 
                 var user = marzban_users.find(user => user.username == db_user.username);
                 if (!user && db_user.corresponding_panel == panel.panel_url) {
-                    await syslog("user " + db_user.username + " not found in " + panel.panel_url + " deleting...");
+                    await syslog("user !" + db_user.username + " not found in !" + panel.panel_url + " deleting...");
                     var user_obj = await get_user2(db_user.username);
                     var agent_obj = await get_account(user_obj.agent_id);
                     if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
@@ -161,7 +161,7 @@ connect_to_db().then(res => {
                             if (result != "ERR")  {
                                 if( !(agent.business_mode == 1 && (user.used_traffic > user.data_limit/4 || (user.expire - user.created_at) < (Math.floor(Date.now()/1000) - user.created_at)*4 )) ) await update_account(agent.id, { allocatable_data: dnf(agent.allocatable_data + b2gb(user.data_limit - user.used_traffic)) });
                                 await users_clct.deleteOne({ username:user.username });
-                                await syslog("DELETING " + user.username + "... (passed max-non-active-days)");
+                                await syslog("DELETING !" + user.username + "... (passed max-non-active-days)");
                             }  
                         }
 
@@ -224,7 +224,7 @@ connect_to_db().then(res => {
                           });
 
                         await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit , lifetime_volume: corresponding_agent.lifetime_volume + marzban_user.data_limit });
-                        await syslog("user " + marzban_user.username + " was added for agent " + corresponding_agent.username + " from panel : " + panel.panel_url );
+                        await syslog("user !" + marzban_user.username + " was added for agent !" + corresponding_agent.username + " from panel : !" + panel.panel_url,1 );
                     }
                 }
             }

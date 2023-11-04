@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const util = require('util');
-const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph} = require("../utils");
+const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph,syslog,sleep} = require("../utils");
 
 
 
@@ -22,6 +22,14 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_use
 //     console.log(result.total_allocated_data.filter(x=>x.count>0));
 // })();
 
+
+(async () => 
+{
+	await sleep(2000)
+	await syslog("TESTING SYSTEM LOG");
+	console.log("DONE!");
+
+})();
 
 // (async () => {
 //   var complete_user_info = get_marzban_user("http://206.189.58.110:8000", "admin", "admin", "Smart_baqer");
@@ -48,27 +56,27 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_use
 //     console.log(result);
 // })();
 
-async function dl_file(url,destination) 
-{
-	const response = await axios
-	({
-	  url,
-	  method: 'POST',
-	  responseType: 'stream',
-      data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
-	});
+// async function dl_file(url,destination) 
+// {
+// 	const response = await axios
+// 	({
+// 	  url,
+// 	  method: 'POST',
+// 	  responseType: 'stream',
+//       data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
+// 	});
 
 		
-	const writer = fs.createWriteStream(destination);
+// 	const writer = fs.createWriteStream(destination);
   
-	response.data.pipe(writer);
+// 	response.data.pipe(writer);
   
-	return new Promise((resolve, reject) => 
-	{
-	  writer.on('finish', resolve);
-	  writer.on('error', reject);
-	});
-}
+// 	return new Promise((resolve, reject) => 
+// 	{
+// 	  writer.on('finish', resolve);
+// 	  writer.on('error', reject);
+// 	});
+// }
 
 // (async () => 
 // {
@@ -135,4 +143,5 @@ async function dl_file(url,destination)
 
 
 
-dl_file("http://65.109.186.13:7002/dldb","db.zip");
+// dl_file("http://65.109.186.13:7002/dldb","db.zip");
+

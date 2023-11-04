@@ -26,6 +26,7 @@ const AdminLogsPage = () => {
     const [hasError, setHasError] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [includeSyslog, setIncludeSyslog] = useState(false)
     const [selection, setSelection] = useState(null)
     const [totalPages, setTotalPages] = useState(0)
     const [actions, setActions] = useState([])
@@ -42,7 +43,8 @@ const AdminLogsPage = () => {
             actions,
             accounts,
             start_date: Math.floor(new Date(Date.parse(startDate.$d)).setHours(0, 0, 0, 0) / 1000),
-            end_date: Math.floor(new Date(Date.parse(endDate.$d)).setHours(23, 59, 59, 999) / 1000)
+            end_date: Math.floor(new Date(Date.parse(endDate.$d)).setHours(23, 59, 59, 999) / 1000),
+            syslog: includeSyslog
         })
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
@@ -75,17 +77,9 @@ const AdminLogsPage = () => {
         setRowsPerPage(option.value)
     }
 
-    const dl_system_log = async () => {
-        // const downloadUrl = window.location.protocol + "//" + window.location.host + "/syslog/syslog.txt"; 
-        // console.log(downloadUrl)
-        // const link = document.createElement("a");
-        // link.href = downloadUrl;
-        // link.download = "syslog.txt";
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-        var access_token = sessionStorage.getItem("access_token")
-        await axios.post("/get_syslog", { access_token });
+    const toggle_syslog = () => 
+    {
+        setIncludeSyslog(!includeSyslog)
     }
 
     const itemsPerRowOptions = [
@@ -125,7 +119,7 @@ const AdminLogsPage = () => {
                     </LocalizationProvider>
                 </div>
                 <div className='log_buttons_div' >
-                <Button onClick={() => dl_system_log()} style={{ alignSelf: "end" }} className='outlined' > <Syslog /> System log</Button>
+                <Button onClick={() => toggle_syslog()} style={{ alignSelf: "end" }} className={`outlined ${includeSyslog?'syslog_gray_bg':''}`} > <Syslog /> System log</Button>
                 <Button onClick={() => fetchLogs(true)} style={{ alignSelf: "start" }} className='primary' disabled={filterMode}>{filterMode ? "Filtering..." : "Filter"}</Button>
                 </div>
             </div>

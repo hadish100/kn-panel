@@ -21,7 +21,11 @@ const LogsList = ({ logs }) => {
 
     return (
         <ul className='logs'>
-            {logs.map((log) => (
+            {logs.map((log) => 
+            {
+                
+            if(!log.is_syslog)
+            return (
                 <li className='log' key={log.id}>
                     <div className="log__text">
                         <p>
@@ -33,7 +37,21 @@ const LogsList = ({ logs }) => {
                     </div>
                     <div className='log__date'>{timestamp_to_date(log.time)}</div>
                 </li>
-            ))}
+            )
+
+            else
+            return (
+                <li className='log' style={log.is_positive?{backgroundColor:"#edf7fd",border:"1px solid #86c7ed"}:{backgroundColor:"#fdedef",border:"1px solid #ed8693"}} key={log.id}>
+                    <div className="log__text">
+                        <p>
+                            <span dangerouslySetInnerHTML={{ __html: parse_log(log.msg) }} />
+                        </p>
+                    </div>
+                    <div className='log__date'>{timestamp_to_date(log.time)}</div>
+                </li>
+            )
+            
+            })}
         </ul>
     );
 };
