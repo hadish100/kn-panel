@@ -26,7 +26,7 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_use
 (async () => 
 {
 	await sleep(2000)
-	await syslog("TESTING SYSTEM LOG");
+	await syslog("TESTING SYSTEM LOG",1);
 	console.log("DONE!");
 
 })();
