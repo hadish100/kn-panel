@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Search from '../../components/Search'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
@@ -13,7 +12,7 @@ import Ms3 from '../../components/form/inputs/MultiSelect3'
 import Pagination from '../../components/Pagination'
 import Dropdown from '../../components/Dropdown'
 import Button from '../../components/Button'
-import { ReactComponent as Syslog } from '../../assets/svg/document.svg';
+import { ReactComponent as Syslog } from '../../assets/svg/document.svg'
 
 
 
@@ -77,8 +76,7 @@ const AdminLogsPage = () => {
         setRowsPerPage(option.value)
     }
 
-    const toggle_syslog = () => 
-    {
+    const toggle_syslog = () => {
         setIncludeSyslog(!includeSyslog)
     }
 
@@ -88,7 +86,7 @@ const AdminLogsPage = () => {
         { label: 30, value: 30 },
     ]
 
-    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT", "RECEIVE_DATA","SWITCH_COUNTRY","ADD_SUB_ACCOUNT","EDIT_SUB_ACCOUNT","DELETE_SUB_ACCOUNT","ENABLE_AGENT_CREATE_ACCESS","DISABLE_AGENT_CREATE_ACCESS","ENABLE_AGENT_EDIT_ACCESS","DISABLE_AGENT_EDIT_ACCESS","ENABLE_AGENT_DELETE_ACCESS","DISABLE_AGENT_DELETE_ACCESS","ENABLE_ALL_AGENT_USERS","DELETE_ALL_AGENT_USERS","DELETE_ALL_AGENT_USERS","RESTORE_DB"]
+    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER", "CREATE_PANEL", "EDIT_PANEL", "DELETE_PANEL", "EDIT_SELF", "RESET_USER", "CREATE_AGENT", "EDIT_AGENT", "DELETE_AGENT", "ENABLE_USER", "ENABLE_AGENT", "ENABLE_PANEL", "DISABLE_USER", "DISABLE_PANEL", "DISABLE_AGENT", "RECEIVE_DATA", "SWITCH_COUNTRY", "ADD_SUB_ACCOUNT", "EDIT_SUB_ACCOUNT", "DELETE_SUB_ACCOUNT", "ENABLE_AGENT_CREATE_ACCESS", "DISABLE_AGENT_CREATE_ACCESS", "ENABLE_AGENT_EDIT_ACCESS", "DISABLE_AGENT_EDIT_ACCESS", "ENABLE_AGENT_DELETE_ACCESS", "DISABLE_AGENT_DELETE_ACCESS", "ENABLE_ALL_AGENT_USERS", "DELETE_ALL_AGENT_USERS", "DELETE_ALL_AGENT_USERS", "RESTORE_DB"]
     const filter_accounts = (JSON.parse(sessionStorage.getItem("agents")).map(agent => agent.username)).concat(["admin"]).reverse()
 
     return (
@@ -119,8 +117,8 @@ const AdminLogsPage = () => {
                     </LocalizationProvider>
                 </div>
                 <div className='log_buttons_div' >
-                <Button onClick={() => toggle_syslog()} style={{ alignSelf: "end" }} className={`outlined ${includeSyslog?'syslog_gray_bg':''}`} > <Syslog /> System log</Button>
-                <Button onClick={() => fetchLogs(true)} style={{ alignSelf: "start" }} className='primary' disabled={filterMode}>{filterMode ? "Filtering..." : "Filter"}</Button>
+                    <Button onClick={() => toggle_syslog()} style={{ alignSelf: "end" }} className={`outlined ${includeSyslog ? 'syslog_gray_bg' : ''}`} > <Syslog /> System log</Button>
+                    <Button onClick={() => fetchLogs(true)} style={{ alignSelf: "start" }} className='primary' disabled={filterMode}>{filterMode ? "Filtering..." : "Filter"}</Button>
                 </div>
             </div>
             {!IsLogReady && <div className='loading_gif_container'> <CircularProgress /> </div>}
