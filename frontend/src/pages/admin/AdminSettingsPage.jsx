@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import { AnimatePresence } from 'framer-motion'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 import Button from '../../components/Button'
-import styles from "./AdminSettingsPage.module.css"
 import ErrorCard from '../../components/ErrorCard'
 import OkCard from '../../components/OkCard'
 import Modal from '../../components/Modal'
-import { AnimatePresence } from 'framer-motion'
 import LeadingIcon from '../../components/LeadingIcon'
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+import MessageCard from "../../components/MessageCard"
 
 import { ReactComponent as DeleteIcon } from '../../assets/svg/delete.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as SpinnerIcon } from '../../assets/svg/spinner.svg'
+import { ReactComponent as DbIcon } from '../../assets/svg/db.svg'
+import { ReactComponent as DbUpIcon } from '../../assets/svg/db-up.svg'
+
+import styles from "./AdminSettingsPage.module.css"
 
 const AdminSettingsPage = () => {
     const [error_msg, setError_msg] = useState("Passwords dont match")
@@ -33,6 +37,12 @@ const AdminSettingsPage = () => {
     const [isLoadingAdmins, setIsLoadingAdmins] = useState(false)
     const [panels_perm, setPanels_perm] = useState((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.panels)) || null)
     const [agents_perm, setAgents_perm] = useState((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.agents)) || null)
+    const [showManageDatabases, setShowManageDatabases] = useState(false)
+    const [showBackupCard, setShowBackupCard] = useState(false)
+    const [showRestoreCard, setShowRestoreCard] = useState(false)
+    const [fileName, setFileName] = useState("Choose File")
+    const [isUploadBtnDisabled, setIsUploadBtnDisabled] = useState(false)
+    const [selectedFile, setSelectedFile] = useState(null)
 
     useEffect(() => {
         setPanels_perm((selectedAdminToEdit && Boolean(selectedAdminToEdit.perms.panels)) || null)
@@ -107,10 +117,10 @@ const AdminSettingsPage = () => {
 
         const username = document.getElementById("edit-username").value
         const password = document.getElementById("edit-password").value
-        const perms = {agents: Number(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm), panels: Number(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) }
+        const perms = { agents: Number(agents_perm == null ? selectedAdminToEdit.perms.agents : agents_perm), panels: Number(panels_perm == null ? selectedAdminToEdit.perms.panels : panels_perm) }
         const editAdmin = async () => {
             setEditMode(true)
-            const res = (await axios.post("/edit_sub_account", { access_token, sub_account_id: selectedAdminToEdit.id, username, password,perms })).data
+            const res = (await axios.post("/edit_sub_account", { access_token, sub_account_id: selectedAdminToEdit.id, username, password, perms })).data
             if (res.status === "ERR") {
                 setError_msg(res.msg || "BAD REQUEST")
                 setHasError(true)
@@ -179,6 +189,59 @@ const AdminSettingsPage = () => {
         getAdmins()
     }, [getAdmins])
 
+    const handleBC = async () => {
+        setShowBackupCard(true)
+        const access_token = sessionStorage.getItem("access_token")
+        var res = await axios.post("/dldb", { access_token })
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg)
+            setHasError(true)
+            setShowBackupCard(false)
+            return
+        }
+        const downloadUrl = window.location.protocol + "//" + window.location.host + res.data.split(">")[1]
+        console.log(downloadUrl)
+        const link = document.createElement("a")
+        link.href = downloadUrl
+        link.download = "db.zip"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        setShowBackupCard(false)
+    }
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0])
+        setFileName(e.target.files[0].name)
+    }
+
+    const fakeUlBtnClick = () => {
+        document.getElementById("uldb").click()
+    }
+
+    const handleUploadFile = async () => {
+
+        setIsUploadBtnDisabled(true)
+        const access_token = sessionStorage.getItem("access_token")
+        const formData = new FormData()
+        formData.append("access_token", access_token)
+        formData.append("file", selectedFile)
+        var res = await axios.post("/uldb", formData)
+        if (res.data.status === "ERR") {
+            setError_msg(res.data.msg)
+            setHasError(true)
+            setIsUploadBtnDisabled(false)
+            return
+        }
+        setIsUploadBtnDisabled(false)
+        setShowRestoreCard(false)
+        await new Promise(r => setTimeout(r, 300))
+        setShowManageDatabases(false)
+        await new Promise(r => setTimeout(r, 300))
+        window.location.href = "/login"
+        sessionStorage.clear()
+    }
+
     return (
         <>
             <section className={`${styles['change-credentials-section']}`} style={{ marginBottom: "1rem" }}>
@@ -204,7 +267,7 @@ const AdminSettingsPage = () => {
                 </form>
             </section>
 
-            {!access_token.includes("@") &&  <section className={`${styles['create-admin-section']}`}>
+            {!access_token.includes("@") && <section className={`${styles['create-admin-section']}`}>
                 <h2 style={{ marginBottom: "1rem" }}>Create Admin</h2>
                 <main className={`flex gap-col-1 ${styles['flex-col']}`}>
                     <div className='w-full'>
@@ -297,21 +360,21 @@ const AdminSettingsPage = () => {
 
                             <div className={styles['perms_checkboxes']}>
                                 <span className="modal__form__label">Permissions</span>
-                                <FormControlLabel control={<Checkbox defaultChecked={Boolean(selectedAdminToEdit.perms.panels)} onChange={handle_panel_perm_change} />} 
+                                <FormControlLabel control={<Checkbox defaultChecked={Boolean(selectedAdminToEdit.perms.panels)} onChange={handle_panel_perm_change} />}
                                     label={<>
-                                    <span className={styles["perm_title"]} >Panels</span>  
-                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_green']}`} >R</span>
-                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_blue']}`} >C</span>
-                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_yellow']}`} >E</span>
-                                    <span className={`${styles['perm_box']} ${(panels_perm==null?selectedAdminToEdit.perms.panels:panels_perm) && styles['perm_box_color_red']}`} >D</span>
+                                        <span className={styles["perm_title"]} >Panels</span>
+                                        <span className={`${styles['perm_box']} ${(panels_perm == null ? selectedAdminToEdit.perms.panels : panels_perm) && styles['perm_box_color_green']}`} >R</span>
+                                        <span className={`${styles['perm_box']} ${(panels_perm == null ? selectedAdminToEdit.perms.panels : panels_perm) && styles['perm_box_color_blue']}`} >C</span>
+                                        <span className={`${styles['perm_box']} ${(panels_perm == null ? selectedAdminToEdit.perms.panels : panels_perm) && styles['perm_box_color_yellow']}`} >E</span>
+                                        <span className={`${styles['perm_box']} ${(panels_perm == null ? selectedAdminToEdit.perms.panels : panels_perm) && styles['perm_box_color_red']}`} >D</span>
                                     </>} />
                                 <FormControlLabel control={<Checkbox defaultChecked={Boolean(selectedAdminToEdit.perms.agents)} onChange={handle_agent_perm_change} />} label={<>
-                                    <span className={styles["perm_title"]} >Agents</span>  
-                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_green']}`} >R</span>
-                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_blue']}`} >C</span>
-                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_yellow']}`} >E</span>
-                                    <span className={`${styles['perm_box']} ${(agents_perm==null?selectedAdminToEdit.perms.agents:agents_perm) && styles['perm_box_color_red']}`} >D</span>
-                                    </>} />
+                                    <span className={styles["perm_title"]} >Agents</span>
+                                    <span className={`${styles['perm_box']} ${(agents_perm == null ? selectedAdminToEdit.perms.agents : agents_perm) && styles['perm_box_color_green']}`} >R</span>
+                                    <span className={`${styles['perm_box']} ${(agents_perm == null ? selectedAdminToEdit.perms.agents : agents_perm) && styles['perm_box_color_blue']}`} >C</span>
+                                    <span className={`${styles['perm_box']} ${(agents_perm == null ? selectedAdminToEdit.perms.agents : agents_perm) && styles['perm_box_color_yellow']}`} >E</span>
+                                    <span className={`${styles['perm_box']} ${(agents_perm == null ? selectedAdminToEdit.perms.agents : agents_perm) && styles['perm_box_color_red']}`} >D</span>
+                                </>} />
                             </div>
                         </main>
                         <footer className="flex gap-1 justify-end">
@@ -321,6 +384,56 @@ const AdminSettingsPage = () => {
                     </Modal>
                 }
             </AnimatePresence>
+
+            {/* this section is for manging database */}
+
+            <Button Button onClick={() => setShowManageDatabases(true)} className="outlined" >
+                <DbIcon /> Manage databases
+            </Button>
+
+            <AnimatePresence>
+                {showManageDatabases && <Modal onClose={() => setShowManageDatabases(false)} width={"35rem"}>
+                    <header className="modal__header">
+                        <LeadingIcon>
+                            <DbIcon />
+                        </LeadingIcon>
+                        <h1 className="modal__title">Manage databases</h1>
+                        <div className="close-icon" onClick={() => setShowManageDatabases(false)}>
+                            <XMarkIcon />
+                        </div>
+                    </header>
+                    <main className='modal__body flex gap-1.5'>
+                        <Button onClick={handleBC} className="primary w-full" >Backup</Button>
+                        <Button onClick={() => { setShowRestoreCard(true); setFileName("Choose File") }} className="primary w-full" >Restore</Button>
+                    </main>
+                </Modal>}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showRestoreCard && <Modal onClose={() => setShowRestoreCard(false)} width={"30rem"}>
+                    <header className="modal__header">
+                        <LeadingIcon>
+                            <DbUpIcon />
+                        </LeadingIcon>
+                        <h1 className="modal__title">Restore databases</h1>
+                        <div className="close-icon" onClick={() => setShowRestoreCard(false)}>
+                            <XMarkIcon />
+                        </div>
+                    </header>
+                    <main className='modal__body flex gap-1.5' style={{ alignItems: "center", flexDirection: "column" }}>
+                        <Button className='primary w-full' onClick={fakeUlBtnClick} >{fileName}</Button>
+                        <input type='file' style={{ display: "none" }} onChange={handleFileChange} name="uldb" id="uldb" className='primary w-full' />
+                        <Button className="outlined w-full" disabled={isUploadBtnDisabled} onClick={handleUploadFile}>Upload</Button>
+                    </main>
+                </Modal>}
+            </AnimatePresence>
+
+            <MessageCard
+                title="Fetching databases"
+                duration={JSON.parse(sessionStorage.getItem("panels")).length * 4}
+                showCard={showBackupCard}
+                onClose={() => setShowBackupCard(false)}
+            />
 
             <ErrorCard
                 hasError={hasError}
