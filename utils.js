@@ -762,7 +762,12 @@ const get_agent_data_graph = async (date_from,date_to,business_mode) =>
         res_obj["total_allocated_data"].push({date:i,volume:current_day_allocated_data});
         
         var today_usage_logs = daily_usage_logs.map(x=>{ return {logs:x.daily_usage_logs.filter(log=>log.date>=i && log.date<i+86400)}; });
-        var today_usage = today_usage_logs.reduce((acc,curr)=>acc+curr.logs[0].volume,0);
+        var today_usage = today_usage_logs.reduce((acc,curr) => 
+        {
+            var current_volume = (curr.logs[0]?.volume) ?? 0;
+            return acc + current_volume;
+        },0);
+
         res_obj["total_data_usage"].push({date:i,volume:today_usage});
     }
 
