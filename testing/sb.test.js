@@ -1,9 +1,38 @@
-const axios = require('axios');
-const fs = require('fs');
-const util = require('util');
-const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph,syslog,sleep} = require("../utils");
+// const axios = require('axios');
+// const fs = require('fs');
+// const util = require('util');
+const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph,syslog,sleep,get_accounts} = require("../utils");
+const moment = require('moment-timezone');
 
 
+// var now2 = Math.floor((new Date()).setHours(0,0,0,0).getTime()/1000);
+// var now3 = Math.floor(moment.tz("Asia/Tehran").set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).clone().utc().unix());
+// console.log(now2);
+// console.log(now3);
+
+(async () => 
+{
+	await new Promise(resolve => setTimeout(resolve, 1000));	
+	var result1 = await get_agents();
+	var result2 = await get_agents_daily_usage_logs();
+	console.log(result1);
+	console.log(result2);
+})();
+
+// var currentDate = new Date();
+// currentDate.setHours(0, 0, 0, 0);
+// var timestamp = currentDate.getTime();
+// var timestampInSeconds = Math.floor(timestamp / 1000);
+// console.log(timestampInSeconds);
+
+
+
+
+
+// const utcTime = moment.utc();
+// utcTime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+// const timestamp3 = utcTime.unix();
+// console.log(timestamp3);
 
 // (async () => 
 // {
@@ -23,13 +52,13 @@ const {get_marzban_user,get_panel_info,restart_marzban_xray,auth_marzban,get_use
 // })();
 
 
-(async () => 
-{
-	await sleep(2000)
-	await syslog("TESTING SYSTEM LOG",1);
-	console.log("DONE!");
+// (async () => 
+// {
+// 	await sleep(2000)
+// 	await syslog("TESTING SYSTEM LOG",1);
+// 	console.log("DONE!");
 
-})();
+// })();
 
 // (async () => {
 //   var complete_user_info = get_marzban_user("http://206.189.58.110:8000", "admin", "admin", "Smart_baqer");

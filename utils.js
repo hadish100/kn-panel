@@ -32,9 +32,12 @@ const sleep = (ms) => {
 const get_sub_url = () => { return SUB_URL; }
 
 const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj); return "DONE"; }
-const get_accounts = async () => { const result = await accounts_clct.find().toArray(); return result; }
-const get_account = async (id) => { const result = await accounts_clct.find({ id }).toArray(); return result[0]; }
+const get_accounts = async () => { const result = await accounts_clct.find({},{projection:{daily_usage_logs:0}}).toArray(); return result; }
+const get_account = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:0}}).toArray(); return result[0]; }
+const get_agents = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:0}}).toArray(); return result; }
+const get_agents_daily_usage_logs = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:1,id:1}}).toArray(); return result; }
 const update_account = async (id, value) => { await accounts_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
+
 
 const insert_to_panels = async (obj) => { await panels_clct.insertOne(obj); return "DONE"; }
 const get_panels = async () => { const result = await panels_clct.find().toArray(); return result; }
@@ -332,7 +335,7 @@ const get_all_marzban_users = async (link, username, password) => {
 }
 
 const reload_agents = async () => {
-    var obj_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
+    var obj_arr = await get_agents();
 
     for (obj of obj_arr) {
         var agent_id = obj.id;
@@ -750,14 +753,17 @@ const get_agent_data_graph = async (date_from,date_to,business_mode) =>
         return result;
     }).filter(x=>x);
 
-
+    var daily_usage_logs = await get_agents_daily_usage_logs();
  
     for(var i=date_from;i<=date_to;i+=86400)
     {
         var current_day_data_allocation_logs = logs_arr.filter(x => x.time >= i && x.time <= i+86400);
         var current_day_allocated_data = current_day_data_allocation_logs.filter(log=>log.bm_status==business_mode).reduce((acc,curr)=>acc+curr.allocated_data,0);
-        res_obj["total_allocated_data"].push({date:i,count:current_day_allocated_data});
-        res_obj["total_data_usage"].push({date:i,count:0});
+        res_obj["total_allocated_data"].push({date:i,volume:current_day_allocated_data});
+        
+        var today_usage_logs = daily_usage_logs.map(x=>{ return {logs:x.daily_usage_logs.filter(log=>log.date>=i && log.date<i+86400)}; });
+        var today_usage = today_usage_logs.reduce((acc,curr)=>acc+curr.logs[0].volume,0);
+        res_obj["total_data_usage"].push({date:i,volume:today_usage});
     }
 
     return res_obj;
@@ -873,4 +879,6 @@ module.exports = {
     notify_tgb,
     get_user_data_graph,
     get_agent_data_graph,
+    get_agents,
+    get_agents_daily_usage_logs,
 }

@@ -58,6 +58,7 @@ const {
     notify_tgb,
     get_user_data_graph,
     get_agent_data_graph,
+    get_agents,
 } = require("./utils");
 
 
@@ -115,7 +116,7 @@ app.post("/ping", async (req, res) =>
 
 app.post("/get_agents", async (req, res) => {
     await reload_agents();
-    var obj_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
+    var obj_arr = await get_agents();
 
     res.send(obj_arr);
 });
@@ -245,7 +246,7 @@ app.post("/create_agent", async (req, res) => {
         business_mode,
         access_token } = req.body;
 
-        var agents_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
+        var agents_arr = await get_agents();
         var prefix_arr = agents_arr.map(x => x.prefix);
         var name_arr = agents_arr.map(x => x.name);
         var username_arr = agents_arr.map(x => x.username);
@@ -281,7 +282,8 @@ app.post("/create_agent", async (req, res) => {
             total_users: 0,
             business_mode:business_mode?1:0,
             tokens: [],
-            sub_accounts:[]
+            sub_accounts:[],
+            daily_usage_logs:[]
         });
 
         var account_id = (await token_to_account(access_token)).id;
@@ -440,7 +442,7 @@ app.post("/delete_panel", async (req, res) => {
     var { access_token, panel_id } = req.body;
     var account_id = (await token_to_account(access_token)).id;
     var panel_obj = await get_panel(panel_id);
-    var agents_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
+    var agents_arr = await get_agents();
 
     for (agent of agents_arr) {
         var cindex = agent.country.split(",").indexOf(panel_obj.panel_country);
@@ -559,7 +561,7 @@ app.post("/edit_agent", async (req, res) => {
         access_token } = req.body;
 
         var agent = await get_account(agent_id);
-        var agents_arr = await accounts_clct.find({ is_admin: 0 }).toArray();
+        var agents_arr = await get_agents();
         var prefix_arr = agents_arr.map(x => x.prefix);
         var name_arr = agents_arr.map(x => x.name);
         var username_arr = agents_arr.map(x => x.username);

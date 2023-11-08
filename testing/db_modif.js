@@ -54,12 +54,12 @@ async function modify_db()
 
     // }
 
-    // var accounts = await get_accounts()
-    // for(account of accounts)
-    // {
-    //     if(!account.is_admin) await accounts_clct.updateOne({id:account.id}, {$set: {create_access:1,edit_access:1,delete_access:1}});
-    //     console.log("DONE 2");
-    // }
+    var accounts = await get_accounts()
+    for(account of accounts)
+    {
+        if(!account.is_admin) await accounts_clct.updateOne({id:account.id}, {$set: {daily_usage_logs:[]}});
+        console.log("DONE 1");
+    }
 
     // console.log("DONE 3");
 
@@ -67,6 +67,7 @@ async function modify_db()
     //db.accounts.updateMany({is_admin:0},{$set:{country:"server1,server2,server3,server4,server5,server6,server7,server8"}})
 
 
+    
 
     var syslog_txt = await fs.readFile("../frontend/public/syslog/syslog.txt",{encoding:"utf-8"});
     var syslog_arr = syslog_txt.split("\n");
@@ -95,13 +96,14 @@ async function modify_db()
         result.msg = x.split(" ===> ")[1];
         result.time = Math.floor(timestamp/1000);
         result.is_syslog = 1;
+        console.log("DONE 2");
         return result;  
     }).filter(Boolean);
 
 
 
     await logs_clct.insertMany(syslog_db_arr);
-    console.log("DONE !");
+    console.log("DONE 3");
 
     await fs.rm("../frontend/public/syslog", { recursive: true, force: true });
 

@@ -1,5 +1,5 @@
 var accounts_clct, panels_clct, users_clct, logs_clct;
-const moment = require('moment');
+const moment = require('moment-timezone');
 require('dotenv').config()
 
 var reset_counter = 0;
@@ -28,7 +28,8 @@ const {
     delete_vpn,
     enable_panel,
     syslog,
-    get_sub_url
+    get_sub_url,
+    get_agents,
 } = require("./utils");
 
 
@@ -121,7 +122,7 @@ connect_to_db().then(res => {
 
             for (marzban_user of marzban_users) {
                 var user = db_users_arr.find(user => user.username == marzban_user.username);
-                var all_agents = await accounts_clct.find({ is_admin: 0 }).toArray();
+                var all_agents = await get_agents();
 
                 if (user) {
 
@@ -140,15 +141,49 @@ connect_to_db().then(res => {
 
                     if (user.expire != marzban_user.expire) await update_user(user.id, { expire: marzban_user.expire });
                     if (user.data_limit != marzban_user.data_limit) await update_user(user.id, { data_limit: marzban_user.data_limit });
-                    if (user.used_traffic != marzban_user.used_traffic) {
+                    if (user.used_traffic != marzban_user.used_traffic) 
+                    {
+
+                        const tehran0000 = moment.tz("Asia/Tehran");
+                        tehran0000.set({ hour:0,minute:0,second:0,millisecond: 0 });
+                        const tehran0000_timestamp = tehran0000.unix();
+
                         var agent = await get_account(user.agent_id);
                         agent.volume -= marzban_user.used_traffic - user.used_traffic;
-                        await update_account(agent.id, { volume: agent.volume });
-                        await update_user(user.id, 
-                            { 
-                                used_traffic: marzban_user.used_traffic,
-                                lifetime_used_traffic: user.lifetime_used_traffic + marzban_user.used_traffic - user.used_traffic
+
+                        var { daily_usage_logs } = agent;
+                        var existance_flag = false;
+
+                        for(usage_log of daily_usage_logs)
+                        {
+                            if(usage_log.date == tehran0000_timestamp)
+                            {
+                                existance_flag = true;
+                                usage_log.volume += marzban_user.used_traffic - user.used_traffic;
+                                break;
+                            }
+                        }
+
+                        if(!existance_flag)
+                        {
+                            daily_usage_logs.push
+                            ({
+                                date: tehran0000_timestamp,
+                                volume: marzban_user.used_traffic - user.used_traffic
                             });
+                        }
+
+                        await update_account(agent.id, 
+                        { 
+                            volume: agent.volume,
+                            daily_usage_logs,
+                        });
+
+                        await update_user(user.id,
+                        { 
+                            used_traffic: marzban_user.used_traffic,
+                            lifetime_used_traffic: user.lifetime_used_traffic + marzban_user.used_traffic - user.used_traffic
+                        });
                     }
 
 
