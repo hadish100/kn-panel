@@ -30,6 +30,7 @@ const {
     syslog,
     get_sub_url,
     get_agents,
+    get_agent_daily_usage_logs,
 } = require("./utils");
 
 
@@ -150,8 +151,8 @@ connect_to_db().then(res => {
 
                         var agent = await get_account(user.agent_id);
                         agent.volume -= marzban_user.used_traffic - user.used_traffic;
-
-                        var { daily_usage_logs } = agent;
+                        
+                        var daily_usage_logs = await get_agent_daily_usage_logs(agent.id);
                         var existance_flag = false;
 
                         for(usage_log of daily_usage_logs)

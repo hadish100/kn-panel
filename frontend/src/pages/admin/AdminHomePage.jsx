@@ -64,6 +64,12 @@ const AdminHomePage = () => {
     const [total_allocated_data_of_normal_agents, setTotal_allocated_data_of_normal_agents] = useState([0,0,0,0,0,0,0]);
     const [total_data_usage_of_normal_agents, setTotal_data_usage_of_normal_agents] = useState([0,0,0,0,0,0,0]);
 
+
+    const b2gb = (bytes) => {
+        var x = (bytes / (2 ** 10) ** 3);
+        return Math.round(x * 100) / 100;
+    }
+
     const get_user_data = async (date_from,date_to) => 
     {
         var access_token = sessionStorage.getItem("access_token");
@@ -107,13 +113,13 @@ const AdminHomePage = () => {
         if(business_mode==0)
         {
             setTotal_allocated_data_of_normal_agents(res.data.total_allocated_data.map(x=>x.volume))
-            setTotal_data_usage_of_normal_agents(res.data.total_data_usage.map(x=>x.volume))
+            setTotal_data_usage_of_normal_agents(res.data.total_data_usage.map(x=>b2gb(x.volume)))
         }
 
         else
         {
             setTotal_allocated_data_of_business_agents(res.data.total_allocated_data.map(x=>x.volume))
-            setTotal_data_usage_of_business_agents(res.data.total_data_usage.map(x=>x.volume))
+            setTotal_data_usage_of_business_agents(res.data.total_data_usage.map(x=>b2gb(x.volume)))
         }
     }
 

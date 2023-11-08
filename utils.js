@@ -36,6 +36,7 @@ const get_accounts = async () => { const result = await accounts_clct.find({},{p
 const get_account = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:0}}).toArray(); return result[0]; }
 const get_agents = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:0}}).toArray(); return result; }
 const get_agents_daily_usage_logs = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:1,id:1}}).toArray(); return result; }
+const get_agent_daily_usage_logs = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:1}}).toArray(); return result[0].daily_usage_logs; }
 const update_account = async (id, value) => { await accounts_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
 
 
@@ -886,4 +887,5 @@ module.exports = {
     get_agent_data_graph,
     get_agents,
     get_agents_daily_usage_logs,
+    get_agent_daily_usage_logs
 }
