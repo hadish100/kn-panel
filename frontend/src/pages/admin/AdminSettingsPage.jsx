@@ -387,9 +387,11 @@ const AdminSettingsPage = () => {
 
             {/* this section is for manging database */}
 
-            <Button Button onClick={() => setShowManageDatabases(true)} className="outlined" >
-                <DbIcon /> Manage databases
-            </Button>
+            <div style={{ marginTop: "1rem" }}>
+                <Button Button onClick={() => setShowManageDatabases(true)} className="outlined" >
+                    <DbIcon /> Manage databases
+                </Button>
+            </div>
 
             <AnimatePresence>
                 {showManageDatabases && <Modal onClose={() => setShowManageDatabases(false)} width={"35rem"}>
