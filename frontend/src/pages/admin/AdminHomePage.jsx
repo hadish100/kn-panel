@@ -54,16 +54,16 @@ const templateColor2 = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "
 const AdminHomePage = () => {
     const [error_msg, setError_msg] = useState("")
     const [hasError, setHasError] = useState(false)
-    const [xAxisDays1, setXAxisDays1] = useState(xAxisOptions[0])
-    const [xAxisDays2, setXAxisDays2] = useState(xAxisOptions[0])
-    const [xAxisDays3, setXAxisDays3] = useState(xAxisOptions[0])
-    const [total_users_creation, setTotal_users_creation] = useState([0,0,0]);
-    const [total_users_edit, setTotal_users_edit] = useState([0,0,0]);
-    const [total_users_delete, setTotal_users_delete] = useState([0,0,0]);
-    const [total_allocated_data_of_business_agents, setTotal_allocated_data_of_business_agents] = useState([0,0,0]);
-    const [total_data_usage_of_business_agents, setTotal_data_usage_of_business_agents] = useState([0,0,0]);
-    const [total_allocated_data_of_normal_agents, setTotal_allocated_data_of_normal_agents] = useState([0,0,0]);
-    const [total_data_usage_of_normal_agents, setTotal_data_usage_of_normal_agents] = useState([0,0,0]);
+    const [xAxisDays1, setXAxisDays1] = useState(xAxisOptions[1])
+    const [xAxisDays2, setXAxisDays2] = useState(xAxisOptions[1])
+    const [xAxisDays3, setXAxisDays3] = useState(xAxisOptions[1])
+    const [total_users_creation, setTotal_users_creation] = useState([0,0,0,0,0,0,0]);
+    const [total_users_edit, setTotal_users_edit] = useState([0,0,0,0,0,0,0]);
+    const [total_users_delete, setTotal_users_delete] = useState([0,0,0,0,0,0,0]);
+    const [total_allocated_data_of_business_agents, setTotal_allocated_data_of_business_agents] = useState([0,0,0,0,0,0,0]);
+    const [total_data_usage_of_business_agents, setTotal_data_usage_of_business_agents] = useState([0,0,0,0,0,0,0]);
+    const [total_allocated_data_of_normal_agents, setTotal_allocated_data_of_normal_agents] = useState([0,0,0,0,0,0,0]);
+    const [total_data_usage_of_normal_agents, setTotal_data_usage_of_normal_agents] = useState([0,0,0,0,0,0,0]);
 
 
     const b2gb = (bytes) => {
