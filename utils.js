@@ -35,7 +35,7 @@ const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj); 
 const get_accounts = async () => { const result = await accounts_clct.find({},{projection:{daily_usage_logs:0}}).toArray(); return result; }
 const get_account = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:0}}).toArray(); return result[0]; }
 const get_agents = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:0}}).toArray(); return result; }
-const get_agents_daily_usage_logs = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:1,id:1}}).toArray(); return result; }
+const get_agents_daily_usage_logs = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:1,id:1,business_mode:1}}).toArray(); return result; }
 const get_agent_daily_usage_logs = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:1}}).toArray(); return result[0].daily_usage_logs; }
 const update_account = async (id, value) => { await accounts_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
 
@@ -755,6 +755,7 @@ const get_agent_data_graph = async (date_from,date_to,business_mode) =>
     }).filter(x=>x);
 
     var daily_usage_logs = await get_agents_daily_usage_logs();
+    daily_usage_logs = daily_usage_logs.filter(x=>x.business_mode==business_mode);
  
     for(var i=date_from;i<=date_to;i+=86400)
     {
