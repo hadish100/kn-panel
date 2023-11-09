@@ -48,10 +48,10 @@ const AdminHomePage = () => {
     const [total_users_creation, setTotal_users_creation] = useState(new Array(30).fill(0))
     const [total_users_edit, setTotal_users_edit] = useState(new Array(30).fill(0))
     const [total_users_delete, setTotal_users_delete] = useState(new Array(30).fill(0))
-    const [total_allocated_data_of_business_agents, setTotal_allocated_data_of_business_agents] = useState([0, 0, 0, 0, 0, 0, 0])
-    const [total_data_usage_of_business_agents, setTotal_data_usage_of_business_agents] = useState([0, 0, 0, 0, 0, 0, 0])
-    const [total_allocated_data_of_normal_agents, setTotal_allocated_data_of_normal_agents] = useState([0, 0, 0, 0, 0, 0, 0])
-    const [total_data_usage_of_normal_agents, setTotal_data_usage_of_normal_agents] = useState([0, 0, 0, 0, 0, 0, 0])
+    const [total_allocated_data_of_business_agents, setTotal_allocated_data_of_business_agents] = useState(new Array(30).fill(0))
+    const [total_data_usage_of_business_agents, setTotal_data_usage_of_business_agents] = useState(new Array(30).fill(0))
+    const [total_allocated_data_of_normal_agents, setTotal_allocated_data_of_normal_agents] = useState(new Array(30).fill(0))
+    const [total_data_usage_of_normal_agents, setTotal_data_usage_of_normal_agents] = useState(new Array(30).fill(0))
 
     var panels = JSON.parse(sessionStorage.getItem("panels"))
     var agents = JSON.parse(sessionStorage.getItem("agents"))
@@ -107,7 +107,6 @@ const AdminHomePage = () => {
             return
         }
 
-        console.log(res.data)
         if (business_mode == 0) {
             setTotal_allocated_data_of_normal_agents(res.data.total_allocated_data.map(x => x.volume))
             setTotal_data_usage_of_normal_agents(res.data.total_data_usage.map(x => b2gb(x.volume)))
@@ -148,17 +147,15 @@ const AdminHomePage = () => {
         return dateData
     }
 
-    console.log(total_users_creation)
-    const totalUserCreation = total_users_creation.slice(total_users_creation.length - xAxisDays1.value)
-    const totalUserEdits = total_users_edit.slice(total_users_creation.length - xAxisDays1.value)
-    const totalUserDelete = total_users_delete.slice(total_users_creation.length - xAxisDays1.value)
-    console.log(totalUserCreation)
+    const totalUserCreation = total_users_creation.slice(-xAxisDays1.value)
+    const totalUserEdits = total_users_edit.slice(-xAxisDays1.value)
+    const totalUserDelete = total_users_delete.slice(-xAxisDays1.value)
 
-    const totalAllocatedDataOfBusinessAgents = total_allocated_data_of_business_agents
-    const totalDataUsageOfBusinessAgents = total_data_usage_of_business_agents
+    const totalAllocatedDataOfBusinessAgents = total_allocated_data_of_business_agents.slice(-xAxisDays2.value)
+    const totalDataUsageOfBusinessAgents = total_data_usage_of_business_agents.slice(-xAxisDays2.value)
 
-    const totalAllocatedDataOfNormalAgents = total_allocated_data_of_normal_agents
-    const totalDataUsageOfNormalAgents = total_data_usage_of_normal_agents
+    const totalAllocatedDataOfNormalAgents = total_allocated_data_of_normal_agents.slice(-xAxisDays3.value)
+    const totalDataUsageOfNormalAgents = total_data_usage_of_normal_agents.slice(-xAxisDays3.value)
 
     const today = new Date()
 
@@ -187,44 +184,8 @@ const AdminHomePage = () => {
     }, [])
 
 
-    useEffect(() => {
 
-        var day_count = xAxisDays1.value
 
-        setTotal_users_creation(new Array(day_count).fill(0))
-        setTotal_users_edit(new Array(day_count).fill(0))
-        setTotal_users_delete(new Array(day_count).fill(0))
-
-        // var date_range = get_date_range(30)
-        // get_user_data(date_range[0], date_range[1])
-
-    }, [xAxisDays1])
-
-    useEffect(() => {
-
-        var day_count = xAxisDays3.value
-
-        setTotal_allocated_data_of_normal_agents(new Array(day_count).fill(0))
-        setTotal_data_usage_of_normal_agents(new Array(day_count).fill(0))
-
-        // var date_range = get_date_range(day_count)
-        // get_agent_data(date_range[0], date_range[1], 0)
-
-    }, [xAxisDays3])
-
-    useEffect(() => {
-        var day_count = xAxisDays2.value
-
-        setTotal_allocated_data_of_business_agents(new Array(day_count).fill(0))
-        setTotal_data_usage_of_business_agents(new Array(day_count).fill(0))
-
-        // var date_range = get_date_range(day_count)
-        // get_agent_data(date_range[0], date_range[1], 1)
-
-    }, [xAxisDays2])
-
-    console.log(totalUserCreation)
-    console.log(total_users_creation)
     const config1 = {
         series: [
             { data: totalUserCreation },
@@ -339,7 +300,7 @@ const AdminHomePage = () => {
                 </div>
             </div>
 
-            {/* <div className='flex flex-col' style={{ marginTop: "1.25rem" }}>
+            <div className='flex flex-col' style={{ marginTop: "1.25rem" }}>
                 <div style={{ alignSelf: "end" }} className='flex'>
                     <Dropdown options={xAxisOptions} value={xAxisDays2} onChange={setXAxisDays2} overlap={true} />
                 </div>
@@ -357,9 +318,9 @@ const AdminHomePage = () => {
                     <div className='flex gap-1' style={{ fontSize: ".875rem" }}><div style={{ backgroundColor: "#e41a1c", minWidth: ".875rem", height: ".875rem", borderRadius: ".25rem" }}></div>Total Allocated Data Of Business Agents</div>
                     <div className='flex gap-1' style={{ fontSize: ".875rem" }}><div style={{ backgroundColor: "#377eb8", minWidth: ".875rem", height: ".875rem", borderRadius: ".25rem" }}></div>Total Data Usage Of Business Agents</div>
                 </div>
-            </div> */}
+            </div>
 
-            {/* <div className='flex flex-col' style={{ marginTop: "1.25rem" }}>
+            <div className='flex flex-col' style={{ marginTop: "1.25rem" }}>
                 <div style={{ alignSelf: "end" }} className='flex'>
                     <Dropdown options={xAxisOptions} value={xAxisDays3} onChange={setXAxisDays3} overlap={true} />
                 </div>
@@ -377,7 +338,7 @@ const AdminHomePage = () => {
                     <div className='flex gap-1' style={{ fontSize: ".875rem" }}><div style={{ backgroundColor: "#e41a1c", minWidth: ".875rem", height: ".875rem", borderRadius: ".25rem" }}></div>Total Allocated Data Of Normal Agents</div>
                     <div className='flex gap-1' style={{ fontSize: ".875rem" }}><div style={{ backgroundColor: "#377eb8", minWidth: ".875rem", height: ".875rem", borderRadius: ".25rem" }}></div>Total Data Usage Of Normal Agents</div>
                 </div>
-            </div> */}
+            </div>
 
             <ErrorCard
                 hasError={hasError}
