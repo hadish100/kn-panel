@@ -35,26 +35,14 @@ const xAxisOptions = [
     { label: '1 month', value: 30 },
 ]
 
-var panels = JSON.parse(sessionStorage.getItem("panels"));
-var agents = JSON.parse(sessionStorage.getItem("agents"));
 
-
-var home_data_obj =
-{
-    active_agents: [agents.filter(agent => agent.disable == "0").length , agents.length],
-    active_panels: [panels.filter(panel => panel.disable == "0").length , panels.length],
-    active_panel_users: [panels.reduce((acc, panel) => acc + panel.active_users,0) , panels.reduce((acc, panel) => acc + panel.total_users,0)],
-    active_agent_users: [agents.reduce((acc, panel) => acc + panel.active_users,0) , agents.reduce((acc, panel) => acc + panel.total_users,0)],
-    total_panel_usage: panels.reduce((acc, panel) => acc + panel.panel_data_usage,0),
-    total_agent_data_usage: agents.reduce((acc, agent) => acc + agent.used_traffic,0),
-};
 
 const templateColor2 = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999"]
 
 const AdminHomePage = () => {
     const [error_msg, setError_msg] = useState("")
     const [hasError, setHasError] = useState(false)
-    const [xAxisDays1, setXAxisDays1] = useState(xAxisOptions[1])
+    const [xAxisDays1, setXAxisDays1] = useState(xAxisOptions[1]) 
     const [xAxisDays2, setXAxisDays2] = useState(xAxisOptions[1])
     const [xAxisDays3, setXAxisDays3] = useState(xAxisOptions[1])
     const [total_users_creation, setTotal_users_creation] = useState([0,0,0,0,0,0,0]);
@@ -65,6 +53,19 @@ const AdminHomePage = () => {
     const [total_allocated_data_of_normal_agents, setTotal_allocated_data_of_normal_agents] = useState([0,0,0,0,0,0,0]);
     const [total_data_usage_of_normal_agents, setTotal_data_usage_of_normal_agents] = useState([0,0,0,0,0,0,0]);
 
+    var panels = JSON.parse(sessionStorage.getItem("panels"));
+    var agents = JSON.parse(sessionStorage.getItem("agents"));
+
+
+    var home_data_obj =
+    {
+        active_agents: [agents.filter(agent => agent.disable == "0").length , agents.length],
+        active_panels: [panels.filter(panel => panel.disable == "0").length , panels.length],
+        active_panel_users: [panels.reduce((acc, panel) => acc + panel.active_users,0) , panels.reduce((acc, panel) => acc + panel.total_users,0)],
+        active_agent_users: [agents.reduce((acc, panel) => acc + panel.active_users,0) , agents.reduce((acc, panel) => acc + panel.total_users,0)],
+        total_panel_usage: panels.reduce((acc, panel) => acc + panel.panel_data_usage,0),
+        total_agent_data_usage: agents.reduce((acc, agent) => acc + agent.used_traffic,0),
+    };
 
     const b2gb = (bytes) => {
         var x = (bytes / (2 ** 10) ** 3);
@@ -90,7 +91,6 @@ const AdminHomePage = () => {
         setTotal_users_creation(res.data.total_user_creation.map(x=>x.count));
         setTotal_users_edit(res.data.total_user_edition.map(x=>x.count));
         setTotal_users_delete(res.data.total_user_deletion.map(x=>x.count));
-
 
     }
 
