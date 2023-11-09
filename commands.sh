@@ -13,6 +13,6 @@ sudo systemctl daemon-reload
 sudo systemctl status mongod
 mongosh
 use KN_PANEL
-db.accounts.insertOne({  "id": 100000000,"is_admin": 1, "password": "123456","username": "admin","tokens":[] })
+db.accounts.insertOne({  "id": 100000000,"is_admin": 1, "password": "123456","username": "admin","tokens":[],"sub_accounts":[] })
 npm install -g pm2
 npx create-react-app frontend -y
