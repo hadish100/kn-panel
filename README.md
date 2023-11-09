@@ -27,6 +27,10 @@
 </p>
 
 <p align="center">
+<img src="readme/8.jpg">
+</p>
+
+<p align="center">
 <img src="readme/9.jpg">
 </p>
 
