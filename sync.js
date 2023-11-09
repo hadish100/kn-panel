@@ -43,6 +43,7 @@ connect_to_db().then(res => {
 
 
 (async () => {
+    setTimeout(function(){ process.exit(1); },2*60*60*1000);
     await sleep(5000);
 
     while (true) {
