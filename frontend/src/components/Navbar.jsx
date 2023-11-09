@@ -31,7 +31,7 @@ const Navbar = () => {
     }, [location.pathname]);
 
     const agentLinks = [
-        { path: '/agent/home', linkText: 'Home' },
+        // { path: '/agent/home', linkText: 'Home' },
         { path: '/agent/users', linkText: 'Users' },
         { path: '/agent/settings', linkText: 'Settings' },
         { path: '/agent/log', linkText: 'Log' },

@@ -48,7 +48,7 @@ connect_to_db().then(res => {
     while (true) {
         var panels_arr = await get_panels();
         for (panel of panels_arr) {
-            var db_users_arr = await get_all_users();
+            
             if (panel.disable)
             {
                 var panel_auth_res = await auth_marzban(panel.panel_url, panel.panel_username, panel.panel_password);
@@ -92,6 +92,8 @@ connect_to_db().then(res => {
            
 
             marzban_users = marzban_users.users;
+
+            var db_users_arr = await get_all_users();
 
             for (db_user of db_users_arr) {
 
@@ -267,7 +269,7 @@ connect_to_db().then(res => {
         }
 
 
-        await sleep(process.env.RELEASE == 4?60000:20000);
+        await sleep(90000);
         if(reset_counter++ == 30) process.exit(1);
     }
 })();
