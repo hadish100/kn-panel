@@ -24,10 +24,10 @@ async function modify_db()
     // // await accounts_clct.updateMany({is_admin:0},{$set: {max_non_active_days:15}});
     // console.log("DONE !!!");
 
-    // var users_arr = await get_all_users();
+    var users_arr = await get_all_users();
     // await accounts_clct.updateMany({is_admin:0},{$set: {lifetime_volume:0}})
-    // for(user of users_arr)
-    // {
+    for(user of users_arr)
+    {
         // await update_user(user.id, {real_subscription_url:user.subscription_url,subscription_url:get_sub_url() + "/sub/" + uidv2(10)});
         // console.log("UPDATED SUBLINK OF => " + user.username);
         // if(!user.inbounds)
@@ -37,8 +37,8 @@ async function modify_db()
         //     await update_user(user.id, {inbounds});
         //     console.log("UPDATED INBOUNDS OF => " + user.username);
         // }
-        // await update_user(user.id, {subscription_url:user.subscription_url.replace(":8000","")});
-        
+        await update_user(user.id, {real_subscription_url:user.real_subscription_url.replace("p.limoo","panel.limoo")});
+        console.log("DONE2");
         //await update_user(user.id, {lifetime_used_traffic:user.used_traffic});
         // if(user.country=="server61")
         // {
@@ -54,11 +54,11 @@ async function modify_db()
 
     // }
 
-    var accounts = await get_accounts()
-    for(account of accounts)
-    {
-        if(!account.is_admin) await accounts_clct.updateOne({id:account.id}, {$set: {daily_usage_logs:[]}});
-        console.log("DONE 1");
+    // var accounts = await get_accounts()
+    // for(account of accounts)
+    // {
+    //     if(!account.is_admin) await accounts_clct.updateOne({id:account.id}, {$set: {daily_usage_logs:[]}});
+    //     console.log("DONE 1");
     }
 
     // console.log("DONE 3");
@@ -69,42 +69,42 @@ async function modify_db()
 
     
 
-    var syslog_txt = await fs.readFile("../frontend/public/syslog/syslog.txt",{encoding:"utf-8"});
-    var syslog_arr = syslog_txt.split("\n");
-    var syslog_db_arr = syslog_arr.map(x =>
-    {
-        var result = {};
+    // var syslog_txt = await fs.readFile("../frontend/public/syslog/syslog.txt",{encoding:"utf-8"});
+    // var syslog_arr = syslog_txt.split("\n");
+    // var syslog_db_arr = syslog_arr.map(x =>
+    // {
+    //     var result = {};
 
-        var dateTimeString = x.split(" ===> ")[0];
+    //     var dateTimeString = x.split(" ===> ")[0];
 
-        if(!dateTimeString) return null;
-        var parts = dateTimeString.split(" - ");
-        var datePart = parts[0];
-        var timePart = parts[1];
+    //     if(!dateTimeString) return null;
+    //     var parts = dateTimeString.split(" - ");
+    //     var datePart = parts[0];
+    //     var timePart = parts[1];
         
-        var dateParts = datePart.split("/");
-        var month = parseInt(dateParts[0]) - 1;
-        var day = parseInt(dateParts[1]);
-        var year = parseInt(dateParts[2]);
+    //     var dateParts = datePart.split("/");
+    //     var month = parseInt(dateParts[0]) - 1;
+    //     var day = parseInt(dateParts[1]);
+    //     var year = parseInt(dateParts[2]);
         
-        var timeParts = timePart.split(":");
-        var hours = parseInt(timeParts[0]);
-        var minutes = parseInt(timeParts[1]);
-        var seconds = parseInt(timeParts[2]);
-        var timestamp = new Date(year, month, day, hours, minutes, seconds).getTime();
+    //     var timeParts = timePart.split(":");
+    //     var hours = parseInt(timeParts[0]);
+    //     var minutes = parseInt(timeParts[1]);
+    //     var seconds = parseInt(timeParts[2]);
+    //     var timestamp = new Date(year, month, day, hours, minutes, seconds).getTime();
 
-        result.msg = x.split(" ===> ")[1];
-        result.time = Math.floor(timestamp/1000);
-        result.is_syslog = 1;
-        console.log("DONE 2");
-        return result;  
-    }).filter(Boolean);
+    //     result.msg = x.split(" ===> ")[1];
+    //     result.time = Math.floor(timestamp/1000);
+    //     result.is_syslog = 1;
+    //     console.log("DONE 2");
+    //     return result;  
+    // }).filter(Boolean);
 
 
 
-    await logs_clct.insertMany(syslog_db_arr);
+    // await logs_clct.insertMany(syslog_db_arr);
     console.log("DONE 3");
 
-    await fs.rm("../frontend/public/syslog", { recursive: true, force: true });
+    // await fs.rm("../frontend/public/syslog", { recursive: true, force: true });
 
 }

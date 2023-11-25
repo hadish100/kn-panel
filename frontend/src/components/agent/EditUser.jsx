@@ -8,6 +8,8 @@ import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import { ReactComponent as ThreeDotsIcon } from '../../assets/svg/three-dots.svg'
 import { ReactComponent as SpinnerIcon } from '../../assets/svg/spinner.svg'
+import Checkbox from '@mui/material/Checkbox'
+
 
 import Button from '../Button'
 import Modal from '../Modal'
@@ -27,6 +29,7 @@ const flowOptions = [
 
 const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem, editMode }) => {
     const [selectedProtocols, setSelectedProtocols] = useState([])
+    const [safu, setSafu] = useState((item && Boolean(item.safu)) || null)
     const [protocols, setProtocols] = useState([
         { name: "vmess", disabled: true },
         { name: "vless", disabled: true },
@@ -47,6 +50,9 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         if (!showForm) {
             setIsMoreOptionClicked(false)
         }
+
+       setSafu((item && Boolean(item.safu)) || null)
+
     }, [showForm])
 
     useEffect(() => {
@@ -120,7 +126,8 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                 document.getElementById("country").textContent,
                 selectedProtocols,
                 flowValue.value,
-                document.getElementById("desc").value
+                document.getElementById("desc").value,
+                safu
             ),
             disabled: editMode,
             pendingText: "Editing..."
@@ -140,6 +147,10 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
     const timeStampToDay = (timeStamp) => {
         const time = timeStamp - Math.floor(Date.now() / 1000)
         return Math.floor(time / 86400) + 1
+    }
+
+    const handle_safu_change = (e) => {
+        setSafu(e.target.checked)
     }
 
     const getDefaultValue = (item, field) => {
@@ -280,6 +291,14 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                                         )}
                                     </div>
                                 ))}
+
+                            <FormControlLabel
+                                control={<Checkbox id="safu" name="safu"
+                                    defaultChecked={item.safu} onChange={handle_safu_change}
+                                    sx={{marginLeft: "-9px",}}
+                                    />}
+                                label="Start after first use" />
+
                             </form>
                             <div className={`${styles['protocols-section']}`}>
                                 <h4 className='flex items-center gap-1'>Porotocols {isLoadingProtocols && <span className="flex items-center spinner"><SpinnerIcon /></span>}</h4>

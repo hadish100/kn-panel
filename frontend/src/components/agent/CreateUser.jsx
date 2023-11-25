@@ -13,6 +13,8 @@ import { ReactComponent as SpinnerIcon } from '../../assets/svg/spinner.svg'
 import FormField from '../form/FormField'
 import Button from '../Button'
 import Dropdown from '../Dropdown'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 const flowOptions = [
     { label: "none", value: "none" },
@@ -21,6 +23,7 @@ const flowOptions = [
 
 const CreateUser = ({ onClose, showForm }) => {
     const [hasError, setHasError] = useState(false)
+    const [safu, setSafu] = useState(false)
     const [error_msg, setError_msg] = useState("failed to create user")
     const access_token = sessionStorage.getItem("access_token")
     const [createMode, setCreateMode] = useState(false)
@@ -41,8 +44,9 @@ const CreateUser = ({ onClose, showForm }) => {
     ) => {
         setCreateMode(true)
         var protocols = selectedProtocols.filter(x => typeof x === "string")
-        var flow_status = flowValue.value
-        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc })
+        var flow_status = flowValue.value;
+        console.log(safu)
+        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc,safu })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
@@ -70,7 +74,8 @@ const CreateUser = ({ onClose, showForm }) => {
     }
 
     useEffect(() => {
-        setIsMoreOptionClicked(false)
+        setIsMoreOptionClicked(false);
+        setSafu(false);
 
         const getProtocols = async () => {
             setFlowValue({ label: "none", value: "none" })
@@ -122,8 +127,14 @@ const CreateUser = ({ onClose, showForm }) => {
         const expire = document.getElementById("daysToExpire").value
         const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         const desc = document.getElementById("desc").value
+        const safu = document.getElementById("safu").value
         // Send form data to backend
         createUserOnServer(username, data_limit, expire, country,desc)
+    }
+
+    const handle_safu_change = (e) => {
+        
+        setSafu(e.target.checked)
     }
 
     const handleSelectProtocol = (protocol) => {
@@ -229,6 +240,15 @@ const CreateUser = ({ onClose, showForm }) => {
                                         )}
                                     </div>
                                 ))}
+
+                            <FormControlLabel
+                                control={<Checkbox id="safu" name="safu"
+                                    defaultChecked={false} onChange={handle_safu_change}
+                                    sx={{marginLeft: "-9px",}}
+                                    />}
+                                label="Start after first use" />
+
+
                             </form>
                             <div className={`${styles['protocols-section']}`}>
                                 <h4 className='flex items-center gap-1'>Porotocols {isLoadingProtocols && <span className="flex items-center spinner"><SpinnerIcon /></span>}</h4>

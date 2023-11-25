@@ -8,7 +8,7 @@ const db_config =
 {
     host: '127.0.0.1',
     user: 'root',
-    password: 'QAZwsx1383',
+    password: '88632291', // QAZwsx1383
     database: 'marzban'
 };
 

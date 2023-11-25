@@ -348,7 +348,8 @@ app.post("/create_user", async (req, res) => {
         access_token,
         protocols,
         flow_status,
-        desc } = req.body;
+        desc,
+        safu } = req.body;
 
         if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
 
@@ -410,6 +411,7 @@ app.post("/create_user", async (req, res) => {
                 created_at:Math.floor(Date.now()/1000),
                 disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)},
                 inbounds,
+                safu:safu?1:0,
                 desc
             });
 
@@ -658,7 +660,8 @@ app.post("/edit_user", async (req, res) => {
         access_token,
         protocols,
         flow_status,
-        desc } = req.body;
+        desc,
+        safu } = req.body;
 
         if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
 
@@ -703,6 +706,7 @@ app.post("/edit_user", async (req, res) => {
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                 data_limit: data_limit * ((2 ** 10) ** 3),
                 inbounds,
+                safu:safu?1:0,
                 desc
             });
 

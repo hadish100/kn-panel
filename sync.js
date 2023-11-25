@@ -259,6 +259,7 @@ connect_to_db().then(res => {
                             "created_at":Math.floor(Date.parse(marzban_user.created_at)/1000),
                             "disable_counter":{value:0,last_update:Math.floor(Date.now() / 1000)},
                             "inbounds":inbounds,
+                            "safu":0,
                             "desc":""
                           });
 

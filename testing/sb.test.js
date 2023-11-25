@@ -1,8 +1,8 @@
-// const axios = require('axios');
+const axios = require('axios');
 // const fs = require('fs');
 // const util = require('util');
 const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph,syslog,sleep,get_accounts} = require("../utils");
-const moment = require('moment-timezone');
+// const moment = require('moment-timezone');
 
 
 // var now2 = Math.floor((new Date()).setHours(0,0,0,0).getTime()/1000);
@@ -10,14 +10,14 @@ const moment = require('moment-timezone');
 // console.log(now2);
 // console.log(now3);
 
-(async () => 
-{
-	await new Promise(resolve => setTimeout(resolve, 1000));	
-	var result1 = await get_agents();
-	var result2 = await get_agents_daily_usage_logs();
-	console.log(result1);
-	console.log(result2);
-})();
+// (async () => 
+// {
+// 	await new Promise(resolve => setTimeout(resolve, 1000));	
+// 	var result1 = await get_agents();
+// 	var result2 = await get_agents_daily_usage_logs();
+// 	console.log(result1);
+// 	console.log(result2);
+// })();
 
 // var currentDate = new Date();
 // currentDate.setHours(0, 0, 0, 0);
@@ -119,16 +119,16 @@ const moment = require('moment-timezone');
 // })();
 
 
-// (async () => 
-// {
-//     const response = await axios({
-//         url:"http://16.16.61.238:7002/get_marzban_users",
-//         method: 'POST',
-//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["Ramin_25"]}
-//       });
+(async () => 
+{
+    const response = await axios({
+        url:"http://5.75.197.71:7002/get_marzban_users",
+        method: 'POST',
+        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
+      });
 
-//       console.log(response.data);
-// })();
+      console.log(response.data);
+})();
 
 
 // (async () => 
