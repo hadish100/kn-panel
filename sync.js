@@ -31,6 +31,7 @@ const {
     get_sub_url,
     get_agents,
     get_agent_daily_usage_logs,
+    set_vpn_expiry,
 } = require("./utils");
 
 
@@ -147,6 +148,20 @@ connect_to_db().then(res => {
                     if (user.data_limit != marzban_user.data_limit) await update_user(user.id, { data_limit: marzban_user.data_limit });
                     if (user.used_traffic != marzban_user.used_traffic) 
                     {
+                        
+
+                        if(user.safu && user.used_traffic == 0)
+                        {
+                            let {panel_url} = panel;
+                            let {username} = user;
+                            set_vpn_expiry(panel.panel_url,panel.panel_username,panel.panel_password,user.username,
+                                    user.expire + (Math.floor(Date.now()/1000) - user.created_at)
+                                    ).then(res => 
+                                    {
+                                        if(res == "ERR") syslog("!ERROR : failed to update vpn expiry for user !" + username + " in panel !" + panel_url);
+                                        else syslog("updated vpn expiry for user !" + username + " in panel !" + panel_url,1);
+                                    });
+                        }
 
                         const tehran0000 = moment.tz("Asia/Tehran");
                         tehran0000.set({ hour:0,minute:0,second:0,millisecond: 0 });

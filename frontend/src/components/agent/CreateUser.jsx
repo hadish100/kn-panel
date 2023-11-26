@@ -75,7 +75,6 @@ const CreateUser = ({ onClose, showForm }) => {
 
     useEffect(() => {
         setIsMoreOptionClicked(false);
-        setSafu(false);
 
         const getProtocols = async () => {
             setFlowValue({ label: "none", value: "none" })
@@ -118,6 +117,8 @@ const CreateUser = ({ onClose, showForm }) => {
             { name: "shadowsocks", disabled: true }
         ])
         setCountry("")
+        setSafu(false)
+        
     }, [showForm])
 
     const handleSubmitForm = () => {
@@ -127,14 +128,15 @@ const CreateUser = ({ onClose, showForm }) => {
         const expire = document.getElementById("daysToExpire").value
         const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         const desc = document.getElementById("desc").value
-        const safu = document.getElementById("safu").value
         // Send form data to backend
         createUserOnServer(username, data_limit, expire, country,desc)
     }
 
+
     const handle_safu_change = (e) => {
-        
+        // console.log(e.target.checked)
         setSafu(e.target.checked)
+        // console.log(safu);
     }
 
     const handleSelectProtocol = (protocol) => {

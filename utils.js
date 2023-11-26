@@ -301,6 +301,20 @@ const edit_vpn = async (link, username, password, vpn_name, data_limit, expire, 
     }
 }
 
+const set_vpn_expiry = async (link, username, password, vpn_name, expire) => {
+    try {
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+
+        var res = await axios.put(link + "/api/user/" + vpn_name, { expire }, { headers });
+        return "DONE";
+    }
+
+    catch (err) {
+        return "ERR";
+    }
+}
+
 const get_marzban_user = async (link, username, password, vpn_name) => {
     try {
         var headers = await auth_marzban(link, username, password);
@@ -888,5 +902,6 @@ module.exports = {
     get_agent_data_graph,
     get_agents,
     get_agents_daily_usage_logs,
-    get_agent_daily_usage_logs
+    get_agent_daily_usage_logs,
+    set_vpn_expiry
 }

@@ -37,7 +37,8 @@ async function modify_db()
         //     await update_user(user.id, {inbounds});
         //     console.log("UPDATED INBOUNDS OF => " + user.username);
         // }
-        await update_user(user.id, {real_subscription_url:user.real_subscription_url.replace("p.limoo","panel.limoo")});
+        // await update_user(user.id, {real_subscription_url:user.real_subscription_url.replace("p.limoo","panel.limoo")});
+        await update_user(user.id, {safu:0});
         console.log("DONE2");
         //await update_user(user.id, {lifetime_used_traffic:user.used_traffic});
         // if(user.country=="server61")
