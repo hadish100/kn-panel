@@ -8,7 +8,7 @@ const db_config =
 {
     host: '127.0.0.1',
     user: 'root',
-    password: '88632291', // QAZwsx1383
+    password: process.env.PW,
     database: 'marzban'
 };
 
@@ -234,11 +234,12 @@ app.post("/add_users", async (req,res) =>
         for(obj of deleted_users)
         {
             var { user, proxies } = obj;
-            await run_query(`INSERT INTO users (username,status,used_traffic,data_limit,expire,created_at,admin_id,data_limit_reset_strategy) VALUES ('${user.username}', '${user.status}', '${user.used_traffic}', '${user.data_limit}', '${user.expire}', STR_TO_DATE('${user.created_at}', '%Y-%m-%dT%H:%i:%s.%fZ'), '${user.admin_id}', '${user.data_limit_reset_strategy}')`);
+            await run_query(`INSERT INTO users (username,status,used_traffic,data_limit,expire,created_at,admin_id,data_limit_reset_strategy) VALUES ('${user.username}', '${user.status}', '${user.used_traffic}', '${user.data_limit}', '${user.expire}', STR_TO_DATE('${user.created_at}', '%Y-%m-%d %H:%i:%s.%f'), '${user.admin_id}', '${user.data_limit_reset_strategy}')`);
+            //'%Y-%m-%dT%H:%i:%s.%fZ'
             var user_id = await get_user_id(user.username);
             for (proxy of proxies)
             {
-                if(available_protocols.includes(proxy.type.toLowerCase())) await run_query(`INSERT INTO proxies (user_id,type,settings) VALUES ('${user_id}', '${proxy.type}', '${JSON.stringify(proxy.settings)}')`);
+                if(available_protocols.includes(proxy.type.toLowerCase())) await run_query(`INSERT INTO proxies (user_id,type,settings) VALUES ('${user_id}', '${proxy.type}', '${JSON.stringify(proxy.settings).replace(/\\/g,"")}')`);
             }
         }
     
