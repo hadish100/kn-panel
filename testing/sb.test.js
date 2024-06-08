@@ -110,9 +110,9 @@ const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,re
 // (async () => 
 // {
 //     const response = await axios({
-//         url:"http://16.16.61.238:7002/edit_expire_times",
+//         url:"http://91.107.254.15:7002/delete_users",
 //         method: 'POST',
-//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",added_time:100001}
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr",users:["ST_test6060"]}
 //       });
 
 //       console.log(response.data);
@@ -122,7 +122,7 @@ const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,re
 (async () => 
 {
     const response = await axios({
-        url:"http://5.75.197.71:7002/get_marzban_users",
+        url:"http://15.184.183.64:7002/get_marzban_users",
         method: 'POST',
         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
       });
