@@ -25,6 +25,7 @@ cd ../
 docker compose up -d
 
 echo 'alias mnode_cli_restart="cd ~/Marzban-node && docker compose down && docker compose up -d"' >> ~/.bashrc
+echo 'alias mnode_cli_add="cd ~/Marzban-node/node-cli && node config.js add"' >> ~/.bashrc
 
 
 # curl -fsSL https://raw.githubusercontent.com/KN-VPN/node-cli/main/run.sh -o run.sh && chmod +x run.sh && ./run.sh
