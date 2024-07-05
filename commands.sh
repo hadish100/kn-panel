@@ -33,3 +33,4 @@ npm install -g pm2
 sudo apt install unzip
 
 # db.accounts.updateMany({  "is_admin": 0 },{ $set: { "daily_usage_logs": [] }})
+# db.users.updateMany({},{ $set: { "safu": 0 }})
