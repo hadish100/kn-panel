@@ -23,14 +23,14 @@ async function init()
         for(user of panel_users)
         {
             var marzban_user = await get_marzban_user(panel.panel_url, panel.panel_username, panel.panel_password, user.username);
+
             if(marzban_user)
             {
-                var sub_link = marzban_user.subscription_url;
-                await users_clct.updateOne({id:user.id},{$set:{real_subscription_url:sub_link}});
+                await users_clct.updateOne({id:user.id},{$set:{links:marzban_user.links}});
                 console.log(`user ${user.id} updated`);
             }
 
-            console.log(panel.panel_url.replace(/http(?![s])/,"https") + "/sub/" + user.real_subscription_url.split("/sub/")[1]);
+            // console.log(panel.panel_url.replace(/http(?![s])/,"https") + "/sub/" + user.real_subscription_url.split("/sub/")[1]);
         }
     }
 

@@ -472,7 +472,7 @@ app.post("/delete_user", async (req, res) => {
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
-        if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
+        if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
         await users_clct.deleteOne({ username });
         await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user !${username}`,access_token);
         res.send("DONE");
@@ -788,7 +788,7 @@ app.post("/reset_user", async (req, res) => {
             if(corresponding_agent.allocatable_data < b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
             var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
             if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
-            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) });
+            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
         }
 
         await update_user(user_id, { used_traffic: 0 });
