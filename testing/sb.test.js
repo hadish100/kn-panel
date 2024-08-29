@@ -122,7 +122,7 @@ const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,re
 (async () => 
 {
     const response = await axios({
-        url:"http://v1.shetab21.com:7002/get_marzban_users",
+        url:"http://95.164.87.55:7002/get_marzban_users",
         method: 'POST',
         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
       });

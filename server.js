@@ -711,7 +711,15 @@ app.post("/edit_user", async (req, res) => {
                 desc
             });
 
-            if( !(corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) && (old_data_limit > data_limit) ) ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
+            console.log(old_data_limit,data_limit);
+            if( 
+                
+                !( 
+                    // (corresponding_agent.business_mode == 1) &&
+                    // (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) &&
+                    (old_data_limit > data_limit) 
+                  ) 
+                ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);
             await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
             if(old_country == country) 
