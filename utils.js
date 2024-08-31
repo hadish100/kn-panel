@@ -1,4 +1,6 @@
 const axios = require('axios');
+const https = require('https');
+axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
 const fs = require('fs');
@@ -146,6 +148,7 @@ const auth_marzban = async (link, username, password) => {
     }
 
     catch (err) {
+        console.log(err);
         return "ERR";
     }
 }

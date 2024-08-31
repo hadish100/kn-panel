@@ -680,6 +680,7 @@ app.post("/edit_user", async (req, res) => {
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
     else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
+    else if(old_data_limit > data_limit) res.send({ status: "ERR", msg: "data limit can't be reduced" })
     else if (data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
@@ -711,13 +712,12 @@ app.post("/edit_user", async (req, res) => {
                 desc
             });
 
-            console.log(old_data_limit,data_limit);
             if( 
                 
                 !( 
-                    // (corresponding_agent.business_mode == 1) &&
-                    // (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) &&
-                    (old_data_limit > data_limit) 
+                    (corresponding_agent.business_mode == 1) &&
+                    (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) /*&&
+                    (old_data_limit > data_limit) */
                   ) 
                 ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);

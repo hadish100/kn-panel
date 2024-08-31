@@ -39,7 +39,7 @@ async function get_users()
     const connection = await mysql.createConnection(db_config);
     try 
     {
-      const [rows, fields] = await connection.execute("SELECT * FROM users");
+      const [rows, fields] = await connection.execute("SELECT id,username,status,used_traffic,data_limit,expire,created_at FROM users");
       return rows;
     } 
 

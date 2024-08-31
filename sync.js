@@ -49,7 +49,7 @@ connect_to_db().then(res => {
 
     while (true) {
         var panels_arr = await get_panels();
-        for (panel of panels_arr) {
+        for (let panel of panels_arr) {
             
             if (panel.disable)
             {
@@ -91,7 +91,7 @@ connect_to_db().then(res => {
             }
             console.timeEnd("             * fetched users from " + panel.panel_url);
 
-           
+
 
             marzban_users = marzban_users.users;
 
@@ -125,9 +125,10 @@ connect_to_db().then(res => {
                 }
             }
 
-            for (marzban_user of marzban_users) {
+            var all_agents = await get_agents();
+
+            for (let marzban_user of marzban_users) {
                 var user = db_users_arr.find(user => user.username == marzban_user.username);
-                var all_agents = await get_agents();
 
                 if (user) {
 
