@@ -1,9 +1,9 @@
+require('dotenv').config()
 const express = require('express'); const app = express();
 const fileUpload = require('express-fileupload');
 const fs = require('fs');
 var AdmZip = require("adm-zip");
 var SD_VARIABLE = 0;
-require('dotenv').config()
 var accounts_clct, panels_clct, users_clct, logs_clct;
 
 const { 
@@ -270,7 +270,7 @@ app.post("/create_agent", async (req, res) => {
             password,
             volume: gb2b(volume),
             lifetime_volume: gb2b(volume),
-            allocatable_data: dnf(volume),
+            allocatable_data: process.env.RELEASE == "ALI" ? 100000 : dnf(volume),
             min_vol: dnf(min_vol),
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
@@ -352,7 +352,7 @@ app.post("/create_user", async (req, res) => {
         safu } = req.body;
 
 
-        if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
+        if(process.env.RELEASE == "ARMAN") flow_status = "xtls-rprx-vision";
 
     if (!username || !expire || !data_limit || !country || protocols.length == 0) 
     {
@@ -585,7 +585,7 @@ app.post("/edit_agent", async (req, res) => {
             password,
             volume: gb2b(volume),
             lifetime_volume: agent.lifetime_volume + gb2b(volume) - old_volume,
-            allocatable_data: dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),
+            allocatable_data: process.env.RELEASE == "ALI" ? undefined : dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),
             min_vol: dnf(min_vol),
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
@@ -664,7 +664,7 @@ app.post("/edit_user", async (req, res) => {
         desc,
         safu } = req.body;
 
-        if(process.env.RELEASE == 3) flow_status = "xtls-rprx-vision";
+        if(process.env.RELEASE == "ARMAN") flow_status = "xtls-rprx-vision";
 
     if (!user_id || !expire || !data_limit || !country || protocols.length == 0) 
     {
@@ -847,7 +847,7 @@ app.post("/dldb", async (req, res) =>
                 var zip = new AdmZip("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
                 zip.extractAllTo("dbbu/marzban/" + show_url(panel.panel_url),true);
 
-                if(process.env.RELEASE == 3)
+                if(process.env.RELEASE == "ARMAN")
                 {
                     if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets");
                     if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core");

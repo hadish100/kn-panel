@@ -1,6 +1,6 @@
+require('dotenv').config()
 var accounts_clct, panels_clct, users_clct, logs_clct;
 const moment = require('moment-timezone');
-require('dotenv').config()
 
 var reset_counter = 0;
 
