@@ -579,13 +579,14 @@ app.post("/edit_agent", async (req, res) => {
         var old_volume = agent.volume;
         var old_alloc = agent.allocatable_data;
 
-        await update_account(agent_id, {
+        var update_obj = 
+        {
             name,
             username,
             password,
             volume: gb2b(volume),
             lifetime_volume: agent.lifetime_volume + gb2b(volume) - old_volume,
-            allocatable_data: process.env.RELEASE == "ALI" ? undefined : dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),
+            allocatable_data: dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),
             min_vol: dnf(min_vol),
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
@@ -593,7 +594,11 @@ app.post("/edit_agent", async (req, res) => {
             max_non_active_days:parseInt(max_non_active_days),
             business_mode:business_mode?1:0,
             country
-        });
+        };
+
+        if(process.env.RELEASE == "ALI") delete update_obj.allocatable_data;
+
+        await update_account(agent_id, update_obj);
         var account = await token_to_account(access_token);
         var log_msg = `edited agent !${name} `
         if(Math.abs(Math.floor(old_volume) - Math.floor(gb2b(volume)))>gb2b(0.3)) 
