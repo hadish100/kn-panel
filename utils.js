@@ -193,11 +193,18 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
             "data_limit_reset_strategy": "no_reset"
         };
 
+        if(process.env.RELEASE == "ALI") 
+        {
+            if(link.includes("116.202.28.246")) req_obj["inbounds"] = {"vless":["terafic2","tunel1","tunel2","tunel3"]};
+            else req_obj["inbounds"] = {"vless":["terafic-2","tunel-1","tunel-2","tunel-3"]};
+        }
+
         var res = await axios.post(link + "/api/user", req_obj, { headers });
         return res.data;
     }
 
     catch (err) {
+        console.log(err);
         return "ERR";
     }
 }
