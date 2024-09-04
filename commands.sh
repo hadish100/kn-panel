@@ -32,5 +32,16 @@ npm install -g pm2
 
 sudo apt install unzip
 
-# db.accounts.updateMany({  "is_admin": 0 },{ $set: { "daily_usage_logs": [] }})
-# db.users.updateMany({},{ $set: { "safu": 0 }})
+db.accounts.updateMany({  "is_admin": 0 },{ $set: { "daily_usage_logs": [] }})
+
+db.users.updateMany({},{ $set: { "safu": 0 }})
+
+sudo apt install nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx
+sudo ln -s /etc/nginx/sites-available/test.ir /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
