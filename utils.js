@@ -39,6 +39,7 @@ const get_sub_url = () => { return SUB_URL; }
 
 const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj); return "DONE"; }
 const get_accounts = async () => { const result = await accounts_clct.find({},{projection:{daily_usage_logs:0}}).toArray(); return result; }
+const get_accounts_with_usage_logs = async () => { const result = await accounts_clct.find({}).toArray(); return result; }
 const get_account = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:0}}).toArray(); return result[0]; }
 const get_agents = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:0}}).toArray(); return result; }
 const get_agents_daily_usage_logs = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:1,id:1,business_mode:1}}).toArray(); return result; }
@@ -155,8 +156,7 @@ const auth_marzban = async (link, username, password, cacheless=false) => {
 
         var resp = await axios.post(link + "/api/admin/token", { username, password }, { headers }, { timeout: 10000 });
         auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
-        console.log(auth_res['Authorization']);
-        redisClient.set(link, auth_res['Authorization'], 'EX', 86400);
+        redisClient.set(link, auth_res['Authorization'], 'EX', 86000);
         return auth_res;
     }
 
@@ -870,6 +870,7 @@ module.exports = {
     sleep,
     insert_to_accounts,
     get_accounts,
+    get_accounts_with_usage_logs,
     get_account,
     update_account,
     insert_to_panels,

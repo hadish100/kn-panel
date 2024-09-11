@@ -59,6 +59,7 @@ const {
     get_user_data_graph,
     get_agent_data_graph,
     get_agents,
+    get_accounts_with_usage_logs,
 } = require("./utils");
 
 
@@ -827,7 +828,7 @@ app.post("/dldb", async (req, res) =>
     else
     {
         var users = await get_all_users();
-        var accounts = await get_accounts();
+        var accounts = await get_accounts_with_usage_logs();
         var panels = await get_panels();
         var logs = await get_logs();
         
