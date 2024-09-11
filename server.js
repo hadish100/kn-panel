@@ -28,7 +28,7 @@ const {
     get_logs,
     b2gb,
     gb2b,
-    dnf,
+    format_number,
     add_token,
     token_to_account,
     get_panel_info,
@@ -270,8 +270,8 @@ app.post("/create_agent", async (req, res) => {
             password,
             volume: gb2b(volume),
             lifetime_volume: gb2b(volume),
-            allocatable_data: process.env.RELEASE == "ALI" ? 100000 : dnf(volume),
-            min_vol: dnf(min_vol),
+            allocatable_data: process.env.RELEASE == "ALI" ? 100000 : format_number(volume),
+            min_vol: format_number(min_vol),
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
             max_non_active_days:parseInt(max_non_active_days),
@@ -327,8 +327,8 @@ app.post("/create_panel", async (req, res) => {
             panel_url,
             panel_country: panel_country + (panel_countries_arr.filter(x => x.replace(/\d+$/, '') == panel_country).length + 1),
             panel_user_max_count: parseInt(panel_user_max_count),
-            panel_traffic: dnf(panel_traffic),
-            panel_data_usage: dnf(panel_info.panel_data_usage),
+            panel_traffic: format_number(panel_traffic),
+            panel_data_usage: format_number(panel_info.panel_data_usage),
             active_users: panel_info.active_users,
             total_users: panel_info.total_users,
         });
@@ -416,7 +416,7 @@ app.post("/create_user", async (req, res) => {
                 desc
             });
 
-            await update_account(agent_id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit) });
+            await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit) });
 
             await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
 
@@ -472,7 +472,7 @@ app.post("/delete_user", async (req, res) => {
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
-        if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
+        if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
         await users_clct.deleteOne({ username });
         await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user !${username}`,access_token);
         res.send("DONE");
@@ -586,8 +586,8 @@ app.post("/edit_agent", async (req, res) => {
             password,
             volume: gb2b(volume),
             lifetime_volume: agent.lifetime_volume + gb2b(volume) - old_volume,
-            allocatable_data: dnf(dnf(old_alloc) + dnf(volume) - dnf(b2gb(old_volume))),
-            min_vol: dnf(min_vol),
+            allocatable_data: format_number(format_number(old_alloc) + format_number(volume) - format_number(b2gb(old_volume))),
+            min_vol: format_number(min_vol),
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
             prefix,
@@ -638,7 +638,7 @@ app.post("/edit_panel", async (req, res) => {
             panel_password,
             panel_url,
             panel_user_max_count: parseInt(panel_user_max_count),
-            panel_traffic: dnf(panel_traffic),
+            panel_traffic: format_number(panel_traffic),
         });
 
         if(old_panel_obj.panel_url != panel_url)
@@ -724,7 +724,7 @@ app.post("/edit_user", async (req, res) => {
                     (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) /*&&
                     (old_data_limit > data_limit) */
                   ) 
-                ) await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
+                ) await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             var account = await token_to_account(access_token);
             await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
             if(old_country == country) 
@@ -793,7 +793,7 @@ app.post("/reset_user", async (req, res) => {
             if(corresponding_agent.allocatable_data < b2gb(user_obj.data_limit)) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
             var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
             if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
-            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
+            await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
         }
 
         else 
@@ -801,7 +801,7 @@ app.post("/reset_user", async (req, res) => {
             if(corresponding_agent.allocatable_data < b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
             var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
             if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
-            await update_account(corresponding_agent.id, { allocatable_data: dnf(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
+            await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
         }
 
         await update_user(user_id, { used_traffic: 0 });

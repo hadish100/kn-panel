@@ -2,7 +2,6 @@ require('dotenv').config()
 var accounts_clct, panels_clct, users_clct, logs_clct;
 const moment = require('moment-timezone');
 
-var reset_counter = 0;
 
 const {
     uid,
@@ -17,7 +16,7 @@ const {
     get_user2,
     update_user,
     b2gb,
-    dnf,
+    format_number,
     get_panel_info,
     get_marzban_user,
     get_all_marzban_users,
@@ -40,11 +39,13 @@ connect_to_db().then(res => {
     panels_clct = res.panels_clct;
     users_clct = res.users_clct;
     logs_clct = res.logs_clct;
+    main();
 });
 
 
-(async () => {
-    setTimeout(function(){ process.exit(1); },2*60*60*1000);
+async function main()
+{
+
     await sleep(5000);
 
     while (true) {
@@ -53,7 +54,7 @@ connect_to_db().then(res => {
             
             if (panel.disable)
             {
-                var panel_auth_res = await auth_marzban(panel.panel_url, panel.panel_username, panel.panel_password);
+                var panel_auth_res = await auth_marzban(panel.panel_url, panel.panel_username, panel.panel_password, true);
                 if(panel_auth_res == "ERR")
                 {
                     continue;
@@ -97,7 +98,7 @@ connect_to_db().then(res => {
 
             var db_users_arr = await get_all_users();
 
-            for (db_user of db_users_arr) {
+            for (let db_user of db_users_arr) {
 
                 var cors_panel = await get_panel(db_user.corresponding_panel_id);
                 var cors_agent = await get_account(db_user.agent_id);
@@ -120,7 +121,7 @@ connect_to_db().then(res => {
                     await syslog("user !" + db_user.username + " not found in !" + panel.panel_url + " deleting...");
                     var user_obj = await get_user2(db_user.username);
                     var agent_obj = await get_account(user_obj.agent_id);
-                    if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent_obj.id, { allocatable_data: dnf(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
+                    if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
                     await users_clct.deleteOne({ username: db_user.username });
                 }
             }
@@ -174,7 +175,7 @@ connect_to_db().then(res => {
                         var daily_usage_logs = await get_agent_daily_usage_logs(agent.id);
                         var existance_flag = false;
 
-                        for(usage_log of daily_usage_logs)
+                        for(let usage_log of daily_usage_logs)
                         {
                             if(usage_log.date == tehran0000_timestamp)
                             {
@@ -214,7 +215,7 @@ connect_to_db().then(res => {
                         { 
                             var result = await delete_vpn(panel.panel_url, panel.panel_username, panel.panel_password,user.username);
                             if (result != "ERR")  {
-                                if( !(agent.business_mode == 1 && (user.used_traffic > user.data_limit/4 || (user.expire - user.created_at) < (Math.floor(Date.now()/1000) - user.created_at)*4 )) ) await update_account(agent.id, { allocatable_data: dnf(agent.allocatable_data + b2gb(user.data_limit - user.used_traffic)) });
+                                if( !(agent.business_mode == 1 && (user.used_traffic > user.data_limit/4 || (user.expire - user.created_at) < (Math.floor(Date.now()/1000) - user.created_at)*4 )) ) await update_account(agent.id, { allocatable_data: format_number(agent.allocatable_data + b2gb(user.data_limit - user.used_traffic)) });
                                 await users_clct.deleteOne({ username:user.username });
                                 await syslog("DELETING !" + user.username + "... (passed max-non-active-days)");
                             }  
@@ -247,7 +248,7 @@ connect_to_db().then(res => {
                         if(complete_user_info == "ERR") continue;
                         
                         var inbounds = {};
-                        for(proxy of Object.keys(complete_user_info.proxies))
+                        for(let proxy of Object.keys(complete_user_info.proxies))
                         {
                             inbounds[proxy] = {};
                             if(proxy == "vless") 
@@ -288,6 +289,5 @@ connect_to_db().then(res => {
 
 
         await sleep(90000);
-        if(reset_counter++ == 30) process.exit(1);
     }
-})();
+}

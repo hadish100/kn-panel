@@ -1,3 +1,4 @@
+# PANEL INSTALLATION
 sudo apt update
 
 curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -36,6 +37,7 @@ db.accounts.updateMany({  "is_admin": 0 },{ $set: { "daily_usage_logs": [] }})
 
 db.users.updateMany({},{ $set: { "safu": 0 }})
 
+# CERT
 sudo apt install nginx
 sudo systemctl start nginx
 sudo systemctl enable nginx
@@ -45,3 +47,11 @@ sudo ln -s /etc/nginx/sites-available/test.ir /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 
+# REDIS
+sudo apt-get install lsb-release curl gpg
+curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+sudo chmod 644 /usr/share/keyrings/redis-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+sudo apt-get update
+sudo apt-get install redis
+sudo systemctl start redis

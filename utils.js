@@ -1,9 +1,13 @@
 require('dotenv').config()
+const { MongoClient } = require('mongodb');
+const dbClient = new MongoClient('mongodb://127.0.0.1:27017');
+const { createClient } = require('redis')
+const redisClient = createClient({url:'redis://localhost:6379'})
+redisClient.connect();
 const axios = require('axios');
 const https = require('https');
 axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
-const { MongoClient } = require('mongodb');
-const client = new MongoClient('mongodb://127.0.0.1:27017');
+
 const fs = require('fs');
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
@@ -85,7 +89,7 @@ const gb2b = (g) => {
     return (g * (2 ** 10) ** 3);
 }
 
-const dnf = (x) => // Desired Number Format
+const format_number = (x) =>
 {
     return Math.round(x * 100) / 100;
 }
@@ -127,7 +131,7 @@ const token_to_sub_account = async (token) =>
 
 // --- MARZBAN UTILS --- //
 
-const auth_marzban = async (link, username, password) => {
+const auth_marzban = async (link, username, password, cacheless=false) => {
     try {
         var auth_res =
         {
@@ -142,8 +146,17 @@ const auth_marzban = async (link, username, password) => {
             'Content-Type': 'application/x-www-form-urlencoded'
         };
 
+        if(!cacheless)
+        {
+            var cached_token = await redisClient.get(link);
+            
+            if (cached_token) { auth_res['Authorization'] = cached_token; return auth_res; }
+        }
+
         var resp = await axios.post(link + "/api/admin/token", { username, password }, { headers }, { timeout: 10000 });
         auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
+        console.log(auth_res['Authorization']);
+        redisClient.set(link, auth_res['Authorization'], 'EX', 86400);
         return auth_res;
     }
 
@@ -390,7 +403,7 @@ const ping_panel = async (panel_obj) => {
         var { link, username, password } = panel_obj;
 
         for (var i = 0; i < 3; i++) {
-            var headers = await auth_marzban(link, username, password);
+            var headers = await auth_marzban(link, username, password, true);
             if (headers == "ERR") {
                 await syslog("cannot connect to panel !" + panel_obj.panel_url + " ---> retrying (" + (i + 1) + "/3)");
                 await sleep(5000);
@@ -832,8 +845,8 @@ function is_object(object)
 }
 
 async function connect_to_db() {
-    await client.connect();
-    db = client.db('KN_PANEL');
+    await dbClient.connect();
+    db = dbClient.db('KN_PANEL');
     return {
         accounts_clct: db.collection('accounts'),
         panels_clct: db.collection('panels'),
@@ -874,7 +887,7 @@ module.exports = {
     get_logs,
     b2gb,
     gb2b,
-    dnf,
+    format_number,
     add_token,
     token_to_account,
     auth_marzban,

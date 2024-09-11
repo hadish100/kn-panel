@@ -8,12 +8,10 @@ const { connect_to_db } = require("./utils");
 
 connect_to_db().then(res => { users_clct = res.users_clct;});
 
-var options = 
-{
-  key: fs.readFileSync(process.env.PVKEY),
-  cert: fs.readFileSync(process.env.CRT)
-};
+var options = {};
 
+if(process.env.CRT) options.cert = fs.readFileSync(process.env.CRT);
+if(process.env.PVKEY) options.key = fs.readFileSync(process.env.PVKEY);
 if(process.env.CA) options.ca = fs.readFileSync(process.env.CA);
 
 
