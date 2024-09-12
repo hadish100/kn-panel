@@ -8,9 +8,12 @@ const fs = require('fs').promises;
     var config = {};
     var telegram_config = {};
 
+    var domain_regex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
     config.panel_name = prompt(chalk.greenBright('Enter panel name: '));
     config.panel_domain = prompt(chalk.greenBright('Enter panel domain: (Example: panel.test.ir) '));
+    while(!domain_regex.test(config.panel_domain)) config.panel_domain = prompt(chalk.redBright('Invalid domain! Please enter a valid domain: '));
     config.sublink_domain = prompt(chalk.greenBright('Enter sublink domain: (Example: sub.test.ir) '));
+    while(!domain_regex.test(config.sublink_domain)) config.sublink_domain = prompt(chalk.redBright('Invalid domain! Please enter a valid domain: '));
     
     config.panel_name = format_name(config.panel_name);
     config.panel_domain = fomat_url(config.panel_domain);
@@ -30,9 +33,14 @@ const fs = require('fs').promises;
     
     if(!telegram_config.disabled)
     {
+        var telegram_bot_token_regex = /^[0-9]+:[a-zA-Z0-9_-]+$/;
+        var telegram_chat_id_regex = /^[0-9]+$/;
         telegram_config.bot_token = prompt(chalk.greenBright('Enter telegram bot token: '));
+        while(!telegram_bot_token_regex.test(telegram_config.bot_token)) telegram_config.bot_token = prompt(chalk.redBright('Invalid bot token! Please enter a valid bot token: '));
         telegram_config.chat_id = prompt(chalk.greenBright('Enter telegram chat id: '));
+        while(!telegram_chat_id_regex.test(telegram_config.chat_id)) telegram_config.chat_id = prompt(chalk.redBright('Invalid chat id! Please enter a valid chat id: '));
         var backup_interval = prompt(chalk.greenBright('Enter backup interval (in seconds): '));
+        while(isNaN(backup_interval)) backup_interval = prompt(chalk.redBright('Invalid interval! Please enter a valid interval: '));
         backup_interval = parseInt(backup_interval);
 
         await set_telegram_property(telegram_config);
@@ -118,7 +126,7 @@ function get_ssl(domain)
     {
         console.log(chalk.yellow(`Requesting SSL certificate for ${domain}...`));
         
-        execSync(`certbot certonly --standalone -d ${domain} --non-interactive --agree-tos --email your-email@example.com`, { stdio: 'inherit' });
+        execSync(`certbot certonly --standalone -d ${domain} --non-interactive --agree-tos --email knpanelbackup@gmail.com`, { stdio: 'inherit' });
 
         console.log(chalk.blueBright(`SSL certificate successfully obtained for ${domain}`));
     } 
