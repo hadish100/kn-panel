@@ -10,6 +10,7 @@ services:
     volumes:
       - ./.env:/knp_backend/.env
       - ./backup_config.json:/knp_backend/backup_config.json
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - mongo-knp
       - redis-knp

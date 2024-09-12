@@ -34,12 +34,12 @@ echo "Building Docker image for knp_backend..."
 
 docker build -t knp_backend .
 
-if [ -x "$(command -v certbot)" ]; then
-    echo "Certbot is already installed."
-else
-    echo "Installing Certbot..."
-    sudo apt install -y certbot python3-certbot-nginx
-fi
+# if [ -x "$(command -v certbot)" ]; then
+#     echo "Certbot is already installed."
+# else
+#     echo "Installing Certbot..."
+#     sudo apt install -y certbot python3-certbot-nginx
+# fi
 
 docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend config.js
 
