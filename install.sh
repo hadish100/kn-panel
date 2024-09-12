@@ -41,7 +41,7 @@ else
     sudo apt install -y certbot python3-certbot-nginx
 fi
 
-DOMAINS=$(docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend config.js)
+DOMAINS=$(docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend config.js | tee /dev/tty)
 
 PANEL_DOMAIN=$(echo "$DOMAINS" | grep "PANEL_DOMAIN:" | awk -F': ' '{print $2}')
 
