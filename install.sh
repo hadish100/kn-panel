@@ -71,3 +71,4 @@ echo "Installation complete. Use 'knp' command to manage the service."
 # whitelist
 # curl -fsSL https://raw.githubusercontent.com/hadish100/kn-panel/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 
+# rm -rf install.sh && rm -rf knp/ && docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q) && docker rmi $(docker images -a -q) -f

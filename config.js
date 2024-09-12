@@ -93,7 +93,7 @@ function generate_nginx_config(domain,port)
 async function change_env_file(key,value)
 {
     var env_file = await fs.readFile('./.env','utf8');
-    env_file = env_file.replace(`${key}=.*`,`${key}=${value}`);
+    env_file = env_file.replace(new RegExp(`${key}=(.*)`),`${key}=${value}`);
     await fs.writeFile('./.env',env_file);
 }
 

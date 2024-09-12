@@ -1,23 +1,19 @@
 {
-    "email":{
-        "disabled":true,
-        "sender":{
-            "service": "Gmail", 
-            "auth": 
-            {
-              "user": "backup@gmail.com", 
-              "pass": "12345"
+    "email": {
+        "disabled": true,
+        "sender": {
+            "service": "Gmail",
+            "auth": {
+                "user": "backup@gmail.com",
+                "pass": "12345"
             }
         },
-
         "receiver": []
     },
-
-    "telegram":{
-        "disabled":true,
+    "telegram": {
+        "disabled": true,
         "bot_token": "",
         "chat_id": ""
     },
-
-    "interval":1800
+    "interval": 1800
 }
