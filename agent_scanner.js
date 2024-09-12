@@ -33,9 +33,9 @@ async function main()
             
             if(agent.volume < 0 && agent.disable == 0)
             {
-                var access_token = (await axios.post("http://localhost:" + process.env.SERVER_PORT + "/login", { username, password })).data.access_token;
-                var disable_agent_request = await axios.post("http://localhost:" + process.env.SERVER_PORT + "/disable_agent", { access_token, agent_id: agent.id });
-                var disable_user_request = await axios.post("http://localhost:" + process.env.SERVER_PORT + "/disable_all_agent_users", { access_token, agent_id: agent.id });
+                var access_token = (await axios.post("http://knp-backend:" + process.env.SERVER_PORT + "/login", { username, password })).data.access_token;
+                var disable_agent_request = await axios.post("http://knp-backend:" + process.env.SERVER_PORT + "/disable_agent", { access_token, agent_id: agent.id });
+                var disable_user_request = await axios.post("http://knp-backend:" + process.env.SERVER_PORT + "/disable_all_agent_users", { access_token, agent_id: agent.id });
                 
                 console.log(`Agent: ${agent.name} has been disabled because of underpayment (volume: ${agent.volume})`);
             }
