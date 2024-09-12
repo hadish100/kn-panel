@@ -26,6 +26,8 @@ const fs = require('fs').promises;
 
     await change_env_file('RELEASE',config.panel_name);
     await change_env_file('SUB_URL',config.sublink_domain);
+    await change_env_file('PANEL_URL',config.panel_domain);
+
     await fs.writeFile('./nginx.conf', nginx_config);
 
 
@@ -57,8 +59,6 @@ const fs = require('fs').promises;
 
     console.log(chalk.blueBright('Config wizard completed!'));
 
-    console.log(`PANEL_DOMAIN: ${config.panel_domain}`);
-    console.log(`SUBLINK_DOMAIN: ${config.sublink_domain}`);
 })();
 
 
