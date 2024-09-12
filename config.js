@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const prompt = require('prompt-sync')();
+const { execSync } = require('child_process');
 const fs = require('fs').promises;
-
 
 (async () => 
 {
@@ -15,6 +15,10 @@ const fs = require('fs').promises;
     config.panel_name = format_name(config.panel_name);
     config.panel_domain = fomat_url(config.panel_domain);
     config.sublink_domain = fomat_url(config.sublink_domain);
+
+    get_ssl(config.panel_domain);
+    get_ssl(config.sublink_domain);
+
     const nginx_config = generate_nginx_config(config.panel_domain, 3000)  + "\n" + generate_nginx_config(config.sublink_domain, 5000);
 
     await change_env_file('RELEASE',config.panel_name);
@@ -106,4 +110,21 @@ async function set_backup_interval(interval)
     config_file = JSON.parse(config_file);
     config_file.interval = interval;
     await fs.writeFile('./backup_config.json',JSON.stringify(config_file,null,4));
+}
+
+function get_ssl(domain) 
+{
+    try 
+    {
+        console.log(chalk.yellow(`Requesting SSL certificate for ${domain}...`));
+        
+        execSync(`certbot certonly --standalone -d ${domain} --non-interactive --agree-tos --email your-email@example.com`, { stdio: 'inherit' });
+
+        console.log(chalk.blueBright(`SSL certificate successfully obtained for ${domain}`));
+    } 
+    
+    catch (error) 
+    {
+        console.error(chalk.redBright(`Error obtaining SSL certificate for ${domain}:`), error.message);
+    }
 }

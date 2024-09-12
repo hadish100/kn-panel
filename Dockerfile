@@ -8,8 +8,6 @@ COPY package*.json .
 
 RUN npm install
 
-EXPOSE 5000
-
 COPY . .
 
 CMD ["pm2-runtime", "start", "server.js", "--name", "server", "--", \

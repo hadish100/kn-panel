@@ -7,6 +7,9 @@ services:
     ports:
       - '5000:5000'
     restart: always
+    volumes:
+      - ./.env:/knp_backend/.env
+      - ./backup_config.json:/knp_backend/backup_config.json
     depends_on:
       - mongo-knp
       - redis-knp
