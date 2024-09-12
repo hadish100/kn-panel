@@ -1,5 +1,5 @@
 {
-  "name": "KNP",
+  "name": "knp",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -23,6 +23,8 @@
     "redis": "^4.7.0",
     "sqlite3": "^5.1.6",
     "telegraf": "^4.12.2",
+    "chalk": "^4",
+    "prompt-sync": "^4.2.0",
     "why-is-node-running": "^2.2.2"
   },
   "devDependencies": {

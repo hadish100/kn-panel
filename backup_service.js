@@ -31,7 +31,7 @@ async function init()
           }
 
 
-          var res = (await axios.post("http://localhost:" + process.env.SERVER_PORT + "/dldb", { service_access_api_key : "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" })).data;
+          var res = (await axios.post("http://localhost:" + process.env.SERVER_PORT + "/dldb", { service_access_api_key : process.env.ACCESS_API_KEY })).data;
           var filePath = "./frontend/public" + res.split(">")[1];
           var today = new Date();
           var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();

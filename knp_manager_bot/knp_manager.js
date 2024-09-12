@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const client = new MongoClient('mongodb://127.0.0.1:27017');
 const { Telegraf , Markup } = require('telegraf');
@@ -6,7 +7,7 @@ const axios = require('axios');
 const fs = require('fs').promises;
 
 
-const api_key = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"
+const api_key = process.env.ACCESS_API_KEY
 const kb1 = [["🔹 PANELS" , "🔸 ADD PANEL"]]
 var temp_data = {};
 

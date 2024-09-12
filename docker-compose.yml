@@ -1,1 +1,42 @@
+version: '3.8'
+
 services:
+  knp-backend:
+    build: .
+    container_name: knp-backend
+    ports:
+      - '5000:5000'
+    restart: always
+    depends_on:
+      - mongo-knp
+      - redis-knp
+#----------------------------------------------------#
+services:
+  knp-frontend:
+    build: ./frontend
+    container_name: knp-frontend
+    ports:
+      - '3000:3000'
+    restart: always
+#----------------------------------------------------#
+  mongo-knp:
+    image: mongo:latest
+    container_name: mongo-knp
+    volumes:
+      - ./docker_volumes/mongodb_data:/data/db
+#----------------------------------------------------#
+  redis-knp:
+    image: redis:latest
+    container_name: redis-knp
+    volumes:
+      - ./docker_volumes/redis_data:/data
+#----------------------------------------------------#
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8085:80"
+    depends_on:
+      - knp-backend

@@ -12,8 +12,9 @@ const fs = require('fs');
 
 var db, accounts_clct, panels_clct, users_clct, logs_clct;
 
-var SUB_URL = process.env.SUB_URL + ":" + process.env.SUB_PORT;
-var SB_API_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
+var {SUB_URL} = process.env;
+
+var SB_API_KEY = process.env.ACCESS_API_KEY;
 
 // --- UTILS --- //
 

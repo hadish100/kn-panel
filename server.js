@@ -80,7 +80,7 @@ connect_to_db().then(res => {
 
 async function auth_middleware(req, res, next) {
 
-    if( req.body.service_access_api_key == "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" ) return next();
+    if( req.body.service_access_api_key == process.env.ACCESS_API_KEY ) return next();
     if (SD_VARIABLE == 1) return res.status(500).send({ message: 'Service unavailable' });
     if (req.url == "/login" || req.url.startsWith("/sub") ) return next();
     var { access_token } = req.body;
@@ -823,7 +823,7 @@ app.post("/dldb", async (req, res) =>
 
     const account = await token_to_account(req.body.access_token);
 
-    if( req.body.service_access_api_key != "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr" && account.is_admin == 0  ) res.send({status:"ERR",msg:"you are not admin"});
+    if( req.body.service_access_api_key != process.env.ACCESS_API_KEY && account.is_admin == 0  ) res.send({status:"ERR",msg:"you are not admin"});
 
     else
     {
