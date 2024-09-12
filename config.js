@@ -22,13 +22,13 @@ const fs = require('fs').promises;
     // get_ssl(config.panel_domain);
     // get_ssl(config.sublink_domain);
 
-    const nginx_config = generate_nginx_config(config.panel_domain, 3000)  + "\n" + generate_nginx_config(config.sublink_domain, 5000);
 
     await change_env_file('RELEASE',config.panel_name);
     await change_env_file('SUB_URL',config.sublink_domain);
     await change_env_file('PANEL_URL',config.panel_domain);
 
-    await fs.writeFile('./nginx.conf', nginx_config);
+    await fs.writeFile('./sub.conf', generate_nginx_config(config.sublink_domain, 5000));
+    await fs.writeFile('./panel.conf', generate_nginx_config(config.panel_domain, 3000));
 
 
     telegram_config.disabled = prompt(chalk.greenBright('Do you want to enable telegram backups? (y/n) ')).toLowerCase() == 'n';

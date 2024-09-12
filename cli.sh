@@ -11,13 +11,27 @@ case "$1" in
         cd /root/knp && docker compose down && docker compose up -d
         ;;
     logs)
-        cd /root/knp && docker logs -f knp_backend --tail 100
+        case "$2" in
+            front)
+                cd /root/knp && docker logs -f knp-frontend --tail 100
+                ;;
+            backend)
+                cd /root/knp && docker logs -f knp-backend --tail 100
+                ;;
+            sync)
+                cd /root/knp && docker exec -it knp-backend pm2 logs sync
+                ;;
+            *)
+                cd /root/knp && docker logs -f knp-backend --tail 100
+                ;;
+        esac
         ;;
     update)
-        cd /root/knp && git pull && docker compose build && docker docker compose down && docker compose up -d
+        cd /root/knp && git pull && docker image prune -f && docker compose build && docker compose down && docker compose up -d
         ;;
     *)
         echo "Usage: knp {start|stop|restart|logs|update}"
+        echo "For logs: knp logs {front|backend|sync}"
         exit 1
         ;;
 esac
