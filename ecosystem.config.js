@@ -9,11 +9,6 @@ module.exports = {
         name: "sync",
         script: "sync.js",
         watch: true
-      },
-      {
-        name: "backup",
-        script: "backup_service.js",
-        watch: true
       }
     ]
   };
