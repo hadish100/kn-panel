@@ -10,6 +10,4 @@ RUN npm install
 
 COPY . .
 
-CMD ["pm2-runtime", "start", "server.js", "--name", "server", "--", \
-     "&&", "pm2", "start", "sync.js", "--name", "sync", "--", \
-     "&&", "pm2", "start", "backup_config.js", "--name", "backup"]
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]
