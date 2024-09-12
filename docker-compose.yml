@@ -39,9 +39,8 @@ services:
     container_name: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./main.conf:/etc/nginx/conf.d/main.conf
       - /etc/letsencrypt:/etc/letsencrypt
-      - ./sub.conf:/etc/nginx/conf.d/sub.conf
-      - ./panel.conf:/etc/nginx/conf.d/panel.conf
     ports:
       - "8085:80"
       - "443:443"

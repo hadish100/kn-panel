@@ -41,7 +41,7 @@ else
     sudo apt install -y certbot python3-certbot-nginx
 fi
 
-docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json -v /root/knp/sub.conf:/knp_backend/sub.conf -v /root/knp/panel.conf:/knp_backend/panel.conf --entrypoint "node" knp_backend config.js
+docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json -v /root/knp/main.conf:/knp_backend/main.conf --entrypoint "node" knp_backend config.js
 
 DOMAINS=$(docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend get_cert_urls.js)
 
