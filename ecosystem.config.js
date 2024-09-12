@@ -12,7 +12,7 @@ module.exports = {
       },
       {
         name: "backup",
-        script: "backup_config.js",
+        script: "backup_service.js",
         watch: true
       }
     ]
