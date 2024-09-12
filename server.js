@@ -62,7 +62,7 @@ const {
     get_accounts_with_usage_logs,
 } = require("./utils");
 
-
+app.use(express.static('public'));
 app.use(express.json());
 app.use(fileUpload());
 app.use(auth_middleware);
@@ -875,7 +875,7 @@ app.post("/dldb", async (req, res) =>
         var zip_id = Date.now();
         zip.addLocalFolder("dbbu/main","main");
         zip.addLocalFolder("dbbu/marzban","marzban");
-        zip.writeZip("frontend/public/dbdl/db"+zip_id+".zip");
+        zip.writeZip("./public/dbdl/db"+zip_id+".zip");
         await delete_folder_content("dbbu");
         var dl_url = "/dbdl/db"+zip_id+".zip";
         res.send("DONE>"+dl_url);

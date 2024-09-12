@@ -57,3 +57,9 @@ sudo mv cli.sh /usr/local/bin/knp
 
 echo "Installation complete. Use 'knp' command to manage the service."
 
+# domains
+# telegram bot
+# marzban commands
+# whitelist
+# curl -fsSL https://raw.githubusercontent.com/hadish100/kn-panel/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
+

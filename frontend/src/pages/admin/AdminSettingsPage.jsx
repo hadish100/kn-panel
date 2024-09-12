@@ -199,7 +199,9 @@ const AdminSettingsPage = () => {
             setShowBackupCard(false)
             return
         }
-        const downloadUrl = window.location.protocol + "//" + window.location.host + res.data.split(">")[1]
+        const backendUrl = "http://knp-backend:5000";
+        const downloadPath = res.data.split(">")[1];
+        const downloadUrl = `${backendUrl}${downloadPath}`;
         console.log(downloadUrl)
         const link = document.createElement("a")
         link.href = downloadUrl

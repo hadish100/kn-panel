@@ -1,8 +1,8 @@
 require('dotenv').config()
 const { MongoClient } = require('mongodb');
-const dbClient = new MongoClient('mongodb://127.0.0.1:27017');
+const dbClient = new MongoClient('mongodb://mongo-knp:27017');
 const { createClient } = require('redis')
-const redisClient = createClient({url:'redis://localhost:6379'})
+const redisClient = createClient({url:'redis://redis-knp:6379'})
 redisClient.connect();
 const axios = require('axios');
 const https = require('https');

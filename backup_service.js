@@ -19,12 +19,12 @@ async function init()
         {
           console.log("*STARTING BACKUP SERVICE");
 
-          var dbdl_files = await fs.promises.readdir("./frontend/public/dbdl");
+          var dbdl_files = await fs.promises.readdir("./public/dbdl");
 
           for(var i=0;i<dbdl_files.length;i++)
           {
             if(!dbdl_files[i].endsWith(".zip")) continue;
-            var file_path = "./frontend/public/dbdl/" + dbdl_files[i];
+            var file_path = "./public/dbdl/" + dbdl_files[i];
             var file_stat = await fs.promises.stat(file_path);
             var diff = new Date() - new Date(file_stat.mtime);
             if(diff > 2*60*60*24*1000) await fs.promises.unlink(file_path);
@@ -32,7 +32,7 @@ async function init()
 
 
           var res = (await axios.post("http://localhost:" + process.env.SERVER_PORT + "/dldb", { service_access_api_key : process.env.ACCESS_API_KEY })).data;
-          var filePath = "./frontend/public" + res.split(">")[1];
+          var filePath = "./public" + res.split(">")[1];
           var today = new Date();
           var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
