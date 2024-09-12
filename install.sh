@@ -34,14 +34,20 @@ echo "Building Docker image for knp_backend..."
 
 docker build -t knp_backend .
 
-# if [ -x "$(command -v certbot)" ]; then
-#     echo "Certbot is already installed."
-# else
-#     echo "Installing Certbot..."
-#     sudo apt install -y certbot python3-certbot-nginx
-# fi
+if [ -x "$(command -v certbot)" ]; then
+    echo "Certbot is already installed."
+else
+    echo "Installing Certbot..."
+    sudo apt install -y certbot python3-certbot-nginx
+fi
 
-docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend config.js
+DOMAINS=$(docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend config.js)
+
+PANEL_DOMAIN=$(echo "$DOMAINS" | grep "PANEL_DOMAIN:" | awk -F': ' '{print $2}')
+
+SUBLINK_DOMAIN=$(echo "$DOMAINS" | grep "SUBLINK_DOMAIN:" | awk -F': ' '{print $2}')
+
+sudo certbot certonly --standalone -d "$PANEL_DOMAIN" -d "$SUBLINK_DOMAIN" --non-interactive --agree-tos --email knpanelbackup@gmail.com
 
 docker compose build
 
@@ -49,7 +55,7 @@ docker compose up -d
 
 sleep 3
 
-docker exec -it mongo-knp mongo KN_PANEL --eval 'db.accounts.insertOne({ "id": 100000000, "is_admin": 1, "password": "123456", "username": "admin", "tokens": [], "sub_accounts": [] })'
+docker exec -it mongo-knp mongosh KN_PANEL --eval 'db.accounts.insertOne({ "id": 100000000, "is_admin": 1, "password": "123456", "username": "admin", "tokens": [], "sub_accounts": [] })'
 
 chmod +x cli.sh
 

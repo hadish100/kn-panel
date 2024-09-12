@@ -19,8 +19,8 @@ const fs = require('fs').promises;
     config.panel_domain = fomat_url(config.panel_domain);
     config.sublink_domain = fomat_url(config.sublink_domain);
 
-    get_ssl(config.panel_domain);
-    get_ssl(config.sublink_domain);
+    // get_ssl(config.panel_domain);
+    // get_ssl(config.sublink_domain);
 
     const nginx_config = generate_nginx_config(config.panel_domain, 3000)  + "\n" + generate_nginx_config(config.sublink_domain, 5000);
 
@@ -56,6 +56,9 @@ const fs = require('fs').promises;
 
 
     console.log(chalk.blueBright('Config wizard completed!'));
+
+    console.log(`PANEL_DOMAIN: ${config.panel_domain}`);
+    console.log(`SUBLINK_DOMAIN: ${config.sublink_domain}`);
 })();
 
 

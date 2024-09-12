@@ -4,8 +4,6 @@ WORKDIR /knp_backend
 
 RUN npm install pm2 -g
 
-RUN apt-get update && apt-get install -y certbot python3-certbot-nginx
-
 COPY package*.json .
 
 RUN npm install
