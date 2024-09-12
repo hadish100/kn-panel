@@ -43,6 +43,10 @@ fi
 
 docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend config.js
 
+docker cp knp-backend:/knp_backend/sub.conf /root/knp/sub.conf
+
+docker cp knp-backend:/knp_backend/panel.conf /root/knp/panel.conf
+
 DOMAINS=$(docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json --entrypoint "node" knp_backend get_cert_urls.js)
 
 PANEL_DOMAIN=$(echo "$DOMAINS" | grep "PANEL_DOMAIN:" | awk -F': ' '{print $2}')
@@ -71,4 +75,4 @@ echo "Installation complete. Use 'knp' command to manage the service."
 # whitelist
 # curl -fsSL https://raw.githubusercontent.com/hadish100/kn-panel/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 
-# rm -rf install.sh && rm -rf knp/ && docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q) && docker rmi $(docker images -a -q) -f
+# rm -rf /root/install.sh && rm -rf /root/knp/ && docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q) && docker rmi $(docker images -a -q) -f

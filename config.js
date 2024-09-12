@@ -27,8 +27,8 @@ const fs = require('fs').promises;
     await change_env_file('SUB_URL',config.sublink_domain);
     await change_env_file('PANEL_URL',config.panel_domain);
 
-    await fs.writeFile('./sub.conf', generate_nginx_config(config.sublink_domain, 5000));
-    await fs.writeFile('./panel.conf', generate_nginx_config(config.panel_domain, 3000));
+    await fs.writeFile('./sub.conf', generate_nginx_config(config.sublink_domain, config.panel_domain, 5000));
+    await fs.writeFile('./panel.conf', generate_nginx_config(config.panel_domain, config.panel_domain, 3000));
 
 
     telegram_config.disabled = prompt(chalk.greenBright('Do you want to enable telegram backups? (y/n) ')).toLowerCase() == 'n';
@@ -62,15 +62,15 @@ const fs = require('fs').promises;
 })();
 
 
-function generate_nginx_config(domain,port)
+function generate_nginx_config(domain,ssl,port)
 {
     return `
     server {
         listen 443 ssl;
         server_name ${domain};
     
-        ssl_certificate /etc/letsencrypt/live/${domain}/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/${domain}/privkey.pem;
+        ssl_certificate /etc/letsencrypt/live/${ssl}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/${ssl}/privkey.pem;
     
         location / {
             proxy_pass http://localhost:${port};
