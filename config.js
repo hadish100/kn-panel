@@ -28,7 +28,7 @@ const fs = require('fs').promises;
     await change_env_file('PANEL_URL',config.panel_domain);
 
     await fs.writeFile('./sub.conf', generate_nginx_config(config.sublink_domain, config.panel_domain, 5000, "knp-backend"));
-    await fs.writeFile('./panel.conf', generate_nginx_config(config.panel_domain, config.panel_domain, 3000, "knp-front"));
+    await fs.writeFile('./panel.conf', generate_nginx_config(config.panel_domain, config.panel_domain, 3000, "knp-frontend"));
 
 
     telegram_config.disabled = prompt(chalk.greenBright('Do you want to enable telegram backups? (y/n) ')).toLowerCase() == 'n';
