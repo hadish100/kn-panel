@@ -27,4 +27,7 @@ sleep 3
 
 docker exec -it mongo-knp mongo KN_PANEL --eval 'db.accounts.insertOne({ "id": 100000000, "is_admin": 1, "password": "123456", "username": "admin", "tokens": [], "sub_accounts": [] })'
 
+chmod +x cli.sh
+
+sudo mv cli.sh /usr/local/bin/knp
 

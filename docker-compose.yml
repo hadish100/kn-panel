@@ -39,6 +39,7 @@ services:
     container_name: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "8085:80"
     depends_on:
