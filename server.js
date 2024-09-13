@@ -40,12 +40,9 @@ const {
     reload_agents,
     reset_marzban_user,
     connect_to_db,
-    dl_file,
-    show_url,
     delete_folder_content,
     enable_panel,
     disable_panel,
-    secondary_backend_url_converter,
     get_sub_url,
     switch_countries,
     proxy_obj_maker,
@@ -59,7 +56,7 @@ const {
     get_user_data_graph,
     get_agent_data_graph,
     get_agents,
-    get_accounts_with_usage_logs,
+    get_backup_from_everything,
 } = require("./utils");
 
 app.use(express.static('public'));
@@ -827,58 +824,8 @@ app.post("/dldb", async (req, res) =>
 
     else
     {
-        var users = await get_all_users();
-        var accounts = await get_accounts_with_usage_logs();
-        var panels = await get_panels();
-        var logs = await get_logs();
-        
-        await delete_folder_content("dbbu");
-        await fs.promises.mkdir("dbbu");
-        await fs.promises.mkdir("dbbu/main");
-        await fs.promises.mkdir("dbbu/marzban");
-    
-        await fs.promises.writeFile("dbbu/main/users.json",JSON.stringify(users));
-        await fs.promises.writeFile("dbbu/main/accounts.json",JSON.stringify(accounts));
-        await fs.promises.writeFile("dbbu/main/panels.json",JSON.stringify(panels));
-        await fs.promises.writeFile("dbbu/main/logs.json",JSON.stringify(logs));
-    
-
-        for(panel of panels)
-        {
-            var sqlite_endpoint = secondary_backend_url_converter(panel.panel_url,"dldb");
-
-            try
-            {
-                await dl_file(sqlite_endpoint,"dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
-                var zip = new AdmZip("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
-                zip.extractAllTo("dbbu/marzban/" + show_url(panel.panel_url),true);
-
-                if(process.env.RELEASE == "ARMAN")
-                {
-                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets");
-                    if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core");
-                }
-
-                await fs.promises.unlink("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
-                console.log("       # BACKUP COMPLETED FOR " + panel.panel_url);
-            }
-
-            catch(err)
-            {
-                console.log(err);
-                continue;
-            }
-            
-        }
-
-        var zip = new AdmZip();
-        var zip_id = Date.now();
-        zip.addLocalFolder("dbbu/main","main");
-        zip.addLocalFolder("dbbu/marzban","marzban");
-        zip.writeZip("./public/dbdl/db"+zip_id+".zip");
-        await delete_folder_content("dbbu");
-        var dl_url = "/dbdl/db"+zip_id+".zip";
-        res.send("DONE>"+dl_url);
+        const db_url = await get_backup_from_everything()
+        res.send("DONE>"+db_url);
     }
 
 });

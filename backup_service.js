@@ -1,7 +1,7 @@
 const { Telegraf } = require('telegraf');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
-const axios = require('axios');
+const { get_backup_from_everything } = require('./utils');
 const sleep = (s) => new Promise(resolve => setTimeout(resolve,s*1000));
 require('dotenv').config()
 
@@ -30,8 +30,8 @@ async function init()
           }
 
 
-          var res = (await axios.post("http://knp-backend:" + process.env.SERVER_PORT + "/dldb", { service_access_api_key : process.env.ACCESS_API_KEY })).data;
-          var filePath = "./public" + res.split(">")[1];
+          var db_url = await get_backup_from_everything()
+          var filePath = "./public" + db_url;
           var today = new Date();
           var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
@@ -39,7 +39,7 @@ async function init()
           {
             from: config_obj.email.sender.auth.user,
             to: config_obj.email.receiver,
-            subject: res.split("/dbdl/")[1].replace(".zip", ""),
+            subject: db_url.split("/dbdl/")[1].replace(".zip", ""),
             text: '',
             attachments: 
             [

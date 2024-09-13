@@ -7,6 +7,7 @@ redisClient.connect();
 const axios = require('axios');
 const https = require('https');
 axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
+var AdmZip = require("adm-zip");
 
 const fs = require('fs');
 
@@ -713,7 +714,6 @@ const notify_tgb = async () =>
 
     try
     {
-
         var server_ip = (await axios.get('https://ipinfo.io/ip')).data.trim();
        
         if(owner_obj[server_ip]) owner_string += owner_obj[server_ip];
@@ -722,11 +722,9 @@ const notify_tgb = async () =>
         await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
         {
             chat_id:111273509,
-            text: "🔹 Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" + "\n" + owner_string + "\n\n" + "```\n" + server_ip + "\n```",
+            text: "🔹 KNP Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" + "\n" + owner_string + "\n\n" + "```\n" + server_ip + "\n```",
             parse_mode: "MarkdownV2",
         });
-
-
     }
 
     catch(err)
@@ -840,6 +838,64 @@ function is_object(object)
     return object != null && typeof object === 'object';
 }
 
+async function get_backup_from_everything()
+{
+    var users = await get_all_users();
+    var accounts = await get_accounts_with_usage_logs();
+    var panels = await get_panels();
+    var logs = await get_logs();
+    
+    await delete_folder_content("dbbu");
+    await fs.promises.mkdir("dbbu");
+    await fs.promises.mkdir("dbbu/main");
+    await fs.promises.mkdir("dbbu/marzban");
+
+    await fs.promises.writeFile("dbbu/main/users.json",JSON.stringify(users));
+    await fs.promises.writeFile("dbbu/main/accounts.json",JSON.stringify(accounts));
+    await fs.promises.writeFile("dbbu/main/panels.json",JSON.stringify(panels));
+    await fs.promises.writeFile("dbbu/main/logs.json",JSON.stringify(logs));
+
+
+    for(let panel of panels)
+    {
+        var sqlite_endpoint = secondary_backend_url_converter(panel.panel_url,"dldb");
+
+        try
+        {
+            await dl_file(sqlite_endpoint,"dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
+            var zip = new AdmZip("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
+            zip.extractAllTo("dbbu/marzban/" + show_url(panel.panel_url),true);
+
+            if(process.env.RELEASE == "ARMAN")
+            {
+                if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/assets");
+                if(fs.existsSync("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core")) await delete_folder_content("dbbu/marzban/" + show_url(panel.panel_url) + "/lib/xray-core");
+            }
+
+            await fs.promises.unlink("dbbu/marzban/" + show_url(panel.panel_url) + ".zip");
+            console.log("# BACKUP COMPLETED FOR " + panel.panel_url);
+        }
+
+        catch(err)
+        {
+            console.log(err);
+            continue;
+        }
+        
+    }
+
+    var zip = new AdmZip();
+    var zip_id = Date.now();
+    zip.addLocalFolder("dbbu/main","main");
+    zip.addLocalFolder("dbbu/marzban","marzban");
+    zip.writeZip("./public/dbdl/db"+zip_id+".zip");
+    await delete_folder_content("dbbu");
+    return "/dbdl/db"+zip_id+".zip";
+}
+
+
+
+
 async function connect_to_db() {
     await dbClient.connect();
     db = dbClient.db('KN_PANEL');
@@ -923,5 +979,6 @@ module.exports = {
     get_agents,
     get_agents_daily_usage_logs,
     get_agent_daily_usage_logs,
-    set_vpn_expiry
+    set_vpn_expiry,
+    get_backup_from_everything,
 }
