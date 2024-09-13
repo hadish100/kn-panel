@@ -5,12 +5,10 @@ const export_arr =
   {
     name: "server",
     script: "server.js",
-    watch: true
   },
   {
     name: "sync",
     script: "sync.js",
-    watch: true
   },
 ]
 
@@ -20,7 +18,6 @@ if(!backup_config.telegram.disabled || !backup_config.email.disabled)
   ({
     name: "backup",
     script: "backup_service.js",
-    watch: true
   });
 }
 
