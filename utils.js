@@ -713,32 +713,16 @@ const notify_tgb = async () =>
 
     try
     {
-        const nets = require("os").networkInterfaces();
-        const results = {}
 
-        for (const name of Object.keys(nets)) 
-        {
-            for (const net of nets[name]) 
-            {
-                const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
-                if (net.family === familyV4Value && !net.internal) 
-                {
-                    if (!results[name]) 
-                    {
-                        results[name] = [];
-                    }
+        var server_ip = (await axios.get('https://ipinfo.io/ip')).data.trim();
+       
+        if(owner_obj[server_ip]) owner_string += owner_obj[server_ip];
+        else owner_string += "Unknown";
 
-                    results[name].push(net.address);
-                    if(owner_obj[net.address]) owner_string += owner_obj[net.address];
-
-                }
-            }
-        }
-        
         await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
         {
             chat_id:111273509,
-            text: "🔹 Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" + "\n" + owner_string + "\n\n" + "```json\n" + JSON.stringify(results,null,4) + "\n```",
+            text: "🔹 Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" + "\n" + owner_string + "\n\n" + "```\n" + server_ip + "\n```",
             parse_mode: "MarkdownV2",
         });
 
