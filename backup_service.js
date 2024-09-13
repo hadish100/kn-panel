@@ -7,12 +7,11 @@ require('dotenv').config()
 
 async function init() 
 {
-    var config_obj = JSON.parse(await fs.promises.readFile("./backup_config.json", "utf8"));
-    setTimeout(function(){ process.exit(1); },config_obj.interval*1000);
-    const bot = new Telegraf(config_obj.telegram.bot_token);
-    if(!config_obj.telegram.disabled) bot.launch();
-    const chat_id = config_obj.telegram.chat_id;
+    await sleep(10);
 
+    var config_obj = JSON.parse(await fs.promises.readFile("./backup_config.json", "utf8"));
+    const bot = new Telegraf(config_obj.telegram.bot_token);
+    const chat_id = config_obj.telegram.chat_id;
     const transporter = nodemailer.createTransport(config_obj.email.sender);           
 
         try 

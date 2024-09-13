@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const prompt = require('prompt-sync')();
+const prompt = require('prompt-sync')({sigint: true});
 const { execSync } = require('child_process');
 const fs = require('fs').promises;
 
@@ -10,8 +10,10 @@ const fs = require('fs').promises;
 
     var domain_regex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
     config.panel_name = prompt(chalk.greenBright('Enter panel name: '));
+
     config.panel_domain = prompt(chalk.greenBright('Enter panel domain: (Example: panel.test.ir) '));
     while(!domain_regex.test(config.panel_domain)) config.panel_domain = prompt(chalk.redBright('Invalid domain! Please enter a valid domain: '));
+
     config.sublink_domain = prompt(chalk.greenBright('Enter sublink domain: (Example: sub.test.ir) '));
     while(!domain_regex.test(config.sublink_domain)) config.sublink_domain = prompt(chalk.redBright('Invalid domain! Please enter a valid domain: '));
     

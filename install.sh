@@ -1,6 +1,43 @@
 #!/bin/bash
 set -e
 
+
+ips=(
+    "192.168.1.100"
+    "203.0.113.5"
+    "198.51.100.23"
+)
+
+current_ip=$(curl -s https://ipinfo.io/ip)
+
+is_ip_whitelisted() {
+    for ip in "${ips[@]}"; do
+        if [[ "$ip" == "$current_ip" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+if is_ip_whitelisted; then
+    echo "Starting KNP installation..."
+else
+    exit 1
+fi
+
+
+ports=(5000 3000 443 80)
+
+for port in "${ports[@]}"
+do
+    if lsof -i :$port >/dev/null; then
+        echo "Error: Port $port is already in use."
+        exit 1
+    fi
+done
+
+echo "All required ports are free."
+
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root or use sudo."
     exit
@@ -20,6 +57,13 @@ else
     sudo apt update && sudo apt install -y git
 fi
 
+if [ -x "$(command -v certbot)" ]; then
+    echo "Certbot is already installed."
+else
+    echo "Installing Certbot..."
+    sudo apt install -y certbot python3-certbot-nginx
+fi
+
 cd /root
 
 if [ -d "knp" ]; then
@@ -33,13 +77,6 @@ cd knp
 echo "Building Docker image for knp_backend..."
 
 docker build -t knp_backend .
-
-if [ -x "$(command -v certbot)" ]; then
-    echo "Certbot is already installed."
-else
-    echo "Installing Certbot..."
-    sudo apt install -y certbot python3-certbot-nginx
-fi
 
 docker run -it -v /root/knp/.env:/knp_backend/.env -v /root/knp/backup_config.json:/knp_backend/backup_config.json -v /root/knp/main.conf:/knp_backend/main.conf --entrypoint "node" knp_backend config.js
 
