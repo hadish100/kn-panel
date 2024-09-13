@@ -201,19 +201,14 @@ const AdminSettingsPage = () => {
         }
 
 
-        // const backendUrl = "http://knp-backend:5000";
-        // const downloadPath = res.data.split(">")[1];
-        // const downloadUrl = `${backendUrl}${downloadPath}`;
-        // console.log(downloadUrl)
-        // const link = document.createElement("a")
-        // link.href = downloadUrl
-        // link.download = "db.zip"
-        // document.body.appendChild(link)
-        // link.click()
-        // document.body.removeChild(link)
-
-        console.log(res.data.split(">")[1])
-        await axios.get(res.data.split(">")[1])
+        const downloadUrl = res.data.split(">")[1];
+        console.log(downloadUrl)
+        const link = document.createElement("a")
+        link.href = downloadUrl
+        link.download = "db.zip"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
         setShowBackupCard(false)
     }
 

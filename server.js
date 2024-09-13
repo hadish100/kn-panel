@@ -825,7 +825,7 @@ app.post("/dldb", async (req, res) =>
     else
     {
         const db_url = await get_backup_from_everything()
-        res.send("DONE>"+db_url);
+        res.send("DONE>"+get_sub_url()+db_url);
     }
 
 });
