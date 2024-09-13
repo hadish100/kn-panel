@@ -28,7 +28,7 @@ async function get_users()
     return new Promise((resolve, reject) => 
     {
         let db = new sqlite3.Database(db_path);
-        db.all("SELECT * FROM users", (err, rows) => 
+        db.all("SELECT id,username,status,used_traffic,data_limit,expire,created_at FROM users", (err, rows) => 
         {
             if (err) reject(err);
             else resolve(rows);

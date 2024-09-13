@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 var AdmZip = require("adm-zip");
 const mysql = require('mysql2/promise');
+const fs = require('fs')
 app.use(express.json());
+
 
 const db_config = 
 {
@@ -182,15 +184,65 @@ app.post("/edit_expire_times", async (req,res) =>
 
 });
 
-app.post("/dldb", async (req,res) =>
+app.post("/dldb", async (req, res) => 
 {
-    var zip = new AdmZip();
-    var zip_id = Date.now();
-    var final_file = "/var/lib/bu"+zip_id+".zip"
-    zip.addLocalFolder("/var/lib/marzban","lib");
-    zip.addLocalFolder("/opt/marzban","opt");
-    zip.writeZip(final_file);
-    res.sendFile(final_file);
+    try 
+    {
+        const connection = await mysql.createConnection(db_config);
+
+        const [tables] = await connection.execute("SHOW TABLES");
+
+        let backup_sql = '';
+
+        for (const table_obj of tables) 
+        {
+            const table_name = Object.values(table_obj)[0];
+
+            const [create_table_result] = await connection.execute(`SHOW CREATE TABLE ${table_name}`);
+            backup_sql += `${create_table_result[0]['Create Table']};\n\n`;
+
+            const [rows] = await connection.execute(`SELECT * FROM ${table_name}`);
+
+            if (rows.length > 0) 
+            {
+                const keys = Object.keys(rows[0]);
+                const values = rows.map(row => `(${keys.map(key => connection.escape(row[key])).join(', ')})`);
+                backup_sql += `INSERT INTO ${table_name} (${keys.join(', ')}) VALUES ${values.join(', ')};\n\n`;
+            }
+        }
+
+        const backup_file = path.join(__dirname, 'db.sql');
+        fs.writeFileSync(backup_file, backup_sql);
+
+        var zip_id = Date.now();
+        var zip_name = `bu_${zip_id}.zip`;
+
+        const zip_file = path.join(__dirname, zip_name);
+        const zip = new AdmZip();
+
+        zip.addLocalFile(backup_file);
+        zip.writeZip(zip_file);
+
+        res.sendFile(zip_file, (err) => 
+        {
+            if (err) 
+            {
+                console.error(err);
+                res.send("ERR");
+            }
+
+            fs.unlinkSync(backup_file);
+            fs.unlinkSync(zip_file);
+        });
+
+        connection.end();
+    } 
+    
+    catch (err) 
+    {
+        console.log(err);
+        res.send("ERR");
+    }
 });
 
 
