@@ -201,7 +201,7 @@ const AdminSettingsPage = () => {
         }
 
 
-        const downloadUrl = res.data.split(">")[1];
+        const downloadUrl = "https://" + res.data.split(">")[1];
         console.log(downloadUrl)
         const link = document.createElement("a")
         link.href = downloadUrl
