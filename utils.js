@@ -702,6 +702,15 @@ const update_user_links_bg = (panel_url,panel_username,panel_password,username,i
 
 const notify_tgb = async () =>
 {
+
+    const owner_obj =
+    {
+        "91.107.184.84": "Test",
+        "194.36.170.158": "Bahar"
+    }
+
+    var owner_string = "🔻 Owner: "
+
     try
     {
         const nets = require("os").networkInterfaces();
@@ -720,6 +729,8 @@ const notify_tgb = async () =>
                     }
 
                     results[name].push(net.address);
+                    if(owner_obj[net.address]) owner_string += owner_obj[net.address];
+
                 }
             }
         }
@@ -727,7 +738,7 @@ const notify_tgb = async () =>
         await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
         {
             chat_id:111273509,
-            text: "🔹 Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" +  "\n\n" + "```json\n" + JSON.stringify(results,null,4) + "\n```",
+            text: "🔹 Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" + "\n" + owner_string + "\n\n" + "```json\n" + JSON.stringify(results,null,4) + "\n```",
             parse_mode: "MarkdownV2",
         });
 
