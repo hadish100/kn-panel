@@ -32,8 +32,9 @@ const fs = require('fs').promises;
     var main_config = generate_nginx_config(config.sublink_domain, config.panel_domain, 5000, "knp-backend") + "\n" + generate_nginx_config(config.panel_domain, config.panel_domain, 3000, "knp-frontend");
     await fs.writeFile('./main.conf', main_config);
 
-
-    telegram_config.disabled = prompt(chalk.greenBright('Do you want to enable telegram backups? (y/n) ')).toLowerCase() == 'n';
+    var is_telegram_disabled = prompt(chalk.greenBright('Do you want to enable telegram backups? (y/n) ')).toLowerCase()
+    while(is_telegram_disabled != 'y' && is_telegram_disabled != 'n') is_telegram_disabled = prompt(chalk.redBright('Invalid input! Please enter y or n: ')).toLowerCase();
+    telegram_config.disabled = is_telegram_disabled == 'n';
     
     if(!telegram_config.disabled)
     {
