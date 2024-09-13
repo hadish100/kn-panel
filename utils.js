@@ -158,7 +158,7 @@ const auth_marzban = async (link, username, password, cacheless=false) => {
 
         var resp = await axios.post(link + "/api/admin/token", { username, password }, { headers }, { timeout: 10000 });
         auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
-        redisClient.set(link, auth_res['Authorization'], 'EX', 86000);
+        await redisClient.setEx(link, 86000, auth_res['Authorization']);
         return auth_res;
     }
 
