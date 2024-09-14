@@ -577,6 +577,7 @@ const syslog = async (str,is_positive) =>
             is_positive:is_positive?1:0
         });
 
+        if(str.startsWith("!")) str = str.slice(1);
         console.log(str);
 
         return "DONE";

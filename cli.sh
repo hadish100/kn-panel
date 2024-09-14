@@ -12,7 +12,7 @@ case "$1" in
         ;;
     logs)
         case "$2" in
-            front)
+            frontend)
                 cd /root/knp && docker logs -f knp-frontend --tail 100
                 ;;
             backend)
@@ -31,7 +31,7 @@ case "$1" in
         ;;
     *)
         echo "Usage: knp {start|stop|restart|logs|update}"
-        echo "For logs: knp logs {front|backend|sync}"
+        echo "For logs: knp logs {frontend|backend|sync}"
         exit 1
         ;;
 esac

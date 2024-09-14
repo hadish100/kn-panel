@@ -70,7 +70,6 @@ async function main()
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             console.log(time + " ---> fetching " + panel.panel_url);
 
-            console.time("             * fetched panel info from " + panel.panel_url);
             var info_obj = await get_panel_info(panel.panel_url, panel.panel_username, panel.panel_password);
             if (info_obj == "ERR") {
                 await syslog("!ERROR : failed to fetch panel info from !" + panel.panel_url);
@@ -79,18 +78,17 @@ async function main()
             }
             else 
             {
-                console.timeEnd("             * fetched panel info from " + panel.panel_url);
+                console.log("* fetched panel info from " + panel.panel_url);
                 await update_panel(panel.id, info_obj);
             }
 
             
-            console.time("             * fetched users from " + panel.panel_url);
             var marzban_users = await get_all_marzban_users(panel.panel_url, panel.panel_username, panel.panel_password);
             if (marzban_users == "ERR") {
                 await syslog("!ERROR : failed to fetch panel users from !" + panel.panel_url);
                 continue;
             }
-            console.timeEnd("             * fetched users from " + panel.panel_url);
+            console.log("* fetched users from " + panel.panel_url);
 
 
 

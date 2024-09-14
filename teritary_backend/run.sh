@@ -14,3 +14,5 @@ docker stop $(docker ps -a -q --filter "ancestor=hadish10/kntb") && docker rm $(
 # UPDATE users 
 # SET username = 'Ava_' || username 
 # WHERE admin_id = 2 AND id NOT IN (129);
+
+# docker stop $(docker ps -a -q --filter "ancestor=hadish10/kntb") && docker rm $(docker ps -a -q --filter "ancestor=hadish10/kntb") && docker rmi hadish10/kntb -f
