@@ -30,7 +30,7 @@ case "$1" in
         cd /root/knp && git pull && docker image prune -f && docker compose build && docker compose down && docker compose up -d
         ;;
     *)
-        echo "Usage: knp {start|stop|restart|logs|update}"
+        echo "Usage: knp {start|stop|restart|logs|update}" 
         echo "For logs: knp logs {frontend|backend|sync}"
         exit 1
         ;;
