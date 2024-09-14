@@ -27,7 +27,7 @@ case "$1" in
         esac
         ;;
     update)
-        cd /root/knp && git pull && docker image prune -f && docker compose build && docker compose down && docker compose up -d
+        cd /root/knp && git stash && git pull && chmod +x cli.sh && docker image prune -f && docker compose build && docker compose down && docker compose up -d
         ;;
     *)
         echo "Usage: knp {start|stop|restart|logs|update}" 
