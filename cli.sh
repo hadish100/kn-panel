@@ -22,7 +22,8 @@ case "$1" in
                 cd /root/knp && docker exec -it knp-backend pm2 logs sync
                 ;;
             *)
-                cd /root/knp && docker logs -f knp-backend --tail 100
+                # cd /root/knp && docker logs -f knp-backend --tail 100
+                echo "HI"
                 ;;
         esac
         ;;
