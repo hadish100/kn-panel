@@ -30,7 +30,7 @@
 
 .modal__form__input:hover,
 .modal__form__input:focus {
-    border: 1px solid var(--border-clr-hover);
+    border: 0.8px solid var(--border-clr-hover);
 }
 
 .modal__form__input:focus-visible {
