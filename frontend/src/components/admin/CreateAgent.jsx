@@ -34,10 +34,11 @@ const CreateAgent = ({ onClose, showForm }) => {
         prefix,
         country,
         max_non_active_days,
-        business_mode
+        business_mode,
+        vrate
     ) => {
         setCreateMode(true)
-        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode })
+        var res = await axios.post("/create_agent", { name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode, vrate })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create agent (BAD REQUEST)")
@@ -67,8 +68,9 @@ const CreateAgent = ({ onClose, showForm }) => {
         const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         const max_non_active_days = document.getElementById("max_non_active_days").value
         const businessModeValue = Number(ibmchecked)
+        const vrate = document.getElementById("vrate").value
         // Send form data to backend
-        createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, businessModeValue)
+        createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, businessModeValue,vrate)
     }
 
     const formFields = [
@@ -85,8 +87,9 @@ const CreateAgent = ({ onClose, showForm }) => {
         ],
         [
             { label: "Max Non-Active Days", type: "number", id: "max_non_active_days", name: "max_non_active_days" },
-            { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
+            { label: "GB to IRR Rate", type: "text", id: "vrate", name: "vrate" },
         ],
+        { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
         { label: "Country", type: "multi-select", id: "country", name: "country" },
     ]
 

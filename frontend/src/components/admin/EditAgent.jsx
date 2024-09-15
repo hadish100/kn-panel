@@ -36,8 +36,9 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
         ],
         [
             { label: "Max Non-Active Days", type: "number", id: "max_non_active_days", name: "max_non_active_days" },
-            { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
+            { label: "GB to IRR Rate", type: "text", id: "vrate", name: "vrate" },
         ],
+        { label: "Prefix", type: "text", id: "prefix", name: "prefix" },
         { label: "Country", type: "multi-select", id: "country", name: "country" },
     ]
 
@@ -58,6 +59,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                 document.querySelectorAll(".MuiSelect-nativeInput")[0].value,
                 document.getElementById("max_non_active_days").value,
                 Number(bmchecked == null ? item.business_mode : bmchecked),
+                document.getElementById("vrate").value
             ),
             disabled: editMode,
             pendingText: "Editing...",
