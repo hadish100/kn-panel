@@ -147,14 +147,14 @@ const auth_marzban = async (link, username, password, cacheless=false) => {
 
         if(!cacheless)
         {
-            var cached_token = (await redis_client()).get(link);
+            var cached_token = await (await redis_client()).get(link);
             
             if (cached_token) { auth_res['Authorization'] = cached_token; return auth_res; }
         }
 
         var resp = await axios.post(link + "/api/admin/token", { username, password }, { headers }, { timeout: 10000 });
         auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
-        (await redis_client()).setEx(link, 86000, auth_res['Authorization']);
+        await (await redis_client()).setEx(link, 86000, auth_res['Authorization']);
         return auth_res;
     }
 
