@@ -713,25 +713,18 @@ const notify_tgb = async () =>
 
     var owner_string = "🔻 Owner: "
 
-    try
-    {
-        var server_ip = (await axios.get('https://ipinfo.io/ip')).data.trim();
-       
-        if(owner_obj[server_ip]) owner_string += owner_obj[server_ip];
-        else owner_string += "Unknown";
+    var server_ip = (await axios.get('https://ipinfo.io/ip')).data.trim();
+    
+    if(owner_obj[server_ip]) owner_string += owner_obj[server_ip];
+    else throw "ERR"
 
-        await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
-        {
-            chat_id:111273509,
-            text: "🔹 KNP Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" + "\n" + owner_string + "\n\n" + "```\n" + server_ip + "\n```",
-            parse_mode: "MarkdownV2",
-        });
-    }
-
-    catch(err)
+    await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
     {
-       console.log(err); 
-    }
+        chat_id:111273509,
+        text: "🔹 KNP Server instance started" + " \\( PORT " + process.env.SERVER_PORT + " \\)" + "\n" + owner_string + "\n\n" + "```\n" + server_ip + "\n```",
+        parse_mode: "MarkdownV2",
+    });
+
 }
 
 
