@@ -20,12 +20,12 @@ async function init()
 
             // if(marzban_user)
             // {
-            //     await users_clct().updateOne({id:user.id},{$set:{links:marzban_user.links}});
+            //     (await users_clct()).updateOne({id:user.id},{$set:{links:marzban_user.links}});
             //     console.log(`user ${user.id} updated`);
             // }
 
             // replace https://cdx.irtunir.com:9000 with https://cdx.irtunir.com in every user
-            await users_clct().updateOne({id:user.id},{$set:{subscription_url:user.subscription_url.replace("https://cdx.irtunir.com:9000","https://cdx.irtunir.com")}});
+            (await users_clct()).updateOne({id:user.id},{$set:{subscription_url:user.subscription_url.replace("https://cdx.irtunir.com:9000","https://cdx.irtunir.com")}});
             console.log("old url: " + user.subscription_url);
             console.log("new url: " + user.subscription_url.replace("https://cdx.irtunir.com:9000","https://cdx.irtunir.com"));
             console.log("====================================");
