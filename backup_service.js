@@ -7,7 +7,7 @@ require('dotenv').config()
 
 async function init() 
 {
-    await sleep(10);
+    await sleep(20);
 
     var config_obj = JSON.parse(await fs.promises.readFile("./backup_config.json", "utf8"));
     const bot = new Telegraf(config_obj.telegram.bot_token);

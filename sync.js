@@ -36,7 +36,7 @@ const {
 async function main()
 {
 
-    await sleep(5000);
+    await sleep(20000);
 
     while (true) {
         var panels_arr = await get_panels();
