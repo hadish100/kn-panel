@@ -113,7 +113,7 @@ app.post("/get_agents", async (req, res) => {
 });
 
 app.post("/get_panels", async (req, res) => {
-    var obj_arr = await panels_clct.find({}).toArray();
+    var obj_arr = await panels_clct().find({}).toArray();
     res.send(obj_arr);
 });
 
@@ -137,7 +137,7 @@ app.post("/get_agent", async (req, res) => {
     var agent = await token_to_account(access_token);
     var filteredCountries = await Promise.all(agent.country.split(",").map(async (x) => 
     {
-        var panel_obj = (await panels_clct.find({ panel_country: x }).toArray())[0];
+        var panel_obj = (await panels_clct().find({ panel_country: x }).toArray())[0];
         if (panel_obj.disable || panel_obj.active_users >= panel_obj.panel_user_max_count ||  panel_obj.panel_traffic <= panel_obj.panel_data_usage ) return null;
         else return x;
     }));
@@ -427,7 +427,7 @@ app.post("/delete_agent", async (req, res) => {
     var { access_token, agent_id } = req.body;
     var account_id = (await token_to_account(access_token)).id;
     var agent_obj = await get_account(agent_id);
-    await accounts_clct.deleteOne({ id: agent_id });
+    await accounts_clct().deleteOne({ id: agent_id });
     await insert_to_logs(account_id, "DELETE_AGENT", `deleted agent !${agent_obj.username}`,access_token);
     res.send("DONE");
 });
@@ -448,7 +448,7 @@ app.post("/delete_panel", async (req, res) => {
         }
     }
 
-    await panels_clct.deleteOne({ id: panel_id });
+    await panels_clct().deleteOne({ id: panel_id });
     await insert_to_logs(account_id, "DELETE_PANEL", `deleted panel !${panel_obj.panel_name}`,access_token);
     res.send("DONE");
 });
@@ -464,7 +464,7 @@ app.post("/delete_user", async (req, res) => {
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
         if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
-        await users_clct.deleteOne({ username });
+        await users_clct().deleteOne({ username });
         await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user !${username}`,access_token);
         res.send("DONE");
     }
@@ -634,7 +634,7 @@ app.post("/edit_panel", async (req, res) => {
 
         if(old_panel_obj.panel_url != panel_url)
         {
-            await users_clct.updateMany({corresponding_panel_id:panel_id},{$set:{corresponding_panel:panel_url}});
+            await users_clct().updateMany({corresponding_panel_id:panel_id},{$set:{corresponding_panel:panel_url}});
             var all_users = await get_all_users();
             for(user of all_users)
             {
@@ -757,7 +757,7 @@ app.post("/edit_self", async (req, res) => {
         if(access_token.includes("@"))
         {
             var sub_account_id = (await token_to_sub_account(access_token)).id;
-            await accounts_clct.updateOne({id:account_id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
+            await accounts_clct().updateOne({id:account_id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password}});
         } 
 
         else await update_account(account_id, { username, password });
@@ -842,15 +842,15 @@ app.post("/uldb", async (req, res) =>
         var users_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/users.json"));
         var logs_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/logs.json"));
         
-        await panels_clct.deleteMany({});
-        await accounts_clct.deleteMany({});
-        await users_clct.deleteMany({});
-        await logs_clct.deleteMany({});
+        await panels_clct().deleteMany({});
+        await accounts_clct().deleteMany({});
+        await users_clct().deleteMany({});
+        await logs_clct().deleteMany({});
 
-        await panels_clct.insertMany(panels_clct_rs);
-        await accounts_clct.insertMany(accounts_clct_rs);
-        await users_clct.insertMany(users_clct_rs);
-        await logs_clct.insertMany(logs_clct_rs);
+        await panels_clct().insertMany(panels_clct_rs);
+        await accounts_clct().insertMany(accounts_clct_rs);
+        await users_clct().insertMany(users_clct_rs);
+        await logs_clct().insertMany(logs_clct_rs);
 
 
         await insert_to_logs(account.id,"RESTORE_DB",`restored database`,access_token);
@@ -896,7 +896,7 @@ app.post("/switch_countries", async(req,res) =>
     var account = await token_to_account(access_token);
     var search_obj = {country:country_from};
     if(!account.is_admin) search_obj.agent_id = account.id;
-    var users_arr = await users_clct.find(search_obj).toArray();
+    var users_arr = await users_clct().find(search_obj).toArray();
     users_arr = users_arr.map(x => x.username);
     var result = await switch_countries(country_from,country_to,users_arr);
     if(result == "ERR") res.send({ status: "ERR", msg: 'failed to switch countries' })
@@ -918,7 +918,7 @@ app.post("/add_sub_account", async(req,res) =>
         var perms = {};
         if(account.is_admin) perms = {panels:1,agents:1};
         else perms = {users:1};
-        await accounts_clct.updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password,perms}}});
+        await accounts_clct().updateOne({id:account.id},{$push:{"sub_accounts":{id:uid(),username,password,perms}}});
         await insert_to_logs(account.id, "ADD_SUB_ACCOUNT", `added sub account !${username}`,access_token)
         res.send("DONE");    
     }
@@ -938,7 +938,7 @@ app.post("/delete_sub_account", async(req,res) =>
     var {access_token,sub_account_id} = req.body;
     var account = await token_to_account(access_token);
     var sub_account_username = account.sub_accounts.filter(x=>x.id == sub_account_id)[0].username;
-    await accounts_clct.updateOne({id:account.id},{$pull:{"sub_accounts":{id:sub_account_id}}});
+    await accounts_clct().updateOne({id:account.id},{$pull:{"sub_accounts":{id:sub_account_id}}});
     await insert_to_logs(account.id, "DELETE_SUB_ACCOUNT", `deleted sub account !${sub_account_username}`,access_token)
     res.send("DONE");
 });
@@ -951,7 +951,7 @@ app.post("/edit_sub_account", async(req,res) =>
     else
     {
         var account = await token_to_account(access_token);
-        await accounts_clct.updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password,"sub_accounts.$.perms":perms}});
+        await accounts_clct().updateOne({id:account.id,"sub_accounts.id":sub_account_id},{$set:{"sub_accounts.$.username":username,"sub_accounts.$.password":password,"sub_accounts.$.perms":perms}});
         await insert_to_logs(account.id, "EDIT_SUB_ACCOUNT", `edited sub account !${username}`,access_token)
         res.send("DONE");     
     }
@@ -969,7 +969,7 @@ app.post("/get_knp_info", async(req,res) =>
         active_panels_count : [panels.filter(x=>x.disable==0).length,panels.length],
         agents_count : (await get_accounts()).length-1,
         users_count : (await get_all_users()).length,
-        today_logins : (await logs_clct.find({action:"LOGIN",time:{$gt:Math.floor(Date.now()/1000) - 24*60*60}}).toArray()).length,
+        today_logins : (await logs_clct().find({action:"LOGIN",time:{$gt:Math.floor(Date.now()/1000) - 24*60*60}}).toArray()).length,
         sd_status : SD_VARIABLE,
     };
 
@@ -1057,7 +1057,7 @@ app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
     var account = await token_to_account(access_token);
     var agent_obj = await get_account(agent_id);
     var panels_arr = await get_panels();
-    var agent_users = await users_clct.find({agent_id}).toArray();
+    var agent_users = await users_clct().find({agent_id}).toArray();
     var agent_users_panels_id_arr = [...new Set(agent_users.map(x => x.corresponding_panel_id))];
     panels_arr = panels_arr.filter(x => agent_users_panels_id_arr.includes(x.id));
     var action_groups = []
@@ -1140,7 +1140,7 @@ app.post("/graph/get_agent_data", async(req,res) =>
 app.get(/^\/sub\/.+/,async (req,res) =>
 {
     var sub_id = req.url.split("/")[2];
-    var user_obj = await users_clct.find({subscription_url:{$regex:sub_id}}).toArray();
+    var user_obj = await users_clct().find({subscription_url:{$regex:sub_id}}).toArray();
     if(user_obj.length == 0) res.send("NOT FOUND");
     else
     {

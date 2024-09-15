@@ -35,28 +35,28 @@ const sleep = (ms) => {
 
 const get_sub_url = () => { return SUB_URL; }
 
-const insert_to_accounts = async (obj) => { await accounts_clct.insertOne(obj); return "DONE"; }
-const get_accounts = async () => { const result = await accounts_clct.find({},{projection:{daily_usage_logs:0}}).toArray(); return result; }
-const get_accounts_with_usage_logs = async () => { const result = await accounts_clct.find({}).toArray(); return result; }
-const get_account = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:0}}).toArray(); return result[0]; }
-const get_agents = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:0}}).toArray(); return result; }
-const get_agents_daily_usage_logs = async () => { const result = await accounts_clct.find({ is_admin: 0 },{projection:{daily_usage_logs:1,id:1,business_mode:1}}).toArray(); return result; }
-const get_agent_daily_usage_logs = async (id) => { const result = await accounts_clct.find({ id },{projection:{daily_usage_logs:1}}).toArray(); return result[0].daily_usage_logs; }
-const update_account = async (id, value) => { await accounts_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
+const insert_to_accounts = async (obj) => { await accounts_clct().insertOne(obj); return "DONE"; }
+const get_accounts = async () => { const result = await accounts_clct().find({},{projection:{daily_usage_logs:0}}).toArray(); return result; }
+const get_accounts_with_usage_logs = async () => { const result = await accounts_clct().find({}).toArray(); return result; }
+const get_account = async (id) => { const result = await accounts_clct().find({ id },{projection:{daily_usage_logs:0}}).toArray(); return result[0]; }
+const get_agents = async () => { const result = await accounts_clct().find({ is_admin: 0 },{projection:{daily_usage_logs:0}}).toArray(); return result; }
+const get_agents_daily_usage_logs = async () => { const result = await accounts_clct().find({ is_admin: 0 },{projection:{daily_usage_logs:1,id:1,business_mode:1}}).toArray(); return result; }
+const get_agent_daily_usage_logs = async (id) => { const result = await accounts_clct().find({ id },{projection:{daily_usage_logs:1}}).toArray(); return result[0].daily_usage_logs; }
+const update_account = async (id, value) => { await accounts_clct().updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
 
 
-const insert_to_panels = async (obj) => { await panels_clct.insertOne(obj); return "DONE"; }
-const get_panels = async () => { const result = await panels_clct.find().toArray(); return result; }
-const get_panel = async (id) => { const result = await panels_clct.find({ id }).toArray(); return result[0]; }
-const update_panel = async (id, value) => { await panels_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
+const insert_to_panels = async (obj) => { await panels_clct().insertOne(obj); return "DONE"; }
+const get_panels = async () => { const result = await panels_clct().find().toArray(); return result; }
+const get_panel = async (id) => { const result = await panels_clct().find({ id }).toArray(); return result[0]; }
+const update_panel = async (id, value) => { await panels_clct().updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
 
-const insert_to_users = async (obj) => { await users_clct.insertOne(obj); return "DONE"; }
-const get_users = async (agent_id) => { const result = await users_clct.find({ agent_id }).toArray(); return result; }
-const get_all_users = async () => { const result = await users_clct.find({}).toArray(); return result; }
-const get_user1 = async (id) => { const result = await users_clct.find({ id }).toArray(); return result[0]; }
-const username_to_id = async (username) => { const result = await accounts_clct.find({ username },{id:1}).toArray();return result[0] && result[0].id }
-const get_user2 = async (username) => { const result = await users_clct.find({ username }).toArray(); return result[0]; }
-const update_user = async (id, value) => { await users_clct.updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
+const insert_to_users = async (obj) => { await users_clct().insertOne(obj); return "DONE"; }
+const get_users = async (agent_id) => { const result = await users_clct().find({ agent_id }).toArray(); return result; }
+const get_all_users = async () => { const result = await users_clct().find({}).toArray(); return result; }
+const get_user1 = async (id) => { const result = await users_clct().find({ id }).toArray(); return result[0]; }
+const username_to_id = async (username) => { const result = await accounts_clct().find({ username },{id:1}).toArray();return result[0] && result[0].id }
+const get_user2 = async (username) => { const result = await users_clct().find({ username }).toArray(); return result[0]; }
+const update_user = async (id, value) => { await users_clct().updateOne({ id }, { $set: value }, function () { }); return "DONE"; }
 
 const insert_to_logs = async (account_id, action, msg,access_token) => {
 
@@ -72,11 +72,11 @@ const insert_to_logs = async (account_id, action, msg,access_token) => {
         time: Math.floor(Date.now() / 1000)
     }
 
-    await logs_clct.insertOne(obj);
+    await logs_clct().insertOne(obj);
     return "DONE";
 }
 
-const get_logs = async () => { const result = await logs_clct.find().toArray(); return result; }
+const get_logs = async () => { const result = await logs_clct().find().toArray(); return result; }
 
 
 const b2gb = (bytes) => {
@@ -111,7 +111,7 @@ const add_token = async (id,self_id,is_admin,perms) => {
 
 
     var obj = { corresponding_account_id:self_id,token,expire };
-    await accounts_clct.updateOne({ id }, { $push: { tokens: obj } }, function () { }); return token;
+    await accounts_clct().updateOne({ id }, { $push: { tokens: obj } }, function () { }); return token;
 }
 
 const token_to_account = async (token) => {
@@ -147,14 +147,14 @@ const auth_marzban = async (link, username, password, cacheless=false) => {
 
         if(!cacheless)
         {
-            var cached_token = await redis_client.get(link);
+            var cached_token = await redis_client().get(link);
             
             if (cached_token) { auth_res['Authorization'] = cached_token; return auth_res; }
         }
 
         var resp = await axios.post(link + "/api/admin/token", { username, password }, { headers }, { timeout: 10000 });
         auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
-        await redis_client.setEx(link, 86000, auth_res['Authorization']);
+        await redis_client().setEx(link, 86000, auth_res['Authorization']);
         return auth_res;
     }
 
@@ -503,7 +503,7 @@ const delete_folder_content = async (dir_path) =>
 const disable_panel = async (panel_id) =>
 {
     await update_panel(panel_id, { disable:1,last_online:Math.floor(Date.now()/1000) });
-    await users_clct.updateMany({corresponding_panel_id:panel_id},{$set:{status:"anonym",disable:0}})
+    await users_clct().updateMany({corresponding_panel_id:panel_id},{$set:{status:"anonym",disable:0}})
 }
 
 const enable_panel = async (panel_id) =>
@@ -565,7 +565,7 @@ const syslog = async (str,is_positive) =>
     {
         var time = Math.floor(Date.now() / 1000);
 
-        await logs_clct.insertOne
+        await logs_clct().insertOne
         ({
             msg:str,
             time,
@@ -593,8 +593,8 @@ const switch_countries = async (country_from,country_to,users_arr) =>
     {
         if(users_arr.length == 0) return "ERR";
 
-        var panel_from = (await panels_clct.find({panel_country:country_from}).toArray())[0];
-        var panel_to = (await panels_clct.find({panel_country:country_to}).toArray())[0];
+        var panel_from = (await panels_clct().find({panel_country:country_from}).toArray())[0];
+        var panel_to = (await panels_clct().find({panel_country:country_to}).toArray())[0];
         var panel_from_url = panel_from.panel_url;
         var panel_to_url = panel_to.panel_url;
 

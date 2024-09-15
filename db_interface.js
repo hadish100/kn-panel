@@ -1,58 +1,80 @@
 const { MongoClient } = require('mongodb');
-const { createClient } = require('redis');
-
-// MongoDB and Redis clients
 const dbClient = new MongoClient('mongodb://mongo-knp:27017');
-const redis_client = createClient({ url: 'redis://redis-knp:6379' });
 
-let accounts_clct;
-let panels_clct;
-let users_clct;
-let logs_clct;
+const { createClient } = require('redis');
+const redis_client_conn = createClient({ url: 'redis://redis-knp:6379' });
 
-let initialized = false;
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+var accounts_clct_conn;
+var panels_clct_conn;
+var users_clct_conn;
+var logs_clct_conn;
+
+var initialized = false;
 
 async function init() 
 {
-    if (!initialized) 
+    await dbClient.connect();
+    const db = dbClient.db('KN_PANEL');
+
+    accounts_clct_conn = db.collection('accounts');
+    panels_clct_conn = db.collection('panels');
+    users_clct_conn = db.collection('users');
+    logs_clct_conn = db.collection('logs');
+
+    await redis_client_conn.connect();
+
+    initialized = true;
+
+    console.log('DB Interface initialized');
+
+}
+
+init();
+
+async function wait_for_init() 
+{
+    while (!initialized) 
     {
-        await dbClient.connect();
-        const db = dbClient.db('KN_PANEL');
-
-        accounts_clct = db.collection('accounts');
-        panels_clct = db.collection('panels');
-        users_clct = db.collection('users');
-        logs_clct = db.collection('logs');
-
-        await redis_client.connect();
-
-        initialized = true;
+        await sleep(1000);
     }
 }
 
-
-init()
-
-module.exports = 
+async function accounts_clct()
 {
-    get accounts_clct() {
-        if (!initialized) throw new Error('Database not initialized');
-        return accounts_clct;
-    },
-    get panels_clct() {
-        if (!initialized) throw new Error('Database not initialized');
-        return panels_clct;
-    },
-    get users_clct() {
-        if (!initialized) throw new Error('Database not initialized');
-        return users_clct;
-    },
-    get logs_clct() {
-        if (!initialized) throw new Error('Database not initialized');
-        return logs_clct;
-    },
-    get redis_client() {
-        if (!initialized) throw new Error('Redis client not initialized');
-        return redis_client;
-    }
+    await wait_for_init();
+    return accounts_clct_conn;
+}
+
+async function panels_clct()
+{
+    await wait_for_init();
+    return panels_clct_conn;
+}
+
+async function users_clct()
+{
+    await wait_for_init();
+    return users_clct_conn;
+}
+
+async function logs_clct()
+{
+    await wait_for_init();
+    return logs_clct_conn;
+}
+
+async function redis_client()
+{
+    await wait_for_init();
+    return redis_client_conn;
+}
+
+module.exports = {
+    accounts_clct,
+    panels_clct,
+    users_clct,
+    logs_clct,
+    redis_client
 };

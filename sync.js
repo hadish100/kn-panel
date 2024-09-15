@@ -94,13 +94,13 @@ async function main()
                 if(!cors_panel)
                 {
                     await syslog("panel not found for user !" + db_user.username + " deleting...");
-                    await users_clct.deleteOne({username: db_user.username});
+                    await users_clct().deleteOne({username: db_user.username});
                 }
         
                 if(!cors_agent)
                 {
                     await syslog("agent not found for user !" + db_user.username + " deleting...");
-                    await users_clct.deleteOne({username: db_user.username});
+                    await users_clct().deleteOne({username: db_user.username});
                 }
 
 
@@ -110,7 +110,7 @@ async function main()
                     var user_obj = await get_user2(db_user.username);
                     var agent_obj = await get_account(user_obj.agent_id);
                     if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
-                    await users_clct.deleteOne({ username: db_user.username });
+                    await users_clct().deleteOne({ username: db_user.username });
                 }
             }
 
@@ -204,7 +204,7 @@ async function main()
                             var result = await delete_vpn(panel.panel_url, panel.panel_username, panel.panel_password,user.username);
                             if (result != "ERR")  {
                                 if( !(agent.business_mode == 1 && (user.used_traffic > user.data_limit/4 || (user.expire - user.created_at) < (Math.floor(Date.now()/1000) - user.created_at)*4 )) ) await update_account(agent.id, { allocatable_data: format_number(agent.allocatable_data + b2gb(user.data_limit - user.used_traffic)) });
-                                await users_clct.deleteOne({ username:user.username });
+                                await users_clct().deleteOne({ username:user.username });
                                 await syslog("DELETING !" + user.username + "... (passed max-non-active-days)");
                             }  
                         }
