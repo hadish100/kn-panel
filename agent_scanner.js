@@ -1,26 +1,18 @@
 require('dotenv').config()
-var accounts_clct, panels_clct, users_clct, logs_clct;
 const axios = require('axios');
 
 const {
     sleep,
     get_accounts,
-    connect_to_db,
-    get_agents,
 } = require("./utils");
 
-
-connect_to_db().then(res => {
-    accounts_clct = res.accounts_clct;
-    panels_clct = res.panels_clct;
-    users_clct = res.users_clct;
-    logs_clct = res.logs_clct;
-    main()
-});
 
 
 async function main()
 {
+
+    await sleep(10000);
+
     while (true) 
     {
         var agents = await get_accounts();
@@ -48,3 +40,5 @@ async function main()
         await sleep(30 * 60 * 1000);
     }
 }
+
+main();

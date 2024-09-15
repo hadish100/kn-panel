@@ -1,12 +1,6 @@
-const {get_marzban_user,get_all_users,connect_to_db,get_panels} = require("../utils");
+const {get_marzban_user,get_all_users,get_panels} = require("../utils");
 
-connect_to_db().then(res => {
-    accounts_clct = res.accounts_clct;
-    panels_clct = res.panels_clct;
-    users_clct = res.users_clct;
-    logs_clct = res.logs_clct;
-    init();
-});
+var { users_clct } = require('./db_interface');
 
 async function init()
 {
@@ -42,3 +36,4 @@ async function init()
     console.log("done");
 }
 
+init();

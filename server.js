@@ -4,7 +4,7 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 var AdmZip = require("adm-zip");
 var SD_VARIABLE = 0;
-var accounts_clct, panels_clct, users_clct, logs_clct;
+var { accounts_clct, panels_clct, users_clct, logs_clct } = require('./db_interface');
 
 const { 
     uid,
@@ -39,7 +39,6 @@ const {
     edit_vpn,
     reload_agents,
     reset_marzban_user,
-    connect_to_db,
     delete_folder_content,
     enable_panel,
     disable_panel,
@@ -64,12 +63,6 @@ app.use(express.json());
 app.use(fileUpload());
 app.use(auth_middleware);
 
-connect_to_db().then(res => {
-    accounts_clct = res.accounts_clct;
-    panels_clct = res.panels_clct;
-    users_clct = res.users_clct;
-    logs_clct = res.logs_clct;
-});
 
 
 

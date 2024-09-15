@@ -1,5 +1,5 @@
 require('dotenv').config()
-var accounts_clct, panels_clct, users_clct, logs_clct;
+var { users_clct } = require('./db_interface');
 const moment = require('moment-timezone');
 
 
@@ -21,7 +21,6 @@ const {
     get_marzban_user,
     get_all_marzban_users,
     ping_panel,
-    connect_to_db,
     auth_marzban,
     insert_to_users,
     delete_vpn,
@@ -32,15 +31,6 @@ const {
     get_agent_daily_usage_logs,
     set_vpn_expiry,
 } = require("./utils");
-
-
-connect_to_db().then(res => {
-    accounts_clct = res.accounts_clct;
-    panels_clct = res.panels_clct;
-    users_clct = res.users_clct;
-    logs_clct = res.logs_clct;
-    main();
-});
 
 
 async function main()
@@ -289,3 +279,5 @@ async function main()
         await sleep(90000);
     }
 }
+
+main();

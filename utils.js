@@ -1,9 +1,5 @@
 require('dotenv').config()
-const { MongoClient } = require('mongodb');
-const dbClient = new MongoClient('mongodb://mongo-knp:27017');
-const { createClient } = require('redis')
-const redisClient = createClient({url:'redis://redis-knp:6379'})
-redisClient.connect();
+
 const axios = require('axios');
 const https = require('https');
 axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
@@ -11,7 +7,7 @@ var AdmZip = require("adm-zip");
 
 const fs = require('fs');
 
-var db, accounts_clct, panels_clct, users_clct, logs_clct;
+var { accounts_clct, panels_clct, users_clct, logs_clct, redis_client } = require('./db_interface');
 
 var {SUB_URL} = process.env;
 
@@ -151,14 +147,14 @@ const auth_marzban = async (link, username, password, cacheless=false) => {
 
         if(!cacheless)
         {
-            var cached_token = await redisClient.get(link);
+            var cached_token = await redis_client.get(link);
             
             if (cached_token) { auth_res['Authorization'] = cached_token; return auth_res; }
         }
 
         var resp = await axios.post(link + "/api/admin/token", { username, password }, { headers }, { timeout: 10000 });
         auth_res['Authorization'] = resp.data['token_type'] + ' ' + resp.data['access_token'];
-        await redisClient.setEx(link, 86000, auth_res['Authorization']);
+        await redis_client.setEx(link, 86000, auth_res['Authorization']);
         return auth_res;
     }
 
@@ -887,29 +883,6 @@ async function get_backup_from_everything()
     return "/dbdl/db"+zip_id+".zip";
 }
 
-
-
-
-async function connect_to_db() {
-    await dbClient.connect();
-    db = dbClient.db('KN_PANEL');
-    return {
-        accounts_clct: db.collection('accounts'),
-        panels_clct: db.collection('panels'),
-        users_clct: db.collection('users'),
-        logs_clct: db.collection('logs')
-    }
-
-};
-
-connect_to_db().then(res => {
-    accounts_clct = res.accounts_clct;
-    panels_clct = res.panels_clct;
-    users_clct = res.users_clct;
-    logs_clct = res.logs_clct; 
-});
-
-
 module.exports = {
     uid,
     uidv2,
@@ -952,7 +925,6 @@ module.exports = {
     reload_agents,
     reset_marzban_user,
     ping_panel,
-    connect_to_db,
     dl_file,
     show_url,
     delete_folder_content,
