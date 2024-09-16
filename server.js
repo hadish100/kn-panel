@@ -245,7 +245,7 @@ app.post("/create_agent", async (req, res) => {
 
     
 
-    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country || !max_non_active_days) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country || !max_non_active_days || !vrate) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else if(prefix_arr.includes(prefix)) res.send({ status: "ERR", msg: "prefix already exists" });
     else if(name_arr.includes(name)) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username)) res.send({ status: "ERR", msg: "username already exists" }); 
@@ -570,7 +570,7 @@ app.post("/edit_agent", async (req, res) => {
         var [old_prefix, old_name, old_username] = [agent.prefix, agent.name, agent.username];
 
 
-    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country || !max_non_active_days) res.send({ status: "ERR", msg: "fill all of the inputs" })
+    if (!name || !username || !password || !volume || !min_vol || !max_users || !max_days || !prefix || !country || !max_non_active_days || !vrate || !gateway_status) res.send({ status: "ERR", msg: "fill all of the inputs" })
     else if(prefix_arr.includes(prefix) && old_prefix != prefix) res.send({ status: "ERR", msg: "prefix already exists" });
     else if(name_arr.includes(name) && old_name != name) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username) && old_username != username) res.send({ status: "ERR", msg: "username already exists" }); 
@@ -855,6 +855,14 @@ app.post("/uldb", async (req, res) =>
         var accounts_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/accounts.json"));
         var users_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/users.json"));
         var logs_clct_rs = JSON.parse(await fs.promises.readFile("dbrs/main/logs.json"));
+
+
+        // backward compatibility
+        for(account of accounts_clct_rs)
+        {
+            if(account.is_admin) continue;
+            if(!account.daily_usage_logs) account.daily_usage_logs = [];
+        }
         
         await (await panels_clct()).deleteMany({});
         await (await accounts_clct()).deleteMany({});
@@ -1147,6 +1155,16 @@ app.post("/graph/get_agent_data", async(req,res) =>
     var {date_from,date_to,business_mode} = req.body;
     var data_obj = await get_agent_data_graph(date_from,date_to,business_mode);
     res.send(data_obj);
+});
+
+app.post("/buy_volume", async(req,res) =>
+{
+    res.send("DONE");
+});
+
+app.post("/confirm_payment", async(req,res) =>
+{
+    res.send("DONE");
 });
 
 
