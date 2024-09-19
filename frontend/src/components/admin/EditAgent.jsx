@@ -208,6 +208,8 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                         </main>
 
                         <div className='flex flex-col gap-2.5' style={{ marginTop: "1rem" }}>
+
+
                             <div className='flex justify-between flex-col gap-1'>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
                                     Agent status :
@@ -241,6 +243,25 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                                     </div>
                                 </span>
                             </div>
+
+                            <div className='flex justify-between flex-col gap-1'>
+                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                    Agent status :
+                                    <FormControlLabel
+                                        onClick={() => onPowerItem(item.id, item.disable)}
+                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(!item.disable) : false} />}
+                                    />
+                                </span>
+                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
+                                    <div>Create access : 
+                                        <FormControlLabel
+                                        onClick={() => onPowerItem2(item.id, !item.create_access)}
+                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.create_access) : false} />}
+                                    />
+                                    </div>
+                                </span>
+                            </div>
+
                             <div className={`flex gap-2.5 ${styles['buttons-row']}`}>
                                 <Button className='outlined w-full' onClick={() => setShowDisableAllUsers(true)}><DisabledIcon />Disable all users</Button>
                                 <Button className='outlined w-full' onClick={() => setShowEnableAllUsers(true)}><ActiveIcon />Enable all users</Button>

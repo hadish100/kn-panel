@@ -862,6 +862,8 @@ app.post("/uldb", async (req, res) =>
         {
             if(account.is_admin) continue;
             if(!account.daily_usage_logs) account.daily_usage_logs = [];
+            if(!account.vrate) account.vrate = 500_000;
+            if(!account.gateway_status) account.gateway_status = {zarinpal:0,paymentnow:0}; 
         }
         
         await (await panels_clct()).deleteMany({});
