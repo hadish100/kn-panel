@@ -13,7 +13,7 @@ import ErrorCard from '../../components/ErrorCard'
 import zarinpalIcon from '../../assets/zarinpal.png'
 import cryptoIcon from '../../assets/crypto.png'
 
-const BuyVolume = ({ onClose, showModal }) => {
+const BuyVolume = ({ onClose, showModal, gatewayStatus, volumeRate }) => {
     const [volumeAmount, setVolumeAmount] = useState("")
     const [volumePrice, setVolumePrice] = useState("")
     const [isCheckingOut, setIsCheckingOut] = useState(false)
@@ -30,12 +30,14 @@ const BuyVolume = ({ onClose, showModal }) => {
         if (!showModal) {
             setVolumePrice("")
             setVolumeAmount("")
+            setZarinpalChecked(false)
+            setNowpaymentsChecked(false)
         }
     }, [showModal])
 
     const handleClickSwitch = async () => {
         setIsCheckingOut(true)
-        const checkoutReq = (await axios.post("/checkout", { access_token, country_from: volumeAmount, country_to: volumePrice })).data
+        const checkoutReq = (await axios.post("/checkout", { access_token, volume_amount:volumeAmount })).data
         if (checkoutReq.status === "ERR") {
             setError_msg(checkoutReq.msg)
             setHasError(true)
@@ -43,23 +45,24 @@ const BuyVolume = ({ onClose, showModal }) => {
             return
         }
         setIsCheckingOut(false)
-        onClose()
+        window.location.href = checkoutReq;
     }
 
     const handleZarinpalClick = () => {
+        if(!gatewayStatus.zarinpal) return
         setZarinpalChecked(true)
         setNowpaymentsChecked(false)
     }
 
     const handleNowpaymentsClick = () => {
+        if(!gatewayStatus.nowpayments) return
         setNowpaymentsChecked(true)
         setZarinpalChecked(false)
     }
 
     const handleVolumeAmountChange = (e) => {
         setVolumeAmount(e.target.value)
-        setVolumePrice(e.target.value * 100)
-
+        setVolumePrice((e.target.value * volumeRate).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
     }
 
 
@@ -100,12 +103,12 @@ const BuyVolume = ({ onClose, showModal }) => {
 
                         <label className="modal__form__label" >Payment Methods</label>
                         <div className='flex justify-around flex-row gap-1' style={{ justifyContent:"space-around",flexWrap:"wrap" }}>
-                            <div onClick={()=>handleZarinpalClick()} className={`${zarinpalChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
+                            <div onClick={()=>handleZarinpalClick()} className={`${gatewayStatus.zarinpal?'':'payment_cards_disabled'} ${zarinpalChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
                             <img src={zarinpalIcon} alt="zarinpal" style={{ width: "50px", height: "50px", background:"white", opacity:"1", marginRight:"10px", padding: "0", marginBottom: '7px', marginTop: '7px', borderRadius: '100%'  }} />
                             <span>Zarinpal</span>
                             </div>
 
-                            <div onClick={()=>handleNowpaymentsClick()} className={`${nowpaymentsChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
+                            <div onClick={()=>handleNowpaymentsClick()} className={`${gatewayStatus.nowpayments?'':'payment_cards_disabled'} ${nowpaymentsChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
                             <img src={cryptoIcon} alt="NOWPayments" style={{ width: "50px", height: "50px", background:"white", opacity:"1", marginRight:"10px", padding: "0", marginBottom: '7px', marginTop: '7px', borderRadius: '100%'  }} />
                             <span>NOWPayments</span>
                             </div>

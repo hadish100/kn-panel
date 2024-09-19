@@ -64,7 +64,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                 document.getElementById("max_non_active_days").value,
                 Number(bmchecked == null ? item.business_mode : bmchecked),
                 document.getElementById("vrate").value,
-                {zarinpal:zarinpalChecked,nowpayments:nowpaymentsChecked}
+                {zarinpal:Number(zarinpalChecked),nowpayments:Number(nowpaymentsChecked)}
             ),
             disabled: editMode,
             pendingText: "Editing...",

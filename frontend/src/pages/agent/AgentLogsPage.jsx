@@ -74,7 +74,7 @@ const AgentLogsPage = () => {
         { label: 30, value: 30 },
     ]
 
-    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER" , "EDIT_SELF", "RESET_USER", "ENABLE_USER", "DISABLE_USER","RECEIVE_DATA","SWITCH_COUNTRY","ADD_SUB_ACCOUNT","EDIT_SUB_ACCOUNT","DELETE_SUB_ACCOUNT"]
+    const actions_array = ["LOGIN", "CREATE_USER", "EDIT_USER", "DELETE_USER" , "EDIT_SELF", "RESET_USER", "ENABLE_USER", "DISABLE_USER","RECEIVE_DATA","SWITCH_COUNTRY","ADD_SUB_ACCOUNT","EDIT_SUB_ACCOUNT","DELETE_SUB_ACCOUNT", "BUY_VOLUME"]
     const agent_obj = JSON.parse(sessionStorage.getItem("agent"))
     const filter_accounts = [agent_obj.username].concat(agent_obj.sub_accounts.map(sub_account => sub_account.username));
 

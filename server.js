@@ -56,6 +56,9 @@ const {
     get_agent_data_graph,
     get_agents,
     get_backup_from_everything,
+    make_zarinpal_gateway,
+    verify_zarinpal_payment,
+    get_last_payment,
 } = require("./utils");
 
 app.use(express.static('public'));
@@ -72,7 +75,7 @@ async function auth_middleware(req, res, next) {
 
     if( req.body.service_access_api_key == process.env.ACCESS_API_KEY ) return next();
     if (SD_VARIABLE == 1) return res.status(500).send({ message: 'Service unavailable' });
-    if (req.url == "/login" || req.url.startsWith("/sub") ) return next();
+    if (req.url == "/login" || req.url.startsWith("/sub") || req.url.startsWith("/confirm_payment") ) return next();
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
@@ -81,7 +84,7 @@ async function auth_middleware(req, res, next) {
         var endpoints =
         {
             sub_accounts_perms:["/add_sub_account","/edit_sub_account","/delete_sub_account"],
-            users_perms:["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries"],
+            users_perms:["/create_user","/delete_user","/disable_user","/enable_user","/edit_user","/reset_user","/switch_countries","/checkout"],
             agents_perms:["/create_agent","/delete_agent","/disable_agent","/enable_agent","/edit_agent","/enable_edit_access","/enable_create_access","/enable_delete_access","/disable_edit_access","/disable_create_access","/disable_delete_access","/disable_all_agent_users","/enable_all_agent_users","/delete_all_agent_users"],
             panels_perms:["/create_panel","/delete_panel","/disable_panel","/enable_panel","/edit_panel"]
         };
@@ -141,6 +144,9 @@ app.post("/get_agent", async (req, res) => {
         if (panel_obj.disable || panel_obj.active_users >= panel_obj.panel_user_max_count ||  panel_obj.panel_traffic <= panel_obj.panel_data_usage ) return null;
         else return x;
     }));
+
+    agent.last_payment = await get_last_payment(agent.id);
+
     agent.country = filteredCountries.filter(Boolean).join(",");
 
     res.send(agent);
@@ -250,7 +256,7 @@ app.post("/create_agent", async (req, res) => {
     else if(name_arr.includes(name)) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username)) res.send({ status: "ERR", msg: "username already exists" }); 
     else if(isNaN(vrate)) res.send({ status: "ERR", msg: "invalid vrate" });
-    else if(vrate < 10_000) res.send({ status: "ERR", msg: "vrate is too low" });
+    else if(vrate < 10_000) res.send({ status: "ERR", msg: "volume rate is too low" });
     else {
         await insert_to_accounts({
             id: uid(),
@@ -575,9 +581,9 @@ app.post("/edit_agent", async (req, res) => {
     else if(name_arr.includes(name) && old_name != name) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username) && old_username != username) res.send({ status: "ERR", msg: "username already exists" }); 
     else if(isNaN(vrate)) res.send({ status: "ERR", msg: "invalid vrate" });
-    else if(vrate < 10_000) res.send({ status: "ERR", msg: "vrate is too low" });
-    else if (gateway_status.zarinpal == 1 && !process.env.ZARINPAL_TOKEN) res.send({ status: "ERR", msg: "zarinpal token is not set" });
-    else if (gateway_status.nowpayments == 1 && !process.env.NOWPAYMENTS_TOKEN) res.send({ status: "ERR", msg: "nowpayments token is not set" });
+    else if(vrate < 10_000) res.send({ status: "ERR", msg: "volume rate is too low" });
+    else if (gateway_status.zarinpal == 1 && !process.env.ZARINPAL_TOKEN) res.send({ status: "ERR", msg: "Zarinpal token is not set" });
+    else if (gateway_status.nowpayments == 1 && !process.env.NOWPAYMENTS_TOKEN) res.send({ status: "ERR", msg: "NOWPayments token is not set" });
     else {
         var old_volume = agent.volume;
         var old_alloc = agent.allocatable_data;
@@ -1159,14 +1165,53 @@ app.post("/graph/get_agent_data", async(req,res) =>
     res.send(data_obj);
 });
 
-app.post("/buy_volume", async(req,res) =>
+app.post("/checkout", async(req,res) =>
 {
-    res.send("DONE");
+    try
+    {
+        var { access_token, volume_amount, gateway } = req.body;
+        var account = await token_to_account(access_token);
+        var price = volume_amount * account.vrate;
+        var description = `${account.name} buying ${volume_amount} GB data`;
+        var gateway_url = await make_zarinpal_gateway(price,description,volume_amount,account.id,access_token);
+        res.send(gateway_url);
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.send({ status: "ERR", msg: "failed to connect to gateway" });
+    }
 });
 
-app.post("/confirm_payment", async(req,res) =>
+app.get("/confirm_payment", async(req,res) =>
 {
-    res.send("DONE");
+    try
+    {
+        var status = req.query.Status;
+        var authority = req.query.Authority;
+        var redirect_url = "https://" + process.env.PANEL_URL + "/agent/users";
+    
+        if(status == "NOK")
+        {
+            res.redirect(redirect_url);
+            return;
+        }
+    
+        else
+        {
+            var verification_result = await verify_zarinpal_payment(authority);
+            res.redirect(redirect_url);
+            return;
+        }
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.redirect(redirect_url);
+    }
+
 });
 
 

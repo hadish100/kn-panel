@@ -61,7 +61,7 @@ const update_user = async (id, value) => { await (await users_clct()).updateOne(
 const insert_to_logs = async (account_id, action, msg,access_token) => {
 
     var username;
-    if(access_token.includes("@") && action != "RECEIVE_DATA") username = (await token_to_sub_account(access_token)).username
+    if(access_token && access_token.includes("@") && action != "RECEIVE_DATA") username = (await token_to_sub_account(access_token)).username
     else username = (await get_account(account_id)).username;
 
     var obj = {
@@ -827,6 +827,82 @@ function is_object(object)
     return object != null && typeof object === 'object';
 }
 
+async function make_zarinpal_gateway(price,description,volume,agent_id,access_token)
+{
+    var merchant_id = process.env.ZARINPAL_TOKEN;
+
+    var zarinpal_request = await axios.post('https://api.zarinpal.com/pg/v4/payment/request.json',
+    {
+        merchant_id,
+        amount:price,
+        callback_url: "https://" + process.env.SUB_URL + "/confirm_payment",
+        description,
+    });
+
+    var auth = zarinpal_request.data.authority
+
+    var redis_data = {agent_id,volume,price,access_token,verified:0};
+    redis_data = JSON.stringify(redis_data);
+
+    await (await redis_client()).setEx(auth, 1800, redis_data);
+
+    return "https://www.zarinpal.com/pg/StartPay/" + auth;
+}
+
+async function verify_zarinpal_payment(authority)
+{
+    var merchant_id = process.env.ZARINPAL_TOKEN;
+    var redis_data = await (await redis_client()).get(authority);
+    redis_data = JSON.parse(redis_data);
+
+    var zarinpal_verify = await axios.post('https://api.zarinpal.com/pg/v4/payment/verify.json',
+    {
+        merchant_id,
+        authority,
+        amount:redis_data.price
+    });
+
+    if(zarinpal_verify.data.data.code == 100)
+    {
+        await (await redis_client()).setEx(authority, 1800, JSON.stringify({...redis_data,verified:1}));
+
+        var user_obj = await get_account(redis_data.agent_id);
+
+        var update_obj =
+        {
+            volume: user_obj.volume + gb2b(redis_data.volume),
+            lifetime_volume: user_obj.lifetime_volume + gb2b(redis_data.volume),
+            allocatable_data: user_obj.allocatable_data + redis_data.volume,
+        }
+
+        await update_account(redis_data.agent_id,update_obj);
+        await insert_to_logs(redis_data.agent_id,"BUY_VOLUME",`bought ${redis_data.volume} GB data for ${redis_data.price} IRR`,redis_data.access_token);
+
+        return true;
+    }
+
+    else return false;
+
+}
+
+async function get_last_payment(agent_id)
+{
+    var redis_keys = await (await redis_client()).keys("A*");
+
+    for(key of redis_keys)
+    {
+        var data = await (await redis_client()).get(key);
+        data = JSON.parse(data);
+        if(data.agent_id == agent_id) 
+        {
+            await (await redis_client()).del(key);
+            return data;
+        }
+    }
+
+    return null;
+}
+
 async function get_backup_from_everything()
 {
     var users = await get_all_users();
@@ -946,4 +1022,7 @@ module.exports = {
     get_agent_daily_usage_logs,
     set_vpn_expiry,
     get_backup_from_everything,
+    make_zarinpal_gateway,
+    verify_zarinpal_payment,
+    get_last_payment,
 }

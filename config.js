@@ -23,10 +23,6 @@ const fs = require('fs').promises;
     config.panel_domain = fomat_url(config.panel_domain);
     config.sublink_domain = fomat_url(config.sublink_domain);
 
-    // get_ssl(config.panel_domain);
-    // get_ssl(config.sublink_domain);
-
-
     await change_env_file('RELEASE',config.panel_name);
     await change_env_file('SUB_URL',config.sublink_domain);
     await change_env_file('PANEL_URL',config.panel_domain);
@@ -59,6 +55,27 @@ const fs = require('fs').promises;
         telegram_config.bot_token = '';
         telegram_config.chat_id = '';
         await set_telegram_property(telegram_config);
+    }
+
+
+    var does_the_client_want_zarinpal = prompt(chalk.greenBright('Do you want to enable Zarinpal payments? (y/n) ')).toLowerCase();
+    while(does_the_client_want_zarinpal != 'y' && does_the_client_want_zarinpal != 'n') does_the_client_want_zarinpal = prompt(chalk.redBright('Invalid input! Please enter y or n: ')).toLowerCase();
+
+    if(does_the_client_want_zarinpal == 'y')
+    {
+        var zarinpal_merchant_id = prompt(chalk.greenBright('Enter Zarinpal merchant id: '));
+        while(zarinpal_merchant_id.length != 36) zarinpal_merchant_id = prompt(chalk.redBright('Invalid merchant id! Please enter a valid merchant id: '));
+        await change_env_file('ZARINPAL_TOKEN',zarinpal_merchant_id);
+    }
+
+    var does_the_client_want_nowpayments = prompt(chalk.greenBright('Do you want to enable Nowpayments payments? (y/n) ')).toLowerCase();
+    while(does_the_client_want_nowpayments != 'y' && does_the_client_want_nowpayments != 'n') does_the_client_want_nowpayments = prompt(chalk.redBright('Invalid input! Please enter y or n: ')).toLowerCase();
+
+    if(does_the_client_want_nowpayments == 'y')
+    {
+        var nowpayments_api_key = prompt(chalk.greenBright('Enter Nowpayments api key: '));
+        while(nowpayments_api_key.includes("#")) nowpayments_api_key = prompt(chalk.redBright('Invalid api key! Please enter a valid api key: '));
+        await change_env_file('NOWPAYMENTS_TOKEN',nowpayments_api_key);
     }
 
 
@@ -126,21 +143,4 @@ async function set_backup_interval(interval)
     config_file = JSON.parse(config_file);
     config_file.interval = interval;
     await fs.writeFile('./backup_config.json',JSON.stringify(config_file,null,4));
-}
-
-function get_ssl(domain) 
-{
-    try 
-    {
-        console.log(chalk.yellow(`Requesting SSL certificate for ${domain}...`));
-        
-        execSync(`certbot certonly --standalone -d ${domain} --non-interactive --agree-tos --email knpanelbackup@gmail.com`, { stdio: 'inherit' });
-
-        console.log(chalk.blueBright(`SSL certificate successfully obtained for ${domain}`));
-    } 
-    
-    catch (error) 
-    {
-        console.error(chalk.redBright(`Error obtaining SSL certificate for ${domain}:`), error.message);
-    }
 }

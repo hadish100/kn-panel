@@ -348,7 +348,7 @@ const UsersPage = () => {
             />
 
 
-            <BuyVolume onClose={handleCloseBuyVolume} showModal={showBuyVolume} />
+            <BuyVolume onClose={handleCloseBuyVolume} showModal={showBuyVolume} gatewayStatus={agent.gateway_status} volumeRate={agent.vrate} />
             <SwitchCountries onClose={handleCloseSwitchCountries} showModal={showSwitchCountries} />
 
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}
