@@ -226,3 +226,79 @@ input[type=number] {
 .spinner {
     animation: spin 1s linear infinite;
 }
+
+.payment_cards
+{
+    border: 1px solid var(--border-clr);
+    border-radius: 6px;
+    padding: .5rem;
+    width: 49%;
+    cursor: pointer;
+}
+
+.payment_cards_selected
+{
+    border: 1px solid var(--primary-clr-100);
+    background: #749aec14;
+}
+
+.payment_cards_disabled
+{
+    background: #749aec14;
+    filter:grayscale(1);
+}
+
+.agent_group_action_btns
+{
+    gap:10px;
+}
+
+.agent_group_action_btns
+{
+    margin-bottom:10px;
+}
+
+.buy_volume_section
+{
+    position:absolute;
+    top:-5px;
+    right:-5px;
+    cursor: pointer;
+}
+
+.buy_volume_section img
+{
+    border-bottom-left-radius: 100%;
+    opacity:1;
+}
+
+.usage-stats__item
+{
+    position:relative;
+    overflow:hidden;
+}
+
+@media (max-width: 550px) 
+{
+    .payment_cards
+    {
+        width:100%;
+        justify-content:flex-start;
+    }
+    
+}
+
+@media (max-width: 470px) 
+{
+    .agent_group_action_btns button
+    {
+        margin-top:5px;
+        margin-bottom:5px;
+    }
+
+    .agent_group_action_btns
+    {
+        margin-bottom:0;
+        gap:0;
+    }
+}

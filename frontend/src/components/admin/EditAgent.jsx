@@ -17,9 +17,13 @@ import IOSSwitch from '../form/inputs/IOSSwitch'
 import styles from "./EditAgent.module.css"
 import { pink } from '@mui/material/colors'
 import Checkbox from '@mui/material/Checkbox'
+import zarinpalIcon from '../../assets/zarinpal.png'
+import cryptoIcon from '../../assets/crypto.png'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerItem2,onPowerItem3,onPowerItem4, onEditItem, onLoginItem, editMode,DeleteAllUsers,EnableAllUsers,DisableAllUsers,isEnablingAllUsers,isDeletingAllUsers,isDisablingAllUsers,showDeleteAllUsers,showEnableAllUsers,showDisableAllUsers,setShowDeleteAllUsers,setShowEnableAllUsers,setShowDisableAllUsers }) => {
     const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
+    const [zarinpalChecked, setZarinpalChecked] = useState((item && item.gateway_status && Boolean(item.zarinpal)) || null)
+    const [nowpaymentsChecked, setNowpaymentsChecked] = useState((item && item.gateway_status && Boolean(item.nowpayments)) || null)
 
 
     const formFields = [
@@ -59,7 +63,8 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                 document.querySelectorAll(".MuiSelect-nativeInput")[0].value,
                 document.getElementById("max_non_active_days").value,
                 Number(bmchecked == null ? item.business_mode : bmchecked),
-                document.getElementById("vrate").value
+                document.getElementById("vrate").value,
+                {zarinpal:zarinpalChecked,nowpayments:nowpaymentsChecked}
             ),
             disabled: editMode,
             pendingText: "Editing...",
@@ -85,6 +90,15 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
     const handleBmChange = (event) => {
         setBmChecked(event.target.checked)
     }
+
+    const handleZarinpalClick = () => {
+        setZarinpalChecked(!zarinpalChecked)
+    }
+
+    const handleNowpaymentsClick = () => {
+        setNowpaymentsChecked(!nowpaymentsChecked)
+    }
+
 
     const getDefaultValue = (item, field) => {
         if (!item) {
@@ -207,10 +221,23 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                             </form>
                         </main>
 
-                        <div className='flex flex-col gap-2.5' style={{ marginTop: "1rem" }}>
+                        <div className='flex flex-col' style={{ marginTop: "1rem" }}>
 
+                        <label className="modal__form__label" >Payment Methods</label>
+                        <div className='flex justify-around flex-row gap-1' style={{ justifyContent:"space-around",flexWrap:"wrap",marginBottom: "1rem" }}>
+                            <div onClick={()=>handleZarinpalClick()} className={`${zarinpalChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
+                            <img src={zarinpalIcon} alt="zarinpal" style={{ width: "50px", height: "50px", background:"white", opacity:"1", marginRight:"10px", padding: "0", marginBottom: '7px', marginTop: '7px', borderRadius: '100%'  }} />
+                            <span>Zarinpal</span>
+                            </div>
 
-                            <div className='flex justify-between flex-col gap-1'>
+                            <div onClick={()=>handleNowpaymentsClick()} className={`${nowpaymentsChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
+                            <img src={cryptoIcon} alt="NOWPayments" style={{ width: "50px", height: "50px", background:"white", opacity:"1", marginRight:"10px", padding: "0", marginBottom: '7px', marginTop: '7px', borderRadius: '100%'  }} />
+                            <span>NOWPayments</span>
+                            </div>
+                           
+                        </div>
+
+                            <div className='flex justify-between flex-col gap-1' style={{ marginBottom: "1rem" }}>
                                 <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
                                     Agent status :
                                     <FormControlLabel
@@ -243,30 +270,12 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                                     </div>
                                 </span>
                             </div>
-{/* 
-                            <div className='flex justify-between flex-col gap-1'>
-                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    Agent status :
-                                    <FormControlLabel
-                                        onClick={() => onPowerItem(item.id, item.disable)}
-                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(!item.disable) : false} />}
-                                    />
-                                </span>
-                                <span className='w-full' style={{ border: "1px solid var(--border-clr)", borderRadius: "6px", padding: ".5rem" }}>
-                                    <div>Create access : 
-                                        <FormControlLabel
-                                        onClick={() => onPowerItem2(item.id, !item.create_access)}
-                                        control={<IOSSwitch sx={{ my: 1, mx: 2 }} checked={item ? Boolean(item.create_access) : false} />}
-                                    />
-                                    </div>
-                                </span>
-                            </div> */}
 
-                            <div className={`flex gap-2.5 ${styles['buttons-row']}`}>
+                            <div className={`flex ${styles['buttons-row']} agent_group_action_btns`}>
                                 <Button className='outlined w-full' onClick={() => setShowDisableAllUsers(true)}><DisabledIcon />Disable all users</Button>
                                 <Button className='outlined w-full' onClick={() => setShowEnableAllUsers(true)}><ActiveIcon />Enable all users</Button>
                             </div>
-                            <div className="flex">
+                            <div className="flex agent_group_action_btns">
                                 <Button className="outlined w-full" onClick={() => setShowDeleteAllUsers(true)}><DeathIcon />Delete all users</Button>
                             </div>
                         </div>

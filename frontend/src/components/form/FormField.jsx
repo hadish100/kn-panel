@@ -59,6 +59,15 @@ const FormField = ({
         )
     }
 
+    if (type === "buy_volume") {
+        return (
+            <motion.div className="modal__form__group" style={{width:'calc(50% - 25px)'}} >
+                <label className="modal__form__label" htmlFor={id}>{label}</label>
+                <input className="modal__form__input" type={type} id={id} name={name} defaultValue={defaultValue} disabled={disabled} style={{width:'100%'}} onChange={onChange} value={value} />
+            </motion.div>
+        )
+    }
+
     return (
         <motion.div className="modal__form__group">
             <label className="modal__form__label" htmlFor={id}>{label}</label>

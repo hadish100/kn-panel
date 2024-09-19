@@ -7,8 +7,10 @@ import { ReactComponent as DataCenterIcon } from "../../assets/svg/data-center.s
 import { ReactComponent as GraphBarIcon } from "../../assets/svg/graph-bar.svg"
 import { ReactComponent as UsersIcon } from "../../assets/svg/users.svg"
 import { ReactComponent as PersonIcon } from "../../assets/svg/person.svg"
+import PlusIcon from "../../assets/svg/plus.svg"
 
-const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData, remainingUsers, lifetime_volume, business_mode,agent_name }) => {
+
+const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocableData, remainingUsers, lifetime_volume, business_mode,agent_name,onShowBuyVolumePopup }) => {
     return (
         <div className="usage-stats">
 
@@ -39,7 +41,7 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                 </div>
             </div>
             <div className="flex">
-                { business_mode == "0" &&
+                { /*business_mode == "0" &&*/
                 <div className="usage-stats__item">
                     <LeadingIcon>
                         <PieChartIcon />
@@ -53,7 +55,13 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                     <LeadingIcon>
                         <DataCenterIcon />
                     </LeadingIcon>
-                    <div className="usage-stats__item__label">{business_mode=="0"?"Allocatable Data":"Remaining Data"}</div>
+
+                    
+                    <div onClick={()=>onShowBuyVolumePopup()} className="buy_volume_section">
+                        <img src={PlusIcon} alt="plus" />
+                    </div>
+
+                    <div className="usage-stats__item__label">Allocatable Data</div>
                     <div className="usage-stats__item__value"><span>{allocableData}</span></div>
                 </div>
             </div>

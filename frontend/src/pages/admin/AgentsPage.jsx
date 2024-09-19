@@ -266,10 +266,10 @@ const AgentsPage = () => {
     }
 
 
-    const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, business_mode, vrate) => {
+    const handleEditAgent = async (agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, business_mode, vrate, gateway_status) => {
         setEditMode(true)
         const access_token = sessionStorage.getItem("access_token")
-        var req_res = await axios.post("/edit_agent", { agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode, vrate })
+        var req_res = await axios.post("/edit_agent", { agent_id, name, username, password, volume, min_vol, max_users, max_days, prefix, country, access_token, max_non_active_days, business_mode, vrate, gateway_status })
         if (req_res.data.status === "ERR") {
             setError_msg(req_res.data.msg)
             setHasError(true)

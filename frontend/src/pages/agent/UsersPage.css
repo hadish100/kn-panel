@@ -50,12 +50,13 @@
     }
 }
 
-
-@media (max-width: 750px) {
+@media (max-width: 900px) {
     .column-reverse {
         flex-direction: column-reverse;
     }
+}
 
+@media (max-width: 750px) {
     .items-end {
         align-items: flex-end;
     }

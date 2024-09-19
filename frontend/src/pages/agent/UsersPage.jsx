@@ -18,6 +18,7 @@ import ErrorCard from '../../components/ErrorCard'
 import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
 import SwitchCountries from './SwitchCountries'
+import BuyVolume from "../../pages/agent/buyVolume";
 import { ReactComponent as ActiveIcon } from '../../assets/svg/active.svg'
 import { ReactComponent as LimitedIcon } from '../../assets/svg/limited.svg'
 import { ReactComponent as ExpiredIcon } from '../../assets/svg/expired.svg'
@@ -45,6 +46,7 @@ const UsersPage = () => {
     const [deleteMode, setDeleteMode] = useState(false)
     const [resetMode, setResetMode] = useState(false)
     const [showSwitchCountries, setShowSwitchCountries] = useState(false)
+    const [showBuyVolume, setShowBuyVolume] = useState(false)
     const [selectedStatus, setSelectedStatus] = useState({ label: <FilterIcon />, value: "" })
 
     const agentInfo = JSON.parse(sessionStorage.getItem("agent"))
@@ -294,6 +296,14 @@ const UsersPage = () => {
         setShowSwitchCountries(false)
     }
 
+    const handleShowBuyVolume = () => {
+        setShowBuyVolume(true)
+    }
+
+    const handleCloseBuyVolume = () => {
+        setShowBuyVolume(false)
+    }
+
     const handleSelectStatus = (option) => {
         setSelectedStatus(option)
     }
@@ -315,7 +325,7 @@ const UsersPage = () => {
 
     return (
         <div className='panel_body'>
-            <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} remainingUsers={agent.max_users - agent.total_users} dataUsage={gbOrTb(agent.used_traffic)} remainingData={gbOrTb(b2gb(agent.volume))} allocableData={gbOrTb(agent.allocatable_data)} lifetime_volume={gbOrTb(b2gb(agent.lifetime_volume))} business_mode={agent.business_mode} agent_name={agent.name} />
+            <UsageStats activeUsers={agent.active_users} totalUsers={agent.total_users} remainingUsers={agent.max_users - agent.total_users} dataUsage={gbOrTb(agent.used_traffic)} remainingData={gbOrTb(b2gb(agent.volume))} allocableData={gbOrTb(agent.allocatable_data)} lifetime_volume={gbOrTb(b2gb(agent.lifetime_volume))} business_mode={agent.business_mode} agent_name={agent.name} onShowBuyVolumePopup={handleShowBuyVolume} />
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <div className="flex gap-2 items-center">
                     <Search value={searchedUsers} onChange={setSearchedUsers} />
@@ -338,6 +348,7 @@ const UsersPage = () => {
             />
 
 
+            <BuyVolume onClose={handleCloseBuyVolume} showModal={showBuyVolume} />
             <SwitchCountries onClose={handleCloseSwitchCountries} showModal={showSwitchCountries} />
 
             {refresh && <div className='loading_gif_container'> <CircularProgress /> </div>}

@@ -270,7 +270,7 @@ app.post("/create_agent", async (req, res) => {
             max_days: parseInt(max_days),
             max_non_active_days:parseInt(max_non_active_days),
             vrate:parseInt(vrate),
-            gateway_status:{zarinpal:0,paymentnow:0},
+            gateway_status:{zarinpal:0,nowpayments:0},
             prefix,
             country,
             used_traffic: 0.00,
@@ -577,7 +577,7 @@ app.post("/edit_agent", async (req, res) => {
     else if(isNaN(vrate)) res.send({ status: "ERR", msg: "invalid vrate" });
     else if(vrate < 10_000) res.send({ status: "ERR", msg: "vrate is too low" });
     else if (gateway_status.zarinpal == 1 && !process.env.ZARINPAL_TOKEN) res.send({ status: "ERR", msg: "zarinpal token is not set" });
-    else if (gateway_status.paymentnow == 1 && !process.env.PAYMENTNOW_TOKEN) res.send({ status: "ERR", msg: "paymentnow token is not set" });
+    else if (gateway_status.nowpayments == 1 && !process.env.NOWPAYMENTS_TOKEN) res.send({ status: "ERR", msg: "nowpayments token is not set" });
     else {
         var old_volume = agent.volume;
         var old_alloc = agent.allocatable_data;
@@ -863,7 +863,7 @@ app.post("/uldb", async (req, res) =>
             if(account.is_admin) continue;
             if(!account.daily_usage_logs) account.daily_usage_logs = [];
             if(!account.vrate) account.vrate = 500_000;
-            if(!account.gateway_status) account.gateway_status = {zarinpal:0,paymentnow:0}; 
+            if(!account.gateway_status) account.gateway_status = {zarinpal:0,nowpayments:0}; 
         }
         
         await (await panels_clct()).deleteMany({});
