@@ -14,6 +14,8 @@ async function init()
     const chat_id = config_obj.telegram.chat_id;
     const transporter = nodemailer.createTransport(config_obj.email.sender);           
 
+    while(true)
+    {
         try 
         {
           console.log("*STARTING BACKUP SERVICE");
@@ -72,6 +74,7 @@ async function init()
         }
 
         await sleep(config_obj.interval);
+    }
 }
 
 init();
