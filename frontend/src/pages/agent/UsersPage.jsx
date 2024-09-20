@@ -53,7 +53,7 @@ const UsersPage = () => {
     const [paymentNotifTitle, setPaymentNotifTitle] = useState("Failed payment")
     const [paymentNotifMessage, setPaymentNotifMessage] = useState("Your payment has failed.")
     const [isPaymentNotifPositive, setIsPaymentNotifPositive] = useState(true)
-    
+    const [firstLoad, setFirstLoad] = useState(true)
 
     const agentInfo = JSON.parse(sessionStorage.getItem("agent"))
 
@@ -79,6 +79,45 @@ const UsersPage = () => {
             setRefresh(false)
             if (resetCurrentPage) setCurrentPage(1)
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const getAgentQuery = urlParams.get('updateAgent');
+        if (getAgentQuery == "true" && firstLoad) {
+            const agent = (await axios.post("/get_agent", { access_token })).data
+            if (agent.status === "ERR") {
+                setError_msg(agent.msg)
+                setHasError(true)
+                return
+            }
+            sessionStorage.setItem("agent", JSON.stringify(agent))
+            setAgent(agent)
+
+            if(agent.last_payment)
+            {
+                var {verified} = agent.last_payment
+                if(!verified)
+                {
+                    setHasPaymentNotif(true)
+                    setPaymentNotifTitle("Failed payment")
+                    setPaymentNotifMessage("Your payment has failed.")
+                    setIsPaymentNotifPositive(false)
+                }
+    
+                else
+                {
+                    var added_volume = agent.last_payment.volume
+                    setHasPaymentNotif(true)
+                    setPaymentNotifTitle("Successful payment")
+                    setPaymentNotifMessage(`${added_volume} GB was added to your account.`)
+                    setIsPaymentNotifPositive(true)
+                }
+            }
+
+
+
+        }
+
+        setFirstLoad(false)
     }
 
 
@@ -86,28 +125,6 @@ const UsersPage = () => {
     useEffect(() => {
         setRefresh(true)
         fetchUsers()
-
-        if(agent.last_payment)
-        {
-            var {verified} = agent.last_payment
-            if(!verified)
-            {
-                setHasPaymentNotif(true)
-                setPaymentNotifTitle("Failed payment")
-                setPaymentNotifMessage("Your payment has failed.")
-                setIsPaymentNotifPositive(false)
-            }
-
-            else
-            {
-                var added_volume = agent.last_payment.volume
-                setHasPaymentNotif(true)
-                setPaymentNotifTitle("Successful payment")
-                setPaymentNotifMessage(`${added_volume} GB was added to your account.`)
-                setIsPaymentNotifPositive(true)
-            }
-        }
-
     }, [rowsPerPage, currentPage, searchedUsers, selectedStatus])
 
     const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")))

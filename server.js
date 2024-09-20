@@ -1190,7 +1190,7 @@ app.get("/confirm_payment", async(req,res) =>
     {
         var status = req.query.Status;
         var authority = req.query.Authority;
-        var redirect_url = "https://" + process.env.PANEL_URL + "/agent/users";
+        var redirect_url = "https://" + process.env.PANEL_URL + "/agent/users?updateAgent=true";
     
         if(status == "NOK")
         {
