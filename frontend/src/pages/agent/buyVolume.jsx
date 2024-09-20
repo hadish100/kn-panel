@@ -118,7 +118,7 @@ const BuyVolume = ({ onClose, showModal, gatewayStatus, volumeRate }) => {
 
                     <footer className='modal__footer'>
                         <Button className="primary w-full"
-                            disabled={!zarinpalChecked && !nowpaymentsChecked || isCheckingOut}
+                            disabled={!zarinpalChecked && !nowpaymentsChecked || !volumeAmount || isCheckingOut}
                             onClick={handleClickSwitch}
                         >
                             {isCheckingOut ? "Redirecting..." : "Checkout"}</Button>

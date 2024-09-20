@@ -1,5 +1,5 @@
 const axios = require('axios');
-// const fs = require('fs');
+const fs = require('fs');
 // const util = require('util');
 const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph,syslog,sleep,get_accounts} = require("../utils");
 // const moment = require('moment-timezone');
@@ -85,27 +85,38 @@ const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,re
 //     console.log(result);
 // })();
 
-// async function dl_file(url,destination) 
-// {
-// 	const response = await axios
-// 	({
-// 	  url,
-// 	  method: 'POST',
-// 	  responseType: 'stream',
-//       data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
-// 	});
+const dl_file = async (url,destination) =>
+{
+    try
+    {
+        const response = await axios
+        ({
+          url,
+          method: 'POST',
+          responseType: 'stream',
+          data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
+          timeout:15000
+        });
+      
+            
+        const writer = fs.createWriteStream(destination);
+      
+        response.data.pipe(writer);
+      
+        return new Promise((resolve, reject) => 
+        {
+          writer.on('finish', resolve);
+          writer.on('error', reject);
+          response.data.on('error', reject);
+        });
+    }
 
-		
-// 	const writer = fs.createWriteStream(destination);
-  
-// 	response.data.pipe(writer);
-  
-// 	return new Promise((resolve, reject) => 
-// 	{
-// 	  writer.on('finish', resolve);
-// 	  writer.on('error', reject);
-// 	});
-// }
+    catch(err)
+    {
+        throw new Error(`DL ERROR : ${err.message}`);
+    }
+
+}
 
 // (async () => 
 // {
@@ -119,16 +130,16 @@ const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,re
 // })();
 
 
-(async () => 
-{
-    const response = await axios({
-        url:"http://nic.iranstratus.top:7002/get_marzban_users",
-        method: 'POST',
-        data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
-      });
+// (async () => 
+// {
+//     const response = await axios({
+//         url:"http://nic.iranstratus.top:7002/get_marzban_users",
+//         method: 'POST',
+//         data: {api_key:"resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"}
+//       });
 
-      console.log(response.data);
-})();
+//       console.log(response.data);
+// })();
 
 
 // (async () => 
@@ -172,5 +183,5 @@ const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,re
 
 
 
-// dl_file("http://65.109.186.13:7002/dldb","db.zip");
+dl_file("http://p.limoovp1.sbs:7002/dldb","db.zip");
 

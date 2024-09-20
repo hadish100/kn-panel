@@ -3,8 +3,8 @@ const app = express();
 var AdmZip = require("adm-zip");
 const mysql = require('mysql2/promise');
 const fs = require('fs')
+const path = require('path');
 app.use(express.json());
-
 
 const db_config = 
 {
@@ -198,16 +198,16 @@ app.post("/dldb", async (req, res) =>
         {
             const table_name = Object.values(table_obj)[0];
 
-            const [create_table_result] = await connection.execute(`SHOW CREATE TABLE ${table_name}`);
+            const [create_table_result] = await connection.execute(`SHOW CREATE TABLE \`${table_name}\``);
             backup_sql += `${create_table_result[0]['Create Table']};\n\n`;
 
-            const [rows] = await connection.execute(`SELECT * FROM ${table_name}`);
+            const [rows] = await connection.execute(`SELECT * FROM \`${table_name}\``);
 
             if (rows.length > 0) 
             {
                 const keys = Object.keys(rows[0]);
                 const values = rows.map(row => `(${keys.map(key => connection.escape(row[key])).join(', ')})`);
-                backup_sql += `INSERT INTO ${table_name} (${keys.join(', ')}) VALUES ${values.join(', ')};\n\n`;
+                backup_sql += `INSERT INTO \`${table_name}\` (${keys.join(', ')}) VALUES ${values.join(', ')};\n\n`;
             }
         }
 

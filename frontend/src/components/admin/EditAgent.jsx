@@ -47,7 +47,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
 
 
     const primaryButtons = [
-        { label: "Cancel", className: "outlined", onClick: onClose },
+        { label: "Cancel", className: "outlined", onClick: () => { onClose(); reset_payment_checks() } },
         {
             label: "Edit Agent", className: "primary", onClick: () => onEditItem(
                 item.id,
@@ -76,6 +76,11 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
         { icon: <LoginAsAgentIcon />, type: "button", label: "Login", className: "ghosted", onClick: (e) => onLoginItem(e, item.username, item.password) },
     ]
 
+
+    const reset_payment_checks = () => {
+        setZarinpalChecked(null)
+        setNowpaymentsChecked(null)
+    }
 
     const b2gb = (bytes) => {
         return (bytes / (2 ** 10) ** 3).toFixed(2)
@@ -145,7 +150,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
         <header className="modal__header">
             <LeadingIcon><EditIcon /></LeadingIcon>
             <h1 className="modal__title">Edit agent</h1>
-            <div className="close-icon" onClick={onClose}>
+            <div className="close-icon" onClick={() => { onClose(); reset_payment_checks() }}>
                 <XMarkIcon />
             </div>
         </header>
@@ -192,7 +197,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
         <>
             <AnimatePresence>
                 {showForm && (
-                    <Modal onClose={onClose} width={"40rem"}>
+                    <Modal onClose={() => { onClose(); reset_payment_checks() }} width={"40rem"}>
                         {formHeader}
                         <main className="modal__body" style={{ marginBottom: ".5rem" }}>
                             <form className="modal__form">
