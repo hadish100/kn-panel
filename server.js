@@ -696,7 +696,7 @@ app.post("/edit_user", async (req, res) => {
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
     else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
-    else if(old_data_limit > data_limit) res.send({ status: "ERR", msg: "data limit can't be reduced" })
+    else if(b2gb(user_obj.used_traffic) > data_limit) res.send({ status: "ERR", msg: "data limit can't be reduced" })
     else if (data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })

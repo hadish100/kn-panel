@@ -74,9 +74,10 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         const getProtocols = async () => {
             setFlowValue({ label: "none", value: "none" })
             setIsLoadingProtocols(true)
-            const availableProtocolsName = (await axios.post("/get_panel_inbounds", { access_token, country })).data
-            if (availableProtocolsName.status === "ERR") {
-                setError_msg(availableProtocolsName.msg)
+            const panelInboundsObj = (await axios.post("/get_panel_inbounds", { access_token, country })).data
+
+            if (panelInboundsObj.status === "ERR") {
+                setError_msg(panelInboundsObj.msg)
                 setHasError(true)
                 setIsLoadingProtocols(false)
                 setProtocols([
@@ -88,6 +89,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                 setSelectedProtocols([])
                 return
             }
+            const availableProtocolsName = Object.keys(panelInboundsObj);
             if ((item.country !== country) && !flag) {
                 setSelectedProtocols(availableProtocolsName)
                 setFlag(true)
