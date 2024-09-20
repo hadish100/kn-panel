@@ -22,9 +22,8 @@ import cryptoIcon from '../../assets/crypto.png'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerItem2,onPowerItem3,onPowerItem4, onEditItem, onLoginItem, editMode,DeleteAllUsers,EnableAllUsers,DisableAllUsers,isEnablingAllUsers,isDeletingAllUsers,isDisablingAllUsers,showDeleteAllUsers,showEnableAllUsers,showDisableAllUsers,setShowDeleteAllUsers,setShowEnableAllUsers,setShowDisableAllUsers }) => {
     const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
-    const [zarinpalChecked, setZarinpalChecked] = useState((item && item.gateway_status && Boolean(item.gateway_status.zarinpal)) || null)
-    const [nowpaymentsChecked, setNowpaymentsChecked] = useState((item && item.gateway_status && Boolean(item.gateway_status.nowpayments)) || null)
-
+    const [zarinpalChecked, setZarinpalChecked] = useState((item && Boolean(item.gateway_status.zarinpal)) || null)
+    const [nowpaymentsChecked, setNowpaymentsChecked] = useState((item && Boolean(item.gateway_status.nowpayments)) || null)
 
     const formFields = [
         { label: "Name", type: "text", id: "name", name: "name" },
@@ -64,7 +63,7 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
                 document.getElementById("max_non_active_days").value,
                 Number(bmchecked == null ? item.business_mode : bmchecked),
                 document.getElementById("vrate").value,
-                {zarinpal:Number(zarinpalChecked),nowpayments:Number(nowpaymentsChecked)}
+                {zarinpal:zarinpalChecked==null?Number(item.gateway_status.zarinpal):Number(zarinpalChecked),nowpayments:nowpaymentsChecked==null?Number(item.gateway_status.nowpayments):Number(nowpaymentsChecked)}
             ),
             disabled: editMode,
             pendingText: "Editing...",
@@ -92,13 +91,32 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
     }
 
     const handleZarinpalClick = () => {
+        if(zarinpalChecked == null) 
+        {
+            setZarinpalChecked(!item.gateway_status.zarinpal)
+            return
+        }
         setZarinpalChecked(!zarinpalChecked)
     }
 
     const handleNowpaymentsClick = () => {
+        if(nowpaymentsChecked == null) 
+        {
+            setNowpaymentsChecked(!item.gateway_status.nowpayments)
+            return
+        }
         setNowpaymentsChecked(!nowpaymentsChecked)
     }
 
+    const check_zarinpal_gateway_status = () => {
+        if(zarinpalChecked != null) return Boolean(zarinpalChecked)
+        return Boolean(item.gateway_status.zarinpal)
+    }
+
+    const check_nowpayments_gateway_status = () => {
+        if(nowpaymentsChecked != null) return Boolean(nowpaymentsChecked)
+        return Boolean(item.gateway_status.nowpayments)
+    }
 
     const getDefaultValue = (item, field) => {
         if (!item) {
@@ -225,12 +243,12 @@ const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerI
 
                         <label className="modal__form__label" >Payment Methods</label>
                         <div className='flex justify-around flex-row gap-1' style={{ justifyContent:"space-around",flexWrap:"wrap",marginBottom: "1rem" }}>
-                            <div onClick={()=>handleZarinpalClick()} className={`${zarinpalChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
+                            <div onClick={()=>handleZarinpalClick()} className={`${check_zarinpal_gateway_status()?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
                             <img src={zarinpalIcon} alt="zarinpal" style={{ width: "50px", height: "50px", background:"white", opacity:"1", marginRight:"10px", padding: "0", marginBottom: '7px', marginTop: '7px', borderRadius: '100%'  }} />
                             <span>Zarinpal</span>
                             </div>
 
-                            <div onClick={()=>handleNowpaymentsClick()} className={`${nowpaymentsChecked?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
+                            <div onClick={()=>handleNowpaymentsClick()} className={`${check_nowpayments_gateway_status()?'payment_cards_selected':''} payment_cards flex justify-center items-center flex-row`} >
                             <img src={cryptoIcon} alt="NOWPayments" style={{ width: "50px", height: "50px", background:"white", opacity:"1", marginRight:"10px", padding: "0", marginBottom: '7px', marginTop: '7px', borderRadius: '100%'  }} />
                             <span>NOWPayments</span>
                             </div>

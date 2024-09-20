@@ -19,6 +19,23 @@ const LogsList = ({ logs }) => {
         return date.toLocaleString("en-US",{ hourCycle: 'h23' }).replace(", "," - ");
     }
 
+    const get_log_style = (log) => 
+    {
+        console.log(log)
+        if(log.is_syslog)
+        {
+            if(log.is_positive) return {backgroundColor:"#edf7fd",border:"1px solid #86c7ed"}
+            else return {backgroundColor:"#fdedef",border:"1px solid #ed8693"}
+        }
+
+        if(log.action === "BUY_VOLUME")
+        {
+            return {backgroundColor:"#edfdf8",border:"1px solid #67caa1"}
+        }
+
+        return {}
+    }
+
     return (
         <ul className='logs'>
             {logs.map((log) => 
@@ -26,7 +43,7 @@ const LogsList = ({ logs }) => {
                 
             if(!log.is_syslog)
             return (
-                <li className='log' key={log.id}>
+                <li className='log' key={log.id} style={get_log_style(log)}>
                     <div className="log__text">
                         <p>
                             <span style={{ fontSize: "1.2rem", fontWeight: 600, marginRight: ".2rem" }}>
@@ -41,7 +58,7 @@ const LogsList = ({ logs }) => {
 
             else
             return (
-                <li className='log' style={log.is_positive?{backgroundColor:"#edf7fd",border:"1px solid #86c7ed"}:{backgroundColor:"#fdedef",border:"1px solid #ed8693"}} key={log.id}>
+                <li className='log' style={get_log_style(log)} key={log.id}>
                     <div className="log__text">
                         <p>
                             <span dangerouslySetInnerHTML={{ __html: parse_log(log.msg) }} />
