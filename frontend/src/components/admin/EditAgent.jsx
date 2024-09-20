@@ -22,8 +22,8 @@ import cryptoIcon from '../../assets/crypto.png'
 
 const EditAgent = ({ item, onClose, showForm, onDeleteItem, onPowerItem,onPowerItem2,onPowerItem3,onPowerItem4, onEditItem, onLoginItem, editMode,DeleteAllUsers,EnableAllUsers,DisableAllUsers,isEnablingAllUsers,isDeletingAllUsers,isDisablingAllUsers,showDeleteAllUsers,showEnableAllUsers,showDisableAllUsers,setShowDeleteAllUsers,setShowEnableAllUsers,setShowDisableAllUsers }) => {
     const [bmchecked, setBmChecked] = useState((item && Boolean(item.business_mode)) || null)
-    const [zarinpalChecked, setZarinpalChecked] = useState((item && item.gateway_status && Boolean(item.zarinpal)) || null)
-    const [nowpaymentsChecked, setNowpaymentsChecked] = useState((item && item.gateway_status && Boolean(item.nowpayments)) || null)
+    const [zarinpalChecked, setZarinpalChecked] = useState((item && item.gateway_status && Boolean(item.gateway_status.zarinpal)) || null)
+    const [nowpaymentsChecked, setNowpaymentsChecked] = useState((item && item.gateway_status && Boolean(item.gateway_status.nowpayments)) || null)
 
 
     const formFields = [

@@ -19,6 +19,7 @@ import CircularProgress from '../../components/CircularProgress'
 import gbOrTb from "../../utils/gbOrTb"
 import SwitchCountries from './SwitchCountries'
 import BuyVolume from "../../pages/agent/buyVolume";
+import ShoppingCard from '../../components/ShoppingCard'
 import { ReactComponent as ActiveIcon } from '../../assets/svg/active.svg'
 import { ReactComponent as LimitedIcon } from '../../assets/svg/limited.svg'
 import { ReactComponent as ExpiredIcon } from '../../assets/svg/expired.svg'
@@ -48,6 +49,11 @@ const UsersPage = () => {
     const [showSwitchCountries, setShowSwitchCountries] = useState(false)
     const [showBuyVolume, setShowBuyVolume] = useState(false)
     const [selectedStatus, setSelectedStatus] = useState({ label: <FilterIcon />, value: "" })
+    const [hasPaymentNotif, setHasPaymentNotif] = useState(false)
+    const [paymentNotifTitle, setPaymentNotifTitle] = useState("Failed payment")
+    const [paymentNotifMessage, setPaymentNotifMessage] = useState("Your payment has failed.")
+    const [isPaymentNotifPositive, setIsPaymentNotifPositive] = useState(true)
+    
 
     const agentInfo = JSON.parse(sessionStorage.getItem("agent"))
 
@@ -80,6 +86,28 @@ const UsersPage = () => {
     useEffect(() => {
         setRefresh(true)
         fetchUsers()
+
+        if(agent.last_payment)
+        {
+            var {verified} = agent.last_payment
+            if(!verified)
+            {
+                setHasPaymentNotif(true)
+                setPaymentNotifTitle("Failed payment")
+                setPaymentNotifMessage("Your payment has failed.")
+                setIsPaymentNotifPositive(false)
+            }
+
+            else
+            {
+                var added_volume = agent.last_payment.volume
+                setHasPaymentNotif(true)
+                setPaymentNotifTitle("Successful payment")
+                setPaymentNotifMessage(`${added_volume} GB was added to your account.`)
+                setIsPaymentNotifPositive(true)
+            }
+        }
+
     }, [rowsPerPage, currentPage, searchedUsers, selectedStatus])
 
     const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")))
@@ -387,6 +415,14 @@ const UsersPage = () => {
                 setHasError={setHasError}
                 errorTitle="ERROR"
                 errorMessage={error_msg}
+            />
+
+            <ShoppingCard
+                setHasPaymentNotif={setHasPaymentNotif}
+                hasPaymentNotif={hasPaymentNotif}
+                paymentNotifTitle={paymentNotifTitle}
+                paymentNotifMessage={paymentNotifMessage}
+                isPaymentNotifPositive={isPaymentNotifPositive}
             />
 
             <VerifyDelete

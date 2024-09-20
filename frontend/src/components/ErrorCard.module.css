@@ -37,6 +37,26 @@
     z-index:2000; 
 }
 
+.shoppingCard
+{
+    position: fixed;
+    top: 0;
+    right: 0;
+    color: #191919;
+    background-color: rgb(230, 230, 230);
+    margin-right: 1rem;
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
+    max-width: 425px;
+    min-height: 95px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index:2000; 
+}
+
 .errorCard__divider>*+* {
     margin-top: 0.25rem;
 }
@@ -75,4 +95,26 @@
     padding:0;
     background:transparent;
     opacity:1;
+}
+
+.shoppingCardImgNegative
+{
+    width:64px;
+    height:64px;
+    padding:10px;
+    background:transparent;
+    opacity:1;
+    background:#ef4d61;
+    border-radius:100%;
+}
+
+.shoppingCardImgPositive
+{
+    width:64px;
+    height:64px;
+    padding:10px;
+    background:transparent;
+    opacity:1;
+    background:#4bae4f;
+    border-radius:100%;
 }

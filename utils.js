@@ -839,7 +839,7 @@ async function make_zarinpal_gateway(price,description,volume,agent_id,access_to
         description,
     });
 
-    var auth = zarinpal_request.data.authority
+    var auth = zarinpal_request.data.data.authority;
 
     var redis_data = {agent_id,volume,price,access_token,verified:0};
     redis_data = JSON.stringify(redis_data);
