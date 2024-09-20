@@ -876,7 +876,7 @@ async function verify_zarinpal_payment(authority)
         }
 
         await update_account(redis_data.agent_id,update_obj);
-        await insert_to_logs(redis_data.agent_id,"BUY_VOLUME",`bought ${redis_data.volume} GB data for ${redis_data.price} IRR`,redis_data.access_token);
+        await insert_to_logs(redis_data.agent_id,"BUY_VOLUME",`bought ${redis_data.volume} GB data for ${(redis_data.price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} IRR`,redis_data.access_token);
 
         return true;
     }
