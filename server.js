@@ -911,8 +911,7 @@ app.post("/get_panel_inbounds", async (req, res) =>
         if(!panel.panel_inbounds) res.send({ status: "ERR", msg: 'inbounds not found' })
         else
         {
-            var inbounds = Object.keys(panel.panel_inbounds);
-            res.send(inbounds);     
+            res.send(panel.panel_inbounds);     
         }
    
     }
