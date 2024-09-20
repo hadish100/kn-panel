@@ -44,7 +44,6 @@ const BuyVolume = ({ onClose, showModal, gatewayStatus, volumeRate }) => {
             setIsCheckingOut(false)
             return
         }
-        setIsCheckingOut(false)
         window.location.href = checkoutReq;
     }
 

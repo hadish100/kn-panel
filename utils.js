@@ -841,7 +841,7 @@ async function make_zarinpal_gateway(price,description,volume,agent_id,access_to
 
     var auth = zarinpal_request.data.data.authority;
 
-    var redis_data = {agent_id,volume,price,access_token,verified:0};
+    var redis_data = {agent_id,volume:Number(volume),price,access_token,verified:0};
     redis_data = JSON.stringify(redis_data);
 
     await (await redis_client()).setEx(auth, 1800, redis_data);
