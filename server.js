@@ -383,7 +383,6 @@ app.post("/create_user", async (req, res) => {
     else {
 
 
-        // delete empty array keys in inbounds from protocols
         for (let protocol in inbounds)
         {
             if(inbounds[protocol].length == 0)
