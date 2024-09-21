@@ -202,7 +202,6 @@ const AdminSettingsPage = () => {
 
 
         const downloadUrl = "https://" + res.data.split(">")[1];
-        console.log(downloadUrl)
         const link = document.createElement("a")
         link.href = downloadUrl
         link.download = "db.zip"

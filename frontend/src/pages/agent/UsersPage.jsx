@@ -241,7 +241,6 @@ const UsersPage = () => {
             return
         }
         var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
-        console.log(users)
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)

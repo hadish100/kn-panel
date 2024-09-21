@@ -15,7 +15,6 @@ export default function BasicSelect({ onChange, defaultValue, id }) {
         }
     }
 
-    console.log(defaultValue)
 
     useEffect(() => {
         setAge(defaultValue)

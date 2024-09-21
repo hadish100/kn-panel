@@ -20,7 +20,6 @@ export default function BasicSelect({ onChange, defaultValue, id }) {
   }, [defaultValue])
 
   const agent = JSON.parse(sessionStorage.getItem("agent"))
-  console.log(agent)
 
   return (
     <Box sx={{ width: '100%' }}>

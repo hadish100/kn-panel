@@ -322,9 +322,9 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
 
                                                         }</p>
                                                     </div>
-                                                    {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && <Button className="gray-100" onClick={(e) => handleClickMoreOption(e)}><ThreeDotsIcon /></Button>}
+                                                    {/* {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && <Button className="gray-100" onClick={(e) => handleClickMoreOption(e)}><ThreeDotsIcon /></Button>} */}
                                                 </div>
-                                                <AnimatePresence>
+                                                {/* <AnimatePresence>
                                                     {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && isMoreOptionClicked && (
                                                         <motion.div
                                                             className={styles['more-options']}
@@ -338,7 +338,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
                                                             </div>
                                                         </motion.div>
                                                     )}
-                                                </AnimatePresence>
+                                                </AnimatePresence> */}
                                             </div>
                                         </motion.div>
                                     ))}

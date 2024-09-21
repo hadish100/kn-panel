@@ -278,6 +278,17 @@ input[type=number] {
     overflow:hidden;
 }
 
+.inbound_tag
+{
+    font-size:11px;
+}
+
+.striked_text
+{
+    text-decoration: line-through;
+    /* color: var(--gray-clr-300); */
+}
+
 @media (max-width: 550px) 
 {
     .payment_cards

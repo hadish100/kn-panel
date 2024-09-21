@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios"
-
 import { ReactComponent as AddUserIcon } from "../../assets/svg/add-user.svg"
 import ErrorCard from '../ErrorCard'
 import styles from "./CreateUser.module.css"
@@ -34,10 +33,12 @@ const CreateUser = ({ onClose, showForm }) => {
         { name: "trojan", disabled: true },
         { name: "shadowsocks", disabled: true }
     ])
-    const [isMoreOptionClicked, setIsMoreOptionClicked] = useState(false)
+    const [isMoreOptionClicked, setIsMoreOptionClicked] = useState([false, false, false, false])
     const [flowValue, setFlowValue] = useState({ label: "none", value: "none" })
     const [country, setCountry] = useState("")
     const [isLoadingProtocols, setIsLoadingProtocols] = useState(false)
+    const [availableInbounds, setAvailableInbounds] = useState({})
+    const [selectedInbounds, setSelectedInbounds] = useState({})
 
     const createUserOnServer = async (
         username, data_limit, expire, country,desc
@@ -45,8 +46,7 @@ const CreateUser = ({ onClose, showForm }) => {
         setCreateMode(true)
         var protocols = selectedProtocols.filter(x => typeof x === "string")
         var flow_status = flowValue.value;
-        console.log(safu)
-        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc,safu })
+        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc,safu,inbounds:selectedInbounds })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
@@ -74,7 +74,7 @@ const CreateUser = ({ onClose, showForm }) => {
     }
 
     useEffect(() => {
-        setIsMoreOptionClicked(false);
+        setIsMoreOptionClicked([false, false, false, false]);
 
         const getProtocols = async () => {
             setFlowValue({ label: "none", value: "none" })
@@ -100,6 +100,14 @@ const CreateUser = ({ onClose, showForm }) => {
                 disabled: !availableProtocolsName.includes(protocol.name),
             }))
             setProtocols(updatedProtocols)
+            setAvailableInbounds(panelInboundsObj)
+            setSelectedInbounds
+            ({
+                vmess: panelInboundsObj.vmess && panelInboundsObj.vmess.map((inbound) => inbound.tag),
+                vless: panelInboundsObj.vless &&  panelInboundsObj.vless.map((inbound) => inbound.tag),
+                trojan: panelInboundsObj.trojan && panelInboundsObj.trojan.map((inbound) => inbound.tag),
+                shadowsocks: panelInboundsObj.shadowsocks && panelInboundsObj.shadowsocks.map((inbound) => inbound.tag)
+            })
             setIsLoadingProtocols(false)
 
         }
@@ -135,9 +143,7 @@ const CreateUser = ({ onClose, showForm }) => {
 
 
     const handle_safu_change = (e) => {
-        // console.log(e.target.checked)
         setSafu(e.target.checked)
-        // console.log(safu);
     }
 
     const handleSelectProtocol = (protocol) => {
@@ -151,13 +157,38 @@ const CreateUser = ({ onClose, showForm }) => {
     }
 
 
-    const handleClickMoreOption = (e) => {
+    const handleClickMoreOption = (e,index) => {
         e.stopPropagation()
-        setIsMoreOptionClicked(!isMoreOptionClicked)
+        setIsMoreOptionClicked((prev) => {
+            const updated = prev.map((item, i) => {
+                if (i === index) {
+                    return !item
+                }
+                return false
+            })
+            return updated
+        })
+
     }
 
     const handleSelectFlow = (flow) => {
         setFlowValue(flow)
+    }
+
+    const handleSelectInbound = (event,protocol,tag) => {
+
+        event.stopPropagation()
+        setSelectedInbounds((prev) => {
+            const updated = { ...prev }
+            if (updated[protocol.name].includes(tag)) {
+                updated[protocol.name] = updated[protocol.name].filter((item) => item !== tag)
+            } else {
+                updated[protocol.name].push(tag)
+            }
+            console.log(updated)
+            return updated
+        })
+
     }
 
     const formFields = [
@@ -269,24 +300,51 @@ const CreateUser = ({ onClose, showForm }) => {
                                                             protocol.name === "vmess" ? "Fast And Secure" :
                                                                 protocol.name === "vless" ? "Lightweight, fast and secure" :
                                                                     protocol.name === "trojan" ? "Lightweight, secure and lightening fast" :
-                                                                        protocol.name === "shadowsocks" ? "Fast and secure, but not efficient as others" : ""
+                                                                        protocol.name === "shadowsocks" ? "Fast, but not efficient as others" : ""
 
                                                         }</p>
                                                     </div>
-                                                    {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && <Button className="gray-100" onClick={(e) => handleClickMoreOption(e)}><ThreeDotsIcon /></Button>}
+                                                    {selectedProtocols.includes(protocol.name) && <Button className="gray-100" onClick={(e) => handleClickMoreOption(e,index)}>
+                                                        <ThreeDotsIcon /></Button>}
                                                 </div>
                                                 <AnimatePresence>
-                                                    {selectedProtocols.includes(protocol.name) && protocol.name === 'vless' && isMoreOptionClicked && (
+                                                    {selectedProtocols.includes(protocol.name) && isMoreOptionClicked[index] && (
                                                         <motion.div
                                                             className={styles['more-options']}
                                                             initial={{ height: 0 }}
                                                             animate={{ height: "auto" }}
                                                             exit={{ height: 0 }}
                                                         >
+
+
+                                                        {
+                                                            availableInbounds[protocol.name] && availableInbounds[protocol.name].length > 0 && (
+                                                                availableInbounds[protocol.name].map((inbound, index) => (
+                                                                    <div key={index} className='flex items-center gap-1' onClick={(e) => handleSelectInbound(e,protocol,inbound.tag)}  style={{height:'10px',marginTop:"10px"}} >
+                                                                    <FormControlLabel
+                                                                        control={<Checkbox id={inbound.tag.replaceAll(" ", "-")}
+                                                                             name={inbound.tag}
+                                                                            sx={{
+                                                                                marginLeft: "-9px",
+                                                                                marginRight: "-9px",
+                                                                                '& .MuiSvgIcon-root': { fontSize: 17 }
+                                                                            }}
+                                                                            checked={selectedInbounds[protocol.name].includes(inbound.tag)}
+                                                                            
+                                                                            
+                                                                            />}
+                                                                         /> <div className={`${selectedInbounds[protocol.name].includes(inbound.tag)?"":"striked_text"} inbound_tag`}>{inbound.tag}</div>
+                                                                    </div>
+                                                                ))
+                                                            )
+                                                        }
+                                                            {
+                                                            protocol.name === "vless" && (
                                                             <div className='flex flex-col gap-1.5' style={{ paddingTop: "1rem" }}>
                                                                 <h6 style={{ fontWeight: 400 }}>Flow</h6>
                                                                 <Dropdown options={flowOptions} onChange={handleSelectFlow} value={flowValue} />
                                                             </div>
+                                                            )}
                                                         </motion.div>
                                                     )}
                                                 </AnimatePresence>

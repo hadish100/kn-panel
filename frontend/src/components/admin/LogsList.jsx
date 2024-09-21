@@ -21,7 +21,6 @@ const LogsList = ({ logs }) => {
 
     const get_log_style = (log) => 
     {
-        console.log(log)
         if(log.is_syslog)
         {
             if(log.is_positive) return {backgroundColor:"#edf7fd",border:"1px solid #86c7ed"}

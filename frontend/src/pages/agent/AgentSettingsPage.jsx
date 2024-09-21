@@ -48,7 +48,6 @@ const AdminSettingsPage = () => {
 
 
         if (!password || !password2 || !username) {
-            console.log("here")
             setSaveMode(true)
             setHasError(true)
             setError_msg("Please fill all the fields")

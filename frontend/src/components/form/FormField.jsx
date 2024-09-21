@@ -42,7 +42,6 @@ const FormField = ({
     }
 
     if (type === "multi-select5") {
-        console.log(onChange)
         return (
             <motion.div className="modal__form__group">
                 <label className="modal__form__label" htmlFor={id}>{label}</label>

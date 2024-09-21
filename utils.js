@@ -188,7 +188,7 @@ const get_panel_info = async (link, username, password) => {
     }
 }
 
-const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status) => {
+const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status, inbounds) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
@@ -198,7 +198,7 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
         {
             "username": vpn_name,
             "proxies": proxy_obj,
-            "inbounds": {},
+            "inbounds": inbounds,
             "expire": expire,
             "data_limit": data_limit,
             "data_limit_reset_strategy": "no_reset"

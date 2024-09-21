@@ -351,7 +351,9 @@ app.post("/create_user", async (req, res) => {
         protocols,
         flow_status,
         desc,
-        safu } = req.body;
+        safu,
+        inbounds
+     } = req.body;
 
 
         if(process.env.RELEASE == "ARMAN") flow_status = "xtls-rprx-vision";
@@ -387,7 +389,8 @@ app.post("/create_user", async (req, res) => {
             gb2b(data_limit),
             Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
             protocols,
-            flow_status)
+            flow_status,
+            inbounds)
 
 
         if (mv == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
@@ -678,7 +681,8 @@ app.post("/edit_user", async (req, res) => {
         protocols,
         flow_status,
         desc,
-        safu } = req.body;
+        safu,
+         } = req.body;
 
         if(process.env.RELEASE == "ARMAN") flow_status = "xtls-rprx-vision";
 
@@ -864,12 +868,17 @@ app.post("/uldb", async (req, res) =>
 
 
         // backward compatibility
-        for(account of accounts_clct_rs)
+        for(let account of accounts_clct_rs)
         {
             if(account.is_admin) continue;
             if(!account.daily_usage_logs) account.daily_usage_logs = [];
             if(!account.vrate) account.vrate = 500_000;
             if(!account.gateway_status) account.gateway_status = {zarinpal:0,nowpayments:0}; 
+        }
+
+        for(let user of users_clct_rs)
+        {
+            user.safu = 0;
         }
         
         await (await panels_clct()).deleteMany({});
@@ -1199,7 +1208,7 @@ app.get("/confirm_payment", async(req,res) =>
     
         else
         {
-            var verification_result = await verify_zarinpal_payment(authority);
+            await verify_zarinpal_payment(authority);
             res.redirect(redirect_url);
             return;
         }

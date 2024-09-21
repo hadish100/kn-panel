@@ -86,7 +86,6 @@ const AdminHomePage = () => {
             return
         }
 
-        console.log(res.data)
         setTotal_users_creation(res.data.total_user_creation.map(x => x.count))
         setTotal_users_edit(res.data.total_user_edition.map(x => x.count))
         setTotal_users_delete(res.data.total_user_deletion.map(x => x.count))
@@ -209,7 +208,6 @@ const AdminHomePage = () => {
         height: 300,
     }
 
-    console.log(timeData1)
     const xAxisCommon1 = {
         data: [...timeData1],
         scaleType: 'time',
