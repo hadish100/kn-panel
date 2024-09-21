@@ -192,7 +192,6 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
-        //var { panel_inbounds } = await get_panel_info(link, username, password);
         var proxy_obj = proxy_obj_maker(protocols,flow_status,1)
         var req_obj =
         {
@@ -203,12 +202,6 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
             "data_limit": data_limit,
             "data_limit_reset_strategy": "no_reset"
         };
-
-        if(process.env.RELEASE == "ALI") 
-        {
-            if(link.includes("116.202.28.246")) req_obj["inbounds"] = {"vless":["terafic2","tunel1","tunel2","tunel3"]};
-            else req_obj["inbounds"] = {"vless":["terafic-2","tunel-1","tunel-2","tunel-3"]};
-        }
 
         var res = await axios.post(link + "/api/user", req_obj, { headers });
         return res.data;

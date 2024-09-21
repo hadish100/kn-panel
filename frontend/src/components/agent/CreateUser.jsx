@@ -46,6 +46,7 @@ const CreateUser = ({ onClose, showForm }) => {
         setCreateMode(true)
         var protocols = selectedProtocols.filter(x => typeof x === "string")
         var flow_status = flowValue.value;
+
         const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc,safu,inbounds:selectedInbounds })
 
         if (res.data.status === "ERR") {

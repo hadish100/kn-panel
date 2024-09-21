@@ -382,6 +382,17 @@ app.post("/create_user", async (req, res) => {
     else if (selected_panel.panel_traffic - selected_panel.panel_data_usage < data_limit) res.send({ status: "ERR", msg: "insufficient traffic on server" });
     else {
 
+
+        // delete empty array keys in inbounds from protocols
+        for (let protocol in inbounds)
+        {
+            if(inbounds[protocol].length == 0)
+            {
+                protocols = protocols.filter(x => x != protocol);
+            }
+        }
+
+
         var mv = await make_vpn(selected_panel.panel_url,
             selected_panel.panel_username,
             selected_panel.panel_password,
@@ -452,7 +463,7 @@ app.post("/delete_panel", async (req, res) => {
     var panel_obj = await get_panel(panel_id);
     var agents_arr = await get_agents();
 
-    for (agent of agents_arr) {
+    for (let agent of agents_arr) {
         var cindex = agent.country.split(",").indexOf(panel_obj.panel_country);
         if (cindex != -1) {
             var old_countries = agent.country.split(",");
@@ -659,7 +670,7 @@ app.post("/edit_panel", async (req, res) => {
         {
             await (await users_clct()).updateMany({corresponding_panel_id:panel_id},{$set:{corresponding_panel:panel_url}});
             var all_users = await get_all_users();
-            for(user of all_users)
+            for(let user of all_users)
             {
                 if(user.corresponding_panel_id == panel_id) await update_user(user.id,{real_subscription_url:panel_url + user.real_subscription_url.split(old_panel_obj.panel_url)[1]});
             }
@@ -718,7 +729,7 @@ app.post("/edit_user", async (req, res) => {
 
             if(is_changing_country)
             {
-                for(inbound in inbounds)
+                for(let inbound in inbounds)
                 {
                     if(!Object.keys(user_obj.inbounds).includes(inbound)) delete inbounds[inbound];
                 }
@@ -1099,7 +1110,7 @@ app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
     var agent_users_panels_id_arr = [...new Set(agent_users.map(x => x.corresponding_panel_id))];
     panels_arr = panels_arr.filter(x => agent_users_panels_id_arr.includes(x.id));
     var action_groups = []
-    for(panel of panels_arr)
+    for(let panel of panels_arr)
     {
         action_groups.push({
             panel_url:panel.panel_url,
@@ -1112,7 +1123,7 @@ app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
 
     if(req.url.startsWith("/enable")) 
     {
-        for(group of action_groups)
+        for(let group of action_groups)
         {
             var result = await enable_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
             if(result == "ERR") 
@@ -1127,7 +1138,7 @@ app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
 
     else if(req.url.startsWith("/disable"))
     {
-        for(group of action_groups)
+        for(let group of action_groups)
         {
             var result = await disable_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
             if(result == "ERR") 
@@ -1142,7 +1153,7 @@ app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
 
     else
     {
-        for(group of action_groups)
+        for(let group of action_groups)
         {
             var result = await delete_vpn_group(group.panel_url,group.panel_username,group.panel_password,group.users);
             if(result == "ERR") 
