@@ -697,6 +697,11 @@ const notify_tgb = async () =>
     const owner_obj =
     {
         "91.107.184.84": "Test",
+        "65.109.186.13": "Mahdi",
+        "5.42.73.160": "Bobby",
+        "116.202.14.209": "ALI",
+        "5.78.57.106": "ARMAN",
+
     }
 
     var owner_string = "🔻 Owner: "
