@@ -9,7 +9,7 @@ const fs = require('fs').promises;
     var telegram_config = {};
 
     var domain_regex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
-    var name_regex = /[a-zA-Z0-9]+/;
+    var name_regex = /^[a-zA-Z0-9]+$/;
     config.panel_name = prompt(chalk.greenBright('Enter panel name: '));
     while(!name_regex.test(config.panel_name)) config.panel_name = prompt(chalk.redBright('Invalid name! Please enter a valid name: '));
 
