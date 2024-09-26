@@ -42,7 +42,7 @@ services:
       - ./main.conf:/etc/nginx/conf.d/main.conf
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
-      - "8085:80"
+      - "80:80"
       - "443:443"
     depends_on:
       - knp-backend
