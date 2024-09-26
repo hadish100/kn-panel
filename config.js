@@ -88,6 +88,7 @@ function generate_nginx_config(domain,ssl,port,container_name)
 {
     return `
     server {
+        client_max_body_size 20M;
         listen 443 ssl;
         server_name ${domain};
     
