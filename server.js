@@ -141,6 +141,7 @@ app.post("/get_agent", async (req, res) => {
     var agent = await token_to_account(access_token);
     var filteredCountries = await Promise.all(agent.country.split(",").map(async (x) => 
     {
+        return x;
         var panel_obj = (await (await panels_clct()).find({ panel_country: x }).toArray())[0];
         if (panel_obj.disable || panel_obj.active_users >= panel_obj.panel_user_max_count ||  panel_obj.panel_traffic <= panel_obj.panel_data_usage ) return null;
         else return x;
