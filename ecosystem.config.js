@@ -1,3 +1,4 @@
+require('dotenv').config()
 var backup_config = require('./backup_config.json');
 
 const export_arr = 
@@ -18,6 +19,15 @@ if(!backup_config.telegram.disabled || !backup_config.email.disabled)
   ({
     name: "backup",
     script: "backup_service.js",
+  });
+}
+
+if(process.env.RELEASE=="ALI")
+{
+  export_arr.push
+  ({
+    name: "agent_scanner",
+    script: "agent_scanner.js",
   });
 }
 
