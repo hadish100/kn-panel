@@ -95,6 +95,11 @@ body {
     padding: 1.5rem;
 }
 
+body > iframe
+{
+    display:none !important;
+}
+
 .css-1sy2mon-MuiSwitch-root,
 .css-j204z7-MuiFormControlLabel-root {
     margin: 0 !important;
