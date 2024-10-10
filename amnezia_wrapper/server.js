@@ -3,7 +3,7 @@ const app1 = express();
 const app2 = express();
 
 
-const {} = require('./utils.js');
+const {validate_token,generate_token} = require('./utils.js');
 
 const custom_handler = (fn) => (req, res) => 
 {
@@ -25,7 +25,11 @@ app2.use(auth2);
 async function auth1(req, res, next)
 {
 
-    const guest_endpoints = [];
+    const guest_endpoints = 
+    [
+        "ping",
+        "/api/admin/token",
+    ];
 
 
 
@@ -80,7 +84,15 @@ app2.post("/ping", custom_handler(async (req, res) =>
 
 app1.post("/api/admin/token", custom_handler(async (req, res) =>
 {
+    if(req.body.username == process.env.SUDO_USERNAME && req.body.password == process.env.SUDO_PASSWORD)
+    {
 
+    }
+
+    else
+    {
+
+    }
 }));
 
 app1.get("/api/system", custom_handler(async (req, res) =>

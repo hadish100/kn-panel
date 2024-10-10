@@ -1,8 +1,9 @@
 const fs = require('fs').promises;
-
+const JWT_SECRET_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
+const jwt = require('jsonwebtoken');
 
 const uid = () => { return Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000; }
-const generate_token = (id) => { return jwt.sign({id},JWT_SECRET_KEY,{expiresIn: '3h'}); }
+const generate_token = () => { return jwt.sign({},JWT_SECRET_KEY,{expiresIn: '24h'}); }
 const get_now = () => { return Math.floor(Date.now() / 1000); }
 
 const validate_token = (token) =>
