@@ -1,9 +1,24 @@
+require("dotenv").config();
 const express = require('express'); 
 const app1 = express();
 const app2 = express();
 
 
-const {validate_token,generate_token} = require('./utils.js');
+const {    
+    uid,
+    generate_token,
+    b2gb,
+    get_now,
+    validate_token,
+    get_days_passed,
+    auth_wg,
+    get_clients_for_marzban,
+    disable_client,
+    enable_client,
+    get_system_status,
+    create_user,
+    get_user_for_marzban,
+} = require('./utils.js');
 
 const custom_handler = (fn) => (req, res) => 
 {
@@ -12,12 +27,15 @@ const custom_handler = (fn) => (req, res) =>
         (err) => 
         {
             console.error(err);
-            res.send({status:"ERR",code:500,msg:"Internal Server Error"});
+            res.status(500).send({detail:"Internal Server Error"});
         }
     );
 };
-   
 
+app1.use(express.urlencoded({extended: true}));
+app2.use(express.urlencoded({extended: true}));
+app1.use(express.json())
+app2.use(express.json())
 app1.use(auth1);
 app2.use(auth2);
 
@@ -27,7 +45,7 @@ async function auth1(req, res, next)
 
     const guest_endpoints = 
     [
-        "ping",
+        "/ping",
         "/api/admin/token",
     ];
 
@@ -45,16 +63,15 @@ async function auth1(req, res, next)
         {
             var decoded = validate_token(token);
             if(decoded) next();
-            else res.send({status:"ERR",code:603,msg:"Invalid token"});
+            else res.status(401).send({detail: "Not authenticated"});
         }
         
         else
         {
-            res.send({status:"ERR",code:604,msg:"No token provided"});
+            res.status(401).send({detail: "Not authenticated"});
         }
     }
 }
-
 
 async function auth2(req, res, next)
 {
@@ -69,9 +86,6 @@ async function auth2(req, res, next)
     next();
 }
 
-
-
-
 app1.post("/ping", custom_handler(async (req, res) =>
 {
     res.send("PONG");
@@ -84,75 +98,126 @@ app2.post("/ping", custom_handler(async (req, res) =>
 
 app1.post("/api/admin/token", custom_handler(async (req, res) =>
 {
+    console.log(req.body.username, req.body.password);
+    console.log(process.env.SUDO_USERNAME, process.env.SUDO_PASSWORD);
     if(req.body.username == process.env.SUDO_USERNAME && req.body.password == process.env.SUDO_PASSWORD)
     {
-
+        res.send
+        ({
+            access_token: generate_token(),
+            token_type: "bearer"
+        });
     }
 
     else
     {
-
+        res.status(401).send({detail: "Incorrect username or password"});
     }
 }));
 
 app1.get("/api/system", custom_handler(async (req, res) =>
 {
-
+    res.send(await get_system_status());
 }));
 
 app1.get("/api/inbounds", custom_handler(async (req, res) =>
 {
-
+    res.send
+    ({
+        "trojan": 
+        [
+            {
+            "tag": "WG_INBOUND",
+            "protocol": "trojan",
+            "network": "tcp",
+            "tls": "tls",
+            "port": 8000
+            }
+        ],
+        "vless": 
+        [
+            {
+            "tag": "WG_INBOUND",
+            "protocol": "vless",
+            "network": "ws",
+            "tls": "tls",
+            "port": 8000
+            }
+        ],
+        "vmess": 
+        [
+            {
+            "tag": "WG_INBOUND",
+            "protocol": "vmess",
+            "network": "ws",
+            "tls": "tls",
+            "port": 8000
+            }
+        ],
+        "shadowsocks": 
+        [
+            {
+            "tag": "WG_INBOUND",
+            "protocol": "shadowsocks",
+            "network": "tcp",
+            "tls": "none",
+            "port": 8000
+            }
+        ]
+    })
 }));
 
 app1.post("/api/user", custom_handler(async (req, res) =>
 {
+    const {username, expire, data_limit} = req.body;
+    res.send(await create_user(username, expire, data_limit));
+}));
 
+app1.get("/api/user/:vpn_name", custom_handler(async (req, res) =>
+{
+    res.send(await get_user_for_marzban(req.params.vpn_name));
 }));
 
 app1.delete("/api/user/:vpn_name", custom_handler(async (req, res) =>
 {
-
+    throw new Error("Not implemented");
 }));
 
 app1.put("/api/user/:vpn_name", custom_handler(async (req, res) =>
 {
-
+    throw new Error("Not implemented");
 }));
 
 app1.post("/api/user/:vpn_name/reset", custom_handler(async (req, res) =>
 {
-
-}));
-
-app1.post("/api/core/restart", custom_handler(async (req, res) =>
-{
-
+    throw new Error("Not implemented");
 }));
 
 app2.get("/get_marzban_users", custom_handler(async (req, res) =>
 {
-
+    throw new Error("Not implemented");
 }));
 
 app2.get("/edit_expire_times", custom_handler(async (req, res) =>
 {
-
+    throw new Error("Not implemented");
 }));
 
 app2.post("/dldb", custom_handler(async (req, res) =>
 {
-
+    throw new Error("Not implemented");
 }));
 
 
 
-app1.listen(80 , async () => 
+app1.listen(7001 , async () => 
 {
-    console.log(`>>> SERVER STARTED ON PORT 80`);
+    console.log(`>>> SERVER STARTED ON PORT 7001`);
 });
 
 app2.listen(7002 , async () => 
 {
     console.log(`>>> SERVER STARTED ON PORT 7002`);
 });
+
+// TODO: COUNTRY SWITCH RELATED ENDPOINTS | DOCKERIZE | FRONTEND CHANGES | SYNC | BROADCAST TO CUSTOMERS | LOCAL OR UNLOCAL? | ENV variables
