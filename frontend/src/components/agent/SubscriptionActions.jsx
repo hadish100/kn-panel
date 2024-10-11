@@ -38,9 +38,13 @@ const SubscriptionActions = ({ item, subscriptionLink, config, onEditItem, shoul
     const handleCopySubscriptionLink = (e) => {
         //navigator.clipboard.writeText(subscriptionLink);
 
-        const tempInput = document.createElement('input');
-        tempInput.setAttribute('type', 'text');
-        tempInput.setAttribute('value', subscriptionLink);
+        // const tempInput = document.createElement('input');
+        // tempInput.setAttribute('type', 'text');
+        // tempInput.setAttribute('value', subscriptionLink);
+
+        const tempInput = document.createElement('textarea');
+        tempInput.innerHTML = subscriptionLink;
+
         document.body.appendChild(tempInput);
         tempInput.select();
         document.execCommand('copy');
