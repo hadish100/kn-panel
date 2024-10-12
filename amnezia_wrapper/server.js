@@ -11,7 +11,6 @@ const {
     get_now,
     validate_token,
     get_days_passed,
-    auth_wg,
     get_clients_for_marzban,
     disable_client,
     enable_client,

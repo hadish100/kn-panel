@@ -1,16 +1,42 @@
-docker run --detach \
-  --name wg-easy \
-  --env LANG=en \
-  --env WG_HOST=92.60.70.175  \
-  --env PASSWORD_HASH='$2a$12$9zywptzEL/nmr5cmGabyuO/IKSPgUjTTW98pNlLfd4XapgiZYmFSu' \
-  --env PORT=51821 \
-  --env WG_PORT=51820 \
-  --volume ~/.wg-easy:/etc/wireguard \
-  --publish 51820:51820/udp \
-  --publish 51821:51821/tcp \
-  --cap-add NET_ADMIN \
-  --cap-add SYS_MODULE \
-  --sysctl 'net.ipv4.conf.all.src_valid_mark=1' \
-  --sysctl 'net.ipv4.ip_forward=1' \
-  --restart unless-stopped \
-  ghcr.io/wg-easy/wg-easy
+cat /opt/amnezia/awg/clientsTable
+cat /opt/amnezia/awg/wg0.conf
+
+wg show wg0 dump
+wg genkey
+echo ${privateKey} | wg pubkey
+wg genpsk
+wg syncconf wg0 <(wg-quick strip ./wg0.conf)
+wg-quick down wg0
+wg-quick up wg0
+wg show wg0 public-key
+wg show wg0 preshared-keys
+
+
+----> get clients & add new client
+
+
+
+sDhwgcNuHoATzfNpBsDvKkcvM7Sbh/fHmC+mUgucNFQ=
+echo sDhwgcNuHoATzfNpBsDvKkcvM7Sbh/fHmC+mUgucNFQ= | wg pubkey
+WxslksY7PyIygXDSUfrUnL9DHdTFrjsGRa8iL93JlEU=
+
+[Interface]
+Address = 10.8.1.9/32
+DNS = 1.1.1.1, 1.0.0.1
+PrivateKey = pUjGJr8438anm5Ou6WoO5v+aPl4+eNWsxfizjEgqwXs=
+Jc = 4
+Jmin = 10
+Jmax = 50
+S1 = 108
+S2 = 18
+H1 = 548102439
+H2 = 96202383
+H3 = 1018342978
+H4 = 415451259
+
+[Peer]
+PublicKey = q/EyVtN6iNBLR2gaCrNJHSYMMETtaaoQc96FMC539m0=
+PresharedKey = AVj26itcm+3ggdSbIW2yVQiAJO3SPz9ymMh639KXi9Y=
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = 92.60.70.175:49365
+PersistentKeepalive = 25

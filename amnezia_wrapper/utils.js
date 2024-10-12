@@ -5,12 +5,7 @@ const axios = require('axios');
 const fs = require('fs').promises;
 const JWT_SECRET_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
 const jwt = require('jsonwebtoken');
-const SERVER_ADDRESS = process.env.SERVER_ADDRESS;
-const SESSION_ID = 
-{
-    value: "",
-    last_updated: 0,
-};
+
 
 
 const uid = () => { return Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000; }
@@ -48,26 +43,6 @@ const validate_token = (token) =>
     catch(err)
     {
         return false;
-    }
-}
-
-const auth_wg = async () =>
-{
-    if(get_now() - SESSION_ID.last_updated > 60*60*3)
-    {
-        var password = process.env.SERVER_PASSWORD;
-        var auth_obj = {password:"wg"};
-        if(password) auth_obj.password = password;
-        var headers = {'Content-Type': 'application/json'};
-        var response = await axios.post(`${SERVER_ADDRESS}/api/session`,auth_obj,headers,{timeout:10000});
-        var cookie = response.headers['set-cookie'][0];
-        SESSION_ID.value = cookie.split(';')[0];
-        SESSION_ID.last_updated = get_now();
-    }
-
-    return {
-        "Content-Type": "application/json",
-        "Cookie": SESSION_ID.value,
     }
 }
 
@@ -250,7 +225,6 @@ module.exports =
     get_now,
     validate_token,
     get_days_passed,
-    auth_wg,
     get_clients_for_marzban,
     disable_client,
     enable_client,
