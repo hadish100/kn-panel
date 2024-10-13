@@ -5,15 +5,8 @@ const app2 = express();
 
 
 const {    
-    uid,
     generate_token,
-    b2gb,
-    get_now,
     validate_token,
-    get_days_passed,
-    get_clients_for_marzban,
-    disable_client,
-    enable_client,
     get_system_status,
     create_user,
     get_user_for_marzban,
@@ -33,8 +26,8 @@ const custom_handler = (fn) => (req, res) =>
 
 app1.use(express.urlencoded({extended: true}));
 app2.use(express.urlencoded({extended: true}));
-app1.use(express.json())
-app2.use(express.json())
+app1.use(express.json());
+app2.use(express.json());
 app1.use(auth1);
 app2.use(auth2);
 
@@ -97,8 +90,6 @@ app2.post("/ping", custom_handler(async (req, res) =>
 
 app1.post("/api/admin/token", custom_handler(async (req, res) =>
 {
-    console.log(req.body.username, req.body.password);
-    console.log(process.env.SUDO_USERNAME, process.env.SUDO_PASSWORD);
     if(req.body.username == process.env.SUDO_USERNAME && req.body.password == process.env.SUDO_PASSWORD)
     {
         res.send
@@ -126,7 +117,7 @@ app1.get("/api/inbounds", custom_handler(async (req, res) =>
         "trojan": 
         [
             {
-            "tag": "WG_INBOUND",
+            "tag": "AWG_INBOUND",
             "protocol": "trojan",
             "network": "tcp",
             "tls": "tls",
@@ -136,7 +127,7 @@ app1.get("/api/inbounds", custom_handler(async (req, res) =>
         "vless": 
         [
             {
-            "tag": "WG_INBOUND",
+            "tag": "AWG_INBOUND",
             "protocol": "vless",
             "network": "ws",
             "tls": "tls",
@@ -146,7 +137,7 @@ app1.get("/api/inbounds", custom_handler(async (req, res) =>
         "vmess": 
         [
             {
-            "tag": "WG_INBOUND",
+            "tag": "AWG_INBOUND",
             "protocol": "vmess",
             "network": "ws",
             "tls": "tls",
@@ -156,7 +147,7 @@ app1.get("/api/inbounds", custom_handler(async (req, res) =>
         "shadowsocks": 
         [
             {
-            "tag": "WG_INBOUND",
+            "tag": "AWG_INBOUND",
             "protocol": "shadowsocks",
             "network": "tcp",
             "tls": "none",

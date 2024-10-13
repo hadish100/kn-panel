@@ -1,10 +1,10 @@
 require("dotenv").config();
-// const mongoose = require('mongoose');
-// mongoose.connect('mongodb://127.0.0.1:27017/knaw');
-const axios = require('axios');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1:27017/knaw');
 const fs = require('fs').promises;
 const JWT_SECRET_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
 const jwt = require('jsonwebtoken');
+const child_process = require('child_process');
 
 
 
@@ -46,61 +46,121 @@ const validate_token = (token) =>
     }
 }
 
-const get_wireguard_clients = async () =>
-{
-    var headers = await auth_wg();
-    var response = await axios.get(`${SERVER_ADDRESS}/api/wireguard/client`,{headers},{timeout:10000});
-    var response_arr = response.data;
-    return response_arr;
-}
-
-const get_clients_for_marzban = async () =>
-{
-    var response_arr = await get_wireguard_clients();
-    response_arr = response_arr.map((item) =>
-    ({
-        id: item.id,
-        name: item.name,
-        enabled: item.enabled,
-        address: item.address,
-        created_at: Math.floor(new Date(item.createdAt).getTime() / 1000),
-        used_traffic: b2gb(item.transferRx + item.transferTx),
-    }));
-
-    return response_arr;
-}
-
 const get_system_status = async () =>
 {
-    var response_arr = await get_wireguard_clients();
+    var users_arr = await User.find({});
     var result =
     {
-        total_user:response_arr.length,
-        users_active:response_arr.filter((item) => item.enabled).length,
-        incoming_bandwidth: 10937477817,
-        outgoing_bandwidth: 5568768696,
+        total_user:users_arr.length,
+        users_active:users_arr.filter((item) => item.status == "active").length,
+        incoming_bandwidth: 0,
+        outgoing_bandwidth: 0,
     }
 
     return result;
 }
 
-const get_user_id_from_username = async (username) =>
-{
-    var clients = await get_wireguard_clients();
-    var client = clients.find((item) => item.name == username);
-    return client.id;
-}
-
 const create_user = async (username, expire, data_limit) =>
 {
-    var headers = await auth_wg();
-    await axios.post(`${SERVER_ADDRESS}/api/wireguard/client`,{name:username},{headers},{timeout:10000});
+
+    var docker_id = await get_amnezia_container_id();
+    if(docker_id == "") throw new Error("Amnezia container not found");
+
+
+    var private_key = await exec_on_container(docker_id,"wg genkey");
+    var public_key = await exec_on_container(docker_id,`echo ${private_key} | wg pubkey`);
+    var client_public_key = await exec_on_container(docker_id,`wg show wg0 public-key`);
+    var psk = await exec_on_container(docker_id,"wg show wg0 preshared-keys | head -n 1");
+    psk = psk.split("\t")[1];
+    var dedicated_ip = await get_next_available_ip();
+
+    var interface = await get_wg0_interface();
+    var clients_table = await get_amnezia_clients_table();
+
+    var new_interface =
+`
+${interface}
+[Peer]
+PublicKey = ${public_key}
+PresharedKey = ${psk}
+AllowedIPs = ${dedicated_ip}
+
+`
+
+    /*
+    
+    {
+        "clientId": "ueEoTIXSR0sXvYjysmwDtjbG7+g/pRce2rqX4h2DoEg=",
+        "userData": {
+            "clientName": "New client666",
+            "creationDate": "Sun Oct 13 05:14:28 2024"
+        }
+    }
+    
+        */
+
+    var creation_date = new Date(expire * 1000).toString().split(" GMT")[0];
+
+    creation_date = creation_date.split(" ");
+    var temp = creation_date[creation_date.length - 1];
+    creation_date[creation_date.length - 1] = creation_date[creation_date.length - 2];
+    creation_date[creation_date.length - 2] = temp;
+    creation_date = creation_date.join(" ");
+
+    clients_table.push(
+    {
+        clientId: public_key,
+        userData:
+        {
+            clientName: username,
+            creationDate: creation_date,
+        }
+    });
+
+    await replace_wg0_interface(new_interface);
+    await replace_amnezia_clients_table(JSON.stringify(clients_table,null,4));
+
+
+    var subscription_url =
+`
+
+[Interface]
+Address = ${dedicated_ip}
+DNS = 1.1.1.1, 1.0.0.1
+PrivateKey = ${private_key}
+Jc = 4
+Jmin = 10
+Jmax = 50
+S1 = 108
+S2 = 18
+H1 = 548102439
+H2 = 96202383
+H3 = 1018342978
+H4 = 415451259
+
+[Peer]
+PublicKey = ${client_public_key}
+PresharedKey = ${psk}
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = ${process.env.SERVER_ADDRESS}
+PersistentKeepalive = 25
+`
 
     var result =
     {
-        "links": ["WG","WG","WG","WG"],
-        "subscription_url": (await get_user_for_marzban(username)).subscription_url,
+        links: ["AWG","AWG","AWG","AWG"],
+        subscription_url: subscription_url,
     }
+
+    await User.create(
+    {
+        username: username,
+        expire: expire,
+        data_limit: data_limit,
+        connection_string: subscription_url,
+    });
+
+    await sync_configs();
 
     return result;
 
@@ -108,114 +168,155 @@ const create_user = async (username, expire, data_limit) =>
 
 const get_user_for_marzban = async (username) =>
 {
-    var user_id = await get_user_id_from_username(username);
-    var headers = await auth_wg();
-    var response = await axios.get(`${SERVER_ADDRESS}/api/wireguard/client/${user_id}/configuration`,{headers},{timeout:10000});
-    var config = response.data;
     const result =
     {
         proxies: {
             "trojan": {
-              "password": "WG",
+              "password": "AWG",
               "flow": ""
             },
             "vless": {
-              "id": "WG",
+              "id": "AWG",
               "flow": ""
             },
             "vmess": {
-              "id": "WG"
+              "id": "AWG"
             },
             "shadowsocks": {
-              "password": "WG",
-              "method": "WG"
+              "password": "AWG",
+              "method": "AWG"
             }
           },
 
-          links: ["WG","WG","WG","WG"],
+          links: ["AWG","AWG","AWG","AWG"],
           lifetime_used_traffic: 0,
-          subscription_url: config,
+          subscription_url: (await User.findOne({username})).connection_string,
     }
 
     return result;
 }
 
-const disable_client = async (id) =>
+async function exec(cmd)
 {
-    var headers = await auth_wg();
-    var response = await axios.post(`${SERVER_ADDRESS}/api/wireguard/client/${id}/disable`,{},{headers},{timeout:10000});
-    return true;
-}
 
-const enable_client = async (id) =>
-{
-    var headers = await auth_wg();
-    var response = await axios.post(`${SERVER_ADDRESS}/api/wireguard/client/${id}/enable`,{},{headers},{timeout:10000});
-    return true;
-}
-
-/*
-const sync__and__process = async () =>
-{
-    var users = await get_clients();
-
-    for(let user of users)
+    if (process.platform !== 'linux') 
     {
-        var username = user.name;
-
-        console.log("Processing user " + username)
-
-        if(username.split('__').length != 3) 
-        {
-            console.log("User " + username + " has no limits >>> skipping...");
-            console.log("---------------------------")
-            continue;
-        }
-
-        var data_limit = parseFloat(username.split('__')[1]);
-        var expire = parseFloat(username.split('__')[2]);
-
-        
-        if(user.used_traffic > data_limit)
-        {
-            var disable_res = await disable_client(user.id);
-            if(disable_res == "ERR") 
-            {
-                console.log("Error in disabling user " + username);
-                console.log("---------------------------")
-                continue;
-            }
-
-            await dblog(`User ${username} disabled because of traffic limit`);
-        }
-
-        else
-        {
-            console.log("User " + username + " hasn't reached traffic limit");
-        }
-
-        if(get_days_passed(user.created_at) > expire )
-        {
-            var disable_res = await disable_client(user.id);
-            if(disable_res == "ERR")
-            {
-                console.log("Error in disabling user " + username);
-                console.log("---------------------------")
-                continue;
-            }
-
-            await dblog(`User ${username} disabled because of expire date`);
-        }
-
-        else
-        {
-            console.log("User " + username + " hasn't reached expire time");
-        }
-
-        console.log("---------------------------")
+      return '';
     }
+
+    return new Promise((resolve, reject) => 
+    {
+      child_process.exec(cmd, 
+      {
+        shell: 'bash',
+      }, 
+      (err, stdout) => 
+      {
+        if (err) return reject(err);
+        console.log(stdout);
+        return resolve(String(stdout).trim());
+      });
+    });
 }
-*/
+
+async function exec_on_container(container_id, cmd)
+{
+    return await exec(`docker exec ${container_id} ${cmd}`);
+}
+
+async function sync_configs()
+{
+    var container_id = await get_amnezia_container_id();
+    await exec_on_container(container_id,'bash -c "cd /opt/amnezia/awg/ && wg syncconf wg0 <(wg-quick strip ./wg0.conf)"');
+}
+
+async function get_wg0_interface()
+{
+    var container_id = await get_amnezia_container_id();
+    return await exec_on_container(container_id,"cat /opt/amnezia/awg/wg0.conf");
+}
+
+async function get_amnezia_clients_table()
+{
+    var container_id = await get_amnezia_container_id();
+    var clients_table_raw = await exec_on_container(container_id,"cat /opt/amnezia/awg/clientsTable");
+    return JSON.parse(clients_table_raw);
+}
+
+async function get_amnezia_container_id()
+{
+    return await exec("docker ps -qf name=amnezia-awg");
+}
+
+async function replace_wg0_interface(new_config)
+{
+    var container_id = await get_amnezia_container_id();
+    var file_id = uid()
+    await fs.writeFile(`./temp${file_id}`,new_config);
+    await exec(`docker cp ./temp${file_id} ${container_id}:/opt/amnezia/awg/wg0.conf`);
+    await fs.unlink(`./temp${file_id}`);
+}
+
+async function replace_amnezia_clients_table(new_table)
+{
+    var container_id = await get_amnezia_container_id();
+    var file_id = uid()
+    await fs.writeFile(`./temp${file_id}`,new_table);
+    await exec(`docker cp ./temp${file_id} ${container_id}:/opt/amnezia/awg/clientsTable`);
+    await fs.unlink(`./temp${file_id}`);
+}
+
+async function get_next_available_ip()
+{
+    var interface = await get_wg0_interface();
+
+    var ips = interface.split("\n").filter((item) => item.includes("AllowedIPs"));
+    var ips_arr = ips.map((item) => item.split(" = ")[1]);
+    ips_arr = ips_arr.map((item) => item.split("/")[0]);
+    var last_ip = ips_arr[ips_arr.length - 1];
+    var last_ip_arr = last_ip.split(".");
+    if(last_ip_arr[3] == 255)
+    {
+        last_ip_arr[3] = 0;
+        last_ip_arr[2] = parseInt(last_ip_arr[2]) + 1;
+    }
+    else if(last_ip_arr[2] == 255)
+    {
+        last_ip_arr[2] = 0;
+        last_ip_arr[1] = parseInt(last_ip_arr[1]) + 1;
+    }
+    else if(last_ip_arr[1] == 255)
+    {
+        last_ip_arr[1] = 0;
+        last_ip_arr[0] = parseInt(last_ip_arr[0]) + 1
+    }
+    else if(last_ip_arr[0] == 255)
+    {
+        throw new Error("No more available IPs");
+    }
+    else
+    {
+        last_ip_arr[3] = parseInt(last_ip_arr[3]) + 1;
+    }
+
+    return last_ip_arr.join(".") + "/32";
+
+}
+
+
+const user_schema = new mongoose.Schema(
+{
+    username: String,
+    expire: Number,
+    data_limit: Number,
+    data_usage: { type: Number, default: 0 },
+    status: { type: String, default: "active", enum: ["active","limited","expired","disabled"] },
+    created_at: { type: Date, default: Date.now },
+    connection_string: String,
+});
+
+const User = mongoose.model('User', user_schema);
+
 
 module.exports = 
 {
@@ -225,9 +326,6 @@ module.exports =
     get_now,
     validate_token,
     get_days_passed,
-    get_clients_for_marzban,
-    disable_client,
-    enable_client,
     get_system_status,
     create_user,
     get_user_for_marzban,
