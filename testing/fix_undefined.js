@@ -21,7 +21,7 @@ async function init()
 
             if(marzban_user)
             {
-                // await (await users_clct()).updateOne({id:user.id},{$set:{links:marzban_user.links}});
+                await (await users_clct()).updateOne({id:user.id},{$set:{real_subscription_url:marzban_user.subscription_url}});
                 console.log(`user ${user.id} updated`);
             }
         }

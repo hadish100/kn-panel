@@ -1,7 +1,19 @@
 const axios = require('axios');
 const fs = require('fs');
 // const util = require('util');
-const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,restart_marzban_xray,auth_marzban,get_user_data_graph,get_agent_data_graph,syslog,sleep,get_accounts} = require("../utils");
+const {
+  get_marzban_user,
+  get_agents,
+  get_agents_daily_usage_logs,
+  get_panel_info,
+  restart_marzban_xray,
+  auth_marzban,
+  get_user_data_graph,
+  get_agent_data_graph,
+  syslog,
+  sleep,
+  get_accounts
+} = require("../utils");
 // const moment = require('moment-timezone');
 
 
@@ -85,38 +97,38 @@ const {get_marzban_user,get_agents,get_agents_daily_usage_logs,get_panel_info,re
 //     console.log(result);
 // })();
 
-const dl_file = async (url,destination) =>
-{
-    try
-    {
-        const response = await axios
-        ({
-          url,
-          method: 'POST',
-          responseType: 'stream',
-          data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
-          timeout:15000
-        });
+// const dl_file = async (url,destination) =>
+// {
+//     try
+//     {
+//         const response = await axios
+//         ({
+//           url,
+//           method: 'POST',
+//           responseType: 'stream',
+//           data: {api_key: "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr"},
+//           timeout:15000
+//         });
       
             
-        const writer = fs.createWriteStream(destination);
+//         const writer = fs.createWriteStream(destination);
       
-        response.data.pipe(writer);
+//         response.data.pipe(writer);
       
-        return new Promise((resolve, reject) => 
-        {
-          writer.on('finish', resolve);
-          writer.on('error', reject);
-          response.data.on('error', reject);
-        });
-    }
+//         return new Promise((resolve, reject) => 
+//         {
+//           writer.on('finish', resolve);
+//           writer.on('error', reject);
+//           response.data.on('error', reject);
+//         });
+//     }
 
-    catch(err)
-    {
-        throw new Error(`DL ERROR : ${err.message}`);
-    }
+//     catch(err)
+//     {
+//         throw new Error(`DL ERROR : ${err.message}`);
+//     }
 
-}
+// }
 
 // (async () => 
 // {
@@ -183,5 +195,5 @@ const dl_file = async (url,destination) =>
 
 
 
-dl_file("http://p.limoovp1.sbs:7002/dldb","db.zip");
+// dl_file("http://p.limoovp1.sbs:7002/dldb","db.zip");
 
