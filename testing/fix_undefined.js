@@ -1,6 +1,6 @@
 const {get_marzban_user,get_all_users,get_panels} = require("../utils");
 
-var { users_clct } = require('./db_interface');
+var { users_clct } = require('../db_interface');
 
 async function init()
 {
