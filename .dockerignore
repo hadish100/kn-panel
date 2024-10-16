@@ -5,7 +5,6 @@ node_modules
 readme
 secondary_backend
 teritary_backend
-testing
 .git
 .gitignore
 commands.sh
