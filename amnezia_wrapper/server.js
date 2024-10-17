@@ -1,8 +1,8 @@
 require("dotenv").config();
+const fs = require('fs').promises;
 const express = require('express'); 
 const app1 = express();
 const app2 = express();
-
 
 const {    
     generate_token,
@@ -10,6 +10,12 @@ const {
     get_system_status,
     create_user,
     get_user_for_marzban,
+    extend_expire_times,
+    backup_data,
+    get_all_users_for_marzban,
+    reset_user_traffic,
+    edit_user,
+    delete_user,
 } = require('./utils.js');
 
 const custom_handler = (fn) => (req, res) => 
@@ -170,32 +176,62 @@ app1.get("/api/user/:vpn_name", custom_handler(async (req, res) =>
 
 app1.delete("/api/user/:vpn_name", custom_handler(async (req, res) =>
 {
-    throw new Error("Not implemented");
+    await delete_user(req.params.vpn_name);
+    res.send("OK");
 }));
 
 app1.put("/api/user/:vpn_name", custom_handler(async (req, res) =>
 {
-    throw new Error("Not implemented");
+    var {status,expire,data_limit} = req.body;
+    await edit_user(req.params.vpn_name, status, expire, data_limit);
+    res.send("OK");
 }));
 
 app1.post("/api/user/:vpn_name/reset", custom_handler(async (req, res) =>
 {
-    throw new Error("Not implemented");
+    await reset_user_traffic(req.params.vpn_name);
+    res.send("OK");
 }));
 
 app2.get("/get_marzban_users", custom_handler(async (req, res) =>
 {
-    throw new Error("Not implemented");
+    res.send(await get_all_users_for_marzban());
 }));
 
 app2.get("/edit_expire_times", custom_handler(async (req, res) =>
 {
-    throw new Error("Not implemented");
+    await extend_expire_times(Number(req.body.added_time));
+    res.send("OK");
 }));
 
 app2.post("/dldb", custom_handler(async (req, res) =>
 {
-    throw new Error("Not implemented");
+    try
+    {
+
+
+        var new_backup = await backup_data();
+
+        var dbdl_files = await fs.readdir("./dbbu");
+
+        for(var i=0;i<dbdl_files.length;i++)
+        {
+          if(!dbdl_files[i].endsWith(".zip")) continue;
+          var file_path = "./dbbu/" + dbdl_files[i];
+          var file_stat = await fs.stat(file_path);
+          var diff = new Date() - new Date(file_stat.mtime);
+          if(diff > 60*60*24*1000) await fs.unlink(file_path);
+        }
+
+
+        res.sendFile(new_backup);
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        res.send("ERR");
+    }
 }));
 
 
@@ -220,4 +256,5 @@ BROADCAST TO CUSTOMERS
 LOCAL OR UNLOCAL? 
 ENV variables
 INNER SYNC
+ENABLE DISABLE REAL CONSEQUENCE
 */

@@ -18,6 +18,11 @@ const b2gb = (bytes) =>
     return Math.round(x * 100) / 100;
 }
 
+const gb2b = (gb) =>
+{
+    return gb * (2 ** 10) ** 3;
+}
+
 const get_now = () =>
 {
     return Math.floor(Date.now() / 1000);
@@ -48,16 +53,24 @@ const validate_token = (token) =>
 
 const get_system_status = async () =>
 {
-    var users_arr = await User.find({});
+    var users_count = await User.countDocuments();
+    var active_users_count = await User.countDocuments({status: "active"});
+
     var result =
     {
-        total_user:users_arr.length,
-        users_active:users_arr.filter((item) => item.status == "active").length,
+        total_user:users_count,
+        users_active:active_users_count,
         incoming_bandwidth: 0,
         outgoing_bandwidth: 0,
+        panel_type:"AMN",
     }
 
     return result;
+}
+
+const extend_expire_times = async (added_time) =>
+{
+    await User.updateMany({},{$inc: {expire: added_time}});
 }
 
 const create_user = async (username, expire, data_limit) =>
@@ -87,18 +100,6 @@ AllowedIPs = ${dedicated_ip}
 
 `
 
-    /*
-    
-    {
-        "clientId": "ueEoTIXSR0sXvYjysmwDtjbG7+g/pRce2rqX4h2DoEg=",
-        "userData": {
-            "clientName": "New client666",
-            "creationDate": "Sun Oct 13 05:14:28 2024"
-        }
-    }
-    
-        */
-
     var creation_date = new Date(expire * 1000).toString().split(" GMT")[0];
 
     creation_date = creation_date.split(" ");
@@ -121,7 +122,7 @@ AllowedIPs = ${dedicated_ip}
     await replace_amnezia_clients_table(JSON.stringify(clients_table,null,4));
 
 
-    var subscription_url =
+    var connection_string =
 `
 
 [Interface]
@@ -144,11 +145,13 @@ PresharedKey = ${psk}
 AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = ${process.env.SERVER_ADDRESS}
 PersistentKeepalive = 25
-`
+`;
+
+    var subscription_url = "";
 
     var result =
     {
-        links: ["AWG","AWG","AWG","AWG"],
+        links: [connection_string],
         subscription_url: subscription_url,
     }
 
@@ -157,7 +160,9 @@ PersistentKeepalive = 25
         username: username,
         expire: expire,
         data_limit: data_limit,
-        connection_string: subscription_url,
+        connection_string: connection_string,
+        subscription_url: subscription_url,
+        public_key: public_key,
     });
 
     await sync_configs();
@@ -168,6 +173,9 @@ PersistentKeepalive = 25
 
 const get_user_for_marzban = async (username) =>
 {
+
+    const user = await User.findOne({username});
+
     const result =
     {
         proxies: {
@@ -188,15 +196,95 @@ const get_user_for_marzban = async (username) =>
             }
           },
 
-          links: ["AWG","AWG","AWG","AWG"],
-          lifetime_used_traffic: 0,
-          subscription_url: (await User.findOne({username})).connection_string,
+          links: [user.connection_string],
+          lifetime_used_traffic: user.lifetime_used_traffic,
+          subscription_url: user.subscription_url,
     }
 
     return result;
 }
 
-async function exec(cmd)
+const get_all_users_for_marzban = async () =>
+{
+    const result = 
+    {
+        users: await User.find({}, {username: 1, expire: 1, data_limit: 1, used_traffic: 1, lifetime_used_traffic: 1, status: 1, created_at: 1}),
+    }
+
+    result.users = result.users.map((item) =>
+    ({
+        ...item,
+        lifetime_used_traffic: item.lifetime_used_traffic + item.used_traffic,
+        created_at: format_timestamp(item.created_at),
+    }));
+
+    return result;
+
+}
+
+const format_timestamp = (timestamp) =>
+{
+    var date = new Date(timestamp * 1000);
+    
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    let hours = String(date.getHours()).padStart(2, '0');
+    let minutes = String(date.getMinutes()).padStart(2, '0');
+    let seconds = String(date.getSeconds()).padStart(2, '0');
+    let milliseconds = String(date.getMilliseconds()).padStart(3, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}000`;
+}
+
+const reset_user_traffic = async (username) =>
+{
+    const user_obj = await User.findOne({username});
+    user_obj.lifetime_used_traffic += user_obj.used_traffic;
+    user_obj.used_traffic = 0;
+    await user_obj.save();
+    return true;
+}
+
+const edit_user = async (username, status, expire, data_limit) =>
+{
+    if(status) await User.updateOne({username}, {status});
+    else await User.updateOne({username}, {expire, data_limit});
+    return true;
+}
+
+const delete_user = async (username) =>
+{
+
+    var interface = await get_wg0_interface();
+    var clients_table = await get_amnezia_clients_table();
+    const user_obj = await User.findOne({username});
+    var public_key = user_obj.public_key;
+
+    clients_table = clients_table.filter((item) => item.userData.clientName != username);
+
+    var interface_lines = interface.split("\n");
+
+    for(var i=0;i<interface_lines.length;i++)
+    {
+        if(interface_lines[i].includes(public_key))
+        {
+            interface_lines.splice(i-1,4);
+            break;
+        }
+    }
+
+    await replace_wg0_interface(interface_lines.join("\n"));
+
+    await replace_amnezia_clients_table(JSON.stringify(clients_table,null,4));
+
+    await sync_configs();
+
+    await User.deleteOne({ username });
+    return true;
+}
+
+const exec = async (cmd) =>
 {
 
     if (process.platform !== 'linux') 
@@ -219,36 +307,36 @@ async function exec(cmd)
     });
 }
 
-async function exec_on_container(container_id, cmd)
+const exec_on_container = async (container_id, cmd) =>
 {
     return await exec(`docker exec ${container_id} ${cmd}`);
 }
 
-async function sync_configs()
+const sync_configs = async () =>
 {
     var container_id = await get_amnezia_container_id();
     await exec_on_container(container_id,'bash -c "cd /opt/amnezia/awg/ && wg syncconf wg0 <(wg-quick strip ./wg0.conf)"');
 }
 
-async function get_wg0_interface()
+const get_wg0_interface = async () =>
 {
     var container_id = await get_amnezia_container_id();
     return await exec_on_container(container_id,"cat /opt/amnezia/awg/wg0.conf");
 }
 
-async function get_amnezia_clients_table()
+const get_amnezia_clients_table = async () =>
 {
     var container_id = await get_amnezia_container_id();
     var clients_table_raw = await exec_on_container(container_id,"cat /opt/amnezia/awg/clientsTable");
     return JSON.parse(clients_table_raw);
 }
 
-async function get_amnezia_container_id()
+const get_amnezia_container_id = async () =>
 {
     return await exec("docker ps -qf name=amnezia-awg");
 }
 
-async function replace_wg0_interface(new_config)
+const replace_wg0_interface = async (new_config) =>
 {
     var container_id = await get_amnezia_container_id();
     var file_id = uid()
@@ -257,7 +345,7 @@ async function replace_wg0_interface(new_config)
     await fs.unlink(`./temp${file_id}`);
 }
 
-async function replace_amnezia_clients_table(new_table)
+const replace_amnezia_clients_table = async (new_table) =>
 {
     var container_id = await get_amnezia_container_id();
     var file_id = uid()
@@ -266,7 +354,7 @@ async function replace_amnezia_clients_table(new_table)
     await fs.unlink(`./temp${file_id}`);
 }
 
-async function get_next_available_ip()
+const get_next_available_ip = async () =>
 {
     var interface = await get_wg0_interface();
 
@@ -303,17 +391,45 @@ async function get_next_available_ip()
 
 }
 
-
-const user_schema = new mongoose.Schema(
+const backup_data = async () =>
 {
+    try { await fs.mkdir("./dbbu"); } catch(err) {} 
+    
+    const users = await User.find();
+    const amnezia_client_table = await get_amnezia_clients_table();
+    const amnezia_interface = await get_wg0_interface();
+
+    await fs.writeFile("./dbbu/users.json",JSON.stringify(users,null,4));
+    await fs.writeFile("./dbbu/amnezia_clients_table.json",JSON.stringify(amnezia_client_table,null,4));
+    await fs.writeFile("./dbbu/amnezia_interface.conf",amnezia_interface);
+
+    var zip = new AdmZip();
+    var zip_id = Date.now();
+    var final_file = "./dbbu/bu"+zip_id+".zip"
+    zip.addLocalFolder("./dbbu","dbbu");
+    zip.writeZip(final_file);
+
+    await fs.unlink("./dbbu/users.json");
+    await fs.unlink("./dbbu/amnezia_clients_table.json");
+    await fs.unlink("./dbbu/amnezia_interface.conf");
+
+    return final_file;
+}
+
+
+const user_schema = new mongoose.Schema
+({
     username: String,
     expire: Number,
     data_limit: Number,
-    data_usage: { type: Number, default: 0 },
+    used_traffic: { type: Number, default: 0 },
+    lifetime_used_traffic: { type: Number, default: 0 },
     status: { type: String, default: "active", enum: ["active","limited","expired","disabled"] },
-    created_at: { type: Date, default: Date.now },
-    connection_string: String,
-});
+    created_at: { type: Date, default: get_now },
+    connection_string: { type: String, default: "" },
+    subscription_url: { type: String, default: "" },
+    public_key: String,
+},{collection: 'users',versionKey: false});
 
 const User = mongoose.model('User', user_schema);
 
@@ -329,4 +445,10 @@ module.exports =
     get_system_status,
     create_user,
     get_user_for_marzban,
+    extend_expire_times,
+    backup_data,
+    get_all_users_for_marzban,
+    reset_user_traffic,
+    edit_user,
+    delete_user,
 }

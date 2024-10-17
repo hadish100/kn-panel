@@ -40,3 +40,50 @@ PresharedKey = AVj26itcm+3ggdSbIW2yVQiAJO3SPz9ymMh639KXi9Y=
 AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = 92.60.70.175:49365
 PersistentKeepalive = 25
+
+
+
+    [Symbol(shapeMode)]: false,
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] { 'x-powered-by': [Array] },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  body: {
+    app_version: '4.8.1.9',
+    installation_uuid: '0dba1e29-7903-4938-a043-8b11e02b0054',
+    os_version: 'android',
+    public_key: 'CRU0XC9rotpvcYrPvimnVzAutJD/82l98qqxoDzqjUA='
+  },
+  _body: true,
+  length: undefined,
+  _eventsCount: 0,
+  route: Route { path: '/ping', stack: [ [Layer] ], methods: { post: true } },
+  [Symbol(shapeMode)]: true,
+  [Symbol(kCapture)]: false,
+  [Symbol(kHeaders)]: {
+    host: '92.60.70.175:3000',
+    'content-type': 'application/json',
+    authorization: 'Api-Key RNg3cqqe.1rfYYZvVv4Dt8CtNsveQ7hr90ddwGS9N',
+    'content-length': '193',
+    connection: 'Keep-Alive',
+    'accept-encoding': 'gzip, deflate',
+    'accept-language': 'en-GB,*',
+    'user-agent': 'Mozilla/5.0'
+  },
+  [Symbol(kHeadersCount)]: 16,
+
+
+
+    {
+        "clientId": "ueEoTIXSR0sXvYjysmwDtjbG7+g/pRce2rqX4h2DoEg=",
+        "userData": {
+            "clientName": "New client666",
+            "creationDate": "Sun Oct 13 05:14:28 2024"
+        }
+    }
