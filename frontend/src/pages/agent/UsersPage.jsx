@@ -363,7 +363,7 @@ const UsersPage = () => {
         { label: <ActiveIcon />, value: "active" },
         { label: <LimitedIcon />, value: "limited" },
         { label: <ExpiredIcon />, value: "expired" },
-        { label: <DisabledIcon />, value: "disabled" },
+        { label: <DisabledIcon />, value: "disable" },
         { label: <AnonymIcon />, value: "anonym" }
     ]
 

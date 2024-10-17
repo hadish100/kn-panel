@@ -6,8 +6,6 @@ const JWT_SECRET_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
 const jwt = require('jsonwebtoken');
 const child_process = require('child_process');
 
-
-
 const uid = () => { return Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000; }
 
 const generate_token = () => { return jwt.sign({},JWT_SECRET_KEY,{expiresIn: '24h'}); }
@@ -21,6 +19,19 @@ const b2gb = (bytes) =>
 const gb2b = (gb) =>
 {
     return gb * (2 ** 10) ** 3;
+}
+
+const format_amnezia_data_to_byte = (str) =>
+{
+    if(!str) return 0;
+    const unit = str.split(" ")[1];
+    var value = str.split(" ")[0]; 
+    value = parseFloat(value);
+    if(unit == "KiB") return Math.round(value * 1024);
+    if(unit == "MiB") return Math.round(value * 1024 * 1024);
+    if(unit == "GiB") return Math.round(value * 1024 * 1024 * 1024);
+    if(unit == "TiB") return Math.round(value * 1024 * 1024 * 1024 * 1024);
+    else return 0;
 }
 
 const get_now = () =>
@@ -75,6 +86,11 @@ const extend_expire_times = async (added_time) =>
 
 const create_user = async (username, expire, data_limit) =>
 {
+
+    const does_exist = await User.findOne({username});
+    if(does_exist) throw new Error("User already exists");
+    const username_regex = /^[a-zA-Z0-9_]+$/;
+    if(!username.match(username_regex)) throw new Error("Invalid username");
 
     var docker_id = await get_amnezia_container_id();
     if(docker_id == "") throw new Error("Amnezia container not found");
@@ -197,7 +213,7 @@ const get_user_for_marzban = async (username) =>
           },
 
           links: [user.connection_string],
-          lifetime_used_traffic: user.lifetime_used_traffic,
+          lifetime_used_traffic: user.lifetime_used_traffic + user.used_traffic,
           subscription_url: user.subscription_url,
     }
 
@@ -259,6 +275,7 @@ const delete_user = async (username) =>
     var interface = await get_wg0_interface();
     var clients_table = await get_amnezia_clients_table();
     const user_obj = await User.findOne({username});
+    if(!user_obj) throw new Error("User not found");
     var public_key = user_obj.public_key;
 
     clients_table = clients_table.filter((item) => item.userData.clientName != username);
@@ -416,6 +433,67 @@ const backup_data = async () =>
     return final_file;
 }
 
+const $sync_accounting = async () =>
+{
+    var users = await User.find();
+    var clients_table = await get_amnezia_clients_table();
+
+    for(let user of users)
+    {
+
+
+        const client_table_names = clients_table.map((item) => item.userData.clientName);
+
+        if(!client_table_names.includes(user.username))
+        {
+            await Log.create({msg: `User ${user.username} not found in clients table, deleting user`});
+            await User.deleteOne({username: user.username});
+            continue;
+        }
+
+        const client_table_user_obj = clients_table.find((item) => item.userData.clientName == user.username);
+
+        const used_traffic = format_amnezia_data_to_byte(client_table_user_obj.userData.dataReceived) + format_amnezia_data_to_byte(client_table_user_obj.userData.dataSent);
+
+        if(used_traffic != user.used_traffic)
+        {
+            await User.updateOne({username: user.username}, {used_traffic});
+            user.used_traffic = used_traffic;
+        }
+
+        if(user.used_traffic >= user.data_limit)
+        {
+            if(user.status == "active") 
+            {
+                await User.updateOne({username: user.username}, {status: "limited"});
+                user.status = "limited";
+            }
+        }
+
+        if(user.expire < get_now())
+        {
+            if(user.status == "active") 
+            {
+                await User.updateOne({username: user.username}, {status: "expired"});
+                user.status = "expired";
+            }
+        }
+
+        if(user.status == "limited" && user.used_traffic < user.data_limit)
+        {
+            await User.updateOne({username: user.username}, {status: "active"});
+            user.status = "active";
+        }
+
+        if(user.status == "expired" && user.expire > get_now())
+        {
+            await User.updateOne({username: user.username}, {status: "active"});
+            user.status = "active";
+        }
+    }
+    
+}
+
 
 const user_schema = new mongoose.Schema
 ({
@@ -431,7 +509,14 @@ const user_schema = new mongoose.Schema
     public_key: String,
 },{collection: 'users',versionKey: false});
 
+const log_schema = new mongoose.Schema
+({
+    msg: { type: String, required: true },
+    created_at: { type: Date, default: get_now },
+},{collection: 'logs',versionKey: false});
+
 const User = mongoose.model('User', user_schema);
+const Log = mongoose.model('Log', log_schema);
 
 
 module.exports = 

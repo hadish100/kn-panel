@@ -176,7 +176,8 @@ const get_panel_info = async (link, username, password) => {
             total_users: panel_info['total_user'],
             active_users: panel_info['users_active'],
             panel_data_usage: b2gb(panel_info['incoming_bandwidth'] + panel_info['outgoing_bandwidth']),
-            panel_inbounds
+            panel_inbounds,
+            panel_type: panel_info['panel_type'] || "MZ",
         };
 
         return info_obj;
