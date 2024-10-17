@@ -9,3 +9,5 @@ teritary_backend
 .gitignore
 commands.sh
 README.md
+amnezia_wrapper
+wireguard_wrapper

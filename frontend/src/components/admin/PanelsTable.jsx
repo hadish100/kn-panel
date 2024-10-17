@@ -5,10 +5,9 @@ import "./PanelsTable.css"
 import gbOrTb from "../../utils/gbOrTb"
 const show_url = (str) =>
 {
-    //remove http or https from the beginning and port at the end
     str = str.replace(/^https?:\/\//, '');
     str = str.replace(/:\d+$/, '');
-    return "(" + str + ")";
+    return str;
 }
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
