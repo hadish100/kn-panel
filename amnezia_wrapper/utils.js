@@ -2,9 +2,11 @@ require("dotenv").config();
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/knaw');
 const fs = require('fs').promises;
-const JWT_SECRET_KEY = "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr";
+const {JWT_SECRET_KEY} = process.env
+const {SUB_JWT_SECRET} = process.env
 const jwt = require('jsonwebtoken');
 const child_process = require('child_process');
+const AdmZip = require('adm-zip');
 
 const uid = () => { return Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000; }
 
@@ -20,6 +22,8 @@ const gb2b = (gb) =>
 {
     return gb * (2 ** 10) ** 3;
 }
+
+const sleep = (seconds) => { return new Promise((resolve) => { setTimeout(resolve, seconds * 1000); }); }
 
 const format_amnezia_data_to_byte = (str) =>
 {
@@ -58,6 +62,7 @@ const validate_token = (token) =>
     
     catch(err)
     {
+        console.log(err,JWT_SECRET_KEY);
         return false;
     }
 }
@@ -107,36 +112,13 @@ const create_user = async (username, expire, data_limit) =>
     var clients_table = await get_amnezia_clients_table();
 
     var new_interface =
-`
-${interface}
+`${interface}
 [Peer]
 PublicKey = ${public_key}
 PresharedKey = ${psk}
 AllowedIPs = ${dedicated_ip}
 
 `
-
-    var creation_date = new Date(expire * 1000).toString().split(" GMT")[0];
-
-    creation_date = creation_date.split(" ");
-    var temp = creation_date[creation_date.length - 1];
-    creation_date[creation_date.length - 1] = creation_date[creation_date.length - 2];
-    creation_date[creation_date.length - 2] = temp;
-    creation_date = creation_date.join(" ");
-
-    clients_table.push(
-    {
-        clientId: public_key,
-        userData:
-        {
-            clientName: username,
-            creationDate: creation_date,
-        }
-    });
-
-    await replace_wg0_interface(new_interface);
-    await replace_amnezia_clients_table(JSON.stringify(clients_table,null,4));
-
 
     var connection_string =
 `
@@ -159,17 +141,74 @@ H4 = 415451259
 PublicKey = ${client_public_key}
 PresharedKey = ${psk}
 AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = ${process.env.SERVER_ADDRESS}
+Endpoint = ${process.env.SERVER_ADDRESS}:${process.env.AMNEZIA_PORT}
 PersistentKeepalive = 25
 `;
 
-    var subscription_url = "";
-
-    var result =
+    var subscription_url_raw = 
     {
-        links: [connection_string],
-        subscription_url: subscription_url,
+        config_version:1,
+        api_endpoint:`http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}/sub`,
+        protocol:"awg",
+        name:username,
+        api_key:jwt.sign({username},SUB_JWT_SECRET),
     }
+
+    var subscription_url = "vpn://" + encode_base64_data(JSON.stringify(subscription_url_raw));
+
+
+    var real_subscription_url_raw =
+    {
+        "containers": [
+            {
+                "awg": {
+                    "H1": "548102439",
+                    "H2": "96202383",
+                    "H3": "1018342978",
+                    "H4": "415451259",
+                    "Jc": "4",
+                    "Jmax": "50",
+                    "Jmin": "10",
+                    "S1": "108",
+                    "S2": "18",
+                    "last_config": `{\n    \"H1\": \"548102439\",\n    \"H2\": \"96202383\",\n    \"H3\": \"1018342978\",\n    \"H4\": \"415451259\",\n    \"Jc\": \"4\",\n    \"Jmax\": \"50\",\n    \"Jmin\": \"10\",\n    \"S1\": \"108\",\n    \"S2\": \"18\",\n    \"allowed_ips\": [\n        \"0.0.0.0/0\",\n        \"::/0\"\n    ],\n    \"clientId\": \"${public_key}\",\n    \"client_ip\": \"${dedicated_ip.split("/")[0]}\",\n    \"client_priv_key\": \"${private_key}\",\n    \"client_pub_key\": \"${client_public_key}\",\n    \"config\": \"[Interface]\\nAddress = ${dedicated_ip}\\nDNS = $PRIMARY_DNS, $SECONDARY_DNS\\nPrivateKey = ${private_key}\\nJc = 4\\nJmin = 10\\nJmax = 50\\nS1 = 108\\nS2 = 18\\nH1 = 548102439\\nH2 = 96202383\\nH3 = 1018342978\\nH4 = 415451259\\n\\n[Peer]\\nPublicKey = ${client_public_key}\\nPresharedKey = ${psk}\\nAllowedIPs = 0.0.0.0/0, ::/0\\nEndpoint = ${process.env.SERVER_ADDRESS}:${process.env.AMNEZIA_PORT}\\nPersistentKeepalive = 25\\n\",\n    \"hostName\": \"${process.env.SERVER_ADDRESS}\",\n    \"mtu\": \"1280\",\n    \"persistent_keep_alive\": \"25\",\n    \"port\": ${process.env.AMNEZIA_PORT},\n    \"psk_key\": \"${psk}\",\n    \"server_pub_key\": \"${client_public_key}\"\n}\n`,
+                    "port": `${process.env.AMNEZIA_PORT}`,
+                    "transport_proto": "udp"
+                },
+                "container": "amnezia-awg"
+            }
+        ],
+        "defaultContainer": "amnezia-awg",
+        "description": "AWG Server",
+        "dns1": "1.1.1.1",
+        "dns2": "1.0.0.1",
+        "hostName": `${process.env.SERVER_ADDRESS}`,
+    }
+
+    var real_subscription_url = await encode_amnezia_data(JSON.stringify(real_subscription_url_raw));
+
+
+    var creation_date = new Date(expire * 1000).toString().split(" GMT")[0];
+
+    creation_date = creation_date.split(" ");
+    var temp = creation_date[creation_date.length - 1];
+    creation_date[creation_date.length - 1] = creation_date[creation_date.length - 2];
+    creation_date[creation_date.length - 2] = temp;
+    creation_date = creation_date.join(" ");
+
+    clients_table.push
+    ({
+        clientId: public_key,
+        userData:
+        {
+            clientName: username,
+            creationDate: creation_date,
+        }
+    });
+
+    await replace_wg0_interface(new_interface);
+
+    await replace_amnezia_clients_table(JSON.stringify(clients_table,null,4));
 
     await User.create(
     {
@@ -178,12 +217,16 @@ PersistentKeepalive = 25
         data_limit: data_limit,
         connection_string: connection_string,
         subscription_url: subscription_url,
+        real_subscription_url: real_subscription_url,
         public_key: public_key,
     });
 
     await sync_configs();
 
-    return result;
+    return {
+        links: [connection_string],
+        subscription_url: subscription_url,
+    }
 
 }
 
@@ -222,19 +265,20 @@ const get_user_for_marzban = async (username) =>
 
 const get_all_users_for_marzban = async () =>
 {
-    const result = 
+
+    const users = await User.find({}, {username: 1, expire: 1, data_limit: 1, used_traffic: 1, lifetime_used_traffic: 1, status: 1, created_at: 1}).lean()
+
+
+    for(let user of users)
     {
-        users: await User.find({}, {username: 1, expire: 1, data_limit: 1, used_traffic: 1, lifetime_used_traffic: 1, status: 1, created_at: 1}),
+        user.lifetime_used_traffic = user.lifetime_used_traffic + user.used_traffic;
+        user.created_at = format_timestamp(user.created_at);
     }
 
-    result.users = result.users.map((item) =>
-    ({
-        ...item,
-        lifetime_used_traffic: item.lifetime_used_traffic + item.used_traffic,
-        created_at: format_timestamp(item.created_at),
-    }));
 
-    return result;
+    return {
+        users,
+    }
 
 }
 
@@ -371,6 +415,40 @@ const replace_amnezia_clients_table = async (new_table) =>
     await fs.unlink(`./temp${file_id}`);
 }
 
+const get_real_subscription_url = async (api_key) =>
+{
+    var decoded = jwt.verify(api_key, SUB_JWT_SECRET);
+    console.log(`===>Serving subscription url for ${decoded.username}`);
+    var user = await User.findOne({username: decoded.username});
+    return {
+        config: user.real_subscription_url,
+    }
+}
+
+const decode_base64_data = (data) =>
+{
+    return Buffer.from(data, 'base64').toString('ascii');
+}
+
+const encode_base64_data = (data) =>
+{
+    return Buffer.from(data).toString('base64');
+}
+
+const decode_amnezia_data = async (data) =>
+{
+    return await exec("python3 decoder.py " + data);
+}
+
+const encode_amnezia_data = async (data) =>
+{
+    const temp_file_id = uid();
+    await fs.writeFile(`./temp${temp_file_id}.json`,data);
+    var result = await exec("python3 decoder.py -i ./temp"+temp_file_id+".json");
+    await fs.unlink(`./temp${temp_file_id}.json`);
+    return result;
+}
+
 const get_next_available_ip = async () =>
 {
     var interface = await get_wg0_interface();
@@ -423,7 +501,11 @@ const backup_data = async () =>
     var zip = new AdmZip();
     var zip_id = Date.now();
     var final_file = "./dbbu/bu"+zip_id+".zip"
-    zip.addLocalFolder("./dbbu","dbbu");
+    
+    zip.addLocalFile("./dbbu/users.json");
+    zip.addLocalFile("./dbbu/amnezia_clients_table.json");
+    zip.addLocalFile("./dbbu/amnezia_interface.conf");
+
     zip.writeZip(final_file);
 
     await fs.unlink("./dbbu/users.json");
@@ -447,6 +529,7 @@ const $sync_accounting = async () =>
         if(!client_table_names.includes(user.username))
         {
             await Log.create({msg: `User ${user.username} not found in clients table, deleting user`});
+            console.log(`User ${user.username} not found in clients table, deleting user`);
             await User.deleteOne({username: user.username});
             continue;
         }
@@ -459,6 +542,7 @@ const $sync_accounting = async () =>
         {
             await User.updateOne({username: user.username}, {used_traffic});
             user.used_traffic = used_traffic;
+            console.log(`User ${user.username} used traffic updated to ${used_traffic} bytes`);
         }
 
         if(user.used_traffic >= user.data_limit)
@@ -467,6 +551,7 @@ const $sync_accounting = async () =>
             {
                 await User.updateOne({username: user.username}, {status: "limited"});
                 user.status = "limited";
+                console.log(`User ${user.username} status changed to limited`);
             }
         }
 
@@ -476,6 +561,7 @@ const $sync_accounting = async () =>
             {
                 await User.updateOne({username: user.username}, {status: "expired"});
                 user.status = "expired";
+                console.log(`User ${user.username} status changed to expired`);
             }
         }
 
@@ -483,12 +569,14 @@ const $sync_accounting = async () =>
         {
             await User.updateOne({username: user.username}, {status: "active"});
             user.status = "active";
+            console.log(`User ${user.username} status changed to active`);
         }
 
         if(user.status == "expired" && user.expire > get_now())
         {
             await User.updateOne({username: user.username}, {status: "active"});
             user.status = "active";
+            console.log(`User ${user.username} status changed to active`);
         }
     }
     
@@ -503,16 +591,17 @@ const user_schema = new mongoose.Schema
     used_traffic: { type: Number, default: 0 },
     lifetime_used_traffic: { type: Number, default: 0 },
     status: { type: String, default: "active", enum: ["active","limited","expired","disabled"] },
-    created_at: { type: Date, default: get_now },
+    created_at: { type: Number, default: get_now },
     connection_string: { type: String, default: "" },
     subscription_url: { type: String, default: "" },
-    public_key: String,
+    real_subscription_url: { type: String, default: "" },
+    public_key: { type: String, default: "" },
 },{collection: 'users',versionKey: false});
 
 const log_schema = new mongoose.Schema
 ({
     msg: { type: String, required: true },
-    created_at: { type: Date, default: get_now },
+    created_at: { type: Number, default: get_now },
 },{collection: 'logs',versionKey: false});
 
 const User = mongoose.model('User', user_schema);
@@ -536,4 +625,8 @@ module.exports =
     reset_user_traffic,
     edit_user,
     delete_user,
+    sleep,
+    get_real_subscription_url,
+    
+    $sync_accounting,
 }

@@ -16,7 +16,9 @@ const {
     reset_user_traffic,
     edit_user,
     delete_user,
+    get_real_subscription_url,
 } = require('./utils.js');
+const path = require("path");
 
 const custom_handler = (fn) => (req, res) => 
 {
@@ -45,6 +47,7 @@ async function auth1(req, res, next)
     [
         "/ping",
         "/api/admin/token",
+        "/sub",
     ];
 
 
@@ -77,7 +80,7 @@ async function auth2(req, res, next)
 
     if (api_key != "resllmwriewfeujeh3i3ifdkmwheweljedifefhyr")
     {
-        res.send("invalid api key");
+        res.send("Invalid api key");
         return;
     }
 
@@ -193,12 +196,18 @@ app1.post("/api/user/:vpn_name/reset", custom_handler(async (req, res) =>
     res.send("OK");
 }));
 
-app2.get("/get_marzban_users", custom_handler(async (req, res) =>
+app1.post("/sub", custom_handler(async (req, res) =>
+{
+    const api_key = req.headers.authorization.split(" ")[1];
+    res.send(await get_real_subscription_url(api_key));
+}));
+
+app2.post("/get_marzban_users", custom_handler(async (req, res) =>
 {
     res.send(await get_all_users_for_marzban());
 }));
 
-app2.get("/edit_expire_times", custom_handler(async (req, res) =>
+app2.post("/edit_expire_times", custom_handler(async (req, res) =>
 {
     await extend_expire_times(Number(req.body.added_time));
     res.send("OK");
@@ -224,7 +233,7 @@ app2.post("/dldb", custom_handler(async (req, res) =>
         }
 
 
-        res.sendFile(new_backup);
+        res.sendFile(path.join(__dirname, new_backup));
     }
 
     catch(err)
@@ -236,9 +245,9 @@ app2.post("/dldb", custom_handler(async (req, res) =>
 
 
 
-app1.listen(7001 , async () => 
+app1.listen(process.env.SERVER_PORT , async () => 
 {
-    console.log(`>>> SERVER STARTED ON PORT 7001`);
+    console.log(`>>> SERVER STARTED ON PORT ${process.env.SERVER_PORT}`);
 });
 
 app2.listen(7002 , async () => 

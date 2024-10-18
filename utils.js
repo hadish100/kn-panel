@@ -381,7 +381,7 @@ const reset_marzban_user = async (link, username, password, vpn_name) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
-        var res = await axios.post(link + "/api/user/" + vpn_name + "/reset", "", { headers });
+        var res = await axios.post(link + "/api/user/" + vpn_name + "/reset", {}, { headers });
         return "DONE";
     }
 

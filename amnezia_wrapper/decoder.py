@@ -66,7 +66,7 @@ if __name__ == "__main__":
         with open(args.input, 'r') as f:
             config = json.load(f)
             encoded_string = encode_config(config)
-            print(f"Encoded string:\n{encoded_string}")
+            print(encoded_string)
     elif args.encoded_string:
         config = decode_config(args.encoded_string)
         if args.output:
