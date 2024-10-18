@@ -362,7 +362,7 @@ const exec = async (cmd) =>
       (err, stdout) => 
       {
         if (err) return reject(err);
-        console.log(stdout);
+        // console.log(stdout);
         return resolve(String(stdout).trim());
       });
     });
@@ -518,6 +518,8 @@ const backup_data = async () =>
 const $sync_accounting = async () =>
 {
     var users = await User.find();
+    var interface = await get_wg0_interface();
+    var interface_lines = interface.split("\n");
     var clients_table = await get_amnezia_clients_table();
 
     for(let user of users)
@@ -577,6 +579,32 @@ const $sync_accounting = async () =>
             await User.updateOne({username: user.username}, {status: "active"});
             user.status = "active";
             console.log(`User ${user.username} status changed to active`);
+        }
+
+
+        // ------------------------------ //
+
+
+        if(user.status != "active")
+        {
+            var public_key_line_index = interface_lines.findIndex((item) => item.includes(user.public_key));
+            if(!interface_lines[public_key_line_index + 2].startsWith("#")) 
+            {
+                interface_lines[public_key_line_index + 2] = "#"+interface_lines[public_key_line_index + 2];
+                await replace_wg0_interface(interface_lines.join("\n"));
+                console.log(`UPDATED INTERFACE FOR ${user.username}`);
+            }
+        }
+
+        else
+        {
+            var public_key_line_index = interface_lines.findIndex((item) => item.includes(user.public_key));
+            if(interface_lines[public_key_line_index + 2].startsWith("#")) 
+            {
+                interface_lines[public_key_line_index + 2] = interface_lines[public_key_line_index + 2].replace("#","");
+                await replace_wg0_interface(interface_lines.join("\n"));
+                console.log(`UPDATED INTERFACE FOR ${user.username}`);
+            }
         }
     }
     
