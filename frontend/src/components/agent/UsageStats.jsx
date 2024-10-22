@@ -41,7 +41,7 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                 </div>
             </div>
             <div className="flex">
-                { /*business_mode == "0" &&*/
+                { business_mode == "0" &&
                 <div className="usage-stats__item">
                     <LeadingIcon>
                         <PieChartIcon />
@@ -61,7 +61,7 @@ const UsageStats = ({ activeUsers, totalUsers, dataUsage, remainingData, allocab
                         <img src={PlusIcon} alt="plus" />
                     </div>
 
-                    <div className="usage-stats__item__label">Allocatable Data</div>
+                    <div className="usage-stats__item__label">{business_mode=="0"?"Allocatable Data":"Remaining Data"}</div>
                     <div className="usage-stats__item__value"><span>{allocableData}</span></div>
                 </div>
             </div>
