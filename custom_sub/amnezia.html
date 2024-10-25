@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+    <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amnezia Config</title>
+    <style>
+        body
+        {
+            margin:0;
+            padding:0;
+            border:none;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            align-content:center;
+            flex-direction:row;
+            height:100vh;
+            width:100%;
+            background:#222c3b;
+        }
+
+        .btn
+        {
+            padding:10px 15px;
+            border:none;
+            color:#fff;
+            font-size:20px;
+            cursor:pointer;
+            border-radius:5px;
+            color:black;
+            width:200px;
+            font-family:monospace;
+        }
+
+        .btn1
+        {
+            background:#749aec;
+            transition:all 0.2s;
+        }
+
+        .btn1:hover
+        {
+            background:#a4bbec;
+        }
+
+        .btn2
+        {
+            background:#9ae6b4;
+            margin-left:10px;
+            transition:all 0.2s;
+        }
+
+        .btn2:hover
+        {
+            background:#bfe4cb;
+        }
+
+        .btn-container
+        {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            align-content:center;
+            flex-direction:row;
+            margin-top:25px;
+            width:100%;
+        }
+
+        .copy-text-container
+        {
+            width:80%;
+            max-width:500px;
+            padding:20px;
+            border:2px solid #6a6a6a;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            align-content:center;
+            flex-direction:column;
+            border-radius:5px;
+            
+        }
+
+        #copy-text-input
+        {
+            width:100%;
+            height:280px;
+            border:none;
+            font-size:16px;
+            background:#fff;
+            border-radius:5px;
+            padding:5px;
+            outline:none;
+            resize:none;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="copy-text-container">
+        <textarea type="text" id="copy-text-input" readonly="">{{amnezia_config}}</textarea>
+            <div class="btn-container">
+            <button class="btn btn1" onclick="copy()">Copy</button>
+            <button class="btn btn2" onclick="window.location.href=&#39;{{amnezia_config}}&#39;;">Amnezia</button>
+        </div>
+    </div>
+
+
+<script>
+    function copy() 
+    {
+        var copyText = document.getElementById("copy-text-input");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+    }
+</script>
+
+</body>
+
+</html>

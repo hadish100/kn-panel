@@ -199,7 +199,9 @@ app1.post("/api/user/:vpn_name/reset", custom_handler(async (req, res) =>
 app1.post("/sub", custom_handler(async (req, res) =>
 {
     const api_key = req.headers.authorization.split(" ")[1];
-    res.send(await get_real_subscription_url(api_key));
+    var {installation_uuid} = req.body;
+    if(!installation_uuid) throw "Installation uuid not provided";
+    res.send(await get_real_subscription_url(api_key,installation_uuid));
 }));
 
 app2.post("/get_marzban_users", custom_handler(async (req, res) =>

@@ -5,6 +5,8 @@ const fs = require('fs');
 var AdmZip = require("adm-zip");
 var SD_VARIABLE = 0;
 var { accounts_clct, panels_clct, users_clct, logs_clct } = require('./db_interface');
+const amnezia_sub_page_html = fs.readFileSync("custom_sub/amnezia.html").toString();
+
 
 const { 
     uid,
@@ -1244,7 +1246,12 @@ app.get(/^\/sub\/.+/,async (req,res) =>
     if(user_obj.length == 0) res.send("NOT FOUND");
     else
     {
-        res.redirect(user_obj[0].real_subscription_url);
+        if(user_obj[0].real_subscription_url.startsWith("http")) res.redirect(user_obj[0].real_subscription_url);
+        else
+        {
+            res.send(amnezia_sub_page_html.replaceAll("{{amnezia_config}}",user_obj[0].real_subscription_url));
+        }
+        
     }
 });
 

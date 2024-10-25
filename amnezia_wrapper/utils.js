@@ -415,11 +415,22 @@ const replace_amnezia_clients_table = async (new_table) =>
     await fs.unlink(`./temp${file_id}`);
 }
 
-const get_real_subscription_url = async (api_key) =>
+const get_real_subscription_url = async (api_key,installation_uuid) =>
 {
     var decoded = jwt.verify(api_key, SUB_JWT_SECRET);
     console.log(`===>Serving subscription url for ${decoded.username}`);
     var user = await User.findOne({username: decoded.username});
+
+    if(!user.connection_uuids.includes(installation_uuid))
+    {
+        if(user.connection_uuids.length >= user.maximum_connections) throw new Error("Maximum connections reached");
+        else
+        {
+            user.connection_uuids.push(installation_uuid);
+            await user.save();
+        }
+    }
+
     return {
         config: user.real_subscription_url,
     }
@@ -624,6 +635,9 @@ const user_schema = new mongoose.Schema
     subscription_url: { type: String, default: "" },
     real_subscription_url: { type: String, default: "" },
     public_key: { type: String, default: "" },
+    maximum_connections: { type: Number, default: 1 },
+    connection_uuids: { type: Array, default: [] },
+
 },{collection: 'users',versionKey: false});
 
 const log_schema = new mongoose.Schema

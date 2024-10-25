@@ -52,7 +52,8 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                 const totalData = convertData(item.data_limit)
                 const lifetime_used_traffic = convertData(item.lifetime_used_traffic)
                 const expireTime = handleExpireTime(item.expire)
-                const subscriptionLink = item.real_subscription_url.startsWith("http") ? item.subscription_url : item.real_subscription_url
+                // const subscriptionLink = item.real_subscription_url.startsWith("http") ? item.subscription_url : item.real_subscription_url
+                const subscriptionLink = item.subscription_url
                 const config = item.links.join("\n");
                 const QRCodeLinks = item.links
                 const key = item.id
