@@ -337,7 +337,7 @@ app.post("/create_panel", async (req, res) => {
             panel_data_usage: format_number(panel_info.panel_data_usage),
             active_users: panel_info.active_users,
             total_users: panel_info.total_users,
-            panel_type,
+            panel_type:panel_info.panel_type,
         });
 
         var account_id = (await token_to_account(access_token)).id;
