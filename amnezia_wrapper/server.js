@@ -168,8 +168,8 @@ app1.get("/api/inbounds", custom_handler(async (req, res) =>
 
 app1.post("/api/user", custom_handler(async (req, res) =>
 {
-    const {username, expire, data_limit} = req.body;
-    res.send(await create_user(username, expire, data_limit));
+    const {username, expire, data_limit, ip_limit} = req.body;
+    res.send(await create_user(username, expire, data_limit, ip_limit));
 }));
 
 app1.get("/api/user/:vpn_name", custom_handler(async (req, res) =>

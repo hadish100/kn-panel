@@ -89,7 +89,7 @@ const extend_expire_times = async (added_time) =>
     await User.updateMany({},{$inc: {expire: added_time}});
 }
 
-const create_user = async (username, expire, data_limit) =>
+const create_user = async (username, expire, data_limit, ip_limit) =>
 {
 
     const does_exist = await User.findOne({username});
@@ -219,6 +219,7 @@ PersistentKeepalive = 25
         subscription_url: subscription_url,
         real_subscription_url: real_subscription_url,
         public_key: public_key,
+        maximum_connections: ip_limit,
     });
 
     await sync_configs();
@@ -258,6 +259,7 @@ const get_user_for_marzban = async (username) =>
           links: [user.connection_string],
           lifetime_used_traffic: user.lifetime_used_traffic + user.used_traffic,
           subscription_url: user.subscription_url,
+          ip_limit: user.maximum_connections,
     }
 
     return result;

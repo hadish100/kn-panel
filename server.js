@@ -69,15 +69,13 @@ app.use(fileUpload());
 app.use(auth_middleware);
 
 
-
-
 // --- MIDDLEWARE --- //
 
 async function auth_middleware(req, res, next) {
 
     if( req.body.service_access_api_key == process.env.ACCESS_API_KEY ) return next();
     if (SD_VARIABLE == 1) return res.status(500).send({ message: 'Service unavailable' });
-    if (req.url == "/login" || req.url.startsWith("/sub") || req.url.startsWith("/confirm_payment") ) return next();
+    if (req.url == "/login" || req.url.startsWith("/sub") || req.url.startsWith("/confirm_payment") || req.url.startsWith("/ping") ) return next();
     var { access_token } = req.body;
     var account = await token_to_account(access_token);
     if (!account) return res.send({ status: "ERR", msg: 'Token is either expired or invalid' });
@@ -123,20 +121,29 @@ app.post("/get_panels", async (req, res) => {
 });
 
 app.post("/get_users", async (req, res) => {
-    var { access_token,number_of_rows,current_page,search_filter,status_filter } = req.body;
+    var { access_token,number_of_rows,current_page,search_filter,status_filter,panel_type } = req.body;
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
     if(process.env.RELEASE == "ALI" || process.env.RELEASE == "V" || process.env.RELEASE == "AHWAZGSM") obj_arr = obj_arr.map(x => {x.subscription_url = x.real_subscription_url;return x;});
+    
     obj_arr = obj_arr.reverse();
+    
     if(search_filter) obj_arr = obj_arr.filter(x => x.username.toLowerCase().includes(search_filter.toLowerCase()));
+    
     if(status_filter) obj_arr = obj_arr.filter(x => x.status == status_filter.toLowerCase());
+    
+    if(panel_type)
+    {
+        var panels = await get_panels();
+        obj_arr = obj_arr.filter(x => panels.filter(y => y.id == x.corresponding_panel_id)[0].panel_type == panel_type);
+    }
+    
     if(!number_of_rows && !current_page) {current_page = 1;number_of_rows = 10;}
     var total_pages = Math.ceil(obj_arr.length / number_of_rows);
     obj_arr = obj_arr.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
     res.send({ obj_arr, total_pages });
 });
-
 
 app.post("/get_agent", async (req, res) => {
     var { access_token } = req.body;
@@ -357,13 +364,14 @@ app.post("/create_user", async (req, res) => {
         flow_status,
         desc,
         safu,
-        inbounds
+        inbounds,
+        ip_limit,
      } = req.body;
 
 
         if(process.env.RELEASE == "ARMAN") flow_status = "xtls-rprx-vision";
 
-    if (!username || !expire || !data_limit || !country || protocols.length == 0) 
+    if (!username || !expire || !data_limit || !country || !ip_limit || protocols.length == 0) 
     {
         res.send({ status: "ERR", msg: "fill all of the inputs" })
         return;
@@ -377,10 +385,13 @@ app.post("/create_user", async (req, res) => {
     var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
-    else if(!corresponding_agent.create_access) res.send({ status: "ERR", msg: "access denied" })
-    else if (data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else if (!corresponding_agent.create_access) res.send({ status: "ERR", msg: "access denied" })
+    else if (isNaN(expire) || isNaN(data_limit) || isNaN(ip_limit)) res.send({ status: "ERR", msg: "invalid inputs" })
+    else if (ip_limit < 1) res.send({ status: "ERR", msg: "minimum allowed ip limit is 1" })
+    else if (!selected_panel.panel_type == "AMN" && data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    // TODO: check sell policy of AMN (ALSO for edit and reset)
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
-    else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
+    else if (!selected_panel.panel_type == "AMN" && corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
     else if (all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({ status: "ERR", msg: "username already exists" })
     else if (!selected_panel) res.send({ status: "ERR", msg: "no available server" });
@@ -397,15 +408,19 @@ app.post("/create_user", async (req, res) => {
         }
 
 
-        var mv = await make_vpn(selected_panel.panel_url,
-            selected_panel.panel_username,
-            selected_panel.panel_password,
-            corresponding_agent.prefix + "_" + username,
-            gb2b(data_limit),
-            Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
-            protocols,
-            flow_status,
-            inbounds)
+        var mv = await make_vpn
+                        (
+                            selected_panel.panel_url,
+                            selected_panel.panel_username,
+                            selected_panel.panel_password,
+                            corresponding_agent.prefix + "_" + username,
+                            gb2b(data_limit),
+                            Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
+                            protocols,
+                            flow_status,
+                            inbounds,
+                            ip_limit
+                        )
 
 
         if (mv == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
@@ -433,10 +448,13 @@ app.post("/create_user", async (req, res) => {
                 disable_counter:{value:0,last_update:Math.floor(Date.now() / 1000)},
                 inbounds,
                 safu:/*safu?1:0*/0,
-                desc
+                desc,
+                ip_limit,
             });
 
-            await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit) });
+            if(selected_panel.panel_type == "MZ") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit) });
+            else if(selected_panel.panel_type == "AMN") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data) });
+            
 
             await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
 
@@ -492,7 +510,16 @@ app.post("/delete_user", async (req, res) => {
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
-        if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
+        
+        if(panel_obj.panel_type == "MZ")
+        {
+            if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
+        }
+
+        else if(panel_obj.panel_type == "AMN") await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data) });
+        
+
+        
         await (await users_clct()).deleteOne({ username });
         await insert_to_logs(agent_obj.id, "DELETE_USER", `deleted user !${username}`,access_token);
         res.send("DONE");
@@ -747,15 +774,21 @@ app.post("/edit_user", async (req, res) => {
                 desc
             });
 
-            if( 
-                
-                !( 
+            if(panel_obj.panel_type == "MZ")
+            {
+                if(!( 
                     (corresponding_agent.business_mode == 1) &&
                     (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) /*&&
                     (old_data_limit > data_limit) */
-                  ) 
-                ) await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
+                )) await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
+            }
+
+            else if(panel_obj.panel_type == "AMN") await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data) });
+
+
             var account = await token_to_account(access_token);
+
+
             await insert_to_logs(account.id, "EDIT_USER", `edited user !${user_obj.username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
             if(old_country == country) 
             {
@@ -817,22 +850,33 @@ app.post("/reset_user", async (req, res) => {
     else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
     else 
     {  
-
-        if( ( corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) 
+        if(panel_obj.panel_type == "MZ")
         {
-            if(corresponding_agent.allocatable_data < b2gb(user_obj.data_limit)) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
-            var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
-            if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
-            await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
+            if( ( corresponding_agent.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 )) ) 
+            {
+                if(corresponding_agent.allocatable_data < b2gb(user_obj.data_limit)) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
+                var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+                if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
+                await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
+            }
+    
+            else 
+            {
+                if(corresponding_agent.allocatable_data < b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
+                var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+                if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
+                await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
+            }
         }
 
-        else 
+        else if(panel_obj.panel_type == "AMN")
         {
-            if(corresponding_agent.allocatable_data < b2gb(Math.min(user_obj.used_traffic,user_obj.data_limit))) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
             var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
             if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
-            await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - b2gb(user_obj.data_limit)) });
+            await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data) });
         }
+
+
 
         await update_user(user_id, { used_traffic: 0 });
         if(user_obj.status=="limited") await update_user(user_id, { status: "active" });
@@ -861,7 +905,6 @@ app.post("/dldb", async (req, res) =>
     }
 
 });
-
 
 app.post("/uldb", async (req, res) => 
 {
@@ -894,6 +937,12 @@ app.post("/uldb", async (req, res) =>
         for(let user of users_clct_rs)
         {
             user.safu = 0;
+            user.ip_limit = 9999;
+        }
+
+        for(let panel of panels_clct_rs)
+        {
+            if(!panel.panel_type) panel.panel_type = "MZ";
         }
         
         await (await panels_clct()).deleteMany({});
@@ -942,7 +991,6 @@ app.post("/get_panel_inbounds", async (req, res) =>
 
 });
 
-
 app.post("/switch_countries", async(req,res) => 
 {
     var { access_token , country_from , country_to } = req.body;
@@ -959,7 +1007,6 @@ app.post("/switch_countries", async(req,res) =>
         res.send("DONE");
     }
 });
-
 
 app.post("/add_sub_account", async(req,res) => 
 {
@@ -985,7 +1032,6 @@ app.post("/get_sub_accounts", async(req,res) =>
     res.send(account.sub_accounts);
 });
 
-
 app.post("/delete_sub_account", async(req,res) => 
 {
     var {access_token,sub_account_id} = req.body;
@@ -995,7 +1041,6 @@ app.post("/delete_sub_account", async(req,res) =>
     await insert_to_logs(account.id, "DELETE_SUB_ACCOUNT", `deleted sub account !${sub_account_username}`,access_token)
     res.send("DONE");
 });
-
 
 app.post("/edit_sub_account", async(req,res) =>
 {
@@ -1010,7 +1055,6 @@ app.post("/edit_sub_account", async(req,res) =>
     }
 
 });
-
 
 app.post("/get_knp_info", async(req,res) =>
 {
@@ -1040,7 +1084,6 @@ app.post("/disable_sd", async(req,res) =>
     SD_VARIABLE = 0;
     res.send("DONE");
 })
-
 
 app.post(/\/(enable|disable)_agent_create_access$/, async (req, res) => 
 {
@@ -1102,7 +1145,6 @@ app.post(/\/(enable|disable)_agent_delete_access$/, async (req, res) =>
 
     res.send("DONE");
 });
-
 
 app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
 {
@@ -1173,7 +1215,6 @@ app.post(/\/(enable|disable|delete)_all_agent_users$/, async (req, res) =>
     res.send("DONE");
 });
 
-
 app.post("/graph/get_user_data", async(req,res) =>
 {
     var {date_from,date_to} = req.body;
@@ -1236,8 +1277,6 @@ app.get("/confirm_payment", async(req,res) =>
     }
 
 });
-
-
 
 app.get(/^\/sub\/.+/,async (req,res) =>
 {

@@ -178,6 +178,7 @@ const get_panel_info = async (link, username, password) => {
             panel_data_usage: b2gb(panel_info['incoming_bandwidth'] + panel_info['outgoing_bandwidth']),
             panel_inbounds,
             panel_type: panel_info['panel_type'] || "MZ",
+            // MZ | AMN
         };
 
         return info_obj;
@@ -189,7 +190,7 @@ const get_panel_info = async (link, username, password) => {
     }
 }
 
-const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status, inbounds) => {
+const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status, inbounds, ip_limit) => {
     try {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
@@ -201,7 +202,8 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
             "inbounds": inbounds,
             "expire": expire,
             "data_limit": data_limit,
-            "data_limit_reset_strategy": "no_reset"
+            "data_limit_reset_strategy": "no_reset",
+            "ip_limit": ip_limit,
         };
 
         var res = await axios.post(link + "/api/user", req_obj, { headers });
