@@ -4,7 +4,7 @@ WORKDIR /knp_backend
 
 RUN npm install pm2 -g
 
-COPY package*.json .
+COPY package*.json ./
 
 RUN npm install
 
