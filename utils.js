@@ -697,7 +697,7 @@ const notify_tgb = async () =>
 
     const owner_obj =
     {
-        "91.107.153.140": "Test",
+        "92.60.70.175": "Test",
         "65.109.186.13": "Mahdi",
         "5.42.73.160": "Bobby",
         "116.202.14.209": "ALI",

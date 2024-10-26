@@ -6,7 +6,7 @@ var AdmZip = require("adm-zip");
 var SD_VARIABLE = 0;
 var { accounts_clct, panels_clct, users_clct, logs_clct } = require('./db_interface');
 const amnezia_sub_page_html = fs.readFileSync("custom_sub/amnezia.html").toString();
-
+const not_found_page_html = fs.readFileSync("custom_sub/404.html").toString();
 
 const { 
     uid,
@@ -1243,7 +1243,7 @@ app.get(/^\/sub\/.+/,async (req,res) =>
 {
     var sub_id = req.url.split("/")[2];
     var user_obj = await (await users_clct()).find({subscription_url:{$regex:sub_id}}).toArray();
-    if(user_obj.length == 0) res.send("NOT FOUND");
+    if(user_obj.length == 0) res.send(not_found_page_html);
     else
     {
         if(user_obj[0].real_subscription_url.startsWith("http")) res.redirect(user_obj[0].real_subscription_url);
