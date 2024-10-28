@@ -741,7 +741,7 @@ app.post("/edit_user", async (req, res) => {
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     var corresponding_agent = await token_to_account(access_token);
     var old_data_limit = b2gb(user_obj.data_limit);
-    var old_expire = Math.floor((user_obj.expire - Math.floor(Date.now() / 1000)) / 86400);
+    var old_expire = Math.floor((user_obj.expire - Math.floor(Date.now() / 1000)) / 86400) + 1;
     var old_country = user_obj.country;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
