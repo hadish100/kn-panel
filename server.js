@@ -741,6 +741,7 @@ app.post("/edit_user", async (req, res) => {
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     var corresponding_agent = await token_to_account(access_token);
     var old_data_limit = b2gb(user_obj.data_limit);
+    var old_expire = Math.floor(user_obj.expire - Math.floor(Date.now() / 1000) / 86400);
     var old_country = user_obj.country;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
@@ -748,6 +749,7 @@ app.post("/edit_user", async (req, res) => {
     else if(b2gb(user_obj.used_traffic) > data_limit) res.send({ status: "ERR", msg: "data limit can't be reduced" })
     else if (panel_obj.panel_type != "AMN" &&  data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (panel_obj.panel_type == "AMN" && expire * user_obj.ip_limit * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data + old_data_limit) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else if (panel_obj.panel_type == "AMN" && expire % 30 != 0) res.send({ status: "ERR", msg: "invalid expire time" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else {
@@ -787,7 +789,7 @@ app.post("/edit_user", async (req, res) => {
                 )) await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             }
 
-            else if(panel_obj.panel_type == "AMN") await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - expire * user_obj.ip_limit * AMNEZIA_COEFFICIENT + old_data_limit )});
+            else if(panel_obj.panel_type == "AMN") await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - expire * user_obj.ip_limit * AMNEZIA_COEFFICIENT + old_expire )});
 
 
             var account = await token_to_account(access_token);
