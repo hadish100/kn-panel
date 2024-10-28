@@ -41,13 +41,13 @@ const CreateUser = ({ onClose, showForm }) => {
     const [selectedInbounds, setSelectedInbounds] = useState({})
 
     const createUserOnServer = async (
-        username, data_limit, expire, country,desc
+        username, data_limit, expire, country,desc,ip_limit
     ) => {
         setCreateMode(true)
         var protocols = selectedProtocols.filter(x => typeof x === "string")
         var flow_status = flowValue.value;
 
-        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc,safu,inbounds:selectedInbounds })
+        const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc,safu,inbounds:selectedInbounds,ip_limit })
 
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg || "Failed to create user (BAD REQUEST)")
@@ -138,8 +138,9 @@ const CreateUser = ({ onClose, showForm }) => {
         const expire = document.getElementById("daysToExpire").value
         const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         const desc = document.getElementById("desc").value
+        const ip_limit = document.getElementById("ipLimit").value
         // Send form data to backend
-        createUserOnServer(username, data_limit, expire, country,desc)
+        createUserOnServer(username, data_limit, expire, country,desc,ip_limit)
     }
 
 
@@ -195,6 +196,7 @@ const CreateUser = ({ onClose, showForm }) => {
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username" },
         { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit" },
+        { label: "Ip Limit", type: "number", id: "ipLimit", name: "ipLimit" },
         { label: "Days To Expire", type: "number", id: "daysToExpire", name: "daysToExpire" },
         { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry },
         { label: "Description", type: "text", id: "desc", name: "desc" },

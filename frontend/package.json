@@ -2,7 +2,7 @@
   "name": "kn_panel",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://knp-backend:5000",
+  "proxy": "http://92.60.70.175:5000",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -23,7 +23,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "NODE_ENV=production GENERATE_SOURCEMAP=false DISABLE_ESLINT_PLUGIN=true BROWSER=none PORT=3000 react-scripts start",
+    "start": "set NODE_ENV=production && set GENERATE_SOURCEMAP=false && set DISABLE_ESLINT_PLUGIN=true && set BROWSER=none && set PORT=3000 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

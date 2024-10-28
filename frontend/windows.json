@@ -1,5 +1,5 @@
 {
-"proxy": "http://91.107.184.84:5000",
+"proxy": "http://92.60.70.175:5000",
 "start": "set NODE_ENV=production && set GENERATE_SOURCEMAP=false && set DISABLE_ESLINT_PLUGIN=true && set BROWSER=none && set PORT=3000 && react-scripts start",
 "test": "hi"
 }

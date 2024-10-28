@@ -294,6 +294,23 @@ input[type=number] {
     /* color: var(--gray-clr-300); */
 }
 
+.panel_type_span,.panel_url_span
+{
+    padding:1px 4px;
+    border-radius:3px;
+    background:#f6f6f6;
+}
+
+.panel_type_AMN
+{
+    background:#ff8c8c40;
+}
+
+.panel_type_MZ
+{
+    background:#8cc4ff40;
+}
+
 @media (max-width: 550px) 
 {
     .payment_cards

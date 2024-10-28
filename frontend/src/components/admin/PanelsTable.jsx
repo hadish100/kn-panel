@@ -7,7 +7,20 @@ const show_url = (str) =>
 {
     str = str.replace(/^https?:\/\//, '');
     str = str.replace(/:\d+$/, '');
-    return str;
+    return (<span className="panel_url_span">{str}</span>)
+}
+
+const render_panel_type = (panel_type) => 
+{
+    if(!panel_type || panel_type === "MZ")
+    {
+        return (<span className="panel_type_span panel_type_MZ">MZ</span>)
+    }
+
+    if(panel_type === "AMN")
+    {
+        return (<span className="panel_type_span panel_type_AMN">AMN</span>)
+    }
 }
 
 const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCreateItem }) => {
@@ -30,7 +43,7 @@ const AdminPanelsTable = ({ items, itemsPerPage, currentItems, onEditItem, onCre
                         ? <EmptyTable tableType={"panel"} colSpan={7} onCreateButton={onCreateItem} />
                         : currentItems.map((item) => (
                             <tr onClick={() => onEditItem(item)} key={item.id}>
-                                <td>{item.panel_name} <br></br> <span className='panelUrl' >{(item.panel_type || "MZ") + "-" + show_url(item.panel_url)} </span> </td>
+                                <td>{item.panel_name} <br></br> <span className='panelUrl' >{render_panel_type(item.panel_type) } {show_url(item.panel_url)} </span> </td>
                                 <td>
                                     <span className={`status ${item.disable ? "limited2" : "active"}`} >
                                         {item.disable ? "Disabled" : "Active"}
