@@ -39,6 +39,10 @@ const CreateUser = ({ onClose, showForm }) => {
     const [isLoadingProtocols, setIsLoadingProtocols] = useState(false)
     const [availableInbounds, setAvailableInbounds] = useState({})
     const [selectedInbounds, setSelectedInbounds] = useState({})
+    const [isIpLimitDisabled, setIsIpLimitDisabled] = useState(false)
+    const [isDataLimitDisabled, setIsDataLimitDisabled] = useState(false)
+    const [ipLimitValue, setIpLimitValue] = useState("")
+    const [dataLimitValue, setDataLimitValue] = useState("")
 
     const createUserOnServer = async (
         username, data_limit, expire, country,desc,ip_limit
@@ -92,9 +96,35 @@ const CreateUser = ({ onClose, showForm }) => {
                     { name: "shadowsocks", disabled: true }
                 ])
                 setSelectedProtocols([])
+                setIsIpLimitDisabled(false)
+                setIsDataLimitDisabled(false)
+                setIpLimitValue("")
+                setDataLimitValue("")
+
                 return;
             }
+
+
+            if(!panelInboundsObj.panel_type || panelInboundsObj.panel_type === "MZ")
+            {
+                setIsIpLimitDisabled(true)
+                setIsDataLimitDisabled(false)
+                setIpLimitValue(9999)
+                setDataLimitValue("")
+            }
+
+            else if(panelInboundsObj.panel_type === "AMN")
+            {
+                setIsDataLimitDisabled(true)
+                setIsIpLimitDisabled(false)
+                setDataLimitValue(9999)
+                setIpLimitValue("")
+            }
+
+            delete panelInboundsObj.panel_type;
+
             const availableProtocolsName = Object.keys(panelInboundsObj);
+            console.log(availableProtocolsName)
             setSelectedProtocols(availableProtocolsName)
             const updatedProtocols = protocols.map((protocol) => ({
                 name: protocol.name,
@@ -128,6 +158,10 @@ const CreateUser = ({ onClose, showForm }) => {
         ])
         setCountry("")
         setSafu(false)
+        setIsIpLimitDisabled(false)
+        setIsDataLimitDisabled(false)
+        setIpLimitValue("")
+        setDataLimitValue("")
         
     }, [showForm])
 
@@ -195,8 +229,8 @@ const CreateUser = ({ onClose, showForm }) => {
 
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username" },
-        { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit" },
-        { label: "Ip Limit", type: "number", id: "ipLimit", name: "ipLimit" },
+        { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit", disabled: isDataLimitDisabled, defaultValue: dataLimitValue },
+        { label: "Ip Limit", type: "number", id: "ipLimit", name: "ipLimit", disabled: isIpLimitDisabled, defaultValue: ipLimitValue },
         { label: "Days To Expire", type: "number", id: "daysToExpire", name: "daysToExpire" },
         { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry },
         { label: "Description", type: "text", id: "desc", name: "desc" },
@@ -257,6 +291,7 @@ const CreateUser = ({ onClose, showForm }) => {
                                                 disabled={field.disabled}
                                                 options={field.options}
                                                 value={field.value}
+                                                defaultValue={field.defaultValue}
                                                 onChange={field.onChange}
                                                 placeholder={field.placeholder}
                                             />)
@@ -271,6 +306,7 @@ const CreateUser = ({ onClose, showForm }) => {
                                                 disabled={group.disabled}
                                                 options={group.options}
                                                 value={group.value}
+                                                defaultValue={group.defaultValue}
                                                 onChange={group.onChange}
                                                 placeholder={group.placeholder}
                                             />

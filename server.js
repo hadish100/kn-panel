@@ -391,6 +391,7 @@ app.post("/create_user", async (req, res) => {
     else if (ip_limit % 1 != 0) res.send({ status: "ERR", msg: "ip limit must be an integer" })
     else if (ip_limit < 1) res.send({ status: "ERR", msg: "minimum allowed ip limit is 1" })
     else if (selected_panel.panel_type != "AMN" && data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else if (selected_panel.panel_type == "AMN" && expire % 30 != 0) res.send({ status: "ERR", msg: "invalid expire time" })
     else if (selected_panel.panel_type == "AMN" && expire * ip_limit * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (selected_panel.panel_type != "AMN" && corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
@@ -451,7 +452,7 @@ app.post("/create_user", async (req, res) => {
                 inbounds,
                 safu:/*safu?1:0*/0,
                 desc,
-                ip_limit,
+                ip_limit:parseInt(ip_limit),
             });
 
             if(selected_panel.panel_type == "MZ") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit) });
