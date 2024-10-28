@@ -789,7 +789,7 @@ app.post("/edit_user", async (req, res) => {
                 )) await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             }
 
-            else if(panel_obj.panel_type == "AMN") await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - expire * user_obj.ip_limit * AMNEZIA_COEFFICIENT + old_expire )});
+            else if(panel_obj.panel_type == "AMN") await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data + user_obj.ip_limit * AMNEZIA_COEFFICIENT * (old_expire - expire) )});
 
 
             var account = await token_to_account(access_token);
