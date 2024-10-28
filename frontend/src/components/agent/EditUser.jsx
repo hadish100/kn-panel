@@ -43,6 +43,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
     const [hasError, setHasError] = useState(false)
     const [error_msg, setError_msg] = useState("failed to switch countries")
     const [flag, setFlag] = useState(false)
+    const [isDataLimitDisabled, setIsDataLimitDisabled] = useState(false)
 
     const access_token = sessionStorage.getItem("access_token")
 
@@ -59,6 +60,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         if (item) {
             const userProtocols = Object.keys(item.inbounds)
             setSelectedProtocols(userProtocols)
+            setIsDataLimitDisabled(b2gb(item.data_limit) == 10000)
             setCountry(item.country)
             if (item.inbounds.vless) {
                 setFlowValue({ label: item.inbounds.vless.flow, value: item.inbounds.vless.flow })
@@ -112,9 +114,10 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
 
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username", disabled: true },
-        { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit" },
+        { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit", disabled: isDataLimitDisabled },
+        { label: "Ip Limit", type: "number", id: "ipLimit", name: "ipLimit", disabled: true },
         { label: "Days To Expire", type: "number", id: "expire", name: "expire" },
-        { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry },
+        { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry, disabled: true },
         { label: "Description", type: "text", id: "desc", name: "desc" },
     ]
 
@@ -171,6 +174,10 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
 
         if (field.id === "volume") {
             return b2gb(item[field.id])
+        }
+
+        if (field.id === "ipLimit") {
+            return item["ip_limit"]
         }
 
         return item[field.id]

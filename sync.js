@@ -266,7 +266,7 @@ async function main()
                             "inbounds":inbounds,
                             "safu":0,
                             "desc":"",
-                            "ip_limit":complete_user_info.ip_limit || 9999,
+                            "ip_limit":complete_user_info.ip_limit || 10000,
                           });
 
                         await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit , lifetime_volume: corresponding_agent.lifetime_volume + marzban_user.data_limit });

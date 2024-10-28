@@ -50,6 +50,7 @@ const CreateUser = ({ onClose, showForm }) => {
         setCreateMode(true)
         var protocols = selectedProtocols.filter(x => typeof x === "string")
         var flow_status = flowValue.value;
+        ip_limit = parseInt(ip_limit)
 
         const res = await axios.post("/create_user", { username, expire, data_limit, country, access_token, protocols, flow_status,desc,safu,inbounds:selectedInbounds,ip_limit })
 
@@ -109,7 +110,7 @@ const CreateUser = ({ onClose, showForm }) => {
             {
                 setIsIpLimitDisabled(true)
                 setIsDataLimitDisabled(false)
-                setIpLimitValue(9999)
+                setIpLimitValue(10000)
                 setDataLimitValue("")
             }
 
@@ -117,7 +118,7 @@ const CreateUser = ({ onClose, showForm }) => {
             {
                 setIsDataLimitDisabled(true)
                 setIsIpLimitDisabled(false)
-                setDataLimitValue(9999)
+                setDataLimitValue(10000)
                 setIpLimitValue("")
             }
 

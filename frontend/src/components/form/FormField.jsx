@@ -36,7 +36,7 @@ const FormField = ({
         return (
             <motion.div className="modal__form__group" >
                 <label className="modal__form__label" htmlFor={id}>{label}</label>
-                <MultiSelect2 editValue={editValue} onChange={onChange} value={value} defaultValue={defaultValue} id={id} />
+                <MultiSelect2 editValue={editValue} onChange={onChange} value={value} defaultValue={defaultValue} id={id} disabled={disabled} />
             </motion.div>
         )
     }

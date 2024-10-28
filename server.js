@@ -452,7 +452,7 @@ app.post("/create_user", async (req, res) => {
                 inbounds,
                 safu:/*safu?1:0*/0,
                 desc,
-                ip_limit:parseInt(ip_limit),
+                ip_limit,
             });
 
             if(selected_panel.panel_type == "MZ") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit) });
@@ -942,7 +942,7 @@ app.post("/uldb", async (req, res) =>
         for(let user of users_clct_rs)
         {
             user.safu = 0;
-            user.ip_limit = 9999;
+            user.ip_limit = 10000;
         }
 
         for(let panel of panels_clct_rs)
