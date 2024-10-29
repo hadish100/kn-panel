@@ -12,7 +12,7 @@
             justify-content:center;
             align-items:center;
             align-content:center;
-            flex-direction:row;
+            flex-direction:column;
             height:100vh;
             width:100%;
             background:#222c3b;
@@ -54,6 +54,18 @@
             background:#bfe4cb;
         }
 
+        .btn3
+        {
+            background:#e69a9a;
+            margin-left:10px;
+            transition:all 0.2s;
+        }
+
+        .btn3:hover
+        {
+            background:#e1bbbb;
+        }
+
         .btn-container
         {
             display:flex;
@@ -93,16 +105,80 @@
             resize:none;
             overflow: hidden;
         }
+
+        .qr_image
+        {
+            display:none;
+            position:absolute;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            align-content:center;
+            flex-direction:row;
+            transition:all 0.2s;
+            opacity:0;
+        }
+
+        .qr_image > img
+        {
+            display:none;
+            z-index:10;
+            position: relative;
+            max-width:400px;
+            width:95%;
+            transform:scale(0.9);
+            transition:all 0.2s;
+        }
+
+        .qr_image > .overlay
+        {
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.5);
+            z-index:5;
+            transition:all 0.2s;
+            
+        }
+
+        @media screen and (max-width: 500px)
+        {
+            .btn-container
+            {
+                flex-direction:column;
+            }
+
+            .btn2,.btn3
+            {
+                margin-left:0;
+                margin-top:10px;
+            }
+
+            .btn1,.btn2,.btn3
+            {
+                width:100%;
+            }
+        }
+
     </style>
 </head>
 
 <body>
+
+    <div class="qr_image">
+        <div onclick="close_qr_code_popup()" class="overlay"></div>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data={{amnezia_config}}" alt="QR Code">
+    </div>
 
     <div class="copy-text-container">
         <textarea type="text" id="copy-text-input" readonly="">{{amnezia_config}}</textarea>
             <div class="btn-container">
             <button class="btn btn1" onclick="copy()">Copy</button>
             <button class="btn btn2" onclick="window.location.href=&#39;{{amnezia_config}}&#39;;">Amnezia</button>
+            <button class="btn btn3" onclick="open_qr_code_popup()">QR Code</button>
         </div>
     </div>
 
@@ -115,6 +191,31 @@
         copyText.setSelectionRange(0, 99999);
         document.execCommand("copy");
     }
+
+    function open_qr_code_popup()
+    {
+
+        document.querySelector('.qr_image').style.display = 'flex';
+        document.querySelector('.qr_image').querySelectorAll('.overlay')[0].style.display = 'flex';
+        document.querySelector('.qr_image').querySelectorAll('img')[0].style.display = 'flex';
+        setTimeout(() => {
+            document.querySelector('.qr_image').style.opacity = 1;
+            document.querySelector('.qr_image').querySelectorAll('img')[0].style.transform = 'scale(1)';
+        }, 10);
+    }
+
+    function close_qr_code_popup()
+    {
+        var qr_image = document.querySelector('.qr_image');
+        qr_image.style.opacity = 0;
+        qr_image.querySelectorAll('img')[0].style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            qr_image.style.display = 'none';
+            qr_image.querySelectorAll('.overlay')[0].style.display = 'none';
+            qr_image.querySelectorAll('img')[0].style.display = 'none';
+        }, 200);
+    }
+
 </script>
 
 </body>

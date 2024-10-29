@@ -7,6 +7,13 @@ const {SUB_JWT_SECRET} = process.env
 const jwt = require('jsonwebtoken');
 const child_process = require('child_process');
 const AdmZip = require('adm-zip');
+const jalali_moment = require('jalali-moment');
+
+
+String.prototype.farsify = function()
+{
+    return this.replace(/0/g, '۰').replace(/1/g, '۱').replace(/2/g, '۲').replace(/3/g, '۳').replace(/4/g, '۴').replace(/5/g, '۵').replace(/6/g, '۶').replace(/7/g, '۷').replace(/8/g, '۸').replace(/9/g, '۹');
+}
 
 const uid = () => { return Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000; }
 
@@ -43,6 +50,37 @@ const get_now = () =>
     return Math.floor(Date.now() / 1000);
 }
 
+const ts__to__pd = (ts) => 
+{
+
+    if(ts > 9999999999) ts = Math.floor(ts / 1000);
+
+    var months =
+    {
+        1:"فروردین",
+        2:"اردیبهشت",
+        3:"خرداد",
+        4:"تیر",
+        5:"مرداد",
+        6:"شهریور",
+        7:"مهر",
+        8:"آبان",
+        9:"آذر",
+        10:"دی",
+        11:"بهمن",
+        12:"اسفند",
+    }
+
+    var result = 
+    {
+        year:jalali_moment.unix(ts).locale('fa').format('YYYY').farsify(),
+        month:months[jalali_moment.unix(ts).locale('fa').format('M')],
+        day:jalali_moment.unix(ts).locale('fa').format('DD').farsify(),
+    }
+
+    return result;
+}
+
 const get_days_passed = (timestamp) =>
 {
     var now = get_now();
@@ -50,6 +88,28 @@ const get_days_passed = (timestamp) =>
     var days = Math.floor(diff / (60*60*24));
     return days;
 }
+
+const get_days_left = (timestamp) =>
+{
+    var now = get_now();
+    var diff = timestamp - now;
+    var days = Math.floor(diff / (60*60*24));
+    return days;
+}
+
+const generate_desc = (expire, ip_limit) =>
+{
+    var expire_date = ts__to__pd(expire);
+    var desc = "انقضا: "
+    desc += expire_date.day + " " + expire_date.month + " " + expire_date.year;
+    desc += "|"
+    desc += String(get_days_left(expire)).farsify() + " روزه";
+    desc += "|"
+    desc += String(ip_limit).farsify() + " کاربره";
+
+    return desc;
+}
+
 
 const validate_token = (token) =>
 {
@@ -151,6 +211,7 @@ PersistentKeepalive = 25
         api_endpoint:`http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}/sub`,
         protocol:"awg",
         name:username,
+        description:generate_desc(expire,ip_limit),
         api_key:jwt.sign({username},SUB_JWT_SECRET),
     }
 

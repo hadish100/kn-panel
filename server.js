@@ -519,7 +519,7 @@ app.post("/delete_user", async (req, res) => {
             if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
         }
 
-        else if(panel_obj.panel_type == "AMN") await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + Math.floor( (user_obj.expire - user_obj.created_at) / 86400 ) * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
+        else if(panel_obj.panel_type == "AMN") await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + (Math.floor((user_obj.expire-user_obj.created_at)/86400)+1) * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
         
 
         
