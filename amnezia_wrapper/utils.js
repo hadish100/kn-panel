@@ -94,7 +94,7 @@ const get_days_left = (timestamp) =>
     var now = get_now();
     var diff = timestamp - now;
     var days = Math.floor(diff / (60*60*24));
-    return days;
+    return days + 1;
 }
 
 const generate_desc = (expire, ip_limit) =>
