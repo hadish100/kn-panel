@@ -36,6 +36,7 @@ const CreateUser = ({ onClose, showForm }) => {
     const [isMoreOptionClicked, setIsMoreOptionClicked] = useState([false, false, false, false])
     const [flowValue, setFlowValue] = useState({ label: "none", value: "none" })
     const [country, setCountry] = useState("")
+    const [amneziaDays, setAmneziaDays] = useState(null)
     const [isLoadingProtocols, setIsLoadingProtocols] = useState(false)
     const [availableInbounds, setAvailableInbounds] = useState({})
     const [selectedInbounds, setSelectedInbounds] = useState({})
@@ -43,6 +44,7 @@ const CreateUser = ({ onClose, showForm }) => {
     const [isDataLimitDisabled, setIsDataLimitDisabled] = useState(false)
     const [ipLimitValue, setIpLimitValue] = useState("")
     const [dataLimitValue, setDataLimitValue] = useState("")
+    const [expireInputType, setExpireInputType] = useState("number")
 
     const createUserOnServer = async (
         username, data_limit, expire, country,desc,ip_limit
@@ -112,6 +114,7 @@ const CreateUser = ({ onClose, showForm }) => {
                 setIsDataLimitDisabled(false)
                 setIpLimitValue(10000)
                 setDataLimitValue("")
+                setExpireInputType("number")
             }
 
             else if(panelInboundsObj.panel_type === "AMN")
@@ -120,6 +123,7 @@ const CreateUser = ({ onClose, showForm }) => {
                 setIsIpLimitDisabled(false)
                 setDataLimitValue(10000)
                 setIpLimitValue("")
+                setExpireInputType("expire_selection")
             }
 
             delete panelInboundsObj.panel_type;
@@ -158,6 +162,8 @@ const CreateUser = ({ onClose, showForm }) => {
             { name: "shadowsocks", disabled: true }
         ])
         setCountry("")
+        setAmneziaDays(null)
+        setExpireInputType("number")
         setSafu(false)
         setIsIpLimitDisabled(false)
         setIsDataLimitDisabled(false)
@@ -167,14 +173,12 @@ const CreateUser = ({ onClose, showForm }) => {
     }, [showForm])
 
     const handleSubmitForm = () => {
-        // Gather form data
         const username = document.getElementById("username").value
         const data_limit = document.getElementById("dataLimit").value
-        const expire = document.getElementById("daysToExpire").value
+        const expire = expireInputType == "number" ? document.getElementById("daysToExpire").value : amneziaDays
         const country = document.querySelectorAll(".MuiSelect-nativeInput")[0].value
         const desc = document.getElementById("desc").value
         const ip_limit = document.getElementById("ipLimit").value
-        // Send form data to backend
         createUserOnServer(username, data_limit, expire, country,desc,ip_limit)
     }
 
@@ -232,7 +236,7 @@ const CreateUser = ({ onClose, showForm }) => {
         { label: "Username", type: "text", id: "username", name: "username" },
         { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit", disabled: isDataLimitDisabled, defaultValue: dataLimitValue },
         { label: "Ip Limit", type: "number", id: "ipLimit", name: "ipLimit", disabled: isIpLimitDisabled, defaultValue: ipLimitValue },
-        { label: "Days To Expire", type: "number", id: "daysToExpire", name: "daysToExpire" },
+        { label: "Days To Expire", type: expireInputType, id: "daysToExpire", name: "daysToExpire" , onChange: setAmneziaDays, value: amneziaDays},
         { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry },
         { label: "Description", type: "text", id: "desc", name: "desc" },
     ]

@@ -311,6 +311,33 @@ input[type=number] {
     background:#8cc4ff40;
 }
 
+.expire_selection_container
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    align-content:center;
+    flex-direction:row;
+    width:100%;
+}
+
+.expire_selection_option
+{
+    padding:5px;
+    border-radius:5px;
+    cursor:pointer;
+    border:0.5px solid var(--border-clr);
+    width:49%;
+    text-align: center;
+}
+
+.expire_selection_option_active
+{
+    color: var(--primary-clr-400);
+    background: #edf6ff;
+    border: 0.5px solid var(--primary-clr-100);
+}
+
 @media (max-width: 550px) 
 {
     .payment_cards

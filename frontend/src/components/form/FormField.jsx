@@ -67,6 +67,18 @@ const FormField = ({
         )
     }
 
+    if (type === "expire_selection") {
+        return (
+            <motion.div className="modal__form__group" >
+                <label className="modal__form__label" htmlFor={id}>{label}</label>
+                <div class="expire_selection_container">
+                <div className={`expire_selection_option ${value === 30 ? 'expire_selection_option_active' : ''}`} onClick={() => {onChange(30)}}>30 Days</div>
+                    <div className={`expire_selection_option ${value === 60 ? 'expire_selection_option_active' : ''}`} onClick={() => {onChange(60)}}>60 Days</div>
+                </div>
+            </motion.div>
+        )
+    }
+
     return (
         <motion.div className="modal__form__group">
             <label className="modal__form__label" htmlFor={id}>{label}</label>

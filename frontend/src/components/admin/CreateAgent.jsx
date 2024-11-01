@@ -56,7 +56,6 @@ const CreateAgent = ({ onClose, showForm }) => {
       };
 
     const handleSubmitForm = () => {
-        // Gather form data
         const name = document.getElementById("name").value
         const username = document.getElementById("username").value
         const password = document.getElementById("password").value
@@ -69,7 +68,6 @@ const CreateAgent = ({ onClose, showForm }) => {
         const max_non_active_days = document.getElementById("max_non_active_days").value
         const businessModeValue = Number(ibmchecked)
         const vrate = document.getElementById("vrate").value
-        // Send form data to backend
         createAgentOnServer(name, username, password, volume, min_vol, max_users, max_days, prefix, country, max_non_active_days, businessModeValue,vrate)
     }
 

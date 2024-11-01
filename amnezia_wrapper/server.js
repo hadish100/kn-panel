@@ -13,7 +13,7 @@ const {
     extend_expire_times,
     backup_data,
     get_all_users_for_marzban,
-    reset_user_traffic,
+    reset_user_account,
     edit_user,
     delete_user,
     get_real_subscription_url,
@@ -192,7 +192,7 @@ app1.put("/api/user/:vpn_name", custom_handler(async (req, res) =>
 
 app1.post("/api/user/:vpn_name/reset", custom_handler(async (req, res) =>
 {
-    await reset_user_traffic(req.params.vpn_name);
+    await reset_user_account(req.params.vpn_name);
     res.send("OK");
 }));
 

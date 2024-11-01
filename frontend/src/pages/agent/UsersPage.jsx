@@ -6,6 +6,7 @@ import UsersTable from '../../components/agent/UsersTable'
 import Button from '../../components/Button'
 import CreateUser from '../../components/agent/CreateUser'
 import Search from '../../components/Search'
+import AmneziaFilter from '../../components/AmneziaFilter'
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
 import './UsersPage.css'
 import Pagination from '../../components/Pagination'
@@ -54,8 +55,15 @@ const UsersPage = () => {
     const [paymentNotifMessage, setPaymentNotifMessage] = useState("Your payment has failed.")
     const [isPaymentNotifPositive, setIsPaymentNotifPositive] = useState(true)
     const [firstLoad, setFirstLoad] = useState(true)
+    const [amneziaFilter, setAmneziaFilter] = useState(false)
 
     const agentInfo = JSON.parse(sessionStorage.getItem("agent"))
+
+
+    const get_panel_type = () =>
+    {
+        return amneziaFilter == true ? "AMN":null
+    }
 
     const fetchUsers = async (resetCurrentPage) => {
         const access_token = sessionStorage.getItem("access_token")
@@ -64,7 +72,8 @@ const UsersPage = () => {
             number_of_rows: rowsPerPage,
             current_page: currentPage,
             search_filter: searchedUsers,
-            status_filter: selectedStatus.value
+            status_filter: selectedStatus.value,
+            panel_type:get_panel_type(),
         })
         if (res.data.status === "ERR") {
             setError_msg(res.data.msg)
@@ -125,7 +134,7 @@ const UsersPage = () => {
     useEffect(() => {
         setRefresh(true)
         fetchUsers()
-    }, [rowsPerPage, currentPage, searchedUsers, selectedStatus])
+    }, [rowsPerPage, currentPage, searchedUsers, selectedStatus, amneziaFilter])
 
     const [agent, setAgent] = useState(JSON.parse(sessionStorage.getItem("agent")))
 
@@ -154,7 +163,7 @@ const UsersPage = () => {
             setResetMode(false)
             return
         }
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value, panel_type:get_panel_type(), })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -206,7 +215,7 @@ const UsersPage = () => {
             setDeleteMode(false)
             return
         }
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value, panel_type:get_panel_type(), })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -240,7 +249,7 @@ const UsersPage = () => {
             setHasError(true)
             return
         }
-        var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
+        var users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value, panel_type:get_panel_type(), })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -271,7 +280,7 @@ const UsersPage = () => {
             return
         }
 
-        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value })).data
+        let users = (await axios.post("/get_users", { access_token, number_of_rows: rowsPerPage, current_page: currentPage, search_filter: searchedUsers, status_filter: selectedStatus.value, panel_type:get_panel_type(), })).data
         if (users.status === "ERR") {
             setError_msg(users.msg)
             setHasError(true)
@@ -373,6 +382,7 @@ const UsersPage = () => {
             <div className="container flex items-center justify-between   column-reverse items-end gap-16">
                 <div className="flex gap-2 items-center">
                     <Search value={searchedUsers} onChange={setSearchedUsers} />
+                    <AmneziaFilter enabled={amneziaFilter} setEnabled={setAmneziaFilter} />
                     <Dropdown options={statusOptions} value={selectedStatus} onChange={handleSelectStatus} overlap={true} showChevron={false} />
                 </div>
                 <span style={{ display: "flex", gap: "0.5rem" }} className='items-center'>

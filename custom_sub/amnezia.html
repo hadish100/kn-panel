@@ -170,7 +170,7 @@
 
     <div class="qr_image">
         <div onclick="close_qr_code_popup()" class="overlay"></div>
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data={{amnezia_config}}" alt="QR Code">
+        <img src="" alt="QR Code">
     </div>
 
     <div class="copy-text-container">
@@ -184,12 +184,19 @@
 
 
 <script>
+
+
+    document.querySelectorAll(".qr_image > img")[0].src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${window.location.href}`;
+
     function copy() 
     {
-        var copyText = document.getElementById("copy-text-input");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        document.execCommand("copy");
+        const page_url = window.location.href;
+        const el = document.createElement('textarea');
+        el.value = page_url;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
     }
 
     function open_qr_code_popup()

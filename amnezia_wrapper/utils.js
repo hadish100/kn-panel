@@ -360,9 +360,11 @@ const format_timestamp = (timestamp) =>
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}000`;
 }
 
-const reset_user_traffic = async (username) =>
+const reset_user_account = async (username) =>
 {
     const user_obj = await User.findOne({username});
+    // const time_to_add = user_obj.expire - user_obj.created_at;
+    // user_obj.expire = get_now() + time_to_add;
     user_obj.lifetime_used_traffic += user_obj.used_traffic;
     user_obj.used_traffic = 0;
     await user_obj.save();
@@ -727,7 +729,7 @@ module.exports =
     extend_expire_times,
     backup_data,
     get_all_users_for_marzban,
-    reset_user_traffic,
+    reset_user_account,
     edit_user,
     delete_user,
     sleep,

@@ -53,14 +53,12 @@ const SubscriptionActions = ({ item, subscriptionLink, config, onEditItem, shoul
         setClickedButton("subscriptionLink");
         e.stopPropagation();
 
-        // Remove the tooltip when the button is clicked
         if ('ontouchstart' in window || navigator.maxTouchPoints) {
             setTimeout(() => {
                 handleMouseLeave1();
                 setClickedButton(null);
             }, 1000);
         } else {
-            // For non-touch devices (e.g., desktop), remove tooltip after 1 second
             setTimeout(() => {
                 setClickedButton(null);
             }, 1000);
@@ -82,14 +80,12 @@ const SubscriptionActions = ({ item, subscriptionLink, config, onEditItem, shoul
         setClickedButton("config");
         e.stopPropagation();
 
-        // Remove the tooltip when the button is clicked
         if ('ontouchstart' in window || navigator.maxTouchPoints) {
             setTimeout(() => {
                 handleMouseLeave2();
                 setClickedButton(null);
             }, 1000);
         } else {
-            // For non-touch devices (e.g., desktop), remove tooltip after 1 second
             setTimeout(() => {
                 setClickedButton(null);
             }, 1000);
