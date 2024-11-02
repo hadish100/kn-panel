@@ -491,6 +491,7 @@ const get_real_subscription_url = async (api_key,installation_uuid) =>
         if(user.connection_uuids.length >= user.maximum_connections) throw new Error("Maximum connections reached");
         else
         {
+            if(user.connection_uuids.length == 0) user.expire = get_now() + user.expire - user.created_at;
             user.connection_uuids.push(installation_uuid);
             await user.save();
         }

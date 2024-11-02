@@ -87,6 +87,8 @@ const CreateUser = ({ onClose, showForm }) => {
         const getProtocols = async () => {
             setFlowValue({ label: "none", value: "none" })
             setIsLoadingProtocols(true)
+            // setIpLimitValue("")
+            // setDataLimitValue("")
             const panelInboundsObj = (await axios.post("/get_panel_inbounds", { access_token, country })).data
             if (panelInboundsObj.status === "ERR") {
                 setError_msg(panelInboundsObj.msg)
@@ -234,8 +236,8 @@ const CreateUser = ({ onClose, showForm }) => {
 
     const formFields = [
         { label: "Username", type: "text", id: "username", name: "username" },
-        { label: "Data Limit", type: "number", id: "dataLimit", name: "dataLimit", disabled: isDataLimitDisabled, defaultValue: dataLimitValue },
-        { label: "Ip Limit", type: "number", id: "ipLimit", name: "ipLimit", disabled: isIpLimitDisabled, defaultValue: ipLimitValue },
+        { label: "Data Limit", type: "create_user_number", id: "dataLimit", name: "dataLimit", disabled: isDataLimitDisabled, value:dataLimitValue, onChange: (e) => setDataLimitValue(e.target.value) },
+        { label: "Ip Limit", type: "create_user_number", id: "ipLimit", name: "ipLimit", disabled: isIpLimitDisabled, value:ipLimitValue, onChange: (e) => setIpLimitValue(e.target.value) },
         { label: "Days To Expire", type: expireInputType, id: "daysToExpire", name: "daysToExpire" , onChange: setAmneziaDays, value: amneziaDays},
         { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry },
         { label: "Description", type: "text", id: "desc", name: "desc" },

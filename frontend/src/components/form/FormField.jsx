@@ -79,6 +79,15 @@ const FormField = ({
         )
     }
 
+    if (type === "create_user_number") {
+        return (
+            <motion.div className="modal__form__group">
+            <label className="modal__form__label" htmlFor={id}>{label}</label>
+            <input className="modal__form__input" type={type} id={id} name={name} value={value} disabled={disabled} onChange={onChange} />
+        </motion.div>
+        )
+    }
+
     return (
         <motion.div className="modal__form__group">
             <label className="modal__form__label" htmlFor={id}>{label}</label>
