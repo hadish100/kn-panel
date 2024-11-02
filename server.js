@@ -459,7 +459,7 @@ app.post("/create_user", async (req, res) => {
             else if(selected_panel.panel_type == "AMN") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - expire * ip_limit * AMNEZIA_COEFFICIENT)});
             
 
-            await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
+            await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time on !${selected_panel.panel_name}`,access_token);
 
             res.send("DONE");
         }
