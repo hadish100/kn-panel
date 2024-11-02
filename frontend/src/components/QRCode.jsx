@@ -7,6 +7,7 @@ import { ReactComponent as QRCodeIcon } from '../assets/svg/qrcode.svg'
 import { ReactComponent as XMarkIcon } from '../assets/svg/x-mark.svg'
 import { ReactComponent as ArrowLeftIcon } from '../assets/svg/arrow-left.svg'
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/arrow-right.svg'
+import { ReactComponent as DownloadIcon } from '../assets/svg/download.svg'
 import { QRCodeSVG } from 'qrcode.react';
 import { motion } from "framer-motion"
 import "./QRCode.css"
@@ -42,7 +43,35 @@ const QRCode = ({ onClose, showQRCode, QRCodeLinks, subscriptionLink }) => {
                         <main className='qr-code__main' style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                                 <QRCodeSVG value={subscriptionLink} size={300} />
+                                <div className='download_sublink_btn_container' >
+                                <Button className="outlined" 
+                                
+                                onClick={async () => 
+                                {
+                                    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=" + subscriptionLink;
+                                    
+                                    try 
+                                    {
+                                      const response = await fetch(qrUrl);
+                                      const blob = await response.blob();
+                                      const link = document.createElement("a");
+                                      link.href = URL.createObjectURL(blob);
+                                      link.download = "qr-code.png";
+                                      document.body.appendChild(link);
+                                      link.click();
+                                      document.body.removeChild(link);
+                                      URL.revokeObjectURL(link.href);
+                                    } 
+                                    
+                                    catch (error) 
+                                    {
+                                      console.error("Download failed", error);
+                                    }
+                                  }}>
+                                <DownloadIcon /></Button>
                                 Subscribe Link
+                                </div>
+                            
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
                                 <div className='links__slider'>

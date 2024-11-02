@@ -338,6 +338,16 @@ input[type=number] {
     border: 0.5px solid var(--primary-clr-100);
 }
 
+.download_sublink_btn_container
+{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    align-content:center;
+    flex-direction:row;
+    gap:10px;
+}
+
 @media (max-width: 550px) 
 {
     .payment_cards

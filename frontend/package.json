@@ -24,6 +24,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=production GENERATE_SOURCEMAP=false DISABLE_ESLINT_PLUGIN=true BROWSER=none PORT=3000 react-scripts start",
+    "wstart": "set NODE_ENV=production && set GENERATE_SOURCEMAP=false && set DISABLE_ESLINT_PLUGIN=true && set BROWSER=none && set PORT=3000 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
