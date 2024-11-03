@@ -129,14 +129,14 @@ const validate_token = (token) =>
 
 const get_system_status = async () =>
 {
-    var users_count = await User.countDocuments();
-    var active_users_count = await User.countDocuments({status: "active"});
+
+    const users = await User.find();
 
     var result =
     {
-        total_user:users_count,
-        users_active:active_users_count,
-        incoming_bandwidth: 0,
+        total_user: users.length,
+        users_active: users.filter((item) => item.status == "active").length,
+        incoming_bandwidth: users.reduce((acc, item) => acc + item.lifetime_used_traffic + item.used_traffic, 0),
         outgoing_bandwidth: 0,
         panel_type:"AMN",
     }

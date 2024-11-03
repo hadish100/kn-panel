@@ -190,13 +190,9 @@
 
     function copy() 
     {
-        const page_url = window.location.href;
-        const el = document.createElement('textarea');
-        el.value = page_url;
-        document.body.appendChild(el);
+        const el = document.getElementById('copy-text-input');
         el.select();
         document.execCommand('copy');
-        document.body.removeChild(el);
     }
 
     function open_qr_code_popup()
