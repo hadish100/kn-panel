@@ -208,7 +208,7 @@ PersistentKeepalive = 25
     var subscription_url_raw = 
     {
         config_version:1,
-        api_endpoint:`http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}/sub`,
+        api_endpoint:`https://${process.env.ENDPOINT_ADDRESS}/sub`,
         protocol:"awg",
         name:username,
         description:generate_desc(expire,ip_limit),

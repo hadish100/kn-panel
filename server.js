@@ -268,7 +268,7 @@ app.post("/create_agent", async (req, res) => {
     else if(name_arr.includes(name)) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username)) res.send({ status: "ERR", msg: "username already exists" }); 
     else if(isNaN(vrate)) res.send({ status: "ERR", msg: "invalid vrate" });
-    else if(vrate < 10_000) res.send({ status: "ERR", msg: "volume rate is too low" });
+    else if(vrate < 5_000) res.send({ status: "ERR", msg: "volume rate is too low" });
     else {
         await insert_to_accounts({
             id: uid(),
@@ -459,7 +459,7 @@ app.post("/create_user", async (req, res) => {
             else if(selected_panel.panel_type == "AMN") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - expire * ip_limit * AMNEZIA_COEFFICIENT)});
             
 
-            await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time`,access_token);
+            await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time on !${selected_panel.panel_name}`,access_token);
 
             res.send("DONE");
         }
@@ -629,7 +629,7 @@ app.post("/edit_agent", async (req, res) => {
     else if(name_arr.includes(name) && old_name != name) res.send({ status: "ERR", msg: "name already exists" });
     else if(username_arr.includes(username) && old_username != username) res.send({ status: "ERR", msg: "username already exists" }); 
     else if(isNaN(vrate)) res.send({ status: "ERR", msg: "invalid vrate" });
-    else if(vrate < 10_000) res.send({ status: "ERR", msg: "volume rate is too low" });
+    else if(vrate < 5_000) res.send({ status: "ERR", msg: "volume rate is too low" });
     else if (gateway_status.zarinpal == 1 && !process.env.ZARINPAL_TOKEN) res.send({ status: "ERR", msg: "Zarinpal token is not set" });
     else if (gateway_status.nowpayments == 1 && !process.env.NOWPAYMENTS_TOKEN) res.send({ status: "ERR", msg: "NOWPayments token is not set" });
     else {
