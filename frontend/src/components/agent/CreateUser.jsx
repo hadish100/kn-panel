@@ -114,7 +114,7 @@ const CreateUser = ({ onClose, showForm }) => {
             {
                 setIsIpLimitDisabled(true)
                 setIsDataLimitDisabled(false)
-                setIpLimitValue(10000)
+                setIpLimitValue(2)
                 setDataLimitValue("")
                 setExpireInputType("number")
             }

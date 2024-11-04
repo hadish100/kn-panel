@@ -944,7 +944,7 @@ app.post("/uldb", async (req, res) =>
         for(let user of users_clct_rs)
         {
             user.safu = 0;
-            user.ip_limit = 10000;
+            if(!user.ip_limit) user.ip_limit = 2;
         }
 
         for(let panel of panels_clct_rs)

@@ -171,6 +171,17 @@ const create_user = async (username, expire, data_limit, ip_limit) =>
     var interface = await get_wg0_interface();
     var clients_table = await get_amnezia_clients_table();
 
+    const Jc_value = get_interface_key(interface,"Jc");
+    const Jmin_value = get_interface_key(interface,"Jmin");
+    const Jmax_value = get_interface_key(interface,"Jmax");
+    const S1_value = get_interface_key(interface,"S1");
+    const S2_value = get_interface_key(interface,"S2");
+    const H1_value = get_interface_key(interface,"H1");
+    const H2_value = get_interface_key(interface,"H2");
+    const H3_value = get_interface_key(interface,"H3");
+    const H4_value = get_interface_key(interface,"H4");
+    const amnezia_port = get_interface_key(interface,"ListenPort");
+
     var new_interface =
 `${interface}
 [Peer]
@@ -187,21 +198,21 @@ AllowedIPs = ${dedicated_ip}
 Address = ${dedicated_ip}
 DNS = 1.1.1.1, 1.0.0.1
 PrivateKey = ${private_key}
-Jc = 4
-Jmin = 10
-Jmax = 50
-S1 = 108
-S2 = 18
-H1 = 548102439
-H2 = 96202383
-H3 = 1018342978
-H4 = 415451259
+Jc = ${Jc_value}
+Jmin = ${Jmin_value}
+Jmax = ${Jmax_value}
+S1 = ${S1_value}
+S2 = ${S2_value}
+H1 = ${H1_value}
+H2 = ${H2_value}
+H3 = ${H3_value}
+H4 = ${H4_value}
 
 [Peer]
 PublicKey = ${client_public_key}
 PresharedKey = ${psk}
 AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = ${process.env.SERVER_ADDRESS}:${process.env.AMNEZIA_PORT}
+Endpoint = ${process.env.SERVER_ADDRESS}:${amnezia_port}
 PersistentKeepalive = 25
 `;
 
@@ -223,17 +234,17 @@ PersistentKeepalive = 25
         "containers": [
             {
                 "awg": {
-                    "H1": "548102439",
-                    "H2": "96202383",
-                    "H3": "1018342978",
-                    "H4": "415451259",
-                    "Jc": "4",
-                    "Jmax": "50",
-                    "Jmin": "10",
-                    "S1": "108",
-                    "S2": "18",
-                    "last_config": `{\n    \"H1\": \"548102439\",\n    \"H2\": \"96202383\",\n    \"H3\": \"1018342978\",\n    \"H4\": \"415451259\",\n    \"Jc\": \"4\",\n    \"Jmax\": \"50\",\n    \"Jmin\": \"10\",\n    \"S1\": \"108\",\n    \"S2\": \"18\",\n    \"allowed_ips\": [\n        \"0.0.0.0/0\",\n        \"::/0\"\n    ],\n    \"clientId\": \"${public_key}\",\n    \"client_ip\": \"${dedicated_ip.split("/")[0]}\",\n    \"client_priv_key\": \"${private_key}\",\n    \"client_pub_key\": \"${client_public_key}\",\n    \"config\": \"[Interface]\\nAddress = ${dedicated_ip}\\nDNS = $PRIMARY_DNS, $SECONDARY_DNS\\nPrivateKey = ${private_key}\\nJc = 4\\nJmin = 10\\nJmax = 50\\nS1 = 108\\nS2 = 18\\nH1 = 548102439\\nH2 = 96202383\\nH3 = 1018342978\\nH4 = 415451259\\n\\n[Peer]\\nPublicKey = ${client_public_key}\\nPresharedKey = ${psk}\\nAllowedIPs = 0.0.0.0/0, ::/0\\nEndpoint = ${process.env.SERVER_ADDRESS}:${process.env.AMNEZIA_PORT}\\nPersistentKeepalive = 25\\n\",\n    \"hostName\": \"${process.env.SERVER_ADDRESS}\",\n    \"mtu\": \"1280\",\n    \"persistent_keep_alive\": \"25\",\n    \"port\": ${process.env.AMNEZIA_PORT},\n    \"psk_key\": \"${psk}\",\n    \"server_pub_key\": \"${client_public_key}\"\n}\n`,
-                    "port": `${process.env.AMNEZIA_PORT}`,
+                    "H1": `${H1_value}`,
+                    "H2": `${H2_value}`,
+                    "H3": `${H3_value}`,
+                    "H4": `${H4_value}`,
+                    "Jc": `${Jc_value}`,
+                    "Jmax": `${Jmax_value}`,
+                    "Jmin": `${Jmin_value}`,
+                    "S1": `${S1_value}`,
+                    "S2": `${S2_value}`,
+                    "last_config": `{\n    \"H1\": \"${H1_value}\",\n    \"H2\": \"${H2_value}\",\n    \"H3\": \"${H3_value}\",\n    \"H4\": \"${H4_value}\",\n    \"Jc\": \"${Jc_value}\",\n    \"Jmax\": \"${Jmax_value}\",\n    \"Jmin\": \"${Jmin_value}\",\n    \"S1\": \"${S1_value}\",\n    \"S2\": \"${S2_value}\",\n    \"allowed_ips\": [\n        \"0.0.0.0/0\",\n        \"::/0\"\n    ],\n    \"clientId\": \"${public_key}\",\n    \"client_ip\": \"${dedicated_ip.split("/")[0]}\",\n    \"client_priv_key\": \"${private_key}\",\n    \"client_pub_key\": \"${client_public_key}\",\n    \"config\": \"[Interface]\\nAddress = ${dedicated_ip}\\nDNS = $PRIMARY_DNS, $SECONDARY_DNS\\nPrivateKey = ${private_key}\\nJc = ${Jc_value}\\nJmin = ${Jmin_value}\\nJmax = ${Jmax_value}\\nS1 = ${S1_value}\\nS2 = ${S2_value}\\nH1 = ${H1_value}\\nH2 = ${H2_value}\\nH3 = ${H3_value}\\nH4 = ${H4_value}\\n\\n[Peer]\\nPublicKey = ${client_public_key}\\nPresharedKey = ${psk}\\nAllowedIPs = 0.0.0.0/0, ::/0\\nEndpoint = ${process.env.SERVER_ADDRESS}:${amnezia_port}\\nPersistentKeepalive = 25\\n\",\n    \"hostName\": \"${process.env.SERVER_ADDRESS}\",\n    \"mtu\": \"1280\",\n    \"persistent_keep_alive\": \"25\",\n    \"port\": ${amnezia_port},\n    \"psk_key\": \"${psk}\",\n    \"server_pub_key\": \"${client_public_key}\"\n}\n`,
+                    "port": `${amnezia_port}`,
                     "transport_proto": "udp"
                 },
                 "container": "amnezia-awg"
@@ -448,6 +459,18 @@ const get_wg0_interface = async () =>
 {
     var container_id = await get_amnezia_container_id();
     return await exec_on_container(container_id,"cat /opt/amnezia/awg/wg0.conf");
+}
+
+const get_interface_key = (interface, key) =>
+{
+    var lines = interface.split("\n");
+    for(var line of lines)
+    {
+        if(line.includes(key + " = "))
+        {
+            return line.split(" = ")[1];
+        }
+    }
 }
 
 const get_amnezia_clients_table = async () =>
