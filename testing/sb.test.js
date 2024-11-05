@@ -197,3 +197,8 @@ const {
 
 // dl_file("http://p.limoovp1.sbs:7002/dldb","db.zip");
 
+/*
+db.users.updateMany({'country': 'All1'},{$set:{'country': 'V2ray_All'}})
+db.panels.updateMany({'panel_country': 'All1'},{$set:{'panel_country': 'V2ray_All'}})
+db.accounts.updateMany({'is_admin': 0},{$set:{'country': 'V2ray_All'}})
+*/
