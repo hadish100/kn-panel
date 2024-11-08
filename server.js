@@ -42,6 +42,7 @@ const {
     edit_vpn,
     reload_agents,
     reset_marzban_user,
+    unlock_marzban_user,
     delete_folder_content,
     enable_panel,
     disable_panel,
@@ -519,8 +520,11 @@ app.post("/delete_user", async (req, res) => {
             if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
         }
 
-        else if(panel_obj.panel_type == "AMN") await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + (Math.floor((user_obj.expire-user_obj.created_at)/86400)+1) * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
-        
+        else if(panel_obj.panel_type == "AMN") 
+        {
+            if(user_obj.used_traffic == 0)
+            await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + (Math.floor((user_obj.expire-user_obj.created_at)/86400)+1) * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
+        }
 
         
         await (await users_clct()).deleteOne({ username });
@@ -892,9 +896,27 @@ app.post("/reset_user", async (req, res) => {
         await insert_to_logs(account.id, "RESET_USER", `reseted user !${user_obj.username}`,access_token);
         res.send("DONE");
     }
+});
 
+app.post("/unlock_user", async (req, res) => {
+    const { username, access_token } = req.body;
+    var user_obj = await get_user2(username);
+    var user_id = user_obj.id;
+    var panel_obj = await get_panel(user_obj.corresponding_panel_id);
+    var corresponding_agent = await token_to_account(access_token);
 
-    
+    if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
+    else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
+    else 
+    {  
+
+        var result = await unlock_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
+        if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
+
+        var account = await token_to_account(access_token);
+        await insert_to_logs(account.id, "UNLOCK_USER", `unlocked user !${user_obj.username}`,access_token);
+        res.send("DONE");
+    }
 
 });
 

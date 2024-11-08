@@ -229,7 +229,6 @@ const delete_vpn = async (link, username, password, vpn_name) => {
     }
 }
 
-
 const delete_vpn_group = async (link, username, password, vpn_names) => 
 {
         var headers = await auth_marzban(link, username, password);
@@ -283,7 +282,6 @@ const enable_vpn = async (link, username, password, vpn_name) => {
         return "ERR";
     }
 }
-
 
 const enable_vpn_group = async (link, username, password, vpn_names) => 
 {
@@ -384,6 +382,19 @@ const reset_marzban_user = async (link, username, password, vpn_name) => {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
         var res = await axios.post(link + "/api/user/" + vpn_name + "/reset", {}, { headers });
+        return "DONE";
+    }
+
+    catch (err) {
+        return "ERR";
+    }
+}
+
+const unlock_marzban_user = async (link, username, password, vpn_name) => {
+    try {
+        var headers = await auth_marzban(link, username, password);
+        if (headers == "ERR") return "ERR";
+        var res = await axios.post(link + "/unlock/" + vpn_name, {}, { headers });
         return "DONE";
     }
 
@@ -1004,6 +1015,7 @@ module.exports = {
     get_all_marzban_users,
     reload_agents,
     reset_marzban_user,
+    unlock_marzban_user,
     ping_panel,
     dl_file,
     show_url,

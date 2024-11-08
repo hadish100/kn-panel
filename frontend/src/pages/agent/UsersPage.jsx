@@ -14,6 +14,7 @@ import Dropdown from '../../components/Dropdown'
 import EditUser from '../../components/agent/EditUser'
 import VerifyDelete from '../../components/admin/VerifyDelete'
 import VerifyReset from '../../components/admin/VerifyReset'
+import VerifyUnlock from '../../components/admin/VerifyUnlock'
 import "../../components/LoadingGif.css"
 import ErrorCard from '../../components/ErrorCard'
 import CircularProgress from '../../components/CircularProgress'
@@ -56,6 +57,8 @@ const UsersPage = () => {
     const [isPaymentNotifPositive, setIsPaymentNotifPositive] = useState(true)
     const [firstLoad, setFirstLoad] = useState(true)
     const [amneziaFilter, setAmneziaFilter] = useState(false)
+    const [showVerifyUnlock, setShowVerifyUnlock] = useState(false)
+    const [unlockMode, setUnlockMode] = useState(false)
 
     const agentInfo = JSON.parse(sessionStorage.getItem("agent"))
 
@@ -150,6 +153,11 @@ const UsersPage = () => {
         setShowVerifyReset(true)
     }
 
+    const handleCloseVerifyUnlock = () => {
+        setShowVerifyUnlock(false)
+    }
+    
+
 
     const handleVerifyReset = async (e, username) => {
         e.stopPropagation()
@@ -184,6 +192,22 @@ const UsersPage = () => {
         setShowVerifyReset(false)
         // setShowEditUser(false)
         setResetMode(false)
+    }
+
+    const handleVerifyUnlock = async (e, username) => {
+        e.stopPropagation()
+        setUnlockMode(true)
+        username = selectedUser.username
+        const access_token = sessionStorage.getItem("access_token")
+        var req_res = await axios.post("/unlock_user", { access_token, username })
+        if (req_res.data.status === "ERR") {
+            setError_msg(req_res.data.msg)
+            setHasError(true)
+            setUnlockMode(false)
+            return
+        }
+        setShowVerifyUnlock(false)
+        setUnlockMode(false)
     }
 
 
@@ -464,6 +488,16 @@ const UsersPage = () => {
                 onDeleteItem={handleVerifyReset}
                 resetMode={resetMode}
             />
+
+            <VerifyUnlock
+                onClose={handleCloseVerifyUnlock}
+                showForm={showVerifyUnlock}
+                onDeleteItem={handleVerifyUnlock}
+                unlockMode={unlockMode}
+            />
+
+
+
         </div >
 
     )

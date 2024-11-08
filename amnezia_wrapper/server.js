@@ -17,6 +17,7 @@ const {
     edit_user,
     delete_user,
     get_real_subscription_url,
+    unlock_user_account,
 } = require('./utils.js');
 const path = require("path");
 
@@ -202,6 +203,12 @@ app1.post("/sub", custom_handler(async (req, res) =>
     var {installation_uuid} = req.body;
     if(!installation_uuid) throw "Installation uuid not provided";
     res.send(await get_real_subscription_url(api_key,installation_uuid));
+}));
+
+app1.post("/unlock/:vpn_name", custom_handler(async (req, res) =>
+{
+    await unlock_user_account(req.params.vpn_name);
+    res.send("OK");
 }));
 
 app2.post("/get_marzban_users", custom_handler(async (req, res) =>

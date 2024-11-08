@@ -525,6 +525,11 @@ const get_real_subscription_url = async (api_key,installation_uuid) =>
     }
 }
 
+const unlock_user_account = async (username) =>
+{
+    await User.updateOne({username}, {connection_uuids: []});
+}
+
 const decode_base64_data = (data) =>
 {
     return Buffer.from(data, 'base64').toString('ascii');
@@ -690,8 +695,13 @@ const $sync_accounting = async () =>
             var public_key_line_index = interface_lines.findIndex((item) => item.includes(user.public_key));
             if(!interface_lines[public_key_line_index + 2].startsWith("#")) 
             {
+                interface_lines[public_key_line_index - 1] = "#"+interface_lines[public_key_line_index - 1];
+                interface_lines[public_key_line_index + 0] = "#"+interface_lines[public_key_line_index + 0];
+                interface_lines[public_key_line_index + 1] = "#"+interface_lines[public_key_line_index + 1];
                 interface_lines[public_key_line_index + 2] = "#"+interface_lines[public_key_line_index + 2];
+
                 await replace_wg0_interface(interface_lines.join("\n"));
+                await sync_configs();
                 console.log(`UPDATED INTERFACE FOR ${user.username}`);
             }
         }
@@ -701,8 +711,13 @@ const $sync_accounting = async () =>
             var public_key_line_index = interface_lines.findIndex((item) => item.includes(user.public_key));
             if(interface_lines[public_key_line_index + 2].startsWith("#")) 
             {
+                interface_lines[public_key_line_index - 1] = interface_lines[public_key_line_index - 1].replace("#","");
+                interface_lines[public_key_line_index + 0] = interface_lines[public_key_line_index + 0].replace("#","");
+                interface_lines[public_key_line_index + 1] = interface_lines[public_key_line_index + 1].replace("#","");
                 interface_lines[public_key_line_index + 2] = interface_lines[public_key_line_index + 2].replace("#","");
+
                 await replace_wg0_interface(interface_lines.join("\n"));
+                await sync_configs();
                 console.log(`UPDATED INTERFACE FOR ${user.username}`);
             }
         }
@@ -758,6 +773,7 @@ module.exports =
     delete_user,
     sleep,
     get_real_subscription_url,
+    unlock_user_account,
     
     $sync_accounting,
 }

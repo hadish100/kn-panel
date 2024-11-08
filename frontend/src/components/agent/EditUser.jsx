@@ -5,6 +5,7 @@ import { ReactComponent as EditIcon } from '../../assets/svg/edit.svg'
 import { ReactComponent as DeleteIcon } from "../../assets/svg/delete.svg"
 import { ReactComponent as PowerIcon } from "../../assets/svg/power.svg"
 import { ReactComponent as RefreshIcon } from '../../assets/svg/refresh.svg'
+import { ReactComponent as LockIcon } from '../../assets/svg/lock.svg'
 import { ReactComponent as XMarkIcon } from '../../assets/svg/x-mark.svg'
 import { ReactComponent as ThreeDotsIcon } from '../../assets/svg/three-dots.svg'
 import { ReactComponent as SpinnerIcon } from '../../assets/svg/spinner.svg'
@@ -27,7 +28,7 @@ const flowOptions = [
     { label: "xtls-rprx-vision", value: "xtls-rprx-vision" }
 ]
 
-const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem, editMode }) => {
+const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerItem, onResetItem, editMode, onUnlockItem }) => {
     const [selectedProtocols, setSelectedProtocols] = useState([])
     const [safu, setSafu] = useState((item && Boolean(item.safu)) || null)
     const [protocols, setProtocols] = useState([
@@ -139,8 +140,12 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         },
     ]
 
+    const panel_type = JSON.parse(sessionStorage.getItem("panels")).filter((panel) => panel.id === item?.corresponding_panel_id)[0]?.panel_type
+    console.log(panel_type)
+
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.username) },
+        panel_type == "AMN"? { icon: <LockIcon />, type: "button", label: "Unlock Account", className: "ghosted", onClick: () => onUnlockItem(item.id) } :
         { icon: <RefreshIcon />, type: "button", label: "Reset Usage", className: "ghosted", onClick: () => onResetItem(item.id) },
         { icon: <PowerIcon />, type: "switch", label: "Power", className: "ghosted", onClick: (e) => onPowerItem(e, item.id, item.status) },
     ]
