@@ -23,6 +23,7 @@
     "moment-timezone": "^0.5.43",
     "mongodb": "^5.7.0",
     "mongoose": "^8.7.3",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.4",
     "prompt-sync": "^4.2.0",
     "redis": "^4.7.0",

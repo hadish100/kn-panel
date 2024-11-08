@@ -150,11 +150,11 @@ const UsersPage = () => {
     }
 
     const handleResetUser = async (e, username) => {
-        setShowVerifyReset(true)
+        setShowVerifyReset(true) 
     }
 
-    const handleCloseVerifyUnlock = () => {
-        setShowVerifyUnlock(false)
+    const handleUnlockUser = () => {
+        setShowVerifyUnlock(true)
     }
     
 
@@ -349,6 +349,10 @@ const UsersPage = () => {
         setShowVerifyReset(false)
     }
 
+    const handleCloseVerifyUnlock = () => {
+        setShowVerifyUnlock(false)
+    }
+
     const handleCloseEditUser = () => {
         setUsers(JSON.parse(sessionStorage.getItem("users")))
         setAgent(JSON.parse(sessionStorage.getItem("agent")))
@@ -455,6 +459,7 @@ const UsersPage = () => {
                 item={selectedUser}
                 onDeleteItem={handleDeleteUser}
                 onPowerItem={handlePowerUser}
+                onUnlockItem={handleUnlockUser}
                 onResetItem={handleResetUser}
                 onEditItem={handleEditUser}
                 editMode={editMode}
