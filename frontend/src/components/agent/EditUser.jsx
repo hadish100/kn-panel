@@ -142,7 +142,6 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
 
     const panel_type = (item?.corresponding_panel_id == 948263502) ? "AMN" : "MZ"
     
-    console.log(panel_type)
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.username) },
