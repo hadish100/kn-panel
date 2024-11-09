@@ -140,9 +140,12 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         },
     ]
 
+    const panel_type = (item?.corresponding_panel_id == 948263502) ? "AMN" : "MZ"
+    
 
     const secondaryButtons = [
         { icon: <DeleteIcon />, type: "button", label: "Delete", className: "ghosted", onClick: (e) => onDeleteItem(e, item.username) },
+        panel_type == "AMN"? { icon: <LockIcon />, type: "button", label: "Unlock Account", className: "ghosted", onClick: () => onUnlockItem(item.id) } :
         { icon: <RefreshIcon />, type: "button", label: "Reset Usage", className: "ghosted", onClick: () => onResetItem(item.id) },
         { icon: <PowerIcon />, type: "switch", label: "Power", className: "ghosted", onClick: (e) => onPowerItem(e, item.id, item.status) },
     ]
