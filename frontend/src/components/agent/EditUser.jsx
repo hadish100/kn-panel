@@ -140,9 +140,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         },
     ]
 
-    // const panel_type = JSON.parse(sessionStorage.getItem("panels")).filter((panel) => panel.id === item?.corresponding_panel_id)[0]?.panel_type
-    // const panel_type = (item && item.corresponding_panel_id == 948263502) ? "AMN" : "MZ"
-    const panel_type = "AMN"
+    const panel_type = (item && item.corresponding_panel_id == 948263502) ? "AMN" : "MZ"
     
     console.log(panel_type)
 
