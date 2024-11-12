@@ -370,6 +370,9 @@ app.post("/create_user", async (req, res) => {
         ip_limit,
      } = req.body;
 
+     // TEMP
+     ip_limit = 1;
+
 
         if(process.env.RELEASE == "ARMAN") flow_status = "xtls-rprx-vision";
 
