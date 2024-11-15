@@ -45,6 +45,26 @@ const format_amnezia_data_to_byte = (str) =>
     else return 0;
 }
 
+const get_user_traffic_from_wg_cli = async (public_key) =>
+{
+    try
+    {
+        var container_id = await get_amnezia_container_id();
+        var data = await exec_on_container(container_id,`wg show wg0 transfer | grep ${public_key}`);
+        var data_arr = data.split("\t");
+        var received = data_arr[1];
+        var sent = data_arr[2];
+        console.log(`Received: ${received}, Sent: ${sent}`);
+        return parseInt(received) + parseInt(sent);
+    }
+
+    catch(err)
+    {
+        console.log(err);
+        return 0;
+    }
+}
+
 const get_now = () =>
 {
     return Math.floor(Date.now() / 1000);
@@ -649,24 +669,36 @@ const $sync_accounting = async () =>
 
         const client_table_user_obj = clients_table.find((item) => item.userData.clientName == user.username);
 
-        const used_traffic = format_amnezia_data_to_byte(client_table_user_obj.userData.dataReceived) + format_amnezia_data_to_byte(client_table_user_obj.userData.dataSent);
+        // const used_traffic = format_amnezia_data_to_byte(client_table_user_obj.userData.dataReceived) + format_amnezia_data_to_byte(client_table_user_obj.userData.dataSent);
+
+        const used_traffic = await get_user_traffic_from_wg_cli(user.public_key);
 
         if(used_traffic != user.used_traffic)
         {
-            await User.updateOne({username: user.username}, {used_traffic});
-            user.used_traffic = used_traffic;
+            if(used_traffic < user.used_traffic)
+            {
+                await User.updateOne({username: user.username}, {used_traffic: user.used_traffic + used_traffic});
+                user.used_traffic = user.used_traffic + used_traffic;
+            }
+
+            else if(used_traffic > user.used_traffic)
+            {
+                await User.updateOne({username: user.username}, {used_traffic});
+                user.used_traffic = used_traffic;
+            }
+
             console.log(`User ${user.username} used traffic updated to ${used_traffic} bytes`);
         }
 
-        if(user.used_traffic >= user.data_limit)
-        {
-            if(user.status == "active") 
-            {
-                await User.updateOne({username: user.username}, {status: "limited"});
-                user.status = "limited";
-                console.log(`User ${user.username} status changed to limited`);
-            }
-        }
+        // if(user.used_traffic >= user.data_limit)
+        // {
+        //     if(user.status == "active") 
+        //     {
+        //         await User.updateOne({username: user.username}, {status: "limited"});
+        //         user.status = "limited";
+        //         console.log(`User ${user.username} status changed to limited`);
+        //     }
+        // }
 
         if(user.expire < get_now())
         {
