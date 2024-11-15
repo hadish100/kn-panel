@@ -122,9 +122,9 @@ const CreateUser = ({ onClose, showForm }) => {
             else if(panelInboundsObj.panel_type === "AMN")
             {
                 setIsDataLimitDisabled(true)
-                setIsIpLimitDisabled(false)
+                setIsIpLimitDisabled(true)
                 setDataLimitValue(10000)
-                setIpLimitValue("")
+                setIpLimitValue(1)
                 setExpireInputType("expire_selection")
             }
 
