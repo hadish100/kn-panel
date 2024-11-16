@@ -673,22 +673,29 @@ const $sync_accounting = async () =>
 
         const used_traffic = await get_user_traffic_from_wg_cli(user.public_key);
 
-        if(used_traffic != user.used_traffic)
+        if(used_traffic != user.last_captured_traffic)
         {
             if(used_traffic < user.used_traffic)
             {
-                await User.updateOne({username: user.username}, {used_traffic: user.used_traffic + used_traffic});
-                user.used_traffic = user.used_traffic + used_traffic;
+
+                var incremental_value;
+                if(used_traffic > user.last_captured_traffic) incremental_value = used_traffic - user.last_captured_traffic;
+                else incremental_value = used_traffic;
+
+                await User.updateOne({username: user.username}, {used_traffic: user.used_traffic + incremental_value, last_captured_traffic: used_traffic});
+                user.used_traffic = user.used_traffic + incremental_value;
+                console.log(`User ${user.username} used traffic updated to ${b2gb(used_traffic)} MB (increment)`);
             }
 
             else if(used_traffic > user.used_traffic)
             {
-                await User.updateOne({username: user.username}, {used_traffic});
+                await User.updateOne({username: user.username}, {used_traffic, last_captured_traffic: used_traffic});
                 user.used_traffic = used_traffic;
+                console.log(`User ${user.username} used traffic updated to ${b2gb(used_traffic)} MB (replace)`);
             }
 
-            console.log(`User ${user.username} used traffic updated to ${used_traffic} bytes`);
         }
+
 
         // if(user.used_traffic >= user.data_limit)
         // {
@@ -780,6 +787,7 @@ const user_schema = new mongoose.Schema
     expire: Number,
     data_limit: Number,
     used_traffic: { type: Number, default: 0 },
+    last_captured_traffic: { type: Number, default: 0 },
     lifetime_used_traffic: { type: Number, default: 0 },
     status: { type: String, default: "active", enum: ["active","limited","expired","disabled"] },
     created_at: { type: Number, default: get_now },
