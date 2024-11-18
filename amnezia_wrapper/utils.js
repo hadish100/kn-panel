@@ -19,6 +19,15 @@ const uid = () => { return Math.floor(Math.random() * (9999999999 - 1000000000 +
 
 const generate_token = () => { return jwt.sign({},JWT_SECRET_KEY,{expiresIn: '24h'}); }
 
+const to_unicode_escape = (str) => 
+{
+    return str.split('').map(char => 
+    {
+        const code = char.charCodeAt(0).toString(16).padStart(4, '0');
+        return `\\u${code}`;
+    }).join('');
+};
+
 const b2gb = (bytes) => 
 {
     var x = (bytes / (2 ** 10) ** 3);
@@ -61,7 +70,7 @@ const get_user_traffic_from_wg_cli = async (public_key) =>
     catch(err)
     {
         console.log(err);
-        return 0;
+        return false;
     }
 }
 
@@ -127,7 +136,7 @@ const generate_desc = (expire, ip_limit) =>
     desc += "|"
     desc += String(ip_limit).farsify() + " کاربره";
 
-    return desc;
+    return to_unicode_escape(desc);
 }
 
 
@@ -246,7 +255,9 @@ PersistentKeepalive = 25
         api_key:jwt.sign({username},SUB_JWT_SECRET),
     }
 
-    var subscription_url = "vpn://" + encode_base64_data(JSON.stringify(subscription_url_raw));
+    var subscription_url = await encode_amnezia_data(JSON.stringify(subscription_url_raw));
+
+    console.log(subscription_url);
 
 
     var real_subscription_url_raw =
@@ -563,7 +574,7 @@ const decode_base64_data = (data) =>
 
 const encode_base64_data = (data) =>
 {
-    return Buffer.from(data).toString('base64');
+    return Buffer.from(data, 'utf-8').toString('base64');
 }
 
 const decode_amnezia_data = async (data) =>
@@ -669,11 +680,9 @@ const $sync_accounting = async () =>
 
         const client_table_user_obj = clients_table.find((item) => item.userData.clientName == user.username);
 
-        // const used_traffic = format_amnezia_data_to_byte(client_table_user_obj.userData.dataReceived) + format_amnezia_data_to_byte(client_table_user_obj.userData.dataSent);
-
         const used_traffic = await get_user_traffic_from_wg_cli(user.public_key);
 
-        if(used_traffic != user.last_captured_traffic)
+        if(used_traffic != false && used_traffic != user.last_captured_traffic)
         {
             if(used_traffic < user.used_traffic)
             {
@@ -696,16 +705,17 @@ const $sync_accounting = async () =>
 
         }
 
-
-        // if(user.used_traffic >= user.data_limit)
-        // {
-        //     if(user.status == "active") 
-        //     {
-        //         await User.updateOne({username: user.username}, {status: "limited"});
-        //         user.status = "limited";
-        //         console.log(`User ${user.username} status changed to limited`);
-        //     }
-        // }
+        /*
+        if(user.used_traffic >= user.data_limit)
+        {
+            if(user.status == "active") 
+            {
+                await User.updateOne({username: user.username}, {status: "limited"});
+                user.status = "limited";
+                console.log(`User ${user.username} status changed to limited`);
+            }
+        }
+        */
 
         if(user.expire < get_now())
         {

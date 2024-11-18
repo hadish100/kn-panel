@@ -1,0 +1,8 @@
+{
+    "config_version": 1,
+    "api_endpoint": "https://lodgamer.com/sub",
+    "protocol": "awg",
+    "name": "IRT_SinaSaeedi",
+    "description": "\\u0627\\u0646\\u0642\\u0636\\u0627\\u003a\\u0020\\u06f2\\u06f6\\u0020\\u062f\\u06cc\\u0020\\u06f1\\u06f4\\u06f0\\u06f3\\u007c\\u06f6\\u06f0\\u0020\\u0631\\u0648\\u0632\\u0647\\u007c\\u06f1\\u0020\\u06a9\\u0627\\u0631\\u0628\\u0631\\u0647",
+    "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IklSVF9TaW5hU2FlZWRpIiwiaWF0IjoxNzMxNzYzOTIxfQ.QahWVQ6s9NdqCGs8W1MugALzIQ9qT8T4EdVjeAENtDM"
+}
