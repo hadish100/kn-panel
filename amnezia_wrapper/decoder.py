@@ -5,7 +5,11 @@ import json
 import zlib
 
 def encode_config(config):
-    json_str = json.dumps(config, indent=4).encode() 
+
+    if "description" in config:
+        config["description"] = config["description"].encode('utf-8').decode('unicode_escape')
+
+    json_str = json.dumps(config, indent=4).encode()
 
     compressed_data = zlib.compress(json_str)
 
