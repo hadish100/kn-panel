@@ -525,7 +525,7 @@ app.post("/delete_user", async (req, res) => {
 
         else if(panel_obj.panel_type == "AMN") 
         {
-            if(user_obj.used_traffic == 0)
+            if(user_obj.used_traffic < gb2b(0.05))
             await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + (Math.floor((user_obj.expire-user_obj.created_at)/86400)+1) * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
         }
 
