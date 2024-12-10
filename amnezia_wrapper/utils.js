@@ -178,13 +178,19 @@ const extend_expire_times = async (added_time) =>
     await User.updateMany({},{$inc: {expire: added_time}});
 }
 
-const create_user = async (username, expire, data_limit, ip_limit) =>
+const create_user = async (username, expire, data_limit, ip_limit, unlock=false) =>
 {
 
     const does_exist = await User.findOne({username});
-    if(does_exist) throw new Error("User already exists");
-    const username_regex = /^[a-zA-Z0-9_]+$/;
-    if(!username.match(username_regex)) throw new Error("Invalid username");
+
+    if(!unlock)
+    {
+        if(does_exist) throw new Error("User already exists");
+        const username_regex = /^[a-zA-Z0-9_]+$/;
+        if(!username.match(username_regex)) throw new Error("Invalid username");
+    }
+
+    else if(unlock && !does_exist) throw new Error("User not found");
 
     var docker_id = await get_amnezia_container_id();
     if(docker_id == "") throw new Error("Amnezia container not found");
@@ -195,10 +201,18 @@ const create_user = async (username, expire, data_limit, ip_limit) =>
     var client_public_key = await exec_on_container(docker_id,`wg show wg0 public-key`);
     var psk = await exec_on_container(docker_id,"wg show wg0 preshared-keys | head -n 1");
     psk = psk.split("\t")[1];
-    var dedicated_ip = await get_next_available_ip();
-
+    
     var interface = await get_wg0_interface();
     var clients_table = await get_amnezia_clients_table();
+
+    var dedicated_ip = null;
+    if(!unlock) dedicated_ip = await get_next_available_ip();
+    else
+    {
+        var interface_lines = interface.split("\n");
+        var public_key_line_index = interface_lines.findIndex((item) => item.includes(does_exist.public_key));
+        dedicated_ip = interface_lines[public_key_line_index + 2].split(" = ")[1];
+    }
 
     const Jc_value = get_interface_key(interface,"Jc");
     const Jmin_value = get_interface_key(interface,"Jmin");
@@ -211,7 +225,18 @@ const create_user = async (username, expire, data_limit, ip_limit) =>
     const H4_value = get_interface_key(interface,"H4");
     const amnezia_port = get_interface_key(interface,"ListenPort");
 
-    var new_interface =
+
+    var new_interface = null;
+
+    if(unlock)
+    {
+        new_interface = interface;
+        new_interface = new_interface.replace(`PublicKey = ${does_exist.public_key}`,`PublicKey = ${public_key}`);
+    }
+
+    else
+    {
+        new_interface =
 `${interface}
 [Peer]
 PublicKey = ${public_key}
@@ -219,6 +244,9 @@ PresharedKey = ${psk}
 AllowedIPs = ${dedicated_ip}
 
 `
+    }
+
+
 
     var connection_string =
 `
@@ -255,7 +283,8 @@ PersistentKeepalive = 25
         api_key:jwt.sign({username},SUB_JWT_SECRET),
     }
 
-    var subscription_url = await encode_amnezia_data(JSON.stringify(subscription_url_raw));
+    var subscription_url = null;
+    if(!unlock) subscription_url = await encode_amnezia_data(JSON.stringify(subscription_url_raw));
 
     console.log(subscription_url);
 
@@ -299,32 +328,64 @@ PersistentKeepalive = 25
     creation_date[creation_date.length - 2] = temp;
     creation_date = creation_date.join(" ");
 
-    clients_table.push
-    ({
-        clientId: public_key,
-        userData:
+
+    if(unlock)
+    {
+        clients_table = clients_table.map((item) =>
         {
-            clientName: username,
-            creationDate: creation_date,
-        }
-    });
+            if(item.userData.clientName == username)
+            {
+                item.clientId = public_key;
+            }
+
+            return item;
+        });
+    }
+
+    else
+    {
+        clients_table.push
+        ({
+            clientId: public_key,
+            userData:
+            {
+                clientName: username,
+                creationDate: creation_date,
+            }
+        });
+    }
+        
 
     await replace_wg0_interface(new_interface);
-
+        
     await replace_amnezia_clients_table(JSON.stringify(clients_table,null,4));
 
-    await User.create(
+    if(unlock)
     {
-        username: username,
-        expire: expire,
-        data_limit: data_limit,
-        connection_string: connection_string,
-        subscription_url: subscription_url,
-        real_subscription_url: real_subscription_url,
-        public_key: public_key,
-        maximum_connections: ip_limit,
-    });
+        await User.updateOne({username},
+        {
+            connection_string: connection_string,
+            real_subscription_url: real_subscription_url,
+            public_key: public_key,
+            connection_uuids: [],
+        });
+    }
 
+    else
+    {
+        await User.create
+        ({
+            username: username,
+            expire: expire,
+            data_limit: data_limit,
+            connection_string: connection_string,
+            subscription_url: subscription_url,
+            real_subscription_url: real_subscription_url,
+            public_key: public_key,
+            maximum_connections: ip_limit,
+        });
+    }
+            
     await sync_configs();
 
     return {
@@ -564,7 +625,7 @@ const get_real_subscription_url = async (api_key,installation_uuid) =>
 
 const unlock_user_account = async (username) =>
 {
-    await User.updateOne({username}, {connection_uuids: []});
+    await create_user(username,0,0,0,true);
 }
 
 const decode_base64_data = (data) =>
