@@ -606,15 +606,14 @@ const get_real_subscription_url = async (api_key,installation_uuid) =>
     var decoded = jwt.verify(api_key, SUB_JWT_SECRET);
     console.log(`===>Serving subscription url for ${decoded.username}`);
     var user = await User.findOne({username: decoded.username});
-
+    // console.log(user);
     if(!user.connection_uuids.includes(installation_uuid))
     {
         if(user.connection_uuids.length >= user.maximum_connections) throw new Error("Maximum connections reached");
         else
         {
             if(user.connection_uuids.length == 0) user.expire = get_now() + user.expire - user.created_at;
-            user.connection_uuids.push(installation_uuid);
-            await user.save();
+            await User.updateOne({username: user.username}, {connection_uuids: [...user.connection_uuids, installation_uuid], expire: user.expire});
         }
     }
 
