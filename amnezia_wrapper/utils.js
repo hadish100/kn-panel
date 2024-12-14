@@ -541,6 +541,11 @@ const exec_on_container = async (container_id, cmd) =>
     return await exec(`docker exec ${container_id} ${cmd}`);
 }
 
+const exec_on_container_sh = async (container_id, cmd) =>
+{
+    return await exec(`docker exec ${container_id} sh -c "${cmd}"`);
+}
+
 const sync_configs = async () =>
 {
     var container_id = await get_amnezia_container_id();
@@ -694,12 +699,14 @@ const get_next_available_ip = async () =>
     const number2ip = (num) => [num >>> 24, (num >>> 16) & 255, (num >>> 8) & 255, num & 255].join(".");
 
     const subnet_start = ip2number("10.8.1.2");
-    const subnet_end = ip2number("10.8.255.254");
+    const subnet_end = ip2number("10.8.255.255");
 
     const used_arr = new Set(ips_arr.map(ip2number));
 
     for (let ip = subnet_start; ip <= subnet_end; ip++) 
     {
+        if(number2ip(ip).endsWith(".0") || number2ip(ip).endsWith(".255")) continue;
+        
         if (!used_arr.has(ip)) 
         {
             return number2ip(ip) + "/32";
@@ -709,6 +716,17 @@ const get_next_available_ip = async () =>
     throw new Error("No more available IPs");
     
 
+}
+
+const restart_awg_container = async () =>
+{
+    await exec("docker restart amnezia-awg");
+    const container_id = await get_amnezia_container_id();
+    await exec_on_container_sh(container_id,"iptables -A FORWARD -s 10.8.2.0/24 -j ACCEPT");
+    await exec_on_container_sh(container_id,"iptables -t nat -A POSTROUTING -s 10.8.2.0/24 -o eth0 -j MASQUERADE"); 
+    await exec_on_container_sh(container_id,"iptables -t nat -A POSTROUTING -s 10.8.2.0/24 -o eth1 -j MASQUERADE"); 
+    await exec_on_container_sh(container_id,"iptables-save > /etc/iptables/rules.v4"); 
+    console.log("AWG container restarted");
 }
 
 const backup_data = async () =>
@@ -923,6 +941,7 @@ module.exports =
     sleep,
     get_real_subscription_url,
     unlock_user_account,
-    
+    restart_awg_container,
+
     $sync_accounting,
 }
