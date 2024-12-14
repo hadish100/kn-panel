@@ -658,6 +658,9 @@ const get_next_available_ip = async () =>
     var ips = interface.split("\n").filter((item) => item.includes("AllowedIPs"));
     var ips_arr = ips.map((item) => item.split(" = ")[1]);
     ips_arr = ips_arr.map((item) => item.split("/")[0]);
+
+
+    /*
     var last_ip = ips_arr[ips_arr.length - 1];
     var last_ip_arr = last_ip.split(".");
     if(last_ip_arr[3] == 255)
@@ -685,6 +688,26 @@ const get_next_available_ip = async () =>
     }
 
     return last_ip_arr.join(".") + "/32";
+    */
+    
+    const ip2number = (ip) => ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0);
+    const number2ip = (num) => [num >>> 24, (num >>> 16) & 255, (num >>> 8) & 255, num & 255].join(".");
+
+    const subnet_start = ip2number("10.8.1.2");
+    const subnet_end = ip2number("10.8.255.254");
+
+    const used_arr = new Set(ips_arr.map(ip2number));
+
+    for (let ip = subnet_start; ip <= subnet_end; ip++) 
+    {
+        if (!used_arr.has(ip)) 
+        {
+            return number2ip(ip) + "/32";
+        }
+    }
+
+    throw new Error("No more available IPs");
+    
 
 }
 
