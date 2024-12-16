@@ -600,12 +600,6 @@ const replace_amnezia_clients_table = async (new_table) =>
     await fs.unlink(`./temp${file_id}`);
 }
 
-const restart_amnezia_container = async () =>
-{
-    await exec(`docker restart amnezia-awg`);
-    console.log("----------- Amnezia container restarted -----------");
-}
-
 const get_real_subscription_url = async (api_key,installation_uuid) =>
 {
     var decoded = jwt.verify(api_key, SUB_JWT_SECRET);
@@ -885,7 +879,7 @@ const $sync_accounting = async () =>
 
 cron.schedule('0 5 * * *', () => 
 {
-    restart_amnezia_container();
+    restart_awg_container();
 }, 
 {
     timezone: 'Asia/Tehran',
