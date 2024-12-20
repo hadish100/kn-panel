@@ -394,9 +394,11 @@ app.post("/create_user", async (req, res) => {
     else if (isNaN(expire) || isNaN(data_limit) || isNaN(ip_limit)) res.send({ status: "ERR", msg: "invalid inputs" })
     else if (ip_limit % 1 != 0) res.send({ status: "ERR", msg: "ip limit must be an integer" })
     else if (ip_limit < 1) res.send({ status: "ERR", msg: "minimum allowed ip limit is 1" })
+    else if (!selected_panel) res.send({ status: "ERR", msg: "no available server" });
     else if (selected_panel.active_users >= selected_panel.panel_user_max_count) res.send({ status: "ERR", msg: "panel is full" }) 
     else if (selected_panel.disable) res.send({ status: "ERR", msg: "panel is disabled" })
     else if (selected_panel.panel_traffic <= selected_panel.panel_data_usage) res.send({ status: "ERR", msg: "panel is out of traffic" })
+    else if (selected_panel.panel_traffic - selected_panel.panel_data_usage < data_limit) res.send({ status: "ERR", msg: "insufficient traffic on server" });
     else if (selected_panel.panel_type != "AMN" && data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (selected_panel.panel_type == "AMN" && expire % 30 != 0) res.send({ status: "ERR", msg: "invalid expire time" })
     else if (selected_panel.panel_type == "AMN" && expire * ip_limit * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
@@ -404,8 +406,6 @@ app.post("/create_user", async (req, res) => {
     else if (selected_panel.panel_type != "AMN" && corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
     else if (all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({ status: "ERR", msg: "username already exists" })
-    else if (!selected_panel) res.send({ status: "ERR", msg: "no available server" });
-    else if (selected_panel.panel_traffic - selected_panel.panel_data_usage < data_limit) res.send({ status: "ERR", msg: "insufficient traffic on server" });
     else {
 
 
