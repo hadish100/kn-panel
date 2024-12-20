@@ -386,7 +386,7 @@ app.post("/create_user", async (req, res) => {
     var agent_id = corresponding_agent.id;
     var all_usernames = [...(await get_all_users()).map(x => x.username)];
     var panels_arr = await get_panels();
-    var selected_panel = panels_arr.filter(x => x.panel_country == country && (x.active_users < x.panel_user_max_count) && (x.disable == 0) && (x.panel_traffic > x.panel_data_usage) )[0];
+    var selected_panel = panels_arr.filter(x => x.panel_country == country )[0];
     var agent_user_count = (await get_all_users()).filter(x => x.agent_id == agent_id).length;
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
@@ -394,6 +394,9 @@ app.post("/create_user", async (req, res) => {
     else if (isNaN(expire) || isNaN(data_limit) || isNaN(ip_limit)) res.send({ status: "ERR", msg: "invalid inputs" })
     else if (ip_limit % 1 != 0) res.send({ status: "ERR", msg: "ip limit must be an integer" })
     else if (ip_limit < 1) res.send({ status: "ERR", msg: "minimum allowed ip limit is 1" })
+    else if (selected_panel.active_users >= selected_panel.panel_user_max_count) res.send({ status: "ERR", msg: "panel is full" }) 
+    else if (selected_panel.disable) res.send({ status: "ERR", msg: "panel is disabled" })
+    else if (selected_panel.panel_traffic <= selected_panel.panel_data_usage) res.send({ status: "ERR", msg: "panel is out of traffic" })
     else if (selected_panel.panel_type != "AMN" && data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (selected_panel.panel_type == "AMN" && expire % 30 != 0) res.send({ status: "ERR", msg: "invalid expire time" })
     else if (selected_panel.panel_type == "AMN" && expire * ip_limit * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
