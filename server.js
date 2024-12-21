@@ -6,7 +6,7 @@ var AdmZip = require("adm-zip");
 var { accounts_clct, panels_clct, users_clct, logs_clct } = require('./db_interface');
 const amnezia_sub_page_html = fs.readFileSync("custom_sub/amnezia.html").toString();
 const not_found_page_html = fs.readFileSync("custom_sub/404.html").toString();
-const AMNEZIA_COEFFICIENT = 1.65;
+const AMNEZIA_COEFFICIENT = 1.33;
 var SD_VARIABLE = 0;
 
 const { 
