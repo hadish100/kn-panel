@@ -792,10 +792,10 @@ app.post("/edit_user", async (req, res) => {
 
             if(panel_obj.panel_type == "MZ")
             {
-                if(!( 
-                    (corresponding_agent.business_mode == 1) &&
-                    (user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) /*&&
-                    (old_data_limit > data_limit) */
+                if(( 
+                    (corresponding_agent.business_mode == 1)
+                    //(user_obj.used_traffic > user_obj.data_limit/4 || (user_obj.expire - user_obj.created_at) < (Math.floor(Date.now()/1000) - user_obj.created_at)*4 ) /*&&
+                    //(old_data_limit > data_limit)
                 )) await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit + old_data_limit) });
             }
 
