@@ -368,6 +368,7 @@ PersistentKeepalive = 25
             real_subscription_url: real_subscription_url,
             public_key: public_key,
             connection_uuids: [],
+            has_been_unlocked: true,
         });
     }
 
@@ -611,7 +612,7 @@ const get_real_subscription_url = async (api_key,installation_uuid) =>
         if(user.connection_uuids.length >= user.maximum_connections) throw new Error("Maximum connections reached");
         else
         {
-            if(user.connection_uuids.length == 0) user.expire = get_now() + user.expire - user.created_at;
+            if(user.connection_uuids.length == 0 && !user.has_been_unlocked) user.expire = get_now() + user.expire - user.created_at;
             await User.updateOne({username: user.username}, {connection_uuids: [...user.connection_uuids, installation_uuid], expire: user.expire});
         }
     }
@@ -902,6 +903,7 @@ const user_schema = new mongoose.Schema
     public_key: { type: String, default: "" },
     maximum_connections: { type: Number, default: 1 },
     connection_uuids: { type: Array, default: [] },
+    has_been_unlocked: { type: Boolean, default: false },
 
 },{collection: 'users',versionKey: false});
 
