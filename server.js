@@ -395,7 +395,7 @@ app.post("/create_user", async (req, res) => {
     else if (ip_limit % 1 != 0) res.send({ status: "ERR", msg: "ip limit must be an integer" })
     else if (ip_limit < 1) res.send({ status: "ERR", msg: "minimum allowed ip limit is 1" })
     else if (!selected_panel) res.send({ status: "ERR", msg: "no available server" });
-    else if (selected_panel.active_users >= selected_panel.panel_user_max_count) res.send({ status: "ERR", msg: "panel is full" }) 
+    else if (selected_panel.total_users >= selected_panel.panel_user_max_count) res.send({ status: "ERR", msg: "panel is full" }) 
     else if (selected_panel.disable) res.send({ status: "ERR", msg: "panel is disabled" })
     else if (selected_panel.panel_traffic <= selected_panel.panel_data_usage) res.send({ status: "ERR", msg: "panel is out of traffic" })
     else if (selected_panel.panel_traffic - selected_panel.panel_data_usage < data_limit) res.send({ status: "ERR", msg: "insufficient traffic on server" });
