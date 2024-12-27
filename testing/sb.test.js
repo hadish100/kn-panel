@@ -198,7 +198,7 @@ const {
 // dl_file("http://p.limoovp1.sbs:7002/dldb","db.zip");
 
 /*
-db.users.updateMany({'country': 'All1'},{$set:{'country': 'V2ray_All'}})
-db.panels.updateMany({'panel_country': 'All1'},{$set:{'panel_country': 'V2ray_All'}})
-db.accounts.updateMany({'is_admin': 0},{$set:{'country': 'V2ray_All'}})
+db.users.updateMany({'country': 'Amnezia_Poland1'},{$set:{'country': 'Amnezia_Netherland1'}})
+db.panels.updateMany({'panel_country': 'Amnezia_Poland1'},{$set:{'panel_country': 'Amnezia_Netherland1'}})
+db.accounts.updateMany({'is_admin': 0},{$set:{'country': 'Amnezia_Netherland1,Amnezia_Turkey1'}})
 */
