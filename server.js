@@ -391,6 +391,7 @@ app.post("/create_user", async (req, res) => {
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
     else if (!corresponding_agent.create_access) res.send({ status: "ERR", msg: "access denied" })
+    else if (!corresponding_agent.country.split(",").includes(country)) res.send({ status: "ERR", msg: "country access denied" })
     else if (isNaN(expire) || isNaN(data_limit) || isNaN(ip_limit)) res.send({ status: "ERR", msg: "invalid inputs" })
     else if (ip_limit % 1 != 0) res.send({ status: "ERR", msg: "ip limit must be an integer" })
     else if (ip_limit < 1) res.send({ status: "ERR", msg: "minimum allowed ip limit is 1" })
@@ -517,6 +518,7 @@ app.post("/delete_user", async (req, res) => {
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (agent_obj.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     else if(!agent_obj.delete_access) {res.send({ status: "ERR", msg: "access denied" });return;}
+    else if(!agent_obj.country.split(",").includes(user_obj.country)) {res.send({ status: "ERR", msg: "country access denied" });return;}
     var result = await delete_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" })
     else {
@@ -599,6 +601,7 @@ app.post("/enable_user", async (req, res) => {
     var panel_obj = await get_panel(user_obj.corresponding_panel_id);
     if (account.disable) {res.send({ status: "ERR", msg: "your account is disabled" });return;}
     else if(!account.edit_access) {res.send({ status: "ERR", msg: "access denied" });return;}
+    else if(!account.country.split(",").includes(user_obj.country)) {res.send({ status: "ERR", msg: "country access denied" });return;}
     var result = await enable_vpn(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
     if (result == "ERR") res.send({ status: "ERR", msg: "failed to connect to marzban" });
     else {
@@ -756,6 +759,7 @@ app.post("/edit_user", async (req, res) => {
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
     else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
+    else if (!corresponding_agent.country.split(",").includes(country)) res.send({ status: "ERR", msg: "country access denied" })
     else if(b2gb(user_obj.used_traffic) > data_limit) res.send({ status: "ERR", msg: "data limit can't be reduced" })
     else if (panel_obj.panel_type != "AMN" &&  data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (panel_obj.panel_type == "AMN" && expire * user_obj.ip_limit * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data + old_data_limit) res.send({ status: "ERR", msg: "not enough allocatable data" })
@@ -864,6 +868,7 @@ app.post("/reset_user", async (req, res) => {
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
     else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
+    else if (!corresponding_agent.country.split(",").includes(panel_obj.panel_country)) res.send({ status: "ERR", msg: "country access denied" })
     else 
     {  
         if(panel_obj.panel_type == "MZ")
@@ -913,6 +918,7 @@ app.post("/unlock_user", async (req, res) => {
 
     if (corresponding_agent.disable) res.send({ status: "ERR", msg: "your account is disabled" })
     else if(!corresponding_agent.edit_access) res.send({ status: "ERR", msg: "access denied" })
+    else if (!corresponding_agent.country.split(",").includes(panel_obj.panel_country)) res.send({ status: "ERR", msg: "country access denied" })
     else 
     {  
 

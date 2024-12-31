@@ -278,7 +278,7 @@ PersistentKeepalive = 25
         config_version:1,
         api_endpoint:`https://${process.env.ENDPOINT_ADDRESS}/sub`,
         protocol:"awg",
-        name:username,
+        name:process.env.COUNTRY_EMOJI + " " + username,
         description:generate_desc(expire,ip_limit),
         api_key:jwt.sign({username},SUB_JWT_SECRET),
     }
