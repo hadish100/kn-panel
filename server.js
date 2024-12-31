@@ -804,12 +804,16 @@ app.post("/edit_user", async (req, res) => {
             }
 
             else if(panel_obj.panel_type == "AMN") 
-            if(old_expire != expire) 
-            await update_account(corresponding_agent.id, 
-            { 
-                allocatable_data: format_number(corresponding_agent.allocatable_data - user_obj.ip_limit * AMNEZIA_COEFFICIENT * expire),
-                used_traffic: 0,
-            });
+            if(old_expire != expire)
+            {
+                await update_account(corresponding_agent.id, 
+                { 
+                    allocatable_data: format_number(corresponding_agent.allocatable_data - user_obj.ip_limit * AMNEZIA_COEFFICIENT * expire),
+                });
+
+                await update_user(user_id, { used_traffic: 0 });
+            }
+
 
 
             var account = await token_to_account(access_token);
