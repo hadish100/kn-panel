@@ -466,12 +466,8 @@ const format_timestamp = (timestamp) =>
 
 const reset_user_account = async (username) =>
 {
-    
-    // const time_to_add = user_obj.expire - user_obj.created_at;
-    // user_obj.expire = get_now() + time_to_add;
-    user_obj.lifetime_used_traffic += user_obj.used_traffic;
-    user_obj.used_traffic = 0;
-    await user_obj.save();
+    const user_obj = await User.findOne({username});
+    await User.updateOne({username}, {used_traffic: 0, lifetime_used_traffic: user_obj.lifetime_used_traffic + user_obj.used_traffic});
     return true;
 }
 
@@ -487,13 +483,11 @@ const edit_user = async (username, status, expire, data_limit) =>
 
     if(get_days_left(user_obj.expire) != get_days_left(expire))
     {
-        user_obj.lifetime_used_traffic += user_obj.used_traffic;
-        user_obj.used_traffic = 0;
+        await User.updateOne({username}, {expire, data_limit, used_traffic: 0, lifetime_used_traffic: user_obj.lifetime_used_traffic + user_obj.used_traffic});
+        return true;
     }
     
-    user_obj.expire = expire;
-    user_obj.data_limit = data_limit;
-    await user_obj.save();
+    await User.updateOne({username}, {data_limit, expire});
     return true;
 }
 
