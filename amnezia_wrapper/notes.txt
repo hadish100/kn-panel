@@ -91,3 +91,4 @@ PersistentKeepalive = 25
 // (item?.corresponding_panel_id == 948263502) ? "AMN" : "MZ" == "AMN"? { icon: <LockIcon />, type: "button", label: "Unlock Account", className: "ghosted", onClick: () => onUnlockItem(item.id) } :
 npm i express dotenv mongoose jsonwebtoken jalali-moment node-cron adm-zip
 sudo apt install wireguard
+mongoimport --uri "mongodb://localhost:27017/knaw" --collection users --file /root/users.json --jsonArray
