@@ -5,7 +5,7 @@ wg show wg0 dump
 wg genkey
 echo ${privateKey} | wg pubkey
 wg genpsk
-wg syncconf wg0 <(wg-quick strip ./wg0.conf)
+cd /opt/amnezia/awg/ && wg syncconf wg0 <(wg-quick strip ./wg0.conf)
 wg-quick down wg0
 wg-quick up wg0
 wg show wg0 public-key
@@ -92,3 +92,5 @@ PersistentKeepalive = 25
 npm i express dotenv mongoose jsonwebtoken jalali-moment node-cron adm-zip
 sudo apt install wireguard
 mongoimport --uri "mongodb://localhost:27017/knaw" --collection users --file /root/users.json --jsonArray
+docker cp amnezia_interface.conf 213:/opt/amnezia/awg/wg0.conf
+docker cp amnezia_clients_table.json 213:/opt/amnezia/awg/clientsTable
