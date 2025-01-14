@@ -644,18 +644,23 @@ const update_users_subscription_desc = async () =>
 {
     const users = await User.find();
 
+    console.log("===> Updating Sub Links");
+
     for(let user of users)
     {
         if(user.connection_uuids.length == 0 && !user.has_been_unlocked && user.created_at + 86400 < get_now())
         {
+
+            const new_expire = get_now() + user.expire - user.created_at;
+
             var subscription_url_raw = 
             {
                 config_version:1,
                 api_endpoint:`https://${process.env.ENDPOINT_ADDRESS}/sub`,
                 protocol:"awg",
-                name:process.env.COUNTRY_EMOJI + " " + username,
-                description:generate_desc(user.expire,user.maximum_connections),
-                api_key:jwt.sign({username},SUB_JWT_SECRET),
+                name:process.env.COUNTRY_EMOJI + " " + user.username,
+                description:generate_desc(new_expire,user.maximum_connections),
+                api_key:jwt.sign({username:user.username},SUB_JWT_SECRET),
             }
         
 
@@ -664,12 +669,14 @@ const update_users_subscription_desc = async () =>
             await User.updateOne({username: user.username},
             {
                 subscription_url,
-                expire: get_now() + user.expire - user.created_at,
+                expire: new_expire,
             });
 
             console.log(`User ${user.username} subscription updated`);
         }
     }
+
+    console.log("===> Sub Links Updated");
 }
 
 const unlock_user_account = async (username) =>
