@@ -382,6 +382,7 @@ const reset_marzban_user = async (link, username, password, vpn_name) => {
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
         var res = await axios.post(link + "/api/user/" + vpn_name + "/reset", {}, { headers });
+        //update_user_links_bg(link,username,password,vpn_name);
         return "DONE";
     }
 
@@ -580,7 +581,7 @@ const syslog = async (str,is_positive) =>
             is_positive:is_positive?1:0
         });
 
-        if(str.startsWith("!")) str = str.slice(1);
+        str = str.replace(/!/g,"");
         console.log(str);
 
         return "DONE";

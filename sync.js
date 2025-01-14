@@ -137,6 +137,14 @@ async function main()
 
                     if (user.expire != marzban_user.expire) await update_user(user.id, { expire: marzban_user.expire });
                     if (user.data_limit != marzban_user.data_limit) await update_user(user.id, { data_limit: marzban_user.data_limit });
+                    if (marzban_user.subscription_url)
+                    {
+                        if(user.real_subscription_url != marzban_user.subscription_url) 
+                        {
+                            await update_user(user.id, { real_subscription_url: marzban_user.subscription_url });
+                            await syslog("updated subscription url for user !" + user.username + " in panel !" + panel.panel_url,1);
+                        }
+                    }
                     if (user.used_traffic != marzban_user.used_traffic) 
                     {
                         
