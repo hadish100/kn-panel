@@ -140,7 +140,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         },
     ]
 
-    const panel_type = (item?.corresponding_panel_id == 948263502 || item?.corresponding_panel_id == 855340348) ? "AMN" : "MZ"
+    const panel_type = (item?.corresponding_panel_id == 948263502 || item?.corresponding_panel_id == 855340348 || item?.corresponding_panel_id == 952780616) ? "AMN" : "MZ"
     
 
     const secondaryButtons = [
