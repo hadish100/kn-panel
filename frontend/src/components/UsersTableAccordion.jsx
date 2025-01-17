@@ -26,7 +26,7 @@ const UsersTableAccordion = ({
                     <ProgressBar dataUsage={dataUsage} totalData={totalData} status={userStatus} />
                     <div className="progress-bar__text">
                         <span className="progress-bar__text__data-usage">{convertData(dataUsage)} / {convertData(totalData)}</span>
-                        <span className="progress-bar__text__total-data">Total: {lifetimeUsedTraffic}</span>
+                        <span className="progress-bar__text__total-data">Total: {convertData(lifetimeUsedTraffic)}</span>
                     </div>
                     <div style={{ marginTop: "1.25rem", paddingBottom: "1rem", display: "flex", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>

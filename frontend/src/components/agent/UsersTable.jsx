@@ -99,7 +99,7 @@ const UsersTable = ({ items, currentItems, onEditItem, onCreateItem }) => {
                                     expireTime={expireTime}
                                     totalData={item.data_limit}
                                     dataUsage={item.used_traffic}
-                                    lifetimeUsedTraffic={lifetime_used_traffic}
+                                    lifetimeUsedTraffic={item.lifetime_used_traffic}
                                     config={config}
                                     subscriptionLink={subscriptionLink}
                                     QRCodeLinks={QRCodeLinks}
