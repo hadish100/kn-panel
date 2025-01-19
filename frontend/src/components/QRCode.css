@@ -32,14 +32,35 @@
     width: fit-content;
 }
 
+.qr-code__main
+{
+    gap:1rem;
+}
+
+.qr-code-svg-div-container
+{
+    gap:1rem;
+}
+
 @media (max-width: 900px) {
     .qr-code__main {
         flex-direction: column;
     }
 
+    .qr-code-svg-div
+    {
+        width:200px;
+        height:200px;
+    }
+
     .qr-code__modal .modal__content {
         top: 10px;
         width: 1;
+    }
+
+    .qr-code-svg-div-container
+    {
+        gap:0.7rem;
     }
 }
 

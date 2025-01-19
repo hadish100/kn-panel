@@ -433,7 +433,17 @@ const get_user_for_marzban = async (username) =>
 const get_all_users_for_marzban = async () =>
 {
 
-    const users = await User.find({}, {username: 1, expire: 1, data_limit: 1, used_traffic: 1, lifetime_used_traffic: 1, status: 1, created_at: 1}).lean()
+    const users = await User.find({},
+    {   
+        username: 1,
+        expire: 1,
+        data_limit: 1,
+        used_traffic: 1,
+        lifetime_used_traffic: 1,
+        status: 1,
+        created_at: 1,
+        subscription_url: 1,
+    }).lean()
 
 
     for(let user of users)
@@ -621,14 +631,52 @@ const get_real_subscription_url = async (api_key,installation_uuid) =>
         if(user.connection_uuids.length >= user.maximum_connections) throw new Error("Maximum connections reached");
         else
         {
-            if(user.connection_uuids.length == 0 && !user.has_been_unlocked) user.expire = get_now() + user.expire - user.created_at;
-            await User.updateOne({username: user.username}, {connection_uuids: [...user.connection_uuids, installation_uuid], expire: user.expire});
+            await User.updateOne({username: user.username}, {connection_uuids: [...user.connection_uuids, installation_uuid]});
         }
     }
 
     return {
         config: user.real_subscription_url,
     }
+}
+
+const update_users_subscription_desc = async () =>
+{
+    const users = await User.find();
+
+    console.log("===> Updating Sub Links");
+
+    for(let user of users)
+    {
+        if(user.connection_uuids.length == 0 && !user.has_been_unlocked && user.created_at + 86400 < get_now())
+        {
+
+            const new_expire = get_now() + user.expire - user.created_at;
+
+            var subscription_url_raw = 
+            {
+                config_version:1,
+                api_endpoint:`https://${process.env.ENDPOINT_ADDRESS}/sub`,
+                protocol:"awg",
+                name:process.env.COUNTRY_EMOJI + " " + user.username,
+                description:generate_desc(new_expire,user.maximum_connections),
+                api_key:jwt.sign({username:user.username},SUB_JWT_SECRET),
+            }
+        
+
+            const subscription_url = await encode_amnezia_data(JSON.stringify(subscription_url_raw));
+
+            await User.updateOne({username: user.username},
+            {
+                subscription_url,
+                expire: new_expire,
+            });
+
+            console.log(`User ${user.username} subscription updated`);
+        }
+    }
+
+    console.log("===> Sub Links Updated");
 }
 
 const unlock_user_account = async (username) =>
@@ -895,6 +943,14 @@ cron.schedule('0 5 * * *', () =>
     timezone: 'Asia/Tehran',
 });
 
+cron.schedule('0 0 * * *', () => 
+{
+    update_users_subscription_desc();
+}, 
+{
+    timezone: 'Asia/Tehran',
+});
+
 
 const user_schema = new mongoose.Schema
 ({
@@ -947,6 +1003,7 @@ module.exports =
     get_real_subscription_url,
     unlock_user_account,
     restart_awg_container,
+    update_users_subscription_desc,
 
     $sync_accounting,
 }

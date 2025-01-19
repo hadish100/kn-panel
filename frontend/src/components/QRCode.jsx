@@ -40,9 +40,9 @@ const QRCode = ({ onClose, showQRCode, QRCodeLinks, subscriptionLink }) => {
                                 <XMarkIcon />
                             </div>
                         </header>
-                        <main className='qr-code__main' style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-                                <QRCodeSVG value={subscriptionLink} size={300} />
+                        <main className='qr-code__main' style={{ display: "flex", justifyContent: "center" }}>
+                            <div className='qr-code-svg-div-container' style={{ display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                <QRCodeSVG value={subscriptionLink} size={300} className='qr-code-svg-div' />
                                 <div className='download_sublink_btn_container' >
                                 <Button className="outlined" 
                                 
@@ -73,7 +73,7 @@ const QRCode = ({ onClose, showQRCode, QRCodeLinks, subscriptionLink }) => {
                                 </div>
                             
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+                            <div className='qr-code-svg-div-container' style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                 <div className='links__slider'>
                                     <div className='qr-code__links'>
                                         <motion.div
@@ -83,7 +83,7 @@ const QRCode = ({ onClose, showQRCode, QRCodeLinks, subscriptionLink }) => {
                                         >
                                             {QRCodeLinks.map((QRCodeLink, index) => {
                                                 return (
-                                                    <QRCodeSVG key={index} value={QRCodeLink} size={300} />
+                                                    <QRCodeSVG key={index} value={QRCodeLink} size={300} className='qr-code-svg-div' />
                                                 )
                                             })}
                                         </motion.div>
