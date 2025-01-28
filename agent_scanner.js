@@ -23,7 +23,7 @@ async function main()
         for(let agent of agents)
         {
             
-            if(agent.volume < 0 && agent.disable == 0)
+            if(agent.volume < 0 && agent.disable == 0 && (agent.business_mode == 0 || process.env.RELEASE != "REZA"))
             {
                 var access_token = (await axios.post("http://knp-backend:" + process.env.SERVER_PORT + "/login", { username, password })).data.access_token;
                 var disable_agent_request = await axios.post("http://knp-backend:" + process.env.SERVER_PORT + "/disable_agent", { access_token, agent_id: agent.id });

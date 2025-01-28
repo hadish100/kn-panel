@@ -278,7 +278,7 @@ async function main()
                             "ip_limit":complete_user_info.ip_limit || 2,
                           });
 
-                        await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit , lifetime_volume: corresponding_agent.lifetime_volume + marzban_user.data_limit });
+                        if(process.env.RELEASE != "REZA") await update_account(corresponding_agent.id, { volume: corresponding_agent.volume + marzban_user.data_limit , lifetime_volume: corresponding_agent.lifetime_volume + marzban_user.data_limit });
                         await syslog("user !" + marzban_user.username + " was added for agent !" + corresponding_agent.username + " from panel : !" + panel.panel_url,1 );
                     }
                 }

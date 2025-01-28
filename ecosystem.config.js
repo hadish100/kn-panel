@@ -22,7 +22,7 @@ if(!backup_config.telegram.disabled || !backup_config.email.disabled)
   });
 }
 
-if(process.env.RELEASE=="ALI")
+if(process.env.RELEASE=="ALI" || process.env.RELEASE=="REZA")
 {
   export_arr.push
   ({

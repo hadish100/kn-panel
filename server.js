@@ -127,7 +127,7 @@ app.post("/get_users", async (req, res) => {
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
-    if(process.env.RELEASE == "ALI" || process.env.RELEASE == "V" || process.env.RELEASE == "AHWAZGSM") obj_arr = obj_arr.map(x => {x.subscription_url = x.real_subscription_url;return x;});
+    if(process.env.RELEASE == "ALI" || process.env.RELEASE == "V" || process.env.RELEASE == "AHWAZGSM" || process.env.RELEASE == "REZA") obj_arr = obj_arr.map(x => {x.subscription_url = x.real_subscription_url;return x;});
     
     obj_arr = obj_arr.reverse();
     
@@ -283,7 +283,7 @@ app.post("/create_agent", async (req, res) => {
             password,
             volume: gb2b(volume),
             lifetime_volume: gb2b(volume),
-            allocatable_data: process.env.RELEASE == "ALI" ? 100000 : format_number(volume),
+            allocatable_data: (process.env.RELEASE == "ALI" || process.env.RELEASE == "REZA") ? 100000 : format_number(volume),
             min_vol: format_number(min_vol),
             max_users: parseInt(max_users),
             max_days: parseInt(max_days),
@@ -525,6 +525,7 @@ app.post("/delete_user", async (req, res) => {
         
         if(panel_obj.panel_type == "MZ")
         {
+            if(process.env.RELEASE != "REZA")
             if( !(agent_obj.business_mode == 1 && (user_obj.used_traffic > user_obj.data_limit/4 || 7*86400 < (Math.floor(Date.now()/1000) - user_obj.created_at) )) ) await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + b2gb(user_obj.data_limit - user_obj.used_traffic)) });
         }
 
@@ -669,6 +670,7 @@ app.post("/edit_agent", async (req, res) => {
         };
 
         if(process.env.RELEASE == "ALI") delete update_obj.allocatable_data;
+        if(process.env.RELEASE == "REZA") delete update_obj.allocatable_data;
 
         await update_account(agent_id, update_obj);
         var account = await token_to_account(access_token);
