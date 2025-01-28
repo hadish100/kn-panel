@@ -670,7 +670,11 @@ app.post("/edit_agent", async (req, res) => {
         };
 
         if(process.env.RELEASE == "ALI") delete update_obj.allocatable_data;
-        if(process.env.RELEASE == "REZA") delete update_obj.allocatable_data;
+        if(process.env.RELEASE == "REZA") 
+        {
+            if(update_obj.business_mode == 1) delete update_obj.allocatable_data;
+            else update_obj.allocatable_data = format_number(volume);
+        }
 
         await update_account(agent_id, update_obj);
         var account = await token_to_account(access_token);
