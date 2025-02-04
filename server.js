@@ -1032,18 +1032,38 @@ app.post("/uldb", async (req, res) =>
 
 app.post("/get_panel_inbounds", async (req, res) => 
 {
-    var { country } = req.body;
+    var { country,access_token } = req.body;
     var panels = await get_panels();
     var panel = panels.filter(x => x.panel_country == country)[0];
     if(!panel) res.send({ status: "ERR", msg: 'panel not found' })
     else
     {
-        if(!panel.panel_inbounds) res.send({ status: "ERR", msg: 'inbounds not found' })
+        var inbounds_arr = panel.panel_inbounds
+        if(!inbounds_arr) res.send({ status: "ERR", msg: 'inbounds not found' })
         else
         {
+
+            var account = await token_to_account(access_token);
+            var {access_inbounds} = account;
+
+            if(access_inbounds && access_inbounds.length > 0)
+            {
+                for(let protocol of Object.keys(inbounds_arr))
+                {
+                    for(var i=0;i<inbounds_arr[protocol].length;i++)
+                    {
+                        if(!access_inbounds.includes(inbounds_arr[protocol][i].tag))
+                        {
+                            inbounds_arr[protocol].splice(i,1);
+                            i--;
+                        }
+                    }
+                }
+            }
+
             res.send
             ({
-                ...panel.panel_inbounds,
+                ...inbounds_arr,
                 panel_type:panel.panel_type
             });     
         }
