@@ -774,9 +774,9 @@ const restart_awg_container = async () =>
 {
     await exec("docker restart amnezia-awg");
     const container_id = await get_amnezia_container_id();
-    await exec_on_container_sh(container_id,"iptables -A FORWARD -s 10.8.2.0/24 -j ACCEPT");
-    await exec_on_container_sh(container_id,"iptables -t nat -A POSTROUTING -s 10.8.2.0/24 -o eth0 -j MASQUERADE"); 
-    await exec_on_container_sh(container_id,"iptables -t nat -A POSTROUTING -s 10.8.2.0/24 -o eth1 -j MASQUERADE"); 
+    await exec_on_container_sh(container_id,"iptables -A FORWARD -s 10.8.0.0/16 -j ACCEPT");
+    await exec_on_container_sh(container_id,"iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j MASQUERADE"); 
+    await exec_on_container_sh(container_id,"iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth1 -j MASQUERADE"); 
     await exec_on_container_sh(container_id,"iptables-save > /etc/iptables/rules.v4"); 
     console.log("AWG container restarted");
 }
