@@ -800,8 +800,8 @@ const backup_data = async () =>
     zip.addLocalFile("./dbbu/users.json");
     zip.addLocalFile("./dbbu/amnezia_clients_table.json");
     zip.addLocalFile("./dbbu/amnezia_interface.conf");
-    zip.addLocalFolder("/etc/nginx/sites-available","nginx");
-    zip.addLocalFolder("/etc/letsencrypt/live","certs");
+    zip.addLocalFolder("/etc/nginx/sites-available","sites-available");
+    zip.addLocalFolder("/etc/letsencrypt/live","live");
 
     zip.writeZip(final_file);
 
