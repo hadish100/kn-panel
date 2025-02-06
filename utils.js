@@ -211,7 +211,7 @@ const make_vpn = async (link, username, password, vpn_name, data_limit, expire, 
     }
 
     catch (err) {
-        console.log(err);
+        console.log(err?.response?.data);
         return "ERR";
     }
 }
