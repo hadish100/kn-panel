@@ -192,6 +192,7 @@ const get_panel_info = async (link, username, password) => {
 
 const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status, inbounds, ip_limit) => {
     try {
+        if(protocols.includes("panel_type")) protocols.splice(protocols.indexOf("panel_type"),1);
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
         var proxy_obj = proxy_obj_maker(protocols,flow_status,1)
