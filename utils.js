@@ -728,6 +728,7 @@ const notify_tgb = async () =>
         "138.124.127.32": "Reza",
         "188.245.166.164": "Test_Sina",
         "168.119.107.139": "jahanbani",
+        "5.75.198.190": "AmirNew",
     }
 
     var owner_string = "🔻 Owner: "
