@@ -192,7 +192,9 @@ const get_panel_info = async (link, username, password) => {
 
 const make_vpn = async (link, username, password, vpn_name, data_limit, expire, protocols, flow_status, inbounds, ip_limit) => {
     try {
+
         if(protocols.includes("panel_type")) protocols.splice(protocols.indexOf("panel_type"),1);
+        
         var headers = await auth_marzban(link, username, password);
         if (headers == "ERR") return "ERR";
         var proxy_obj = proxy_obj_maker(protocols,flow_status,1)
@@ -512,13 +514,13 @@ const delete_folder_content = async (dir_path) =>
 const disable_panel = async (panel_id) =>
 {
     await update_panel(panel_id, { disable:1,last_online:Math.floor(Date.now()/1000) });
-    await (await users_clct()).updateMany({corresponding_panel_id:panel_id},{$set:{status:"anonym",disable:0}})
+    //await (await users_clct()).updateMany({corresponding_panel_id:panel_id},{$set:{status:"anonym",disable:0}})
 }
 
 const enable_panel = async (panel_id) =>
 {
     var panel_obj = await get_panel(panel_id);
-    if(Math.floor(Date.now()/1000) - panel_obj.last_online > 600)
+    if(Math.floor(Date.now()/1000) - panel_obj.last_online > 600 && false)
     {
         try
         {
