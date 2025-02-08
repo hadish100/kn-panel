@@ -3,7 +3,7 @@ var { users_clct,logs_clct } = require('../db_interface');
 
 async function init()
 {
-    const users = await (await users_clct()).find({panel_url:"https://connection.irtunir.com"}).toArray()
+    const users = await (await users_clct()).find({corresponding_panel:"https://connection.irtunir.com"}).toArray()
     // const wrong_expire_users = users.filter(u=> u.expire - Math.floor(Date.now() / 1000) > 90 * 24 * 60 * 60)
     const wrong_expire_users = users.filter(u => true)
 
