@@ -12,15 +12,15 @@ async function init()
 
     for(let u of wrong_expire_users)
     {
-        const logs = await (await logs_clct()).findOne({$regex:{msg:`!${u.username} with !10000 GB data and`},$regex:{msg:`created user`}}).sort({time:-1})
+        const logs = await (await logs_clct()).find({$regex:{msg:`!${u.username} with !10000 GB data and`},$regex:{msg:`created user`}}).sort({time:-1}).limit(1).toArray()
 
-        if(!logs)
+        if(!logs[0])
         {
             console.log(`No logs found for ${u.username}`)
             continue
         }
 
-        const expire = logs.msg.split('!')[3].split(' ')[0]
+        const expire = logs[0].msg.split('!')[3].split(' ')[0]
 
         valid_expires[u.username] = expire
 
