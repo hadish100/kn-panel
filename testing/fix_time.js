@@ -12,7 +12,7 @@ async function init()
 
     for(let u of wrong_expire_users)
     {
-        const usernamePart = u.username.includes("_") ? u.username.split("_")[1] : u.username;
+        const usernamePart = u.username.includes("_") ? u.username.split("_").slice(1).join("_") : u.username
 
         const logs = await (await logs_clct()).find({
             $or: [
