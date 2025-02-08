@@ -12,15 +12,28 @@ async function init()
 
     for(let u of wrong_expire_users)
     {
+        const usernamePart = u.username.includes("_") ? u.username.split("_")[1] : u.username;
+
         const logs = await (await logs_clct()).find({
-            $and: [
-              { msg: { $regex: `!${u.username} with !10000.00 GB data and` } },
-              { msg: { $regex: `edited user` } }
+            $or: [
+                {
+                    $and: [
+                        { msg: { $regex: `!${u.username} with !10000\\.00 GB data and`, $options: "i" } },
+                        { msg: { $regex: `edited user`, $options: "i" } }
+                    ]
+                },
+                {
+                    $and: [
+                        { msg: { $regex: `!${usernamePart} with !10000 GB data and`, $options: "i" } },
+                        { msg: { $regex: `created user`, $options: "i" } }
+                    ]
+                }
             ]
-          })
-          .sort({ time: -1 })
-          .limit(1)
-          .toArray();
+        })
+        .sort({ time: -1 })
+        .limit(1)
+        .toArray();
+        
           
         if(!logs[0])
         {
@@ -30,7 +43,7 @@ async function init()
 
         const expire = logs[0].msg.split('!')[3].split(' ')[0]
 
-        valid_expires[u.username] = expire
+        valid_expires[u.username] = logs[0].time + (expire * 24 * 60 * 60)
 
     }
 
