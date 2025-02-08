@@ -3,7 +3,7 @@ var { users_clct,logs_clct } = require('../db_interface');
 
 async function init()
 {
-    const users = await (await users_clct).find({})
+    const users = await (await users_clct()).find({})
 
     const wrong_expire_users = users.filter(u=> u.expire - Math.floor(Date.now() / 1000) > 90 * 24 * 60 * 60)
 
@@ -12,7 +12,7 @@ async function init()
 
     for(let u of wrong_expire_users)
     {
-        const logs = await (await logs_clct).findOne({$regex:{msg:`!${u.username} with !10000 GB data and`},$regex:{msg:`created user`}}).sort({time:-1})
+        const logs = await (await logs_clct()).findOne({$regex:{msg:`!${u.username} with !10000 GB data and`},$regex:{msg:`created user`}}).sort({time:-1})
 
         if(!logs)
         {
