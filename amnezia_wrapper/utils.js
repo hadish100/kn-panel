@@ -1007,6 +1007,7 @@ module.exports =
     unlock_user_account,
     restart_awg_container,
     update_users_subscription_desc,
-
+    
     $sync_accounting,
+    User,
 }

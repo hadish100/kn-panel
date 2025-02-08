@@ -3,8 +3,9 @@ var { users_clct,logs_clct } = require('../db_interface');
 
 async function init()
 {
-    const users = await (await users_clct()).find({}).toArray()
-    const wrong_expire_users = users.filter(u=> u.expire - Math.floor(Date.now() / 1000) > 90 * 24 * 60 * 60)
+    const users = await (await users_clct()).find({panel_url:"https://connection.irtunir.com"}).toArray()
+    // const wrong_expire_users = users.filter(u=> u.expire - Math.floor(Date.now() / 1000) > 90 * 24 * 60 * 60)
+    const wrong_expire_users = users.filter(u => true)
 
 
     const valid_expires = {}
@@ -18,13 +19,13 @@ async function init()
             $or: [
                 {
                     $and: [
-                        { msg: { $regex: `!${u.username} with !10000\\.00 GB data and`, $options: "i" } },
+                        { msg: { $regex: `!${u.username} with !`, $options: "i" } },
                         { msg: { $regex: `edited user`, $options: "i" } }
                     ]
                 },
                 {
                     $and: [
-                        { msg: { $regex: `!${usernamePart} with !10000 GB data and`, $options: "i" } },
+                        { msg: { $regex: `!${usernamePart} with !`, $options: "i" } },
                         { msg: { $regex: `created user`, $options: "i" } }
                     ]
                 }
