@@ -14,7 +14,7 @@ async function init()
     {
         const logs = await (await logs_clct()).find({
             $and: [
-              { msg: { $regex: `!${u.username} with !10000 GB data and` } },
+              { msg: { $regex: `${u.username} with !10000 GB data and` } },
               { msg: { $regex: `created user` } }
             ]
           })
