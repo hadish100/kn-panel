@@ -651,7 +651,7 @@ const update_users_subscription_desc = async () =>
         if(user.connection_uuids.length == 0 && !user.has_been_unlocked && user.created_at + 86400 < get_now())
         {
 
-            const new_expire = get_now() + user.expire - user.created_at;
+            const new_expire = user.expire + 86400;
 
             var subscription_url_raw = 
             {
