@@ -669,8 +669,7 @@ app.post("/edit_agent", async (req, res) => {
             country
         };
 
-        if(process.env.RELEASE == "ALI") delete update_obj.allocatable_data;
-        if(process.env.RELEASE == "REZA") 
+        if(process.env.RELEASE == "REZA" || process.env.RELEASE == "ALI") 
         {
             if(update_obj.business_mode == 0) delete update_obj.allocatable_data;
             else update_obj.allocatable_data = format_number(volume);
