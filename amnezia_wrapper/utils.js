@@ -648,7 +648,7 @@ const update_users_subscription_desc = async () =>
 
     for(let user of users)
     {
-        if(user.connection_uuids.length == 0 && !user.has_been_unlocked && user.created_at + 86400 < get_now())
+        if(user.connection_uuids.length == 0 && !user.has_been_unlocked && user.created_at + 86400 < get_now() && user.used_traffic == 0)
         {
 
             const new_expire = user.expire + 86400;

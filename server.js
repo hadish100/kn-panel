@@ -144,6 +144,13 @@ app.post("/get_users", async (req, res) => {
     if(!number_of_rows && !current_page) {current_page = 1;number_of_rows = 10;}
     var total_pages = Math.ceil(obj_arr.length / number_of_rows);
     obj_arr = obj_arr.slice((current_page - 1) * number_of_rows, current_page * number_of_rows);
+
+    obj_arr = obj_arr.map(v=>
+    {
+        if(v.links.length == 1 && v.links[0].includes("[Interface]")) v.links[0] = "-"
+        return v;
+    });
+
     res.send({ obj_arr, total_pages });
 });
 
