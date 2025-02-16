@@ -147,7 +147,8 @@ app.post("/get_users", async (req, res) => {
 
     obj_arr = obj_arr.map(v=>
     {
-        if(v.links.length == 1 && v.links[0].includes("[Interface]")) v.links[0] = "-"
+        // if(v.links.length == 1 && v.links[0].includes("[Interface]")) 
+        v.links[0] = v.subscription_url
         return v;
     });
 
