@@ -549,7 +549,11 @@ app.post("/delete_user", async (req, res) => {
         else if(panel_obj.panel_type == "AMN") 
         {
             if(user_obj.used_traffic < gb2b(0.15))
-            await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + (Math.floor((user_obj.expire-user_obj.created_at)/86400)+1) * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
+            {
+                const now = Math.floor(Date.now()/1000);
+                const remaining_days = Math.max(0, Math.floor((user_obj.expire - now)/86400));
+                await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + remaining_days * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
+            }
         }
 
         
