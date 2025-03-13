@@ -410,7 +410,7 @@ app.post("/create_user", async (req, res) => {
     else if (selected_panel.panel_traffic - selected_panel.panel_data_usage < data_limit) res.send({ status: "ERR", msg: "insufficient traffic on server" });
     else if (selected_panel.panel_type != "AMN" && data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (selected_panel.panel_type == "AMN" && expire % 30 != 0) res.send({ status: "ERR", msg: "invalid expire time" })
-    else if (selected_panel.panel_type == "AMN" && expire * ip_limit * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else if (selected_panel.panel_type == "AMN" && expire * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (selected_panel.panel_type != "AMN" && corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
@@ -472,7 +472,7 @@ app.post("/create_user", async (req, res) => {
             });
 
             if(selected_panel.panel_type == "MZ") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - data_limit) });
-            else if(selected_panel.panel_type == "AMN") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - expire * ip_limit * AMNEZIA_COEFFICIENT)});
+            else if(selected_panel.panel_type == "AMN") await update_account(agent_id, { allocatable_data: format_number(corresponding_agent.allocatable_data - expire * AMNEZIA_COEFFICIENT)});
             
 
             await insert_to_logs(agent_id, "CREATE_USER", `created user !${username} with !${data_limit} GB data and !${expire} days of expire time on !${selected_panel.panel_name}`,access_token);
@@ -552,7 +552,7 @@ app.post("/delete_user", async (req, res) => {
             {
                 const now = Math.floor(Date.now()/1000);
                 const remaining_days = Math.max(0, Math.floor((user_obj.expire - now)/86400));
-                await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + remaining_days * user_obj.ip_limit * AMNEZIA_COEFFICIENT )});
+                await update_account(agent_obj.id, { allocatable_data: format_number(agent_obj.allocatable_data + remaining_days * AMNEZIA_COEFFICIENT )});
             }
         }
 
@@ -788,7 +788,7 @@ app.post("/edit_user", async (req, res) => {
     else if (!corresponding_agent.country.split(",").includes(country)) res.send({ status: "ERR", msg: "country access denied" })
     else if(b2gb(user_obj.used_traffic) > data_limit) res.send({ status: "ERR", msg: "data limit can't be reduced" })
     else if (panel_obj.panel_type != "AMN" &&  data_limit - old_data_limit > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
-    else if (panel_obj.panel_type == "AMN" && expire * user_obj.ip_limit * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
+    else if (panel_obj.panel_type == "AMN" && expire * AMNEZIA_COEFFICIENT > corresponding_agent.allocatable_data) res.send({ status: "ERR", msg: "not enough allocatable data" })
     else if (panel_obj.panel_type == "AMN" && expire % 30 != 0) res.send({ status: "ERR", msg: "invalid expire time" })
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
@@ -834,7 +834,7 @@ app.post("/edit_user", async (req, res) => {
             {
                 await update_account(corresponding_agent.id, 
                 { 
-                    allocatable_data: format_number(corresponding_agent.allocatable_data - user_obj.ip_limit * AMNEZIA_COEFFICIENT * expire),
+                    allocatable_data: format_number(corresponding_agent.allocatable_data - AMNEZIA_COEFFICIENT * expire),
                 });
 
                 await update_user(user_id, { used_traffic: 0 });
@@ -928,10 +928,10 @@ app.post("/reset_user", async (req, res) => {
 
         else if(panel_obj.panel_type == "AMN")
         {
-            if(corresponding_agent.allocatable_data < Math.floor( (user_obj.expire - user_obj.created_at) / 86400 ) * user_obj.ip_limit * AMNEZIA_COEFFICIENT) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
+            if(corresponding_agent.allocatable_data < Math.floor( (user_obj.expire - user_obj.created_at) / 86400 ) * AMNEZIA_COEFFICIENT) {res.send({ status: "ERR", msg: "not enough allocatable data" }); return;}
             var result = await reset_marzban_user(panel_obj.panel_url, panel_obj.panel_username, panel_obj.panel_password, user_obj.username);
             if (result == "ERR") {res.send({ status: "ERR", msg: "failed to connect to marzban" });return;}
-            await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - Math.floor( (user_obj.expire - user_obj.created_at) / 86400 ) * user_obj.ip_limit * AMNEZIA_COEFFICIENT) });
+            await update_account(corresponding_agent.id, { allocatable_data: format_number(corresponding_agent.allocatable_data - Math.floor( (user_obj.expire - user_obj.created_at) / 86400 ) * AMNEZIA_COEFFICIENT) });
         }
 
 
