@@ -127,7 +127,12 @@ app.post("/get_users", async (req, res) => {
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
-    if(process.env.RELEASE == "ALI" || process.env.RELEASE == "V" || process.env.RELEASE == "AHWAZGSM" || process.env.RELEASE == "REZA") obj_arr = obj_arr.map(x => {x.subscription_url = x.real_subscription_url;return x;});
+    if(process.env.RELEASE == "V" || process.env.RELEASE == "AHWAZGSM" || process.env.RELEASE == "REZA") obj_arr = obj_arr.map(x => {x.subscription_url = x.real_subscription_url;return x;});
+    if(process.env.RELEASE == "ALI") obj_arr = obj_arr.map(x => 
+    {
+        if(!x.real_subscription_url.startsWith("vpn")) x.subscription_url = x.real_subscription_url;
+        return x;
+    });
     
     obj_arr = obj_arr.reverse();
     
