@@ -385,6 +385,7 @@ app.post("/create_user", async (req, res) => {
 
      // TEMP
      ip_limit = 5;
+     if(process.env.RELEASE == "ALI") ip_limit = 1;
 
 
         if(process.env.RELEASE == "ARMAN") flow_status = "xtls-rprx-vision";
