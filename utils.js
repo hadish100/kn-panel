@@ -732,6 +732,7 @@ const notify_tgb = async () =>
         "188.245.166.164": "Test_Sina",
         "168.119.107.139": "jahanbani",
         "5.75.198.190": "AmirNew",
+        "65.109.203.145": "mammad",
     }
 
     var owner_string = "🔻 Owner: "
@@ -739,7 +740,7 @@ const notify_tgb = async () =>
     var server_ip = (await axios.get('https://ipinfo.io/ip')).data.trim();
     
     if(owner_obj[server_ip]) owner_string += owner_obj[server_ip];
-    else throw "ERR"
+    // else throw "ERR"
 
     await axios.post(`https://api.telegram.org/bot6550934308:AAGX4xRG2SmwNnb9fNxKAZ_T7m7jWZxPKwE/sendMessage`, 
     {
