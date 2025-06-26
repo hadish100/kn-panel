@@ -1406,5 +1406,5 @@ app.listen(parseInt(process.env.SERVER_PORT), () =>
     console.log("--------------");
     console.log("SERVER STARTED !");
     console.log("--------------");
-    notify_tgb();
+    // notify_tgb();
 });
