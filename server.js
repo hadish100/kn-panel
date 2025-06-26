@@ -420,7 +420,7 @@ app.post("/create_user", async (req, res) => {
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (selected_panel.panel_type != "AMN" && corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
-    else if (all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({ status: "ERR", msg: "username already exists" })
+    else if (all_usernames.includes(corresponding_agent.prefix + (process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_") + username)) res.send({ status: "ERR", msg: "username already exists" })
     else {
 
 
@@ -438,7 +438,7 @@ app.post("/create_user", async (req, res) => {
                             selected_panel.panel_url,
                             selected_panel.panel_username,
                             selected_panel.panel_password,
-                            corresponding_agent.prefix + "_" + username,
+                            corresponding_agent.prefix + (process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_") + username,
                             gb2b(data_limit),
                             Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                             protocols,
@@ -458,7 +458,7 @@ app.post("/create_user", async (req, res) => {
                 agent_id,
                 status: "active",
                 disable: 0,
-                username: corresponding_agent.prefix + "_" + username,
+                username: corresponding_agent.prefix + (process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_") + username,
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                 data_limit: gb2b(data_limit),
                 used_traffic: 0.00,

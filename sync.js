@@ -234,11 +234,11 @@ async function main()
                 }
 
 
-                if(!user && marzban_user.username.split("_").length > 1)
+                if(!user && marzban_user.username.split((process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_")).length > 1)
                 {
                     var marzban_user_created_at = Math.floor(moment.utc(marzban_user.created_at).valueOf()/1000)
                     var current_time = Math.floor(moment.utc().valueOf()/1000)
-                    var corresponding_agent = all_agents.find(agent => marzban_user.username.startsWith(agent.prefix + "_"));
+                    var corresponding_agent = all_agents.find(agent => marzban_user.username.startsWith(agent.prefix + (process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_")));
                     if(corresponding_agent && corresponding_agent.country.split(",").includes(panel.panel_country) && marzban_user.expire && marzban_user.data_limit && current_time - marzban_user_created_at > 60)
                     {
                         var complete_user_info = await get_marzban_user(panel.panel_url, panel.panel_username, panel.panel_password, marzban_user.username);
