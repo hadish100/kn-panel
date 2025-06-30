@@ -1,19 +1,19 @@
 const axios = require('axios');
 const fs = require('fs');
 // const util = require('util');
-const {
-  get_marzban_user,
-  get_agents,
-  get_agents_daily_usage_logs,
-  get_panel_info,
-  restart_marzban_xray,
-  auth_marzban,
-  get_user_data_graph,
-  get_agent_data_graph,
-  syslog,
-  sleep,
-  get_accounts
-} = require("../utils");
+// const {
+//   get_marzban_user,
+//   get_agents,
+//   get_agents_daily_usage_logs,
+//   get_panel_info,
+//   restart_marzban_xray,
+//   auth_marzban,
+//   get_user_data_graph,
+//   get_agent_data_graph,
+//   syslog,
+//   sleep,
+//   get_accounts
+// } = require("../utils");
 // const moment = require('moment-timezone');
 
 
@@ -202,3 +202,76 @@ db.users.updateMany({'country': 'Amnezia_Poland1'},{$set:{'country': 'Amnezia_Ne
 db.panels.updateMany({'panel_country': 'Amnezia_Poland1'},{$set:{'panel_country': 'Amnezia_Netherland1'}})
 db.accounts.updateMany({'is_admin': 0},{$set:{'country': 'Amnezia_Netherland1,Amnezia_Turkey1'}})
 */
+
+async function main()
+{
+    const admins = [
+      {"username":"amir"},
+      {"username":"Amirfillter"},
+      {"username":"Atila_VPN"},
+      {"username":"Belto"},
+      {"username":"bytes_war"},
+      {"username":"caffenet"},
+      {"username":"caw.vpn"},
+      {"username":"Danger"},
+      {"username":"Dehkordphone"},
+      {"username":"Diamond"},
+      {"username":"Famous_vpn"},
+      {"username":"Fly2world"},
+      {"username":"Gateless"},
+      {"username":"Heydari"},
+      {"username":"Heyphone"},
+      {"username":"hvna"},
+      {"username":"HydroPing"},
+      {"username":"HydroPing_De"},
+      {"username":"Ice_VPN"},
+      {"username":"Mardin_vpn"},
+      {"username":"Max_Shop"},
+      {"username":"Mobile_Tavana"},
+      {"username":"MobiTech"},
+      {"username":"MoboFix"},
+      {"username":"Msh_VPN"},
+      {"username":"Netoray"},
+      {"username":"Nily"},
+      {"username":"NK_Shop"},
+      {"username":"omidvpn"},
+      {"username":"oxping"},
+      {"username":"Panda"},
+      {"username":"pv99"},
+      {"username":"Sarve"},
+      {"username":"Seven_VPN"},
+      {"username":"Shahr_Mobile"},
+      {"username":"SivHD"},
+      {"username":"Storm"},
+      {"username":"Tarazgaranvpn_bot"},
+      {"username":"Toori"},
+      {"username":"Undomobile"},
+      {"username":"V2_TRUST"},
+      {"username":"verifybitt"},
+      {"username":"Zodiac"}
+      ]
+
+
+      for(let admin of admins)
+      {
+        await axios.post('http://91.107.176.173:5000/create_agent',
+        {"name":admin.username,
+        "username":admin.username,
+        "password":"1234567",
+        "volume":"100",
+        "min_vol":"5",
+        "max_users":"100",
+        "max_days":"30",
+        "prefix":admin.username,
+        "country":"main1",
+        "access_token":"uF6Wdz7VqAn8mKou2ANfduNr2NVmTX*",
+        "max_non_active_days":"90",
+        "business_mode":0,
+        "vrate":"5000"})
+
+        console.log(`Created agent for ${admin.username}`);
+      }
+
+}
+
+main()

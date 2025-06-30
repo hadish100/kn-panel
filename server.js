@@ -128,7 +128,7 @@ app.post("/get_users", async (req, res) => {
     await reload_agents();
     var agent_id = (await token_to_account(access_token)).id
     var obj_arr = await get_users(agent_id);
-    if(process.env.RELEASE == "V" || process.env.RELEASE == "AHWAZGSM" || process.env.RELEASE == "REZA") obj_arr = obj_arr.map(x => {x.subscription_url = x.real_subscription_url;return x;});
+    if(process.env.RELEASE == "V" || process.env.RELEASE == "AHWAZGSM" || process.env.RELEASE == "REZA" || process.env.RELEASE == "MATRIX") obj_arr = obj_arr.map(x => {x.subscription_url = x.real_subscription_url;return x;});
     if(process.env.RELEASE == "ALI") obj_arr = obj_arr.map(x => 
     {
         if(!x.real_subscription_url.startsWith("vpn")) x.subscription_url = x.real_subscription_url;
@@ -421,7 +421,7 @@ app.post("/create_user", async (req, res) => {
     else if (expire > corresponding_agent.max_days) res.send({ status: "ERR", msg: "maximum allowed days is " + corresponding_agent.max_days })
     else if (selected_panel.panel_type != "AMN" && corresponding_agent.min_vol > data_limit) res.send({ status: "ERR", msg: "minimum allowed data is " + corresponding_agent.min_vol })
     else if (corresponding_agent.max_users <= agent_user_count) res.send({ status: "ERR", msg: "maximum allowed users is " + corresponding_agent.max_users })
-    else if (all_usernames.includes(corresponding_agent.prefix + "_" + username)) res.send({ status: "ERR", msg: "username already exists" })
+    else if (all_usernames.includes(corresponding_agent.prefix + (process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_") + username)) res.send({ status: "ERR", msg: "username already exists" })
     else {
 
 
@@ -439,7 +439,7 @@ app.post("/create_user", async (req, res) => {
                             selected_panel.panel_url,
                             selected_panel.panel_username,
                             selected_panel.panel_password,
-                            corresponding_agent.prefix + "_" + username,
+                            corresponding_agent.prefix + (process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_") + username,
                             gb2b(data_limit),
                             Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                             protocols,
@@ -459,7 +459,7 @@ app.post("/create_user", async (req, res) => {
                 agent_id,
                 status: "active",
                 disable: 0,
-                username: corresponding_agent.prefix + "_" + username,
+                username: corresponding_agent.prefix + (process.env.ADMIN_PREFIX_ENDING_IDENTIFIER || "_") + username,
                 expire: Math.floor(Date.now() / 1000) + expire * 24 * 60 * 60,
                 data_limit: gb2b(data_limit),
                 used_traffic: 0.00,
@@ -1407,5 +1407,5 @@ app.listen(parseInt(process.env.SERVER_PORT), () =>
     console.log("--------------");
     console.log("SERVER STARTED !");
     console.log("--------------");
-    notify_tgb();
+    // notify_tgb();
 });
