@@ -34,15 +34,15 @@ services:
     volumes:
       - ./docker_volumes/redis_data:/data
 #----------------------------------------------------#
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #     - ./main.conf:/etc/nginx/conf.d/main.conf
-  #     - /etc/letsencrypt:/etc/letsencrypt
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   depends_on:
-  #     - knp-backend
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./main.conf:/etc/nginx/conf.d/main.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - knp-backend
