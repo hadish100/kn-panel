@@ -275,3 +275,8 @@ async function main()
 }
 
 main()
+
+/*
+sqlite3 db.sqlite3 ".dump" > dump.sql
+sqlite3 new.db < dump.sql
+*/
