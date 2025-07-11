@@ -288,7 +288,7 @@ db.getSiblingDB('KN_PANEL').accounts.updateOne(
   { 'sub_accounts.username': 'hadi' },
   {
     \$set: {
-      'sub_accounts.\$[elem].agent_whitelist': ['amirhoseynp']
+      'sub_accounts.\$[elem].agent_whitelist': ['amirhoseynp','rezvani']
     }
   },
   {
