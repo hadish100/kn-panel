@@ -280,3 +280,23 @@ main()
 sqlite3 db.sqlite3 ".dump" > dump.sql
 sqlite3 new.db < dump.sql
 */
+
+/*
+
+docker exec -i mongo-knp mongosh --quiet --eval "
+db.getSiblingDB('KN_PANEL').accounts.updateOne(
+  { 'sub_accounts.username': 'hadi' },
+  {
+    \$set: {
+      'sub_accounts.\$[elem].agent_whitelist': ['amirhoseynp']
+    }
+  },
+  {
+    arrayFilters: [
+      { 'elem.username': 'hadi' }
+    ]
+  }
+)"
+
+*/
+
