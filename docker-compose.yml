@@ -25,6 +25,8 @@ services:
   mongo-knp:
     image: mongo:latest
     container_name: mongo-knp
+    ports:
+      - '27017:27017'
     volumes:
       - ./docker_volumes/mongodb_data:/data/db
 #----------------------------------------------------#
@@ -34,15 +36,15 @@ services:
     volumes:
       - ./docker_volumes/redis_data:/data
 #----------------------------------------------------#
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #     - ./main.conf:/etc/nginx/conf.d/main.conf
-  #     - /etc/letsencrypt:/etc/letsencrypt
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   depends_on:
-  #     - knp-backend
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./main.conf:/etc/nginx/conf.d/main.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - knp-backend
