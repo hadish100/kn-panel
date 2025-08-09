@@ -112,8 +112,18 @@ app.post("/ping", async (req, res) =>
 });
 
 app.post("/get_agents", async (req, res) => {
+    var { access_token } = req.body;
     await reload_agents();
     var obj_arr = await get_agents();
+
+    if(process.env.RELEASE == "ALI" && access_token.includes("@"))
+    {
+        var sub_account = await token_to_sub_account(access_token);
+        if(sub_account.agent_whitelist)
+        {
+            obj_arr = obj_arr.filter(x => sub_account.agent_whitelist.includes(x.username));
+        }
+    }
 
     res.send(obj_arr);
 });

@@ -118,7 +118,7 @@ const EditUser = ({ onClose, showForm, onDeleteItem, item, onEditItem, onPowerIt
         { label: "Data Limit", type: "number", id: "data_limit", name: "data_limit", disabled: isDataLimitDisabled },
         { label: "Ip Limit", type: "number", id: "ipLimit", name: "ipLimit", disabled: true },
         { label: "Days To Expire", type: "number", id: "expire", name: "expire" },
-        { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry, disabled: true },
+        { label: "Country", type: "multi-select2", id: "country", name: "country", onChange: setCountry },
         { label: "Description", type: "text", id: "desc", name: "desc" },
     ]
 
