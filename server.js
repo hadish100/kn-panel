@@ -129,7 +129,13 @@ app.post("/get_agents", async (req, res) => {
 });
 
 app.post("/get_panels", async (req, res) => {
+
+    var { access_token } = req.body;
+
+    if(process.env.RELEASE == "ALI" && access_token.includes("@")) return res.send([])
+
     var obj_arr = await (await panels_clct()).find({}).toArray();
+
     res.send(obj_arr);
 });
 
